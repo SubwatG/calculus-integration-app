@@ -9,6 +9,7 @@ Streamlit teaching app สำหรับแคลคูลัสเบื้อ
 เอกสารสำหรับเริ่มต้นบน Windows:
 
 - [คู่มือเริ่มต้นสำหรับนักศึกษาบน Windows](docs/windows-student-setup.md)
+- [Streamlit และ Python Notes สำหรับโปรเจกต์นี้](docs/streamlit-python-notes.md)
 
 ## Requirements
 
