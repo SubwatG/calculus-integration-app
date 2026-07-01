@@ -1,0 +1,62 @@
+[
+  {
+    "topic": "basic_rules",
+    "question": "จงหา $\\int 3x^2\\,dx$",
+    "choices": [
+      "$x^3 + C$",
+      "$3x^3 + C$",
+      "$6x + C$",
+      "$x^2 + C$"
+    ],
+    "answer": "$x^3 + C$",
+    "explanation": "ใช้ power rule: $\\int 3x^2\\,dx = 3\\cdot\\frac{x^3}{3}+C = x^3+C$"
+  },
+  {
+    "topic": "basic_rules",
+    "question": "จงหา $\\int 5\\,dx$",
+    "choices": [
+      "$5x + C$",
+      "$5 + C$",
+      "$x^5 + C$",
+      "$\\frac{x^6}{6}+C$"
+    ],
+    "answer": "$5x + C$",
+    "explanation": "ค่าคงที่ $5$ เมื่ออินทิเกรตตาม $x$ จะได้ $5x+C$"
+  },
+  {
+    "topic": "basic_rules",
+    "question": "จงหา $\\int x^4\\,dx$",
+    "choices": [
+      "$\\frac{x^5}{5}+C$",
+      "$4x^3+C$",
+      "$\\frac{x^4}{4}+C$",
+      "$x^5+C$"
+    ],
+    "answer": "$\\frac{x^5}{5}+C$",
+    "explanation": "เพิ่มเลขชี้กำลังจาก $4$ เป็น $5$ แล้วหารด้วย $5$ จึงได้ $\\frac{x^5}{5}+C$"
+  },
+  {
+    "topic": "basic_rules",
+    "question": "จงหา $\\int (2x+7)\\,dx$",
+    "choices": [
+      "$x^2+7x+C$",
+      "$2x^2+7+C$",
+      "$x^2+7+C$",
+      "$2+7x+C$"
+    ],
+    "answer": "$x^2+7x+C$",
+    "explanation": "แยกพจน์ได้เป็น $\\int 2x\\,dx + \\int 7\\,dx = x^2+7x+C$"
+  },
+  {
+    "topic": "basic_rules",
+    "question": "ข้อใดคือคำตอบของ $\\int \\frac{1}{x}\\,dx$",
+    "choices": [
+      "$\\ln|x|+C$",
+      "$\\frac{x^0}{0}+C$",
+      "$x+C$",
+      "$\\frac{1}{x^2}+C$"
+    ],
+    "answer": "$\\ln|x|+C$",
+    "explanation": "กรณี $x^{-1}$ เป็นข้อยกเว้นของ power rule เพราะ $n+1=0$ จึงต้องใช้ $\\int \\frac{1}{x}\\,dx=\\ln|x|+C$"
+  }
+]
