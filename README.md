@@ -10,10 +10,6 @@ Streamlit teaching app สำหรับแคลคูลัสเบื้อ
 
 - [คู่มือเริ่มต้นสำหรับนักศึกษาบน Windows](docs/windows-student-setup.md)
 
-เอกสารสำหรับอาจารย์:
-
-- [ร่างอีเมลเชิญนักศึกษาเข้า GitHub](docs/email-invite-draft.md)
-
 ## Requirements
 
 - Python 3.11 หรือใหม่กว่า
