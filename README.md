@@ -75,13 +75,20 @@ http://localhost:8501
 
 ## Structure
 
-- `app.py`: router ด้วย `st.navigation` และ `st.Page`
-- `pages/home.py`: หน้าแรกและภาพรวม
-- `pages/lessons.py`: โหลดบทเรียน Markdown
-- `pages/quiz.py`: แบบทดสอบด้วย `st.form`
-- `data/lessons/`: เนื้อหาบทเรียนภาษาไทย
-- `data/quizzes/`: คลังข้อสอบแบบ JSON
-- `utils/`: content loader และ quiz engine
+- `app.py`: Main entry point และ router ด้วย `st.navigation` จัดกลุ่มหน้าเป็นภาษาไทย
+- `pages/home.py`: หน้าแรกและค้นหาเมนู พร้อมแสดงคะแนน quiz ล่าสุด
+- `pages/lessons.py`: โหลดเนื้อหาบทเรียนแคลคูลัสจากไฟล์ Markdown
+- `pages/topics.py`: เลือกหัวข้อหลักของการเรียนและแมปไปยังบทเรียนที่มีอยู่
+- `pages/solver.py`: เครื่องคิดเลขแก้โจทย์อินทิเกรต อนุพันธ์ และลิมิตด้วย SymPy
+- `pages/quiz.py`: เกมทบทวนความรู้พร้อมเฉลยและคำอธิบายทีละข้อ
+- `pages/history.py`: แสดงประวัติคะแนนที่สะสมในเซสชันปัจจุบัน
+- `pages/help.py`: คำอธิบายการใช้งาน ไวยากรณ์ SymPy และข้อจำกัด
+- `data/lessons/`: เนื้อหาบทเรียนภาษาไทยรูปแบบ Markdown
+- `data/quizzes/`: คลังข้อสอบรูปแบบ JSON
+- `utils/content_loader.py`: ฟังก์ชันโหลดไฟล์บทเรียนพร้อม cache
+- `utils/quiz_engine.py`: Engine สำหรับโหลดและตรวจแบบทดสอบ
+- `utils/theme.py`: Custom CSS styling (Chakra Petch font, lavender sidebar, cards, heroes)
+- `utils/sympy_solver.py`: ตัวคำนวณสัญลักษณ์ (SymPy) สำหรับอินทิเกรต อนุพันธ์ และลิมิต
 
 ## Development notes
 
