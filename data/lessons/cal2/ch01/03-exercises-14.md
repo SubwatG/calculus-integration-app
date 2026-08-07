@@ -1,3 +1,13 @@
+---
+title: "แบบฝึกหัด 1.4"
+course: cal2
+chapter: 1
+section: "1.4"
+type: exercises
+source: "Calculus2-ch1-integrals.pdf"
+status: transformed
+---
+
 # แบบฝึกหัด 1.4
 
 1\. จงประมาณค่าอินทิกรัลในข้อต่อไปนี้ด้วยกฎสี่เหลี่ยมคางหมู

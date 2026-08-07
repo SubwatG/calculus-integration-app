@@ -1,4 +1,14 @@
-## 3.2 3.2 ปริมาตรของของแข็ง (Volume of Solids)
+---
+title: "3.2 ปริมาตรของของแข็ง (Volume of Solids)"
+course: cal2
+chapter: 3
+section: "3.2"
+type: content
+source: "Calculus2-ch3-applications-of-integrals.pdf"
+status: transformed
+---
+
+# 3.2 ปริมาตรของของแข็ง (Volume of Solids)
 
 ใช้ปริพันธ์จำกัดเขตหาปริมาตรของของแข็งสามมิติ โดยแบ่งเป็น 3 วิธีตามลักษณะของของแข็ง
 

@@ -1,0 +1,1017 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  thai,
+  12pt,
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+\usepackage{xcolor}
+\usepackage[top=2.5cm,left=2.5cm,right=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmonofont[]{JetBrainsMonoNL Nerd Font Mono}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+
+\ifLuaTeX
+\usepackage[bidi=basic,shorthands=off,provide=*]{babel}
+\else
+\usepackage[bidi=default,shorthands=off,provide=*]{babel}
+\fi
+\ifLuaTeX
+  \usepackage{selnolig} % disable illegal ligatures
+\fi
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+% ---- 1. Set up fonts and encoding ---- %
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+% Enable line breaks for Thai text
+\XeTeXlinebreaklocale "th"
+\XeTeXlinebreakskip = 0pt plus 2pt minus 1pt
+
+% Set up Thai fonts
+\setmainfont[%
+ItalicFont={Laksaman-Italic},%
+BoldFont={Laksaman-Bold},%
+BoldItalicFont={Laksaman-BoldItalic},%
+Script=Thai,%
+Scale=MatchLowercase,%
+WordSpace=1.25,%
+Mapping=tex-text,%
+]{Laksaman}
+
+% ---- 1.5 Set up Math Font (สมการคณิตศาสตร์) ---- %
+\setmathfont{TeX Gyre Termes Math}
+
+% เพิ่มระยะห่างระหว่างบรรทัด 25% ให้สระ/วรรณยุกต์ไทยไม่อึดอัด
+\linespread{1.25}
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={คู่มือ Markdown และ LaTeX สำหรับ calculus-integration-app},
+  pdfauthor={ทีมพัฒนา Calculus Tutor: Integration},
+  pdflang={th},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{คู่มือ Markdown และ LaTeX สำหรับ calculus-integration-app}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{เอกสารสำหรับผู้พัฒนาเริ่มต้น}
+\author{ทีมพัฒนา Calculus Tutor: Integration}
+\date{2026-08-07}
+\begin{document}
+\maketitle
+
+
+\section{บทนำ}\label{uxe1auxe17uxe19uxe33}
+
+เอกสารนี้เป็นคู่มือสำหรับนักศึกษาหรือผู้เริ่มต้นที่ต้องการเขียนเนื้อหาบทเรียน
+หรือเพิ่มฟีเจอร์ในโปรเจกต์ \texttt{calculus-integration-app}
+แอปนี้เป็นเว็บสอนแคลคูลัส ที่เขียนด้วย Python + Streamlit เนื้อหาบทเรียนเก็บเป็นไฟล์
+Markdown ภาษาไทย ในโฟลเดอร์ \texttt{data/lessons/} และแสดงผลด้วย
+\texttt{st.markdown()} ซึ่งรองรับทั้ง Markdown ธรรมดาและสมการ LaTeX
+
+สิ่งที่เอกสารนี้ครอบคลุม
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Cheat sheet สำหรับใช้งานเร็ว (ตอนแรกของเอกสาร)
+\item
+  Markdown พื้นฐานที่จำเป็นสำหรับเขียนบทเรียน
+\item
+  คำสั่ง LaTeX ที่จำเป็นสำหรับสมการแคลคูลัส
+\item
+  การนำไปใช้จริงในโค้ดของแอป (Streamlit, JSON, SymPy)
+\item
+  กฎบังคับของโปรเจกต์ตาม \texttt{data/lessons/SPEC.md}
+\end{enumerate}
+
+หลักการใหญ่ของโปรเจกต์
+
+\begin{itemize}
+\tightlist
+\item
+  เขียนเนื้อหาเป็นภาษาไทยใน \texttt{data/lessons/*.md}
+\item
+  ใช้ภาษาอังกฤษสำหรับ code, ชื่อไฟล์, ชื่อตัวแปร และ comment
+\item
+  ใช้ \texttt{\$...\$} สำหรับสมการแบบ inline และ \texttt{\$\$...\$\$}
+  สำหรับสมการแบบ display เท่านั้น
+\item
+  ห้ามใช้ \texttt{\textbackslash{}(...\textbackslash{})} หรือ
+  \texttt{\textbackslash{}{[}...\textbackslash{}{]}}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{1. Cheat Sheet
+ใช้งานเร็ว}\label{cheat-sheet-uxe43uxe0auxe07uxe32uxe19uxe40uxe23uxe27}
+
+\subsection{1.1 Markdown
+พื้นฐาน}\label{markdown-uxe1euxe19uxe10uxe32uxe19}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+ต้องการ & พิมพ์แบบนี้ & ผลลัพธ์ \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+หัวข้อระดับ 1 & \texttt{\#\ ชื่อบทเรียน} & หัวข้อใหญ่สุดของไฟล์ \\
+หัวข้อระดับ 2 & \texttt{\#\#\ หัวข้อย่อย} & หัวข้อ section \\
+หัวข้อระดับ 3 & \texttt{\#\#\#\ หัวข้อย่อย} & หัวข้อย่อยลงไป \\
+ตัวหนา & \texttt{**ข้อความ**} & \textbf{ข้อความ} \\
+ตัวเอียง & \texttt{*ข้อความ*} & \emph{ข้อความ} \\
+รายการลำดับ & \texttt{1.\ ข้อแรก} & รายการเลข 1, 2, 3 \\
+รายการหัวข้อย่อย & \texttt{-\ ข้อหนึ่ง} & รายการสัญลักษณ์ \\
+เส้นคั่น & \texttt{-\/-\/-} & เส้นคั่นแนวนอน \\
+โค้ดในบรรทัด & \texttt{\textasciigrave{}code\textasciigrave{}} & โค้ดแบบ
+inline \\
+บล็อกโค้ด &
+\texttt{\textasciigrave{}\textasciigrave{}\textasciigrave{}python} &
+บล็อกโค้ดหลายบรรทัด \\
+ลิงก์ & \texttt{{[}ข้อความ{]}(https://...)} &
+\href{https://example.com}{ข้อความ} \\
+ตาราง & ดูหัวข้อ 2.5 & ตารางแบบ Markdown \\
+คำพูดอ้าง & \texttt{\textgreater{}\ ข้อความ} & บล็อกคำพูด \\
+\end{longtable}
+}
+
+\subsection{1.2 LaTeX
+สำหรับสมการแคลคูลัส}\label{latex-uxe2auxe33uxe2buxe23uxe1auxe2auxe21uxe01uxe32uxe23uxe41uxe04uxe25uxe04uxe25uxe2a}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+ต้องการ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+คำสั่ง LaTeX
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+ผลลัพธ์
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+สมการแบบ inline & \texttt{\$x\^{}2\$} & \(x^2\) \\
+สมการแบบ display &
+\texttt{\$\$\textbackslash{}int\ x\textbackslash{},dx\$\$} &
+\(\int x\,dx\) \\
+เลขยกกำลัง & \texttt{x\^{}n} & \(x^n\) \\
+ตัวห้อย & \texttt{x\_1} & \(x_1\) \\
+เศษส่วน & \texttt{\textbackslash{}frac\{a\}\{b\}} & \(\frac{a}{b}\) \\
+รากที่สอง & \texttt{\textbackslash{}sqrt\{x\}} & \(\sqrt{x}\) \\
+อินทิเกรตไม่จำกัดเขต & \texttt{\textbackslash{}int\ f(x)\textbackslash{},dx}
+& \(\int f(x)\,dx\) \\
+อินทิเกรตจำกัดเขต &
+\texttt{\textbackslash{}int\_a\^{}b\ f(x)\textbackslash{},dx} &
+\(\int_a^b f(x)\,dx\) \\
+ลิมิต & \texttt{\textbackslash{}lim\_\{x\ \textbackslash{}to\ a\}\ f(x)} &
+\(\lim_{x \to a} f(x)\) \\
+ผลรวม &
+\texttt{\textbackslash{}sum\_\{n=1\}\^{}\{\textbackslash{}infty\}} &
+\(\sum_{n=1}^{\infty}\) \\
+ฟังก์ชัน ln & \texttt{\textbackslash{}ln\textbar{}x\textbar{}} &
+\(\ln|x|\) \\
+ค่าคงที่อินฟินิตี้ & \texttt{\textbackslash{}infty} & \(\infty\) \\
+อนุพันธ์ย่อย &
+\texttt{\textbackslash{}frac\{\textbackslash{}partial\ f\}\{\textbackslash{}partial\ x\}}
+& \(\frac{\partial f}{\partial x}\) \\
+ระบบสมการ &
+\texttt{\textbackslash{}begin\{cases\}\ ...\ \textbackslash{}end\{cases\}}
+& ดูหัวข้อ 3.8 \\
+จัดแนวสมการ &
+\texttt{\textbackslash{}begin\{align*\}\ ...\ \textbackslash{}end\{align*\}}
+& ดูหัวข้อ 3.9 \\
+\end{longtable}
+}
+
+\subsection{1.3 คำสั่งเฉพาะของแอป (Streamlit +
+SymPy)}\label{uxe04uxe33uxe2auxe07uxe40uxe09uxe1euxe32uxe30uxe02uxe2duxe07uxe41uxe2duxe1b-streamlit-sympy}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+ต้องการ
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+ใช้ในโค้ด
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+หมายเหตุ
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+แสดง Markdown + สมการ & \texttt{st.markdown(content)} & content คือ
+string Markdown \\
+แสดงสมการเดี่ยวขนาดใหญ่ &
+\texttt{st.latex(r"\textbackslash{}int\_a\^{}b\ f(x)\textbackslash{},dx")}
+& ใช้ raw string \\
+ใส่เลขยกกำลังในเครื่องคิดเลข & \texttt{x**2} & ไวยากรณ์ Python ไม่ใช่
+\texttt{x\^{}2} \\
+คูณในเครื่องคิดเลข & \texttt{2*x} & ต้องมี \texttt{*} เสมอ \\
+ฟังก์ชัน sin & \texttt{sin(x)} & ใช้ \texttt{sin(x)} ไม่ใช่ \texttt{sin\ x} \\
+ฟังก์ชัน exp & \texttt{exp(x)} & แทน \(e^x\) \\
+รากที่สองในเครื่องคิดเลข & \texttt{sqrt(x)} & ไวยากรณ์ SymPy \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{2. Markdown
+สำหรับเขียนบทเรียน}\label{markdown-uxe2auxe33uxe2buxe23uxe1auxe40uxe02uxe22uxe19uxe1auxe17uxe40uxe23uxe22uxe19}
+
+ไฟล์บทเรียนทั้งหมดอยู่ใน \texttt{data/lessons/} เช่น \texttt{overview.md},
+\texttt{basic\_rules.md} และไฟล์ชุด \texttt{silpakorn-ch*.md}
+ที่แยกตามบทเรียน
+
+\subsection{2.1 หัวข้อ (Headings)}\label{uxe2buxe27uxe02uxe2d-headings}
+
+ใช้ \texttt{\#} หนึ่งตัวสำหรับชื่อบทเรียนเดียวต่อไฟล์ และใช้ \texttt{\#\#} หรือ
+\texttt{\#\#\#} สำหรับหัวข้อย่อย ตามกฎใน \texttt{SPEC.md}:
+
+\begin{itemize}
+\tightlist
+\item
+  H1 เดียวต่อไฟล์ เท่ากับชื่อบทเรียน
+\item
+  เลขหัวข้อห้ามซ้ำ เช่น \texttt{\#\#\ 3.6\ 3.6\ ...} ต้องแก้เป็น
+  \texttt{\#\#\ 3.6\ ...}
+\end{itemize}
+
+ตัวอย่าง:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{\# Basic Integration Rules}
+
+\FunctionTok{\#\# Learning objectives}
+
+\FunctionTok{\#\# Constant rule}
+
+\FunctionTok{\#\# Power rule}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{2.2
+ตัวหนาและตัวเอียง}\label{uxe15uxe27uxe2buxe19uxe32uxe41uxe25uxe30uxe15uxe27uxe40uxe2duxe22uxe07}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{**ข้อควรระวัง:** สูตรนี้ใช้กับ $n={-}1$ ไม่ได้}
+
+\NormalTok{*หมายเหตุ:* คำตอบต้องมี $+C$ เสมอ}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{2.3 รายการ}\label{uxe23uxe32uxe22uxe01uxe32uxe23}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\SpecialStringTok{1. }\NormalTok{ใช้กฎคูณด้วยค่าคงที่ได้}
+\SpecialStringTok{2. }\NormalTok{ใช้กฎผลบวกได้}
+
+\SpecialStringTok{{-} }\NormalTok{เพิ่มเลขชี้กำลังแล้วลืมหารด้วยเลขชี้กำลังใหม่}
+\SpecialStringTok{{-} }\NormalTok{ลืมกระจายเครื่องหมายลบ}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{2.4
+โค้ดและบล็อกโค้ด}\label{uxe42uxe04uxe14uxe41uxe25uxe30uxe1auxe25uxe2duxe01uxe42uxe04uxe14}
+
+โค้ดสั้นในบรรทัดใช้ backtick หนึ่งคู่ ส่วนโค้ดหลายบรรทัดใช้ triple backtick
+พร้อมชื่อภาษา:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ใช้คำสั่ง }\InformationTok{\textasciigrave{}pip install {-}r requirements.txt\textasciigrave{}}\NormalTok{ เพื่อติดตั้งแพ็กเกจ}
+
+\InformationTok{\textasciigrave{}\textasciigrave{}\textasciigrave{}python}
+\ImportTok{import}\NormalTok{ streamlit }\ImportTok{as}\NormalTok{ st}
+
+\NormalTok{st.markdown(}\StringTok{"สวัสดี"}\NormalTok{)}
+\InformationTok{\textasciigrave{}\textasciigrave{}\textasciigrave{}}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{2.5 ตาราง}\label{uxe15uxe32uxe23uxe32uxe07}
+
+ตาราง Markdown ใช้ \texttt{\textbar{}} คั่นคอลัมน์ และ \texttt{-\/-\/-}
+คั่นหัวตาราง:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{|}\NormalTok{ หัวข้อ }\PreprocessorTok{|}\NormalTok{ สูตร }\PreprocessorTok{|}
+\PreprocessorTok{|{-}{-}{-}|{-}{-}{-}|}
+\PreprocessorTok{|}\NormalTok{ Power rule }\PreprocessorTok{|}\NormalTok{ $\textbackslash{}int x\^{}n\textbackslash{},dx = \textbackslash{}frac\{x\^{}\{n+1\}\}\{n+1\}+C$ }\PreprocessorTok{|}
+\PreprocessorTok{|}\NormalTok{ Constant rule }\PreprocessorTok{|}\NormalTok{ $\textbackslash{}int a\textbackslash{},dx = ax+C$ }\PreprocessorTok{|}
+\end{Highlighting}
+\end{Shaded}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+หัวข้อ & สูตร \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Power rule & \(\int x^n\,dx = \frac{x^{n+1}}{n+1}+C\) \\
+Constant rule & \(\int a\,dx = ax+C\) \\
+\end{longtable}
+}
+
+\subsection{2.6
+เส้นคั่นและคำพูดอ้าง}\label{uxe40uxe2auxe19uxe04uxe19uxe41uxe25uxe30uxe04uxe33uxe1euxe14uxe2duxe32uxe07}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{{-}{-}{-}}
+
+\CommentTok{\textgreater{} ข้อความอ้างอิงหรือข้อควรจำ}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{3. คำสั่ง LaTeX
+ที่จำเป็น}\label{uxe04uxe33uxe2auxe07-latex-uxe17uxe08uxe33uxe40uxe1buxe19}
+
+สมการคณิตศาสตร์ในแอปนี้ render ด้วยระบบเดียวกับ KaTeX ที่ Streamlit ฝังไว้
+ดังนั้นคำสั่งที่ใช้ได้จึงเป็นชุดย่อยของ LaTeX มาตรฐาน แต่ครอบคลุมเนื้อหา
+แคลคูลัสอินทิเกรตทั้งหมดที่โปรเจกต์ต้องการ
+
+\subsection{3.1 สมการแบบ inline และ
+display}\label{uxe2auxe21uxe01uxe32uxe23uxe41uxe1auxe1a-inline-uxe41uxe25uxe30-display}
+
+Inline ใช้ \texttt{\$...\$} อยู่ในประโยคเดียวกันกับข้อความไทย:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{เมื่อ $F\textquotesingle{}(x)=f(x)$ แล้ว $F(x)$ เป็นปฏิยานุพันธ์ของ $f(x)$}
+\end{Highlighting}
+\end{Shaded}
+
+Display ใช้ \texttt{\$\$...\$\$} แยกบรรทัดของตัวเอง
+เพื่อให้สมการเด่นและอยู่ตรงกลาง:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{$$}
+\NormalTok{\textbackslash{}int f(x)\textbackslash{},dx = F(x)+C}
+\NormalTok{$$}
+\end{Highlighting}
+\end{Shaded}
+
+กฎบังคับของโปรเจกต์: ห้ามใช้ \texttt{\textbackslash{}(...\textbackslash{})}
+หรือ \texttt{\textbackslash{}{[}...\textbackslash{}{]}} โดยเด็ดขาด เพราะ
+\texttt{st.markdown} ของ Streamlit ไม่รองรับรูปแบบเหล่านั้น
+
+\subsection{3.2 เลขยกกำลัง ตัวห้อย
+และเครื่องหมาย}\label{uxe40uxe25uxe02uxe22uxe01uxe01uxe33uxe25uxe07-uxe15uxe27uxe2buxe2duxe22-uxe41uxe25uxe30uxe40uxe04uxe23uxe2duxe07uxe2buxe21uxe32uxe22}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+คำสั่ง & ผลลัพธ์ \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{x\^{}n} & \(x^n\) \\
+\texttt{x\^{}\{n+1\}} & \(x^{n+1}\) \\
+\texttt{x\_1} & \(x_1\) \\
+\texttt{a\_n} & \(a_n\) \\
+\texttt{\textbackslash{}ne} & \(\ne\) \\
+\texttt{\textbackslash{}le}, \texttt{\textbackslash{}ge} & \(\le\),
+\(\ge\) \\
+\texttt{\textbackslash{}pm} & \(\pm\) \\
+\texttt{\textbackslash{}cdot} & \(\cdot\) \\
+\end{longtable}
+}
+
+จำง่าย: ถ้าตัวยกหรือตัวห้อยยาวเกินหนึ่งตัวอักษร ต้องครอบด้วย \texttt{\{...\}} เสมอ
+เช่น \texttt{x\^{}\{n+1\}} ไม่ใช่ \texttt{x\^{}n+1} (ซึ่งแปลว่า \(x^n+1\))
+
+\subsection{3.3
+เศษส่วนและราก}\label{uxe40uxe28uxe29uxe2auxe27uxe19uxe41uxe25uxe30uxe23uxe32uxe01}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{$$}
+\NormalTok{\textbackslash{}int x\^{}n\textbackslash{},dx = \textbackslash{}frac\{x\^{}\{n+1\}\}\{n+1\}+C,\textbackslash{}quad n\textbackslash{}ne {-}1}
+\NormalTok{$$}
+\end{Highlighting}
+\end{Shaded}
+
+\[
+\int x^n\,dx = \frac{x^{n+1}}{n+1}+C,\quad n\ne -1
+\]
+
+รากที่สองใช้ \texttt{\textbackslash{}sqrt\{...\}}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{$$}
+\NormalTok{\textbackslash{}sqrt\{x\^{}2+1\}}
+\NormalTok{$$}
+\end{Highlighting}
+\end{Shaded}
+
+\[
+\sqrt{x^2+1}
+\]
+
+\subsection{3.4 อินทิเกรต}\label{uxe2duxe19uxe17uxe40uxe01uxe23uxe15}
+
+อินทิเกรตไม่จำกัดเขต (indefinite integral):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{$$}
+\NormalTok{\textbackslash{}int f(x)\textbackslash{},dx = F(x)+C}
+\NormalTok{$$}
+\end{Highlighting}
+\end{Shaded}
+
+อินทิเกรตจำกัดเขต (definite integral) ใช้ตัวห้อยเป็นขอบล่าง ตัวยกเป็นขอบบน:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{$$}
+\NormalTok{\textbackslash{}int\_a\^{}b f(x)\textbackslash{},dx = F(b){-}F(a)}
+\NormalTok{$$}
+\NormalTok{$$}
+
+\NormalTok{\textbackslash{}int\_a\^{}b f(x)\textbackslash{},dx = F(b){-}F(a)}
+\NormalTok{$$}
+
+\NormalTok{เครื่องหมาย }\InformationTok{\textasciigrave{}\textbackslash{},\textasciigrave{}}\NormalTok{ คือช่องว่างบาง ใช้คั่นระหว่างฟังก์ชันกับ }\InformationTok{\textasciigrave{}dx\textasciigrave{}}\NormalTok{ เพื่อให้อ่านง่าย}
+
+\FunctionTok{\#\# 3.5 ลิมิต}
+
+\InformationTok{\textasciigrave{}\textasciigrave{}\textasciigrave{}markdown}
+\NormalTok{$$}
+\NormalTok{\textbackslash{}lim\_\{x \textbackslash{}to a\} f(x) = L}
+\NormalTok{$$}
+\end{Highlighting}
+\end{Shaded}
+
+\[
+\lim_{x \to a} f(x) = L
+\]
+
+ใช้ \texttt{\textbackslash{}to} สำหรับลูกศร (อ่านว่า ``เข้าใกล้'')
+ไม่ใช้เครื่องหมายลูกศร Unicode
+
+\subsection{3.6 ผลรวม}\label{uxe1cuxe25uxe23uxe27uxe21}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{$$}
+\NormalTok{\textbackslash{}sum\_\{n=1\}\^{}\{\textbackslash{}infty\} \textbackslash{}frac\{1\}\{n\^{}2\}}
+\NormalTok{$$}
+\end{Highlighting}
+\end{Shaded}
+
+\[
+\sum_{n=1}^{\infty} \frac{1}{n^2}
+\]
+
+\subsection{3.7
+ฟังก์ชันพื้นฐานและสัญลักษณ์พิเศษ}\label{uxe1fuxe07uxe01uxe0auxe19uxe1euxe19uxe10uxe32uxe19uxe41uxe25uxe30uxe2auxe0duxe25uxe01uxe29uxe13uxe1euxe40uxe28uxe29}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+คำสั่ง & ผลลัพธ์ & คำสั่ง & ผลลัพธ์ \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{\textbackslash{}ln\ x} & \(\ln x\) &
+\texttt{\textbackslash{}sin\ x} & \(\sin x\) \\
+\texttt{\textbackslash{}cos\ x} & \(\cos x\) &
+\texttt{\textbackslash{}tan\ x} & \(\tan x\) \\
+\texttt{\textbackslash{}infty} & \(\infty\) &
+\texttt{\textbackslash{}partial} & \(\partial\) \\
+\texttt{\textbackslash{}pi} & \(\pi\) & \texttt{e\^{}x} & \(e^x\) \\
+\texttt{\textbackslash{}Delta\ x} & \(\Delta x\) &
+\texttt{\textbackslash{}theta} & \(\theta\) \\
+\end{longtable}
+}
+
+ฟังก์ชันมาตรฐานต้องเขียนด้วย backslash เสมอ เช่น \texttt{\textbackslash{}sin}
+ไม่ใช่ \texttt{sin} เพราะ \texttt{sin} ธรรมดาจะ render เป็นตัวเอียง \(sin\)
+แทนที่จะเป็นฟังก์ชัน
+
+\subsection{3.8 ระบบสมการ
+(cases)}\label{uxe23uxe30uxe1auxe1auxe2auxe21uxe01uxe32uxe23-cases}
+
+ใช้ \texttt{\textbackslash{}begin\{cases\}}
+สำหรับฟังก์ชันนิยามเป็นช่วงหรือระบบสมการ:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{$$}
+\NormalTok{f(x)=}
+\NormalTok{\textbackslash{}begin\{cases\}}
+\NormalTok{x\^{}2, \& x \textbackslash{}ge 0 }\SpecialCharTok{\textbackslash{}\textbackslash{}}
+\NormalTok{{-}x, \& x \textless{} 0}
+\NormalTok{\textbackslash{}end\{cases\}}
+\NormalTok{$$}
+\end{Highlighting}
+\end{Shaded}
+
+\[
+f(x)=
+\begin{cases}
+x^2, & x \ge 0 \\
+-x, & x < 0
+\end{cases}
+\]
+
+เครื่องหมาย \texttt{\textbackslash{}\textbackslash{}}
+คือการขึ้นบรรทัดใหม่ในสมการ และ \texttt{\&} ใช้จัดตำแหน่งคอลัมน์
+
+\subsection{3.9 การจัดแนวสมการหลายบรรทัด
+(align)}\label{uxe01uxe32uxe23uxe08uxe14uxe41uxe19uxe27uxe2auxe21uxe01uxe32uxe23uxe2buxe25uxe32uxe22uxe1auxe23uxe23uxe17uxe14-align}
+
+ใช้ \texttt{\textbackslash{}begin\{align*\}}
+เมื่อต้องการแสดงขั้นตอนหลายบรรทัดให้เครื่องหมายเท่ากับ อยู่ในตำแหน่งเดียวกัน:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{$$}
+\NormalTok{\textbackslash{}begin\{align*\}}
+\NormalTok{\textbackslash{}int 3x\^{}2\textbackslash{},dx \&= 3\textbackslash{}int x\^{}2\textbackslash{},dx }\SpecialCharTok{\textbackslash{}\textbackslash{}}
+\NormalTok{\&= 3\textbackslash{}cdot\textbackslash{}frac\{x\^{}3\}\{3\}+C }\SpecialCharTok{\textbackslash{}\textbackslash{}}
+\NormalTok{\&= x\^{}3+C}
+\NormalTok{\textbackslash{}end\{align*\}}
+\NormalTok{$$}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{align*}
+\int 3x^2\,dx &= 3\int x^2\,dx \\
+&= 3\cdot\frac{x^3}{3}+C \\
+&= x^3+C
+\end{align*}
+
+\subsection{3.10
+วงเล็บที่ปรับขนาดอัตโนมัติ}\label{uxe27uxe07uxe40uxe25uxe1auxe17uxe1buxe23uxe1auxe02uxe19uxe32uxe14uxe2duxe15uxe42uxe19uxe21uxe15}
+
+ใช้ \texttt{\textbackslash{}left(\ ...\ \textbackslash{}right)}
+เพื่อให้วงเล็บขยายตามขนาดเนื้อหาด้านใน
+(ในโปรเจกต์นี้พบการใช้งานบ่อยในสมการที่มีเศษส่วน):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{$$}
+\NormalTok{\textbackslash{}left( \textbackslash{}frac\{1\}\{x\} + x \textbackslash{}right)\^{}2}
+\NormalTok{$$}
+\end{Highlighting}
+\end{Shaded}
+
+\[
+\left( \frac{1}{x} + x \right)^2
+\]
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{4.
+การนำไปใช้ในโค้ดของแอป}\label{uxe01uxe32uxe23uxe19uxe33uxe44uxe1buxe43uxe0auxe43uxe19uxe42uxe04uxe14uxe02uxe2duxe07uxe41uxe2duxe1b}
+
+\subsection{\texorpdfstring{4.1 แสดงบทเรียนด้วย
+\texttt{st.markdown}}{4.1 แสดงบทเรียนด้วย st.markdown}}\label{uxe41uxe2auxe14uxe07uxe1auxe17uxe40uxe23uxe22uxe19uxe14uxe27uxe22-st.markdown}
+
+หน้า \texttt{pages/lessons.py} โหลดไฟล์ Markdown แล้วส่งเข้า
+\texttt{st.markdown} โดยตรง:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{content }\OperatorTok{=}\NormalTok{ load\_lesson(filename)}
+\NormalTok{st.markdown(content)}
+\end{Highlighting}
+\end{Shaded}
+
+ข้อควรจำ: เมื่อเขียน string ที่มี LaTeX อยู่ในโค้ด Python ต้องใช้ raw string
+\texttt{r"..."} หรือ \texttt{r"""..."""} เพื่อให้ backslash ไม่ถูกตีความเป็น
+escape sequence:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{st.markdown(}
+    \VerbatimStringTok{r"""}
+\DecValTok{$$}
+\ErrorTok{\textbackslash{}}\VerbatimStringTok{int x}\DecValTok{\^{}}\VerbatimStringTok{n}\CharTok{\textbackslash{},}\VerbatimStringTok{dx = }\CharTok{\textbackslash{}f}\VerbatimStringTok{rac\{x}\DecValTok{\^{}}\VerbatimStringTok{\{n}\OperatorTok{+}\VerbatimStringTok{1\}\}\{n}\OperatorTok{+}\VerbatimStringTok{1\}}\OperatorTok{+}\VerbatimStringTok{C,}\ErrorTok{\textbackslash{}}\VerbatimStringTok{quad n}\CharTok{\textbackslash{}n}\VerbatimStringTok{e {-}1}
+\DecValTok{$$}
+\VerbatimStringTok{"""}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{\texorpdfstring{4.2 แสดงสมการเดี่ยวด้วย
+\texttt{st.latex}}{4.2 แสดงสมการเดี่ยวด้วย st.latex}}\label{uxe41uxe2auxe14uxe07uxe2auxe21uxe01uxe32uxe23uxe40uxe14uxe22uxe27uxe14uxe27uxe22-st.latex}
+
+ถ้าต้องการสมการใหญ่เพียงสมการเดียว ใช้ \texttt{st.latex()} ซึ่งจะจัดวางให้โดดเด่น:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{st.latex(}\VerbatimStringTok{r"}\ErrorTok{\textbackslash{}}\VerbatimStringTok{int\_a}\DecValTok{\^{}}\VerbatimStringTok{b f}\KeywordTok{(}\VerbatimStringTok{x}\KeywordTok{)}\CharTok{\textbackslash{},}\VerbatimStringTok{dx = F}\KeywordTok{(}\VerbatimStringTok{b}\KeywordTok{)}\VerbatimStringTok{{-}F}\KeywordTok{(}\VerbatimStringTok{a}\KeywordTok{)}\VerbatimStringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{4.3 ข้อสอบในไฟล์
+JSON}\label{uxe02uxe2duxe2auxe2duxe1auxe43uxe19uxe44uxe1fuxe25-json}
+
+ไฟล์ \texttt{data/quizzes/*.json} เก็บข้อสอบแบบ multiple choice
+ข้อความและตัวเลือก สามารถใช้ LaTeX ได้ แต่ต้องระวังว่า ใน JSON ต้องเขียน backslash
+เป็น \texttt{\textbackslash{}\textbackslash{}} (สองตัว) เสมอ:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{\{}
+  \DataTypeTok{"topic"}\FunctionTok{:} \StringTok{"basic\_rules"}\FunctionTok{,}
+  \DataTypeTok{"question"}\FunctionTok{:} \StringTok{"จงหา $}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{int 3x\^{}2}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{,dx$"}\FunctionTok{,}
+  \DataTypeTok{"choices"}\FunctionTok{:} \OtherTok{[}
+    \StringTok{"$x\^{}3 + C$"}\OtherTok{,}
+    \StringTok{"$3x\^{}3 + C$"}\OtherTok{,}
+    \StringTok{"$6x + C$"}\OtherTok{,}
+    \StringTok{"$x\^{}2 + C$"}
+  \OtherTok{]}\FunctionTok{,}
+  \DataTypeTok{"answer"}\FunctionTok{:} \StringTok{"$x\^{}3 + C$"}\FunctionTok{,}
+  \DataTypeTok{"explanation"}\FunctionTok{:} \StringTok{"ใช้ power rule: $}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{int 3x\^{}2}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{,dx = 3}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{cdot}\CharTok{\textbackslash{}\textbackslash{}}\StringTok{frac\{x\^{}3\}\{3\}+C = x\^{}3+C$"}
+\FunctionTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+ข้อควรจำสำหรับ JSON:
+
+\begin{itemize}
+\tightlist
+\item
+  ทุกข้อต้องมี field ครบ: \texttt{topic}, \texttt{question},
+  \texttt{choices}, \texttt{answer}, \texttt{explanation}
+\item
+  \texttt{choices} ต้องมี 4 ตัวเลือก
+\item
+  string ต้องใช้ double quotes เท่านั้น
+\item
+  ห้ามมี comma เกินท้ายรายการสุดท้าย
+\end{itemize}
+
+\subsection{4.4 เครื่องคิดเลขในหน้าแก้โจทย์
+(SymPy)}\label{uxe40uxe04uxe23uxe2duxe07uxe04uxe14uxe40uxe25uxe02uxe43uxe19uxe2buxe19uxe32uxe41uxe01uxe42uxe08uxe17uxe22-sympy}
+
+หน้า \texttt{pages/solver.py} ใช้ SymPy อ่านนิพจน์ที่ผู้ใช้พิมพ์ ดังนั้นต้องใช้ ไวยากรณ์
+Python/SymPy ไม่ใช่ LaTeX:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+ต้องการ & พิมพ์ & หมายเหตุ \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(x^2\) & \texttt{x**2} & ไม่ใช่ \texttt{x\^{}2} \\
+\(x^3 + 2x - 5\) & \texttt{x**3\ +\ 2*x\ -\ 5} & ต้องมี \texttt{*}
+คูณเสมอ \\
+\(\sin x\) & \texttt{sin(x)} & ต้องมีวงเล็บ \\
+\(e^x\) & \texttt{exp(x)} & ไม่ใช่ \texttt{e**x} \\
+\(\sqrt{x}\) & \texttt{sqrt(x)} & \\
+เศษส่วน & \texttt{(x**2\ -\ 4)/(x\ -\ 2)} & วงเล็บครบทั้งเศษและส่วน \\
+\end{longtable}
+}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{5. กฎบังคับของบทเรียน
+(SPEC.md)}\label{uxe01uxe0euxe1auxe07uxe04uxe1auxe02uxe2duxe07uxe1auxe17uxe40uxe23uxe22uxe19-spec.md}
+
+สรุปจาก \texttt{data/lessons/SPEC.md} ซึ่งเป็นข้อตกลงของทีมสำหรับไฟล์บทเรียน:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  H1 เดียวต่อไฟล์ เท่ากับชื่อบทเรียน
+\item
+  เลขหัวข้อห้ามซ้ำ เช่น \texttt{\#\#\ 3.6\ 3.6\ ...} ต้องแก้
+\item
+  หนึ่ง section ต่อไฟล์ ห้ามปนหลายบทหรือหลายแบบฝึกหัดในไฟล์เดียว
+\item
+  Math: ใช้ \texttt{\$...\$} และ \texttt{\$\$...\$\$} เท่านั้น ห้าม
+  \texttt{\textbackslash{}(...\textbackslash{})} หรือ
+  \texttt{\textbackslash{}{[}...\textbackslash{}{]}}
+\item
+  ตัดบรรทัดยาว: paragraph ไม่เกินประมาณ 500 ตัวอักษรต่อบรรทัด (ไฟล์ที่ paragraph
+  ยาวทั้งย่อหน้าเป็นบรรทัดเดียวจะอ่านยากและบางเครื่องตีเป็น binary)
+\item
+  คำศัพท์คณิตศาสตร์: เขียนไทยก่อน แล้ววงเล็บภาษาอังกฤษในการปรากฏครั้งแรก เช่น
+  ``ปฏิยานุพันธ์ (antiderivative)''
+\item
+  ห้ามแก้เนื้อหาคณิตศาสตร์หรือสมการโดยไม่ตรวจเทียบ PDF ต้นฉบับ
+\end{enumerate}
+
+ทุกไฟล์บทเรียนควรมี frontmatter ตามรูปแบบนี้:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\PreprocessorTok{{-}{-}{-}}
+\FunctionTok{title}\KeywordTok{:}\AttributeTok{ }\StringTok{"1.1 ปฏิยานุพันธ์และอินทิกรัลไม่จำกัดเขต"}
+\FunctionTok{course}\KeywordTok{:}\AttributeTok{ cal2}
+\FunctionTok{chapter}\KeywordTok{:}\AttributeTok{ }\DecValTok{1}
+\FunctionTok{section}\KeywordTok{:}\AttributeTok{ }\StringTok{"1.1"}
+\FunctionTok{type}\KeywordTok{:}\AttributeTok{ content}
+\FunctionTok{source}\KeywordTok{:}\AttributeTok{ }\StringTok{"Calculus2{-}ch1{-}integrals.pdf"}
+\FunctionTok{status}\KeywordTok{:}\AttributeTok{ transformed}
+\PreprocessorTok{{-}{-}{-}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{6. Checklist ก่อน
+commit}\label{checklist-uxe01uxe2duxe19-commit}
+
+ก่อนส่งงานขึ้น git ให้ตรวจ:
+
+\begin{itemize}
+\tightlist
+\item[$\square$]
+  เปิดไฟล์ด้วยโปรแกรมอ่าน Markdown (หรือรันแอป) แล้วเห็นสมการถูกต้อง
+\item[$\square$]
+  ใช้ \texttt{\$...\$} / \texttt{\$\$...\$\$} เท่านั้น ไม่มี
+  \texttt{\textbackslash{}(} หรือ \texttt{\textbackslash{}{[}} หลงเหลือ
+\item[$\square$]
+  วงเล็บ \texttt{\textbackslash{}begin\{cases\}} /
+  \texttt{\textbackslash{}begin\{align*\}} ปิดด้วย
+  \texttt{\textbackslash{}end\{...\}} ครบ
+\item[$\square$]
+  หัวข้อ H1 มีไฟล์ละหนึ่งอัน และเลขหัวข้อไม่ซ้ำ
+\item[$\square$]
+  ไม่มีบรรทัดไทยยาวเกิน \textasciitilde500 ตัวอักษร
+\item[$\square$]
+  ถ้าแก้ไฟล์ JSON: backslash เป็น \texttt{\textbackslash{}\textbackslash{}}
+  และไม่มี comma เกินท้ายรายการ
+\item[$\square$]
+  ภาษาไทยถูกต้อง คำศัพท์คณิตศาสตร์ไทยก่อนอังกฤษ
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{ภาคผนวก A:
+ตัวอย่างบทเรียนสั้น}\label{uxe20uxe32uxe04uxe1cuxe19uxe27uxe01-a-uxe15uxe27uxe2duxe22uxe32uxe07uxe1auxe17uxe40uxe23uxe22uxe19uxe2auxe19}
+
+ไฟล์ \texttt{data/lessons/basic\_rules.md} เป็นตัวอย่างที่ดีของโครงสร้างบทเรียน:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{\# Basic Integration Rules}
+
+\FunctionTok{\#\# Learning objectives}
+
+\NormalTok{เมื่อเรียนจบบทนี้ ผู้เรียนควรสามารถ}
+
+\SpecialStringTok{1. }\NormalTok{ใช้กฎคูณด้วยค่าคงที่ได้}
+\SpecialStringTok{2. }\NormalTok{ใช้กฎยกกำลังกับ $x\^{}n$ เมื่อ $n\textbackslash{}ne {-}1$ ได้}
+\SpecialStringTok{3. }\NormalTok{เขียนคำตอบของ indefinite integral พร้อม $+C$ ได้}
+
+\FunctionTok{\#\# Power rule}
+
+\NormalTok{ถ้า $n\textbackslash{}ne {-}1$ แล้ว}
+
+\NormalTok{$$}
+\NormalTok{\textbackslash{}int x\^{}n\textbackslash{},dx = \textbackslash{}frac\{x\^{}\{n+1\}\}\{n+1\}+C}
+\NormalTok{$$}
+
+\FunctionTok{\#\# Common mistakes}
+
+\SpecialStringTok{{-} }\NormalTok{ลืมเขียน $+C$ ในคำตอบสุดท้าย}
+\end{Highlighting}
+\end{Shaded}
+
+โครงสร้างที่แนะนำต่อบทเรียน
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{\#\#\ Learning\ objectives} วัตถุประสงค์การเรียนรู้
+\item
+  หัวข้อย่อยตามแนวคิด แต่ละหัวข้อมีสูตร สมการ และตัวอย่าง
+\item
+  \texttt{\#\#\ Common\ mistakes} ข้อผิดพลาดที่พบบ่อย
+\item
+  \texttt{\#\#\ Try\ it\ yourself} โจทย์ให้ลองทำ
+\end{enumerate}
+
+
+
+
+\end{document}

@@ -1,3 +1,13 @@
+---
+title: "แบบฝึกหัด 2.4"
+course: cal2
+chapter: 2
+section: "2.4"
+type: exercises
+source: "Calculus2-ch2-integrals.pdf"
+status: transformed
+---
+
 # แบบฝึกหัด 2.4
 
 จงหา

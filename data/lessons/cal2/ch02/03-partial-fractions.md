@@ -1,16 +1,27 @@
-## 2.1 2.1 การอินทิเกรตโดยการแทน
+---
+title: "2.3 การอินทิเกรตโดยการแจงเศษส่วนย่อย (Integration by Partial Fractions)"
+course: cal2
+chapter: 2
+section: "2.3"
+type: content
+source: "Calculus2-ch2-integrals.pdf"
+status: transformed
+---
 
-ถ้า $u$ เป็นฟังก์ชันของ $x$ และ $n$ เป็นจำนวนจริงใด ๆ โดยที่ $n \neq -1$ แล้วโดยกฎลูกโซ่ เราจะได้ว่า
+# 2.3 การอินทิเกรตโดยการแจงเศษส่วนย่อย (Integration by Partial Fractions)
 
-$$\frac{d}{dx} \left( u \frac{n+1}{n+1} \right) = u^n \frac{du}{dx} \quad (2.1.1)$$
+สำหรับฟังก์ชันอนุพันธ์ (rational function) $\frac{P(x)}{Q(x)}$ ที่ดีกรีเศษ < ดีกรีส่วนหาร สามารถเขียนเป็นผลรวมของเศษส่วนอย่างง่ายที่อินทิเกรตได้ง่ายขึ้น
 
-จากสมการ (2.1.1) เราสามารถกล่าวได้ว่านิพจน์ $\frac{u^{n+1}}{n+1}$ เป็นปฏิญานุพันธ์ของฟังก์ชัน $u^n \frac{du}{dx}$ ดังนั้น
+**ตัวอย่าง:** $\frac{3x}{x^2-x-2} = \frac{3x}{(x+1)(x-2)} = \frac{1}{x+1} + \frac{2}{x-2}$
 
-$$\int \left( u^n \frac{du}{dx} \right) dx = \frac{u^{n+1}}{n+1} + C$$
+จากนั้น $\int \frac{3x}{x^2-x-2}\,dx = \ln|x+1| + 2\ln|x-2| + C$
 
-อินทิกรัลทางซ้ายมือของสมการข้างต้นมักจะเขียนให้อยู่ในรูปดิฟเฟ่อเรลเชียลอย่างง่าย $\int u^n du$
+**รูปแบบทั่วไป:**
+1. ตัวประกอบเชิงเส้นธรรมดา: $\frac{A}{x-a}$
+2. ตัวประกอบเชิงเส้นซ้ำ: $\frac{A}{x-a} + \frac{B}{(x-a)^2}$
+3. ตัวประกอบกำลังสอง (ไม่มีรากจริง): $\frac{Ax+B}{x^2+bx+c}$
 
-ถ้า $u$ เป็นฟังก์ชันใด ๆ ที่สามารถหาอนุพันธ์ได้แล้ว เราจะได้ว่า
+**ขั้นตอน:** หารเศษส่วนให้ดีกรีเศษ < ส่วนหาร → แยกตัวประกอบ → เขียนรูปแบบเศษส่วนย่อย → หาค่าคงที่ → อินทิเกรตทีละพจน์
 
 
 $$ \int u^n du = \frac{u^{n+1}}{n+1} + C $$
@@ -77,8 +88,6 @@ $$
 2. หาค่าอินทิกรัลเทียบกับตัวแปร $u$
 3. แทนค่า $u$ กลับในเทอมของ $g(x)$
 
-ภาควิชาคณิตศาสตร์
-
 
 ตัวอย่าง 2.1.2 จงหา
 1. $\int x^2 e^{x^3} dx$
@@ -110,8 +119,6 @@ $\int \frac{(2x+4)}{\sqrt{x^2+4x+5}} dx = \int \frac{dv}{\sqrt{v}} = 2\sqrt{v} +
 $\int \frac{(x+1)dx}{\sqrt[3]{2x+1}} = \int \frac{(u+1)du}{\sqrt[3]{u}} = \frac{1}{4} \int \frac{u+1}{\sqrt[3]{u}} du = \frac{1}{4} \left[ u^3 du + \int \frac{du}{\sqrt[3]{u}} \right]$
 
 $= \frac{1}{4} \left[ \frac{5}{3} u^3 + \frac{2}{3} u^3 \right] + C = \frac{3}{20}(2x+1)^5 + \frac{3}{8}(2x+1)^3 + C$
-
-ภาควิชาคณิตศาสตร์
 
 38
 
@@ -281,9 +288,6 @@ $= \frac{3}{64} \left[(4x+5)^{10/3}/10 - \frac{10}{7}(4x+5)^{7/3} + \frac{25}{4}
 $\int \frac{dx}{\sqrt{(x+1)^3} + \sqrt{x+1}} = \int \frac{2udu}{u^3+u} = \int \frac{2udu}{u(u^2+1)} = 2 \int \frac{du}{u^2+1}$
 $= 2 \tan^{-1}u+C = 2\tan^{-1}\sqrt{x+1} + C$
 
-ภาควิชาคณิตศาสตร์
-43
-
 
 แบบฝึกหัด 2.1
 
@@ -446,9 +450,6 @@ O
 วิธีทำ ลองให้ $u = e^x$ และ $dv = \cos x dx$ จะได้ $du = e^x dx$ และ $v = \sin x$ เพราะฉะนั้น
 $\int e^x \cos x dx = e^x \sin x - \int e^x \sin x dx$
 
-ภาควิชาคณิตศาสตร์
-48
-
 
 (สังเกตว่า $\int e^x \sin x dx$ เป็นอินทิกรัลที่ไม่ได้มีรูปแบบที่ดีขึ้นหรือแย่ลงกว่า $\int e^x \cos x dx$ แต่เมื่อพิจารณาให้ดีจะพบว่า ถ้าเราอินทิเกรต $\int e^x \sin x dx$ โดยการอินทิเกรตทีละส่วนอีกครั้งด้วยการสมมติในลักษณะเดิมแล้วจะได้อินทิกรัล $\int e^x \cos x dx$ กลับคืนมาในลักษณะที่มีเครื่องหมายตรงกันข้าม)
 ต่อไปอินทิเกรต $\int e^x \sin x dx$ โดยให้ $u = e^x$ และ $dv = \sin x dx$ ซึ่งจะได้ $du = e^x dx$ และ $v = -\cos x$ แล้วได้
@@ -482,9 +483,6 @@ $$ \int e^x \cos x dx = e^x \sin x - e^x \sin x + \int e^x \cos x dx $$
 
 **วิธีทำ 1.** ให้ $u = x$ และ $dv = \sin 2x$ แล้วจะได้
 $du = dx$ และ $v = \frac{1}{2} \int \sin 2x d(2x) = -\frac{1}{2} \cos 2x$ ทำให้ได้
-
-ภาควิชาคณิตศาสตร์
-49
 
 
 $$
@@ -573,9 +571,6 @@ $\cos^n \theta \sin^n \theta$ หรือ $\tan^n \theta \sec^n \theta$ หร�
 2.3.1 การหา $\int \cos^n \theta \sin^n \theta d\theta$
 
 2.3.1.1 ถ้า $m$ หรือ $n$ เป็นจำนวนคี่ เราจะใช้ความสัมพันธ์
-
-ภาควิชาคณิตศาสตร์
-51
 
 
 $$ d(\sin \theta)=\cos \theta d\theta \quad \text{หรือ} \quad d(\cos \theta)=-\sin \theta d\theta $$
@@ -746,9 +741,6 @@ $$ \int \tan^n \theta d\theta = \frac{\tan^{n-1} \theta}{n-1} - \int \tan^{n-2} 
 $u = \sec^{n-2} \theta$ และ $dv = \sec^2 \theta d\theta$
 แล้วได้ $du = (n-2)\sec^{n-2} \theta \tan \theta d\theta$ และ $v = \tan \theta$ ดังนั้น
 
-ภาควิชา คณิตศาสตร์
-56
-
 
 $$ \begin{align*}\int \sec^n\theta d\theta & = \sec^{n-2} \theta \tan \theta -(n-2)\int \tan^2 \theta \sec^{n-2} \theta d\theta \\& = \sec^{n-2} \theta \tan \theta -(n-2)\int (\sec^2 \theta - 1) \sec^{n-2} \theta d\theta \\& = \sec^{n-2} \theta \tan \theta +(n-2)\int \sec^{n-2} \theta d\theta-(n-2)\int \sec^n\theta d\theta\end{align*} $$
 หรือ
@@ -807,9 +799,6 @@ $= -\frac{\cot^3 \theta}{3} + \cot\theta + \theta + C$
 
 เนื่องจาก $\sin ax \sin bx$, $\sin ax \cos bx$ และ $\cos ax \cos bx$ เป็นผลคูณของฟังก์ชัน ตรีโกณมิติ แต่อยู่ในรูปผลคูณของฟังก์ชันตรีโกณมิติของ $\sin$ และ/หรือ $\cos$ ของมุมหรือจำนวน จริงที่ต่างกัน การ อินทิเกรตฟังก์ชันลักษณะนี้ เราจะใช้เอกลักษณ์ตรีโกณมิติต่อไปนี้
 $\sin A \cos B = \frac{1}{2} [\sin(A+B)+\sin(A-B)]$
-
-ภาควิชาคณิตศาสตร์
-58
 
 
 $$ \cos A \cos B = \frac{1}{2} [\cos(A+B)+\cos(A-B)] $$
@@ -943,8 +932,6 @@ $$ bf(x)=asin \theta \quad \text{หรือ} \quad af(x)=bsec \theta \quad \te
 3. $ \int \frac{\sec^2 x}{(4-\tan^2 x)^{3/2}} dx $
 
 วิธีทำ 1. ให้ $3x=\tan \theta$ จะได้ $3dx=\sec^2 \theta d\theta$ และ $1+9x^2=\sec^2 \theta$ ดังนั้น
-ภาควิชาคณิตศาสตร์
-62
 
 
 $$

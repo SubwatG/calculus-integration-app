@@ -1,4 +1,14 @@
-## 2.2 2.2 การอินทิเกรตโดยการแจงส่วน (Integration by Parts)
+---
+title: "2.2 การอินทิเกรตโดยการแจงส่วน (Integration by Parts)"
+course: cal2
+chapter: 2
+section: "2.2"
+type: content
+source: "Calculus2-ch2-integrals.pdf"
+status: transformed
+---
+
+# 2.2 การอินทิเกรตโดยการแจงส่วน (Integration by Parts)
 
 ถ้า $u = f(x)$ และ $v = g(x)$ เป็นฟังก์ชันที่มีอนุพันธ์ต่อเนื่อง แล้ว
 
