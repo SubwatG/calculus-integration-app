@@ -89,7 +89,7 @@ $x=x+h$ และ $x=x+h$ ซึ่งเป็นส่วนหนึ่งข
 ในการแสดงว่า $F$ หาอนุพันธ์ได้ และ $F'(x)=f(x)$ สำหรับทุก ๆ $x \in [a,b]$ เราจะแสดงว่า
 
 
-$$ \begin{align*}\lim_{h\to h} \frac{F(x+h)-F(x)}{h}&=f(x)\;\; \textnormal{สำหรับทุก ๆ }x\in [a,b]\;\; \textnormal{ให้ } x\in [a,b] \;\; \textnormal{แล้วจะได้ว่า}\\&\lim_{h\to 0^{+}} \frac{F(x+h)-F(x)}{h}=\lim_{h\to 0^{+}} \frac{\int_{a}^{x+h} f(t)dt-\int_{a}^{x} f(t)dt}{h}\\&=\lim_{h\to 0^{+}} \frac{\int_{a}^{x+h} f(t)dt+\int_{x}^{x+h} f(t)dt-\int_{a}^{x} f(t)dt}{h}\\&=\lim_{h\to 0^{+}} \frac{\int_{a}^{x+h} f(t)dt}{h}\\&=\lim_{h\to 0^{+}} \frac{x}{h}\end{align*} $$
+$$ \begin{align*}\lim_{h\to 0} \frac{F(x+h)-F(x)}{h}&=f(x)\;\; \textnormal{สำหรับทุก ๆ }x\in [a,b]\;\; \textnormal{ให้ } x\in [a,b] \;\; \textnormal{แล้วจะได้ว่า}\\&\lim_{h\to 0^{+}} \frac{F(x+h)-F(x)}{h}=\lim_{h\to 0^{+}} \frac{\int_{a}^{x+h} f(t)dt-\int_{a}^{x} f(t)dt}{h}\\&=\lim_{h\to 0^{+}} \frac{\int_{a}^{x+h} f(t)dt+\int_{x}^{x+h} f(t)dt-\int_{a}^{x} f(t)dt}{h}\\&=\lim_{h\to 0^{+}} \frac{\int_{x}^{x+h} f(t)dt}{h}\end{align*} $$
 สังเกตว่า $F(x+h)-F(x)=\int_{x}^{x+h} f(t)dt$ เป็นบริเวณส่วนที่แรเงาของรูป 1.3.1(ข)
 
 ต่อไปเราสังเกตว่าสำหรับแต่ละ $h>0$ เนื่องจาก $f$ เป็นฟังก์ชันต่อเนื่องบน $[x,x+h]$ เราได้ว่า $f$ มีค่ามากสุดและน้อยสุดบน $[x,x+h]$ ให้ $M_h$ และ $m_h$ เป็นค่ามากสุดและน้อยสุด ของ $f$ บน $[x,x+h]$ ตามลำดับ แล้วจะได้ว่า

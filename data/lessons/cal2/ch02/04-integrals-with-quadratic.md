@@ -23,7 +23,7 @@ $\int \frac{dx}{ax^2 + c} = \frac{1}{c} \int \frac{dx}{x^2 + 1}$
 แล้วทำการอินทิเกรตด้วยเทคนิคโดยการแทน $u = \sqrt{\frac{a}{c}} x$ ซึ่งทำให้ได้ $du = \sqrt{\frac{a}{c}} dx$ และได้
 
 
-$$ \int \frac{dx}{ax^2+c} = \frac{1}{c} \sqrt{\frac{c}{a}} \frac{du}{u^2+1} = \frac{1}{\sqrt{ac}} \tan^{-1} u + C = \frac{1}{\sqrt{ac}} \sqrt{\frac{a}{c}} x + C $$
+$$ \int \frac{dx}{ax^2+c} = \frac{1}{c} \int \frac{dx}{\frac{a}{c}x^2+1} = \frac{1}{c} \sqrt{\frac{c}{a}} \int \frac{du}{u^2+1} = \frac{1}{\sqrt{ac}} \tan^{-1} u + C = \frac{1}{\sqrt{ac}} \tan^{-1}\left( \sqrt{\frac{a}{c}} x \right) + C $$
 
 2. ให้ $u=2x$ แล้วได้ $du=2dx$ ซึ่งทำให้ได้
 $$ \int \frac{dx}{4x^2+1} = \frac{1}{2} \int \frac{du}{u^2+1} = \frac{1}{2} \tan^{-1} u + C = \frac{1}{2} \tan^{-1}(2x)+C $$
@@ -321,13 +321,13 @@ $-A+B+C = 0$
 $A+C = 1$
 
 ซึ่งมีคำตอบของระบบสมการคือ $A=\frac{1}{3}, B=-\frac{1}{3}$ และ $C=\frac{2}{3}$ เพราะฉะนั้น
-$\int \frac{dx}{x^3+1} = \frac{1}{3} \int \frac{dx}{x+1} - \frac{1}{3} \int \frac{x-2}{x^2-x+1} dx = \frac{1}{3} \ln|x+1| - \frac{1}{3} \left[ \frac{x-2}{2} \right]_{x-2}^{x-1} + \frac{1}{4} \left[ \frac{x-1}{2} \right]_{x-2}^{x-1}$
+$\int \frac{dx}{x^3+1} = \frac{1}{3} \int \frac{dx}{x+1} - \frac{1}{3} \int \frac{x-2}{x^2-x+1} dx$
+
 ถ้าเราให้ $u=x-\frac{1}{2}$ จะได้ $x=u+\frac{1}{2}$ และ $du=dx$ ดังนั้น
-$\int \frac{dx}{x^3+1} = \frac{1}{3} \ln|x+1| - \frac{1}{3} \int \frac{u+\frac{1}{2}-2}{u^2+\frac{3}{4}} du = \frac{1}{3} \ln|x+1| - \frac{1}{6} \int \frac{u^2+\frac{3}{4}}{u^2+\frac{3}{4}} du$
-$= \frac{1}{3} \ln|x+1| - \frac{1}{6} \ln(u^2+\frac{3}{4}) + \frac{1}{2} \int \frac{du}{u^2+\frac{3}{4}} + C$
-$= \frac{1}{3} \ln|x+1| - \frac{1}{6} \ln(u^2+\frac{3}{4}) + \frac{1}{2} \int \frac{du}{u^2+\frac{3}{4}} + C$
-$= \frac{1}{3} \ln|x+1| - \frac{1}{6} \ln(u^2+\frac{3}{4}) + \frac{1}{2} \int \frac{du}{u^2+\frac{3}{4}} + C$
-$= \frac{1}{3} \ln|x+1| - \frac{1}{6} \ln(u^2+\frac{3}{4}) + \frac{1}{2} \int \frac{du}{u^2+\frac{3}{4}} + C$
+
+$\int \frac{dx}{x^3+1} = \frac{1}{3} \ln|x+1| - \frac{1}{3} \int \frac{u-\frac{3}{2}}{u^2+\frac{3}{4}} du = \frac{1}{3} \ln|x+1| - \frac{1}{6} \int \frac{d(u^2+\frac{3}{4})}{u^2+\frac{3}{4}} + \frac{1}{2} \int \frac{du}{u^2+\frac{3}{4}}$
+
+$= \frac{1}{3} \ln|x+1| - \frac{1}{6} \ln(x^2-x+1) + \frac{1}{\sqrt{3}} \tan^{-1}\left(\frac{2x-1}{\sqrt{3}}\right) + C$
 
 6. เนื่องจาก $4x^5+4x^3+x = x(4x^4+4x^2+1) = x(2x^2+1)^2$ ทำให้เราได้
 $\frac{x^2+2}{4x^5+4x^3+x} = \frac{x^2+2}{x(2x^2+1)^2} = \frac{A}{x} + \frac{Bx+C}{2x^2+1} + \frac{Dx+E}{(2x^2+1)^2}$

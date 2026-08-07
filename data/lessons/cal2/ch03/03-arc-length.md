@@ -1,14 +1,14 @@
 ---
-title: "3.3 ความยาวของเส้นโค้ง (Arc Length)"
+title: "3.5 ความยาวของเส้นโค้ง (Arc Length)"
 course: cal2
 chapter: 3
-section: "3.3"
+section: "3.5"
 type: content
-source: "Calculus2-ch3-applications-of-integrals.pdf"
+source: "Calculus2-ch3-applications-of-integrals.pdf (arc length ไม่พบใน PDF ฉบับแยกบทนี้ — น่าจะมาจากฉบับเต็ม)"
 status: transformed
 ---
 
-# 3.3 ความยาวของเส้นโค้ง (Arc Length)
+# 3.5 ความยาวของเส้นโค้ง (Arc Length)
 
 ความยาวของเส้นโค้ง $y = f(x)$ ในช่วง $[a,b]$ เมื่อ $f$ เรียบ (มีอนุพันธ์ต่อเนื่อง)
 

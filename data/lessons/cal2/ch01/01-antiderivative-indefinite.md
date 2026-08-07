@@ -55,7 +55,7 @@ $$\int f(x) dx = F(x) + C$$
 
 บทนิยาม 1.1.5 เราเรียก $\int f(x) dx$ ว่า อินทิกรัลไม่จำกัดเขต (indefinite integral) ของฟังก์ชัน $f$ และเรียก $f$ ว่า อินทิเกรตนด์ (integrand) ของ $\int f(x) dx$ และเราเรียกการหา $\int f(x) dx$ ว่า การอินทิเกรต (integration) โดยเรียก $x$ ว่า ตัวแปรของการอินทิเกรต (integration variable)
 จากความหมายของ $\int f(x) dx$ ทำให้ได้
-$$\frac{d}{dx} \int f(x) dx = f(x) \quad \text{และ} \quad \frac{d}{dx} \int g(x) dx = g(x) + C$$
+$$\frac{d}{dx} \int f(x) dx = f(x) \quad \text{และ} \quad \int \frac{d}{dx} f(x) dx = f(x) + C$$
 โดยความหมายและสัญลักษณ์ของอินทิกรัลไม่จำกัดเขต เราสามารถเขียนทฤษฎีบท 1.1.2 ได้อีกรูปแบบหนึ่งดังทฤษฎีบท 1.1.6
 
 ทฤษฎีบท 1.1.6 ให้ $f$ และ $g$ เป็นฟังก์ชันซึ่ง $\int f(x) dx$ และ $\int g(x) dx$ หาได้และ $k$ เป็นค่าคงตัว แล้ว
