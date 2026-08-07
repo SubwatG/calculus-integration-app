@@ -74,13 +74,21 @@ def list_lessons() -> list[dict]:
 
     def sort_key(item: dict) -> tuple:
         name = item["filename"]
-        # new layout: cal2/ch01/00-intro.md
+        # new layout: cal2/ch01/00-intro.md (cal2 before cal1)
         m = re.match(r"cal(\d)/ch(\d+)/(\d+)-", name)
         if m:
-            return (0, int(m.group(1)), int(m.group(2)), int(m.group(3)), name)
+            return (0, -int(m.group(1)), int(m.group(2)), int(m.group(3)), name)
+        # cal2/00-overview.md, cal2/01-basic-rules.md (chapter 0, before ch01)
+        m = re.match(r"cal(\d)/(\d+)-", name)
+        if m:
+            return (0, -int(m.group(1)), 0, int(m.group(2)), name)
+        # cal2/solutions/00-intro.md (after all chapters)
+        m = re.match(r"cal(\d)/solutions/(\d+)-", name)
+        if m:
+            return (0, -int(m.group(1)), 99, int(m.group(2)), name)
         m = re.match(r"silpakorn-(?:cal1-)?cal1_ch(\d+)-", name)
         if m:
-            return (1, int(m.group(1)), 0, 0, name)  # cal1 after cal2
+            return (1, int(m.group(1)), 0, 0, name)  # legacy fallback
         m = re.match(r"silpakorn-ch(\d+)-", name)
         if m:
             return (2, int(m.group(1)), 0, 0, name)

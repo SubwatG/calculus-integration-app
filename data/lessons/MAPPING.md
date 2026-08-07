@@ -1,67 +1,63 @@
-# Lesson -> Source PDF Mapping
+# Lesson -> Source PDF Mapping (อัปเดต 2026-08-07 — โครงสร้างใหม่)
 
-> สร้างโดย Hermes 2026-08-07 — ใช้ตรวจเทียบ PDF ในขั้น content QA
+| # | ไฟล์ | ขนาด | title | source | status |
+|---|---|---|---|---|---|
+| 1 | `cal1/ch01/00-intro.md` | 135,350B | "บทที่ 1 บทนำ" | "cal1_ch1.pdf" | transformed |
+| 2 | `cal1/ch01/01-exercises-14.md` | 34,658B | "แบบฝึกหัด 1.4" | "cal1_ch1.pdf" | transformed |
+| 3 | `cal1/ch01/02-exercises-15.md` | 2,859B | "แบบฝึกหัด 1.5" | "cal1_ch1.pdf" | transformed |
+| 4 | `cal1/ch02/00-intro.md` | 3,272B | "บทที่ 2 บทนำ" | "cal1_ch2.pdf" | transformed |
+| 5 | `cal1/ch02/01-geometric-problems.md` | 63,586B | "2.1 ปัญหาทางเรขาคณิต" | "cal1_ch2.pdf" | transformed |
+| 6 | `cal1/ch02/02-exercises-23.md` | 22,224B | "แบบฝึกหัด 2.3" | "cal1_ch2.pdf" | transformed |
+| 7 | `cal1/ch02/03-exercises-25.md` | 73,010B | "แบบฝึกหัด 2.5" | "cal1_ch2.pdf" | transformed |
+| 8 | `cal1/ch03/00-intro.md` | 2,748B | "บทที่ 3 บทนำ" | "cal1_ch3.pdf" | transformed |
+| 9 | `cal1/ch03/01-max-min.md` | 171,009B | "3.1 ค่าสูงสุดและค่าต่ำสุดของฟังก์ชัน" | "cal1_ch3.pdf" | transformed |
+| 10 | `cal1/ch03/02-applications-of-max-min.md` | 87,031B | "3.6 การประยุกต์เรื่องค่าสูงสุดและค่าต่ำสุด" | "cal1_ch3.pdf" | transformed |
+| 11 | `cal1/ch03/03-exercises-35.md` | 1,933B | "แบบฝึกหัด 3.5" | "cal1_ch3.pdf" | transformed |
+| 12 | `cal1/ch04/00-intro.md` | 40,073B | "บทที่ 4 บทนำ" | "cal1_ch4.pdf" | transformed |
+| 13 | `cal1/ch04/01-indeterminate-forms.md` | 8,430B | "4.2 ฟังก์ชันที่มีรูปแบบไม่กำหนด" | "cal1_ch4.pdf" | transformed |
+| 14 | `cal1/ch04/02-exercises-42.md` | 117,447B | "แบบฝึกหัด 4.2" | "cal1_ch4.pdf" | transformed |
+| 15 | `cal1/ch05/00-intro.md` | 94,064B | "บทที่ 5 บทนำ" | "cal1_ch5.pdf" | transformed |
+| 16 | `cal1/ch05/01-exercises-52.md` | 124,888B | "แบบฝึกหัด 5.2" | "cal1_ch5.pdf" | transformed |
+| 17 | `cal1/solutions/00-intro.md` | 186,987B | "เฉลยแบบฝึกหัด (บทนำ)" | "cal1_ch1.pdf" | transformed |
+| 18 | `cal2/00-overview.md` | 2,909B | "Integration Overview" | "custom-written" | transformed |
+| 19 | `cal2/01-basic-rules.md` | 2,773B | "Basic Integration Rules" | "custom-written" | transformed |
+| 20 | `cal2/ch01/00-intro.md` | 2,830B | "บทที่ 1 บทนำ" | "Calculus2-ch1-integrals.pdf" | transformed |
+| 21 | `cal2/ch01/01-antiderivative-indefinite.md` | 41,663B | "1.1 ปฏิยานุพันธ์และอินทิกรัลไม่จำกัดเขต" | "Calculus2-ch1-integrals.pdf" | transformed |
+| 22 | `cal2/ch01/02-exercises-12.md` | 50,425B | "แบบฝึกหัด 1.2" | "Calculus2-ch1-integrals.pdf" | transformed |
+| 23 | `cal2/ch01/03-exercises-14.md` | 1,396B | "แบบฝึกหัด 1.4" | "Calculus2-ch1-integrals.pdf" | transformed |
+| 24 | `cal2/ch02/00-intro.md` | 3,123B | "บทที่ 2 บทนำ" | "Calculus2-ch2-integrals.pdf" | transformed |
+| 25 | `cal2/ch02/01-integration-by-substitution.md` | 75,955B | "2.1 การอินทิเกรตโดยการแทน" | "Calculus2-ch2-integrals.pdf" | transformed |
+| 26 | `cal2/ch02/02-integration-by-parts.md` | 1,688B | "2.2 การอินทิเกรตโดยการแจงส่วน (Integration by Par | "Calculus2-ch2-integrals.pdf" | transformed |
+| 27 | `cal2/ch02/03-partial-fractions.md` | 75,725B | "2.3 การอินทิเกรตโดยการแจงเศษส่วนย่อย (Integration | "Calculus2-ch2-integrals.pdf" | transformed |
+| 28 | `cal2/ch02/04-integrals-with-quadratic.md` | 28,763B | "2.5 อินทิกรัลที่ประกอบด้วยนิพจน์กำลังสอง" | "Calculus2-ch2-integrals.pdf" | transformed |
+| 29 | `cal2/ch02/05-exercises-24.md` | 1,101B | "แบบฝึกหัด 2.4" | "Calculus2-ch2-integrals.pdf" | transformed |
+| 30 | `cal2/ch03/00-intro.md` | 379B | "บทที่ 3 การประยุกต์ของอินทิกรัล (Applications of  | "Calculus2-ch3-applications-of-integrals.pdf" | transformed |
+| 31 | `cal2/ch03/01-area-under-curve.md` | 129,257B | "3.1 พื้นที่ภายใต้เส้นโค้ง" | "Calculus2-ch3-applications-of-integrals.pdf" | transformed |
+| 32 | `cal2/ch03/02-volume-of-solids.md` | 1,440B | "3.2 ปริมาตรของของแข็ง (Volume of Solids)" | "Calculus2-ch3-applications-of-integrals.pdf" | transformed |
+| 33 | `cal2/ch03/03-arc-length.md` | 125,568B | "3.3 ความยาวของเส้นโค้ง (Arc Length)" | "Calculus2-ch3-applications-of-integrals.pdf" | transformed |
+| 34 | `cal2/ch04/00-intro.md` | 3,865B | "บทที่ 4 บทนำ (อินทิกรัลไม่ตรงแบบ)" | "Calculus2-ch4-improper-integrals.pdf" | transformed |
+| 35 | `cal2/ch04/01-improper-type1-discontinuous.md` | 12,118B | "4.1 อินทิกรัลจำกัดเขตของฟังก์ชันไม่ต่อเนื่องแบบมี | "Calculus2-ch4-improper-integrals.pdf" | transformed |
+| 36 | `cal2/ch04/02-exercises-41.md` | 2,048B | "แบบฝึกหัด 4.1" | "Calculus2-ch4-improper-integrals.pdf" | transformed |
+| 37 | `cal2/ch04/03-improper-type2-unbounded.md` | 16,097B | "4.2.1 อินทิกรัลไม่ตรงแบบชนิดอินทิแกรนด์เป็นฟังก์ช | "Calculus2-ch4-improper-integrals.pdf" | transformed |
+| 38 | `cal2/ch04/04-exercises-42.md` | 1,493B | "แบบฝึกหัด 4.2" | "Calculus2-ch4-improper-integrals.pdf" | transformed |
+| 39 | `cal2/ch05/00-intro.md` | 2,637B | "บทที่ 5 บทนำ (พื้นผิวใน 3 มิติ)" | "Calculus2-ch5-3d-surfaces.pdf" | transformed |
+| 40 | `cal2/ch05/01-rectangular-coordinates.md` | 23,376B | "5.1 ระบบพิกัดฉาก" | "Calculus2-ch5-3d-surfaces.pdf" | transformed |
+| 41 | `cal2/ch05/02-quadric-surfaces.md` | 46,037B | "5.2 พื้นผิวกำลังสอง" | "Calculus2-ch5-3d-surfaces.pdf" | transformed |
+| 42 | `cal2/ch05/03-exercises-52.md` | 70,333B | "แบบฝึกหัด 5.2" | "Calculus2-ch5-3d-surfaces.pdf" | transformed |
+| 43 | `cal2/ch06/00-intro.md` | 2,031B | "บทที่ 6 บทนำ (ฟังก์ชันหลายตัวแปร)" | "Calculus2-ch6-multivariable-functions.pdf" | transformed |
+| 44 | `cal2/ch06/01-functions-of-two-variables.md` | 10,276B | "6.1 ฟังก์ชันสองตัวแปร" | "Calculus2-ch6-multivariable-functions.pdf" | transformed |
+| 45 | `cal2/ch06/02-functions-of-many-variables.md` | 36,340B | "6.2 ฟังก์ชันหลายตัวแปร" | "Calculus2-ch6-multivariable-functions.pdf" | transformed |
+| 46 | `cal2/ch06/03-surface-integrals.md` | 78,355B | "6.4 อินทิกรัลพื้นผิว" | "Calculus2-ch6-multivariable-functions.pdf" | transformed |
+| 47 | `cal2/ch07/00-intro.md` | 1,584B | "บทที่ 7 บทนำ (สมการพารามิเตอร์)" | "Calculus2-ch7-parametric-equations.pdf" | transformed |
+| 48 | `cal2/ch07/01-parametric-equations.md` | 36,179B | "7.1 สมการพารามิเตอร์" | "Calculus2-ch7-parametric-equations.pdf" | transformed |
+| 49 | `cal2/ch07/02-line-integrals.md` | 46,208B | "7.4 ปริพันธ์เส้น" | "Calculus2-ch7-parametric-equations.pdf" | transformed |
+| 50 | `cal2/ch07/03-exercises-73.md` | 18,338B | "แบบฝึกหัด 7.3" | "Calculus2-ch7-parametric-equations.pdf" | transformed |
+| 51 | `cal2/ch07/04-exercises-75.md` | 27,579B | "แบบฝึกหัด 7.5" | "Calculus2-ch7-parametric-equations.pdf" | transformed |
+| 52 | `cal2/ch08/00-intro.md` | 126,092B | "บทที่ 8 บทนำ (สมการเชิงอนุพันธ์)" | "Calculus2-ch8-differential-equations.pdf" | transformed |
+| 53 | `cal2/ch08/01-differential-equations.md` | 29,967B | "8.6 การประยุกต์ของสมการเชิงอนุพันธ์สามัญอันดับหนึ | "Calculus2-ch8-differential-equations.pdf" | transformed |
+| 54 | `cal2/ch08/02-exercises-85.md` | 1,051B | "แบบฝึกหัด 8.5" | "Calculus2-ch8-differential-equations.pdf" | transformed |
+| 55 | `cal2/solutions/00-intro.md` | 5,769B | "เฉลยแบบฝึกหัด (บทนำ)" | "Calculus2-solutions.pdf" | transformed |
+| 56 | `cal2/solutions/01-solutions-13.md` | 11,966B | "เฉลย 1.3" | "Calculus2-solutions.pdf" | transformed |
+| 57 | `cal2/solutions/02-solutions-32.md` | 60,634B | "เฉลย 3.2" | "Calculus2-solutions.pdf" | transformed |
 
-| # | ไฟล์ | PDF ต้นฉบับ | ขนาด | หัวข้อแรก |
-|---|---|---|---|---|
-| 1 | `silpakorn-cal1-cal1_ch1-บทที่-cal1_ch1-บทนำ.md` | cal1_ch1.pdf | 135,312B | # cal1_ch1 |
-| 2 | `silpakorn-cal1-cal1_ch1-แบบฝึกหัด-14.md` | cal1_ch1.pdf | 34,509B | # แบบฝึกหัด 1.4 |
-| 3 | `silpakorn-cal1-cal1_ch1-แบบฝึกหัด-15.md` | cal1_ch1.pdf | 2,711B | # แบบฝึกหัด 1.5 |
-| 4 | `silpakorn-cal1-cal1_ch2-2-1.md` | cal1_ch2.pdf | 63,424B | ## 2.1 2.1 ปัญหาทางเรขาคณิต |
-| 5 | `silpakorn-cal1-cal1_ch2-บทที่-cal1_ch2-บทนำ.md` | cal1_ch2.pdf | 3,241B | # cal1_ch2 |
-| 6 | `silpakorn-cal1-cal1_ch2-แบบฝึกหัด-23.md` | cal1_ch2.pdf | 22,076B | # แบบฝึกหัด 2.3 |
-| 7 | `silpakorn-cal1-cal1_ch2-แบบฝึกหัด-25.md` | cal1_ch2.pdf | 72,862B | # แบบฝึกหัด 2.5 |
-| 8 | `silpakorn-cal1-cal1_ch3-3-1.md` | cal1_ch3.pdf | 170,795B | ## 3.1 3.1 ค่าสูงสุดและค่าต่ำสุดของฟังก์ชัน |
-| 9 | `silpakorn-cal1-cal1_ch3-3-6.md` | cal1_ch3.pdf | 86,802B | ## 3.6 3.6 การประยุกต์เรื่องค่าสูงสุดและค่าต่ำสุด |
-| 10 | `silpakorn-cal1-cal1_ch3-บทที่-cal1_ch3-บทนำ.md` | cal1_ch3.pdf | 2,717B | # cal1_ch3 |
-| 11 | `silpakorn-cal1-cal1_ch3-แบบฝึกหัด-35.md` | cal1_ch3.pdf | 1,785B | # แบบฝึกหัด 3.5 |
-| 12 | `silpakorn-cal1-cal1_ch4-3-6.md` | cal1_ch4.pdf | 86,802B | ## 3.6 3.6 การประยุกต์เรื่องค่าสูงสุดและค่าต่ำสุด |
-| 13 | `silpakorn-cal1-cal1_ch4-4-2.md` | cal1_ch4.pdf | 8,235B | ## 4.2 4.2.3 ฟังก์ชันที่มีรูปแบบไม่กำหนดแบบ $0^\circ$, $1^\i |
-| 14 | `silpakorn-cal1-cal1_ch4-บทที่-cal1_ch4-บทนำ.md` | cal1_ch4.pdf | 40,037B | # cal1_ch4 |
-| 15 | `silpakorn-cal1-cal1_ch4-แบบฝึกหัด-35.md` | cal1_ch4.pdf | 1,785B | # แบบฝึกหัด 3.5 |
-| 16 | `silpakorn-cal1-cal1_ch4-แบบฝึกหัด-42.md` | cal1_ch4.pdf | 117,298B | # แบบฝึกหัด 4.2 |
-| 17 | `silpakorn-cal1-cal1_ch5-บทที่-cal1_ch5-บทนำ.md` | cal1_ch5.pdf | 94,028B | # cal1_ch5 |
-| 18 | `silpakorn-cal1-cal1_ch5-แบบฝึกหัด-52.md` | cal1_ch5.pdf | 124,735B | # แบบฝึกหัด 5.2 |
-| 19 | `silpakorn-cal1-cal1_solutions-บทที่-cal1_solutions-บทนำ.md` | ? | 186,928B | # cal1_solutions |
-| 20 | `silpakorn-ch1-antiderivative-indefinite.md` | Calculus2-ch1-integrals.pdf | 41,424B | ## 1.1 1.1 ปฏิยานุพันธ์และอินทิกรัลไม่จำกัดเขต |
-| 21 | `silpakorn-ch1-บทที่-1-บทนำ.md` | Calculus2-ch1-integrals.pdf | 2,635B | (no heading) |
-| 22 | `silpakorn-ch1-แบบฝึกหัด-12.md` | Calculus2-ch1-integrals.pdf | 50,263B | # แบบฝึกหัด 1.2 |
-| 23 | `silpakorn-ch1-แบบฝึกหัด-14.md` | Calculus2-ch1-integrals.pdf | 1,233B | # แบบฝึกหัด 1.4 |
-| 24 | `silpakorn-ch2-integrals-with-quadratic.md` | Calculus2-ch2-integration-techniques.pdf | 28,527B | ## 2.5 2.5 อินทิกรัลที่ประกอบด้วยนิพจน์กำลังสอง |
-| 25 | `silpakorn-ch2-integration-by-substitution.md` | Calculus2-ch2-integration-techniques.pdf | 75,754B | ## 2.1 2.1 การอินทิเกรตโดยการแทน |
-| 26 | `silpakorn-ch2-integration-techniques-2-2.md` | Calculus2-ch2-integration-techniques.pdf | 1,461B | ## 2.2 2.2 การอินทิเกรตโดยการแจงส่วน (Integration by Parts) |
-| 27 | `silpakorn-ch2-integration-techniques-2-3.md` | Calculus2-ch2-integration-techniques.pdf | 75,465B | ## 2.3 2.3 การอินทิเกรตโดยการแจงเศษส่วนย่อย (Integration by  |
-| 28 | `silpakorn-ch2-บทที่-2-บทนำ.md` | Calculus2-ch2-integration-techniques.pdf | 2,928B | (no heading) |
-| 29 | `silpakorn-ch2-แบบฝึกหัด-24.md` | Calculus2-ch2-integration-techniques.pdf | 938B | # แบบฝึกหัด 2.4 |
-| 30 | `silpakorn-ch3-applications-of-integrals-3-2.md` | Calculus2-ch3-applications-of-integrals.pdf | 1,225B | ## 3.2 3.2 ปริมาตรของของแข็ง (Volume of Solids) |
-| 31 | `silpakorn-ch3-applications-of-integrals-3-3.md` | Calculus2-ch3-applications-of-integrals.pdf | 125,355B | ## 3.3 3.3 ความยาวของเส้นโค้ง (Arc Length) |
-| 32 | `silpakorn-ch3-applications-of-integrals-บทที่-ch3-applications-of-integrals-บทนำ.md` | Calculus2-ch3-applications-of-integrals.pdf | 306B | # Calculus2-ch3-applications-of-integrals |
-| 33 | `silpakorn-ch3-area-under-curve.md` | Calculus2-ch3-applications-of-integrals.pdf | 129,041B | ## 3.1 3.1 พื้นที่ภายใต้เส้นโค้ง |
-| 34 | `silpakorn-ch4-improper-type1-discontinuous.md` | Calculus2-ch4-improper-integrals.pdf | 11,827B | ## 4.1 4.1 อินทิกรัลจำกัดเขตของฟังก์ชันไม่ต่อเนื่องแบบมีขอบเ |
-| 35 | `silpakorn-ch4-improper-type2-unbounded.md` | Calculus2-ch4-improper-integrals.pdf | 15,756B | ## 4.2 4.2.1 อินทิกรัลไม่ตรงแบบชนิดอินทิแกรนด์เป็นฟังก์ชันไม |
-| 36 | `silpakorn-ch4-บทที่-4-บทนำ.md` | Calculus2-ch4-improper-integrals.pdf | 3,549B | (no heading) |
-| 37 | `silpakorn-ch4-แบบฝึกหัด-41.md` | Calculus2-ch4-improper-integrals.pdf | 1,875B | # แบบฝึกหัด 4.1 |
-| 38 | `silpakorn-ch4-แบบฝึกหัด-42.md` | Calculus2-ch4-improper-integrals.pdf | 1,321B | # แบบฝึกหัด 4.2.1 |
-| 39 | `silpakorn-ch5-3d-surfaces-5-1.md` | Calculus2-ch5-3d-surfaces.pdf | 23,209B | ## 5.1 5.1 ระบบพิกัดฉาก |
-| 40 | `silpakorn-ch5-3d-surfaces-5-2.md` | Calculus2-ch5-3d-surfaces.pdf | 45,861B | ## 5.2 5.2 พื้นผิวกำลังสอง |
-| 41 | `silpakorn-ch5-3d-surfaces-บทที่-ch5-3d-surfaces-บทนำ.md` | Calculus2-ch5-3d-surfaces.pdf | 2,511B | # Calculus2-ch5-3d-surfaces |
-| 42 | `silpakorn-ch5-3d-surfaces-แบบฝึกหัด-52.md` | Calculus2-ch5-3d-surfaces.pdf | 70,168B | # แบบฝึกหัด 5.2 |
-| 43 | `silpakorn-ch6-multivariable-functions-6-1.md` | Calculus2-ch6-multivariable-functions.pdf | 10,082B | ## 6.1 6.1 ฟังก์ชันหลายตัวแปร |
-| 44 | `silpakorn-ch6-multivariable-functions-6-2.md` | Calculus2-ch6-multivariable-functions.pdf | 36,142B | ## 6.2 6.2 ลิมิตของฟังก์ชันสองตัวแปร |
-| 45 | `silpakorn-ch6-multivariable-functions-6-4.md` | Calculus2-ch6-multivariable-functions.pdf | 78,163B | ## 6.4 6.4.1 อนุพันธ์ย่อยของฟังก์ชันหลายตัวแปร |
-| 46 | `silpakorn-ch6-multivariable-functions-บทที่-ch6-multivariable-functions-บทนำ.md` | Calculus2-ch6-multivariable-functions.pdf | 1,893B | # Calculus2-ch6-multivariable-functions |
-| 47 | `silpakorn-ch7-parametric-equations-7-1.md` | Calculus2-ch7-parametric-equations.pdf | 35,991B | ## 7.1 7.1 สมการอิงตัวแปรเสริม |
-| 48 | `silpakorn-ch7-parametric-equations-7-4.md` | Calculus2-ch7-parametric-equations.pdf | 46,032B | ## 7.4 7.4.2 จุดตัดของเส้นโค้ง |
-| 49 | `silpakorn-ch7-parametric-equations-บทที่-ch7-parametric-equations-บทนำ.md` | Calculus2-ch7-parametric-equations.pdf | 1,455B | # Calculus2-ch7-parametric-equations |
-| 50 | `silpakorn-ch7-parametric-equations-แบบฝึกหัด-73.md` | Calculus2-ch7-parametric-equations.pdf | 18,164B | # แบบฝึกหัด 7.3 |
-| 51 | `silpakorn-ch7-parametric-equations-แบบฝึกหัด-75.md` | Calculus2-ch7-parametric-equations.pdf | 27,405B | # แบบฝึกหัด 7.5 |
-| 52 | `silpakorn-ch8-differential-equations-8-6.md` | Calculus2-ch8-differential-equations.pdf | 29,684B | ## 8.6 8.6 การประยุกต์ของสมการเชิงอนุพันธ์สามัญอันดับหนึ่ง |
-| 53 | `silpakorn-ch8-differential-equations-บทที่-ch8-differential-equations-บทนำ.md` | Calculus2-ch8-differential-equations.pdf | 125,959B | # Calculus2-ch8-differential-equations |
-| 54 | `silpakorn-ch8-differential-equations-แบบฝึกหัด-85.md` | Calculus2-ch8-differential-equations.pdf | 875B | # แบบฝึกหัด 8.5 |
-| 55 | `silpakorn-solutions-8-6.md` | Calculus2-solutions.pdf | 29,684B | ## 8.6 8.6 การประยุกต์ของสมการเชิงอนุพันธ์สามัญอันดับหนึ่ง |
-| 56 | `silpakorn-solutions-บทที่-solutions-บทนำ.md` | Calculus2-solutions.pdf | 5,676B | # Calculus2-solutions |
-| 57 | `silpakorn-solutions-แบบฝึกหัด-13.md` | Calculus2-solutions.pdf | 11,822B | # แบบฝึกหัด 1.3 |
-| 58 | `silpakorn-solutions-แบบฝึกหัด-32.md` | Calculus2-solutions.pdf | 60,490B | # แบบฝึกหัด 3.2 |
-| 59 | `silpakorn-solutions-แบบฝึกหัด-85.md` | Calculus2-solutions.pdf | 875B | # แบบฝึกหัด 8.5 |
-
-รวม 59 ไฟล์
+รวม 57 ไฟล์
