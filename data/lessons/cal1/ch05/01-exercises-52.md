@@ -508,7 +508,14 @@ $\cot \theta = \frac{\cos \theta}{\sin \theta}$ เมื่อ $\sin \theta \ne
 
 ตาราง 0.1 แสดงโดเมนและเรนจ์ของฟังก์ชันตรีโกณมิติทั้ง 6 ฟังก์ชัน
 
-ฟังก์ชันโดเมนเรนจ์$y = \sin x$$\mathbb{R}$[-1,1]$y = \cos x$$\mathbb{R}$[-1,1]$y = \tan x$$\mathbb{R} - \left\{\frac{(2n+1)\pi}{2} : n \in \mathbb{Z}\right\}$$\mathbb{R}$$y = \csc x$$\mathbb{R} - \{nn\pi : n \in \mathbb{Z}\}$($-\infty,-1] \cup [1,\infty)$$y = \sec x$$\mathbb{R} - \left\{\frac{(2n+1)\pi}{2} : n \in \mathbb{Z}\right\}$($-\infty,-1] \cup [1,\infty)$$y = \cot x$$\mathbb{R} - \{nn\pi : n \in \mathbb{Z}\}$$\mathbb{R}$
+| ฟังก์ชัน | โดเมน | เรนจ์ |
+|---|---|---|
+| $y = \sin x$ | $\mathbb{R}$ | $[-1,1]$ |
+| $y = \cos x$ | $\mathbb{R}$ | $[-1,1]$ |
+| $y = \tan x$ | $\mathbb{R} - \left\{\frac{(2n+1)\pi}{2} : n \in \mathbb{Z}\right\}$ | $\mathbb{R}$ |
+| $y = \csc x$ | $\mathbb{R} - \{n\pi : n \in \mathbb{Z}\}$ | $(-\infty,-1] \cup [1,\infty)$ |
+| $y = \sec x$ | $\mathbb{R} - \left\{\frac{(2n+1)\pi}{2} : n \in \mathbb{Z}\right\}$ | $(-\infty,-1] \cup [1,\infty)$ |
+| $y = \cot x$ | $\mathbb{R} - \{n\pi : n \in \mathbb{Z}\}$ | $\mathbb{R}$ |
 
 ตาราง 0.1
 
@@ -560,7 +567,14 @@ $= 2 \cos^2 \theta - 1$
 บทที่ 1 ลิมิตและความต่อเนื่อง
 แบบฝึกหัด 1.1
 
-ข้อ$\lim_{x \to a^+} f(x)$$\lim_{x \to a^-} f(x)$$\lim_{x \to a} f(x)$$f(a)$$\lim_{x \to -\infty} f(x)$$\lim_{x \to +\infty} f(x)$102หาไม่ได้20$+\infty$23333$+\infty$03$-\infty$1หาไม่ได้1$+\infty$$+\infty$4$+\infty$$+\infty$$+\infty$หาไม่ได้0-15$-\infty$$-\infty$$-\infty$หาไม่ได้226$+\infty$$-\infty$หาไม่ได้หาไม่ได้20
+ข้อ$\lim_{x \to a^+} f(x)$$\lim_{x \to a^-} f(x)$$\lim_{x \to a} f(x)$| ข้อ | $\lim_{x \to a^+} f(x)$ | $\lim_{x \to a^-} f(x)$ | $\lim_{x \to a} f(x)$ | $f(a)$ | $\lim_{x \to -\infty} f(x)$ | $\lim_{x \to +\infty} f(x)$ |
+|---|---|---|---|---|---|---|
+| 1 | $0$ | $2$ | หาไม่ได้ | $2$ | $0$ | $+\infty$ |
+| 2 | $3$ | $3$ | $3$ | $3$ | $+\infty$ | $0$ |
+| 3 | $-\infty$ | $1$ | หาไม่ได้ | $1$ | $+\infty$ | $+\infty$ |
+| 4 | $+\infty$ | $+\infty$ | $+\infty$ | หาไม่ได้ | $0$ | $-1$ |
+| 5 | $-\infty$ | $-\infty$ | $-\infty$ | หาไม่ได้ | $2$ | $2$ |
+| 6 | $+\infty$ | $-\infty$ | หาไม่ได้ | หาไม่ได้ | $2$ | $0$ |
 
 แบบฝึกหัด 1.2
 1) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \frac{\varepsilon}{4}$ ดังนั้น สำหรับทุกจำนวนจริง $x$ ซึ่งสอดคล้องกับ อสมการ $0 < |x-3| < \delta$ แล้ว จะได้
@@ -707,7 +721,23 @@ $$
 
 แบบฝึกหัด 2.3
 
-1)$1.1$$4,0$$1.2$$34,120$$1.4$$\frac{8}{27}, \frac{8}{27}$$1.3$$0,0$$1.6$$-\frac{1}{4}, \frac{3}{8}$2)$2.1$$36$$2.2$$4$$2.4$$\frac{59}{49}$$2.3$$123$$2.6$$1,102$3)$y+9 = -9(x-2)$$2.8$$104$4)$P(x)=3x^2 - 3x - 5$
+1)
+- 1.1 $(4,0)$
+- 1.2 $(34,120)$
+- 1.3 $(0,0)$
+- 1.4 $\left(\frac{8}{27}, \frac{8}{27}\right)$
+- 1.6 $\left(-\frac{1}{4}, \frac{3}{8}\right)$
+
+2)
+- 2.1 $36$
+- 2.2 $4$
+- 2.3 $123$
+- 2.4 $\frac{59}{49}$
+- 2.6 $(1,102)$
+
+3) $y+9 = -9(x-2)$
+
+4) $P(x)=3x^2 - 3x - 5$
 
 แบบฝึกหัด 2.4
 

@@ -618,7 +618,9 @@ $\lim_{x \to 4^-} \frac{2-x}{(x-4)(x+2)} = +\infty$
 วิธีทำ เนื่องจาก $\lim_{x \to 0} (x-1) = -1$ และ $\lim_{x \to 0} \frac{1}{x^2} = +\infty$ จึงได้ว่า $\lim_{x \to 0} \frac{x-1}{x^2} = -\infty$
 ต่อไปเราจะกล่าวถึงการหาลิมิตของฟังก์ชันตรรกยะ ในขณะที่ $x$ เข้าใกล้บวกอนันต์หรือลบอนันต์ แต่ก่อนอื่นจะพิจารณาลิมิตของฟังก์ชันต่อไปนี้ก่อนคือ $\lim_{x \to +\infty} \frac{1}{x}$ และ $\lim_{x \to -\infty} \frac{1}{x}$ ซึ่งจะมีประโยชน์อย่างมากในการหาลิมิตประเภทนี้
 พิจารณาค่าของฟังก์ชัน $f$ ซึ่งนิยามโดย $f(x) = \frac{1}{x}$ เมื่อ $x \to +\infty$ ซึ่งจะเห็นชัดเมื่อแทนค่า $x$ ที่ทำให้คำนวณ $\frac{1}{x}$ ได้ง่ายดังนี้
-$x$110100100010000$\dots$$\frac{1}{x}$10.10.010.0010.0001$\dots$
+| $x$ | $1$ | $10$ | $100$ | $1000$ | $10000$ | $\dots$ |
+|---|---|---|---|---|---|---|
+| $\frac{1}{x}$ | $1$ | $0.1$ | $0.01$ | $0.001$ | $0.0001$ | $\dots$ |
 และจะเห็นว่าค่าของ $\frac{1}{x}$ เข้าใกล้ 0 เมื่อ $x \to +\infty$ นั่นคือ
 $\lim_{x \to +\infty} \frac{1}{x} = 0$
 เช่นเดียวกันเมื่อพิจารณาค่าของฟังก์ชันซึ่งนิยามโดย $\frac{1}{x}$ เมื่อ $x \to -\infty$ จะเห็นว่าค่าของ $\frac{1}{x}$ เข้าใกล้ 0 เมื่อ $x \to -\infty$ นั่นคือ
@@ -665,9 +667,6 @@ $$
 \begin{align*}
 \lim_{x \to +\infty} \sqrt[3]{4x^2+5x+2}  &= \lim_{x \to +\infty} \sqrt[3]{\frac{4x^2+5x+2}{6x^2-8x+4}} = \lim_{x \to +\infty} \sqrt[3]{\frac{4x^2+5x+2}{6x^2-8x+4}} \\[0.5em]
 &= \lim_{x \to +\infty} \sqrt[3]{\frac{4+\frac{5}{x^2}+\frac{2}{x^2}}{6-\frac{8}{x^2}+\frac{4}{x^2}}} = \lim_{x \to +\infty} \sqrt[3]{\frac{4+\frac{5}{x^2}+\frac{2}{x^2}}}{6-\frac{8}{x^2}+\frac{4}{x^2}}} \\[0.5em]
-&= \lim_{x \to +\infty} \sqrt[3]{\frac{4+\frac{5}{x^2}+\frac{2}{x^2}}}{6-\frac{8}{x^2}+\frac{4}{x^2}}} \\[0.5em]
-&= \lim_{x \to +\infty} \sqrt[3]{\frac{4+\frac{5}{x^2}+\frac{2}{x^2}}}{6-\frac{8}{x^2}+\frac{4}{x^2}}} \\[0.5em]
-&= \lim_{x \to +\infty} \sqrt[3]{\frac{4+\frac{5}{x^2}+\frac{2}{x^2}}}{6-\frac{8}{x^2}+\frac{4}{x^2}}} \\[0.5em]
 &= \lim_{x \to +\infty} \sqrt[3]{\frac{4+\frac{5}{x^2}+\frac{2}{x^2}}}{6-\frac{8}{x^2}+\frac{4}{x^2}}} \\[0.5em]
 &= \lim_{x \to +\infty} \sqrt[3]{\frac{4+\frac{5}{x^2}+\frac{2}{x^2}}}{6-\frac{8}{x^2}+\frac{4}{x^2}}}
 \end{align*}
@@ -730,7 +729,6 @@ $$
 &= \lim_{x \to -\infty} \frac{x^2 + x^2 - x^2 + x}{\sqrt{x^2} + x + \sqrt{x^2} - x} \\[0.5em]
 &= \lim_{x \to -\infty} \frac{2x}{\sqrt{x^2} + x + \sqrt{x^2} - x} \\[0.5em]
 &= \lim_{x \to -\infty} \frac{2x}{|x|\sqrt{1+\frac{1}{x} + 1 - \frac{1}{x}}} \\[0.5em]
-&= \lim_{x \to -\infty} \frac{2x}{|x|\left(\sqrt{1+\frac{1}{x}} + \sqrt{1-\frac{1}{x}}\right)} \\[0.5em]
 &= \lim_{x \to -\infty} \frac{2x}{|x|\left(\sqrt{1+\frac{1}{x}} + \sqrt{1-\frac{1}{x}}\right)} \\[0.5em]
 &= \lim_{x \to -\infty} \frac{-2}{\sqrt{1+\frac{1}{x} + 1 - \frac{1}{x}}} \\[0.5em]
 &= -1

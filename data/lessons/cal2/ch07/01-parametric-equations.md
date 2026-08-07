@@ -170,7 +170,6 @@ $x=t-\sin t$ และ $y=t-\cos t$
 $\frac{d}{dt}\left(\frac{dy}{dx}\right) = \frac{(1-\cos t)\cos t-(1+\sin t)(\sin t)}{(1-\cos t)^2}$
 $= \frac{\cos t - \cos^2 t - \sin t - \sin^2 t}{(1-\cos t)^2}$
 $= \frac{\cos t - \sin t - 1}{(1-\cos t)^2}$
-$= \frac{\cos t - \sin t - 1}{(1-\cos t)^2}$
 
 จากสมการ (7.2.4) จะได้ $\frac{d^2 y}{dx^2} = \frac{\cos t - \sin t - 1}{(1-\cos t)^3}$
 
