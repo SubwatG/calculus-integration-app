@@ -58,6 +58,7 @@ format:
     toc: true
     toc-depth: 2
     code-fold: false
+    embed-resources: true
 ---
 
 # บทนำ
