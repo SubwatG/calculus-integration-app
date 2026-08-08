@@ -14,7 +14,7 @@ format:
       - left=2.5cm
       - right=2.5cm
       - bottom=2.5cm
-    monofont: "JetBrainsMonoNL Nerd Font Mono"
+    monofont: "Chakra Petch Mono"
     colorlinks: true
     include-in-header:
       - text: |
@@ -41,8 +41,19 @@ format:
           % ---- 1.5 Set up Math Font (สมการคณิตศาสตร์) ---- %
           \setmathfont{TeX Gyre Termes Math}
 
+          % ลดขนาดฟอนต์ mono (Chakra Petch Mono ใหญ่เกินเนื้อความ)
+          % เรียกหลัง quarto ตั้ง \setmonofont จึง override ได้
+          \setmonofont[Scale=0.82]{Chakra Petch Mono}
+
           % เพิ่มระยะห่างระหว่างบรรทัด 25% ให้สระ/วรรณยุกต์ไทยไม่อึดอัด
           \linespread{1.25}
+
+          % ---- 1.6 KOMA headings ต้องใช้ Laksaman (rmfamily) ไม่ใช่ sans ----
+          % scrartcl default ให้หัวข้อเป็น sans-serif (LMSans) ซึ่งไม่มี glyph ไทย
+          \setkomafont{disposition}{\rmfamily\bfseries}
+          \setkomafont{title}{\rmfamily\bfseries}
+          \setkomafont{subtitle}{\rmfamily}
+          \setkomafont{author}{\rmfamily}
   html:
     toc: true
     toc-depth: 2

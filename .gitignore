@@ -27,3 +27,9 @@ Thumbs.db
 
 # Personal project notes
 decision.md
+
+# Quarto render artifacts (ต้นฉบับ .qmd/.md คือ source of truth)
+docs/*.pdf
+docs/*.tex
+docs/*.html
+docs/*_files/

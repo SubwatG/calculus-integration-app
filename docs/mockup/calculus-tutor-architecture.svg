@@ -1,0 +1,714 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1448 1086" width="1448" height="1086" style="background-color: #ffffff; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <desc>Calculus Tutor – Interactive Animated Presentation Diagram</desc>
+
+  <defs>
+    <!-- Marker Arrows -->
+    <marker id="arrow-gray" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 7 5 L 0 8.5 z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 7 5 L 0 8.5 z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 7 5 L 0 8.5 z" fill="#0D9488"/>
+    </marker>
+
+    <!-- Drop Shadows -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.06"/>
+    </filter>
+    <filter id="subtle-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#0F172A" flood-opacity="0.04"/>
+    </filter>
+    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-card" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Traveling Pulse Paths for SMIL animateMotion -->
+    <path id="top-workflow-flow" d="M 160 130 L 1280 130" fill="none"/>
+    <path id="deploy-flow-path" d="M 1045 408 L 1353 408" fill="none"/>
+    <path id="intercard-flow-1" d="M 265 532.5 L 298 532.5" fill="none"/>
+    <path id="intercard-flow-2" d="M 960 532.5 L 980 532.5" fill="none"/>
+  </defs>
+
+  <style>
+    .title { font-size: 27px; font-weight: 800; fill: #0F172A; text-anchor: middle; letter-spacing: -0.4px; }
+    .subtitle { font-size: 15px; font-weight: 500; fill: #475569; text-anchor: middle; }
+    
+    .step-num-title { font-size: 13px; font-weight: 800; text-anchor: middle; letter-spacing: 0.3px; }
+    .step-bullet-text { font-size: 11.5px; font-weight: 400; fill: #334155; }
+    .step-bullet-dot { font-size: 11.5px; fill: #475569; }
+
+    .card-banner-text { font-size: 13px; font-weight: 800; text-anchor: middle; letter-spacing: 0.6px; }
+    
+    .item-title { font-size: 12.5px; font-weight: 700; fill: #0F172A; }
+    .item-desc { font-size: 10.5px; font-weight: 400; fill: #64748B; }
+
+    .ux-title { font-size: 14.5px; font-weight: 700; fill: #0F172A; text-anchor: middle; }
+    .ux-desc { font-size: 12px; font-weight: 400; fill: #475569; text-anchor: middle; }
+
+    .tech-header { font-size: 13px; font-weight: 800; fill: #0F172A; text-anchor: middle; letter-spacing: 0.8px; }
+    .tech-label { font-size: 11px; font-weight: 700; fill: #1E40AF; text-anchor: start; }
+    .tech-val { font-size: 11.5px; font-weight: 800; fill: #0F172A; text-anchor: start; }
+
+    .principle-header { font-size: 12px; font-weight: 800; fill: #0F172A; text-anchor: middle; letter-spacing: 0.8px; }
+    .principle-title { font-size: 12.5px; font-weight: 700; fill: #0F172A; text-anchor: start; }
+    .principle-desc { font-size: 10.5px; font-weight: 400; fill: #64748B; text-anchor: start; }
+  </style>
+
+  
+
+
+  <!-- ==================== MAIN HEADER ==================== -->
+  <text x="724" y="48" class="title">Calculus Tutor – Streamlit Project Workflow &amp; Architecture</text>
+  <text x="724" y="74" class="subtitle">From content design to interactive learning experience</text>
+
+  <!-- ==================== SECTION 1: WORKFLOW STEPS (SMIL ANIMATED) ==================== -->
+  
+  <!-- Flow Line with Flowing Dashed Pattern -->
+  <path d="M 215 130 L 385 130 M 495 130 L 665 130 M 775 130 L 945 130 M 1055 130 L 1225 130" stroke="#94A3B8" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-gray)">
+    <animate attributeName="stroke-dashoffset" values="0;-20" dur="2s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- Traveling Particle Stream along Top Workflow (SMIL Particle 1 & 2) -->
+  <circle r="5" fill="#2563EB" opacity="0.9" filter="url(#glow-blue)">
+    <animateMotion dur="5s" repeatCount="indefinite">
+      <mpath href="#top-workflow-flow"/>
+    </animateMotion>
+  </circle>
+  <circle r="3.5" fill="#0284C7" opacity="0.7">
+    <animateMotion dur="5s" begin="2.5s" repeatCount="indefinite">
+      <mpath href="#top-workflow-flow"/>
+    </animateMotion>
+  </circle>
+
+  <!-- Step 1: PLAN & DESIGN -->
+  <g transform="translate(160, 130)">
+    <!-- SMIL Pulsing Ring -->
+    <circle cx="0" cy="0" r="26" fill="rgba(29, 78, 216, 0.15)">
+      <animate attributeName="r" values="26;34;26" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="26" fill="#1D4ED8" filter="url(#subtle-shadow)"/>
+    <path d="M-6 4h12m-8 3h4M0 -12a7 7 0 0 0-7 7c0 2.4 1.2 4.5 3 5.7V7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.7c1.8-1.2 3-3.3 3-5.7a7 7 0 0 0-7-7z" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="0" y="48" class="step-num-title" fill="#1D4ED8">1. PLAN &amp; DESIGN</text>
+    <g transform="translate(-75, 68)">
+      <text x="0" y="0" class="step-bullet-dot">• <tspan class="step-bullet-text">Define learning objectives</tspan></text>
+      <text x="0" y="18" class="step-bullet-dot">• <tspan class="step-bullet-text">Topic structure &amp; scope</tspan></text>
+      <text x="0" y="36" class="step-bullet-dot">• <tspan class="step-bullet-text">UI/UX wireframe</tspan></text>
+      <text x="0" y="54" class="step-bullet-dot">• <tspan class="step-bullet-text">Feature prioritization</tspan></text>
+    </g>
+  </g>
+
+  <!-- Step 2: CONTENT CREATION -->
+  <g transform="translate(440, 130)">
+    <circle cx="0" cy="0" r="26" fill="rgba(22, 163, 74, 0.15)">
+      <animate attributeName="r" values="26;34;26" dur="3s" begin="0.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3s" begin="0.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="26" fill="#16A34A" filter="url(#subtle-shadow)"/>
+    <path d="M-5 -10h7l5 5v12a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-15a2 2 0 0 1 2 -2z" fill="none" stroke="#FFF" stroke-width="2"/>
+    <path d="M2 -10v5h5M-3 1h6M-3 5h6M-3 -3h3" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
+    <text x="0" y="48" class="step-num-title" fill="#16A34A">2. CONTENT CREATION</text>
+    <g transform="translate(-75, 68)">
+      <text x="0" y="0" class="step-bullet-dot">• <tspan class="step-bullet-text">Write theory &amp; examples</tspan></text>
+      <text x="0" y="18" class="step-bullet-dot">• <tspan class="step-bullet-text">Create step-by-step solutions</tspan></text>
+      <text x="0" y="36" class="step-bullet-dot">• <tspan class="step-bullet-text">Prepare exercises &amp; quizzes</tspan></text>
+      <text x="0" y="54" class="step-bullet-dot">• <tspan class="step-bullet-text">Add visuals &amp; graphs</tspan></text>
+    </g>
+  </g>
+
+  <!-- Step 3: DEVELOPMENT -->
+  <g transform="translate(720, 130)">
+    <circle cx="0" cy="0" r="26" fill="rgba(234, 88, 12, 0.15)">
+      <animate attributeName="r" values="26;34;26" dur="3s" begin="1.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3s" begin="1.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="26" fill="#EA580C" filter="url(#subtle-shadow)"/>
+    <path d="M5 6l6 -6l-6 -6M-5 -6l-6 6l6 6" fill="none" stroke="#FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="0" y="48" class="step-num-title" fill="#EA580C">3. DEVELOPMENT</text>
+    <g transform="translate(-75, 68)">
+      <text x="0" y="0" class="step-bullet-dot">• <tspan class="step-bullet-text">Build Streamlit pages</tspan></text>
+      <text x="0" y="18" class="step-bullet-dot">• <tspan class="step-bullet-text">Implement solvers &amp; quizzes</tspan></text>
+      <text x="0" y="36" class="step-bullet-dot">• <tspan class="step-bullet-text">Integrate visualizations</tspan></text>
+      <text x="0" y="54" class="step-bullet-dot">• <tspan class="step-bullet-text">Connect SymPy engine</tspan></text>
+    </g>
+  </g>
+
+  <!-- Step 4: TEST & REVIEW -->
+  <g transform="translate(1000, 130)">
+    <circle cx="0" cy="0" r="26" fill="rgba(124, 58, 237, 0.15)">
+      <animate attributeName="r" values="26;34;26" dur="3s" begin="1.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3s" begin="1.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="26" fill="#7C3AED" filter="url(#subtle-shadow)"/>
+    <path d="M-4 -10v7l-5.5 8.5a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7 -3l-5.5 -8.5v-7" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M-6 -10h12M-7 3h14" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
+    <text x="0" y="48" class="step-num-title" fill="#7C3AED">4. TEST &amp; REVIEW</text>
+    <g transform="translate(-75, 68)">
+      <text x="0" y="0" class="step-bullet-dot">• <tspan class="step-bullet-text">Functionality testing</tspan></text>
+      <text x="0" y="18" class="step-bullet-dot">• <tspan class="step-bullet-text">Content validation</tspan></text>
+      <text x="0" y="36" class="step-bullet-dot">• <tspan class="step-bullet-text">Math accuracy check</tspan></text>
+      <text x="0" y="54" class="step-bullet-dot">• <tspan class="step-bullet-text">User feedback</tspan></text>
+    </g>
+  </g>
+
+  <!-- Step 5: DEPLOY & IMPROVE -->
+  <g transform="translate(1280, 130)">
+    <circle cx="0" cy="0" r="26" fill="rgba(13, 148, 136, 0.15)">
+      <animate attributeName="r" values="26;34;26" dur="3s" begin="2.4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3s" begin="2.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="26" fill="#0D9488" filter="url(#subtle-shadow)"/>
+    <path d="M-7 7.5c-1.5 1.2 -2 5 -2 5s3.7 -.5 5 -2c.7 -.8 .7 -2.1 0 -2.9a2.2 2.2 0 0 0 -3 0zM.5 6l-3-3M3.5 0l-3-3M-2.5 6c-3-1-4-5-4-5l5-4c2-2 5-3 8-3 0 3-1 6-3 8l-4 5z" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="0" y="48" class="step-num-title" fill="#0D9488">5. DEPLOY &amp; IMPROVE</text>
+    <g transform="translate(-75, 68)">
+      <text x="0" y="0" class="step-bullet-dot">• <tspan class="step-bullet-text">Push code to GitHub</tspan></text>
+      <text x="0" y="18" class="step-bullet-dot">• <tspan class="step-bullet-text">Auto deploy on Streamlit</tspan></text>
+      <text x="0" y="31" class="step-bullet-dot"><tspan class="step-bullet-text" x="9">Community Cloud</tspan></text>
+      <text x="0" y="49" class="step-bullet-dot">• <tspan class="step-bullet-text">Open in web browser</tspan></text>
+      <text x="0" y="66" class="step-bullet-dot">• <tspan class="step-bullet-text">Monitor and improve</tspan></text>
+    </g>
+  </g>
+
+  <!-- ==================== SECTION 2: MIDDLE ARCHITECTURE ==================== -->
+
+  <!-- 1. LEFT BOX: CONTENT & RESOURCES -->
+  <g transform="translate(30, 300)">
+    <rect x="0" y="0" width="235" height="465" rx="8" fill="#FAFCFF" stroke="#93C5FD" stroke-width="1.5" filter="url(#shadow)"/>
+    <!-- Animated Glowing Border Sweep Overlay (Card 1: Content & Resources) -->
+    <rect x="0" y="0" width="235" height="465" rx="8" fill="none" stroke="#2563EB" stroke-width="1.5" filter="url(#glow-card)" pointer-events="none" stroke-dasharray="250 1150" opacity="0.2">
+      <animate attributeName="opacity" values="0.2; 1; 0.2; 0.2" keyTimes="0; 0.25; 0.33; 1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-width" values="1.5; 3.2; 1.5; 1.5" keyTimes="0; 0.25; 0.33; 1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dashoffset" values="1400; 0; 0" keyTimes="0; 0.33; 1" dur="6s" repeatCount="indefinite"/>
+    </rect>
+    <path d="M 0 8 A 8 8 0 0 1 8 0 L 227 0 A 8 8 0 0 1 235 8 L 235 36 L 0 36 Z" fill="#EFF6FF"/>
+    <text x="117.5" y="23" class="card-banner-text" fill="#1E40AF">CONTENT &amp; RESOURCES</text>
+
+    <!-- Item 1: Calculus Curriculum -->
+    <g transform="translate(16, 55)">
+      <path d="M12 10V26M12 10C10-10 4 10 4 10V26C4 26 10 26 12 26M12 10C14 10 20 10 20 10V26C20 26 14 26 12 26" transform="translate(-2, 0) scale(1.45)" fill="none" stroke="#0F172A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="50" y="14" class="item-title">Calculus Curriculum</text>
+      <text x="50" y="28" class="item-desc">Concepts, Theorems,</text>
+      <text x="50" y="40" class="item-desc">Formulas</text>
+    </g>
+
+    <!-- Item 2: Examples & Solutions -->
+    <g transform="translate(16, 155)">
+      <path d="M10 6h8l4 4v14a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" transform="translate(-4, -2) scale(1.4)" fill="none" stroke="#0F172A" stroke-width="1.8"/>
+      <path d="M12 14h8M12 18h6" transform="translate(-4, -2) scale(1.4)" fill="none" stroke="#0F172A" stroke-width="1.8" stroke-linecap="round"/>
+      <text x="50" y="14" class="item-title">Examples &amp; Solutions</text>
+      <text x="50" y="28" class="item-desc">Step-by-step explanations</text>
+    </g>
+
+    <!-- Item 3: Exercises & Quizzes -->
+    <g transform="translate(16, 255)">
+      <rect x="2" y="2" width="24" height="24" rx="3.5" transform="scale(1.35)" fill="none" stroke="#0F172A" stroke-width="1.8"/>
+      <path d="M7 15l5 5 10-10" transform="scale(1.35)" fill="none" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="50" y="14" class="item-title">Exercises &amp; Quizzes</text>
+      <text x="50" y="28" class="item-desc">MCQ, Short answer,</text>
+      <text x="50" y="40" class="item-desc">Challenge problems</text>
+    </g>
+
+    <!-- Item 4: Visual Assets -->
+    <g transform="translate(16, 355)">
+      <path d="M4 24v-6M11 24v-14M18 24v-9M25 24v-19" transform="scale(1.35)" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round"/>
+      <text x="50" y="14" class="item-title">Visual Assets</text>
+      <text x="50" y="28" class="item-desc">Graphs, Diagrams,</text>
+      <text x="50" y="40" class="item-desc">SVG, Images</text>
+    </g>
+  </g>
+
+  <!-- 2. MIDDLE BOX: APPLICATION ARCHITECTURE -->
+  <g transform="translate(285, 300)">
+    <rect x="0" y="0" width="675" height="465" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#shadow)"/>
+    <!-- Animated Glowing Border Sweep Overlay (Card 2: Application Architecture) -->
+    <rect x="0" y="0" width="675" height="465" rx="8" fill="none" stroke="#38BDF8" stroke-width="1.5" filter="url(#glow-card)" pointer-events="none" stroke-dasharray="350 1930" opacity="0.2">
+      <animate attributeName="opacity" values="0.2; 0.2; 1; 0.2; 0.2" keyTimes="0; 0.33; 0.58; 0.66; 1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-width" values="1.5; 1.5; 3.2; 1.5; 1.5" keyTimes="0; 0.33; 0.58; 0.66; 1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dashoffset" values="2280; 2280; 0; 0" keyTimes="0; 0.33; 0.66; 1" dur="6s" repeatCount="indefinite"/>
+    </rect>
+    <path d="M 0 8 A 8 8 0 0 1 8 0 L 667 0 A 8 8 0 0 1 675 8 L 675 36 L 0 36 Z" fill="#0F172A"/>
+    <text x="337.5" y="23" class="card-banner-text" fill="#FFFFFF">APPLICATION ARCHITECTURE</text>
+
+    <!-- SUB-COLUMN 1: FRONTEND (Streamlit) -->
+    <g transform="translate(13, 50)">
+      <rect x="0" y="0" width="204" height="400" rx="8" fill="#F0F9FF" stroke="#BAE6FD" stroke-width="1.2"/>
+      <path d="M32 17h16l4-9-5 4.5-7-9.5-5 9.5-5-4.5z" transform="translate(4, 0) scale(0.6)" fill="#FF4B4B"/>
+      <text x="102" y="20" font-size="11.5" font-weight="700" fill="#0284C7" text-anchor="middle">FRONTEND (Streamlit)</text>
+
+      <!-- SMIL Flowing Vertical Dashed Lines -->
+      <g stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="4,4">
+        <line x1="24" y1="59" x2="24" y2="103">
+          <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+        <line x1="24" y1="129" x2="24" y2="173">
+          <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+        <line x1="24" y1="201" x2="24" y2="253">
+          <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+        <line x1="24" y1="279" x2="24" y2="323">
+          <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+      </g>
+
+      <!-- 1. Home -->
+      <g transform="translate(14, 35)">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" transform="scale(1.2)" fill="#F0F9FF" stroke="#0284C7" stroke-width="2"/>
+        <text x="40" y="16" class="item-title">Home</text>
+        <text x="40" y="32" class="item-desc">Overview &amp; quick start</text>
+      </g>
+
+      <!-- 2. Lessons -->
+      <g transform="translate(14, 105)">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" transform="scale(1.2)" fill="#F0F9FF" stroke="#0284C7" stroke-width="2"/>
+        <path d="M12 14h8M12 18h6" transform="scale(1.2)" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round"/>
+        <text x="40" y="16" class="item-title">Lessons</text>
+        <text x="40" y="32" class="item-desc">Interactive content &amp; theory</text>
+      </g>
+
+      <!-- 3. Step-by-Step Solver -->
+      <g transform="translate(14, 175)">
+        <rect x="2" y="2" width="22" height="22" rx="3.5" transform="scale(1.2)" fill="#F0F9FF" stroke="#0284C7" stroke-width="2"/>
+        <path d="M6 13l4 4 8-8" transform="scale(1.2)" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round"/>
+        <text x="40" y="14" class="item-title">Step-by-Step Solver</text>
+        <text x="40" y="28" class="item-desc">Input problem →</text>
+        <text x="40" y="40" class="item-desc">solve with steps</text>
+      </g>
+
+      <!-- 4. Quizzes -->
+      <g transform="translate(14, 255)">
+        <rect x="2" y="2" width="22" height="22" rx="3.5" transform="scale(1.2)" fill="#F0F9FF" stroke="#0284C7" stroke-width="2"/>
+        <path d="M6 13l4 4 8-8" transform="scale(1.2)" fill="none" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round"/>
+        <text x="40" y="16" class="item-title">Quizzes</text>
+        <text x="40" y="32" class="item-desc">Practice &amp; challenge</text>
+      </g>
+
+      <!-- 5. Visualization Lab -->
+      <g transform="translate(14, 325)">
+        <path d="M3 3v18h18" transform="scale(1.2)" fill="none" stroke="#0284C7" stroke-width="2"/>
+        <path d="M18 9l-5 5-4-4-5 5" transform="scale(1.2)" fill="none" stroke="#0284C7" stroke-width="2"/>
+        <text x="40" y="14" class="item-title">Visualization Lab</text>
+        <text x="40" y="28" class="item-desc">Interactive graphs</text>
+        <text x="40" y="40" class="item-desc">&amp; sandbox</text>
+      </g>
+    </g>
+
+    <!-- SUB-COLUMN 2: BACKEND SERVICES -->
+    <g transform="translate(235, 50)">
+      <rect x="0" y="0" width="204" height="400" rx="8" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.2"/>
+      <text x="102" y="20" font-size="11.5" font-weight="700" fill="#16A34A" text-anchor="middle">BACKEND SERVICES</text>
+
+      <!-- SMIL Flowing Vertical Dashed Lines -->
+      <g stroke="#4ADE80" stroke-width="1.5" stroke-dasharray="4,4">
+        <line x1="24" y1="70" x2="24" y2="128">
+          <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+        <line x1="24" y1="160" x2="24" y2="218">
+          <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+        <line x1="24" y1="250" x2="24" y2="308">
+          <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+      </g>
+
+      <!-- 1. SymPy Engine -->
+      <g transform="translate(14, 40)">
+        <text x="14" y="26" font-size="28" font-weight="900" fill="#16A34A" text-anchor="middle">S</text>
+        <text x="40" y="14" class="item-title" fill="#15803D">SymPy Engine</text>
+        <text x="40" y="28" class="item-desc">Symbolic computation</text>
+        <text x="40" y="40" class="item-desc">(derivatives, integrals,</text>
+        <text x="40" y="52" class="item-desc">limits, series, etc.)</text>
+      </g>
+
+      <!-- 2. Solution Engine -->
+      <g transform="translate(14, 130)">
+        <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" transform="translate(0, 0) scale(1.3)" fill="#F0FDF4" stroke="#16A34A" stroke-width="2"/>
+        <text x="40" y="14" class="item-title" fill="#15803D">Solution Engine</text>
+        <text x="40" y="28" class="item-desc">Step-by-step logic</text>
+        <text x="40" y="40" class="item-desc">&amp; explanation generator</text>
+      </g>
+
+      <!-- 3. Quiz Engine -->
+      <g transform="translate(14, 220)">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" transform="translate(0, 0) scale(1.2)" fill="none" stroke="#16A34A" stroke-width="2"/>
+        <path d="M22 4L12 14.01l-3-3" transform="translate(0, 0) scale(1.2)" fill="none" stroke="#16A34A" stroke-width="2"/>
+        <text x="40" y="14" class="item-title" fill="#15803D">Quiz Engine</text>
+        <text x="40" y="28" class="item-desc">Evaluate answers</text>
+        <text x="40" y="40" class="item-desc">&amp; provide feedback</text>
+      </g>
+
+      <!-- 4. Visualization Engine -->
+      <g transform="translate(14, 310)">
+        <path d="M3 3v18h18" transform="translate(0, 0) scale(1.2)" fill="none" stroke="#16A34A" stroke-width="2"/>
+        <path d="M18 9l-5 5-4-4-5 5" transform="translate(0, 0) scale(1.2)" fill="none" stroke="#16A34A" stroke-width="2"/>
+        <text x="40" y="14" class="item-title" fill="#15803D">Visualization Engine</text>
+        <text x="40" y="28" class="item-desc">Generate plots with</text>
+        <text x="40" y="40" class="item-desc">Matplotlib / Plotly</text>
+      </g>
+    </g>
+
+    <!-- SUB-COLUMN 3: DATA & STORAGE -->
+    <g transform="translate(457, 50)">
+      <rect x="0" y="0" width="204" height="400" rx="8" fill="#FAF5FF" stroke="#E9D5FF" stroke-width="1.2"/>
+      <text x="102" y="20" font-size="11.5" font-weight="700" fill="#7C3AED" text-anchor="middle">DATA &amp; STORAGE</text>
+
+      <!-- SMIL Flowing Vertical Dashed Lines -->
+      <g stroke="#C084FC" stroke-width="1.5" stroke-dasharray="4,4">
+        <line x1="24" y1="106" x2="24" y2="174">
+          <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+        <line x1="24" y1="206" x2="24" y2="274">
+          <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.5s" repeatCount="indefinite"/>
+        </line>
+      </g>
+
+      <!-- 1. Content Files -->
+      <g transform="translate(14, 80)">
+        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" transform="scale(1.2)" fill="#FAF5FF" stroke="#7C3AED" stroke-width="2"/>
+        <text x="44" y="14" class="item-title">Content Files</text>
+        <text x="44" y="30" class="item-desc">Markdown / YAML</text>
+        <text x="44" y="42" class="item-desc">(lessons, examples,</text>
+        <text x="44" y="54" class="item-desc">exercises)</text>
+      </g>
+
+      <!-- 2. User Progress (Future) -->
+      <g transform="translate(14, 180)">
+        <path d="M12 20v-6M18 20v-10M6 20v-2" transform="scale(1.2)" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round"/>
+        <text x="44" y="14" class="item-title">User Progress <tspan font-size="10" font-weight="400" fill="#64748B">(Future)</tspan></text>
+        <text x="44" y="30" class="item-desc">Progress tracking,</text>
+        <text x="44" y="42" class="item-desc">scores, history</text>
+      </g>
+
+      <!-- 3. Config & Settings -->
+      <g transform="translate(14, 280)">
+        <circle cx="12" cy="12" r="3" transform="scale(1.2)" fill="#FAF5FF" stroke="#7C3AED" stroke-width="2"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" transform="scale(1.2)" fill="none" stroke="#7C3AED" stroke-width="2"/>
+        <text x="44" y="14" class="item-title">Config &amp; Settings</text>
+        <text x="44" y="30" class="item-desc">App configuration,</text>
+        <text x="44" y="42" class="item-desc">preferences</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- 3. RIGHT BOX: USER EXPERIENCE & DEPLOYMENT PATH -->
+  <g transform="translate(980, 300)">
+    <rect x="0" y="0" width="438" height="465" rx="8" fill="#FAFCFF" stroke="#A7F3D0" stroke-width="1.5" filter="url(#shadow)"/>
+    <!-- Animated Glowing Border Sweep Overlay (Card 3: User Experience & Deployment Path) -->
+    <rect x="0" y="0" width="438" height="465" rx="8" fill="none" stroke="#059669" stroke-width="1.5" filter="url(#glow-card)" pointer-events="none" stroke-dasharray="300 1506" opacity="0.2">
+      <animate attributeName="opacity" values="0.2; 0.2; 1; 0.2" keyTimes="0; 0.66; 0.91; 1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-width" values="1.5; 1.5; 3.2; 1.5" keyTimes="0; 0.66; 0.91; 1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dashoffset" values="1806; 1806; 0" keyTimes="0; 0.66; 1" dur="6s" repeatCount="indefinite"/>
+    </rect>
+    <path d="M 0 8 A 8 8 0 0 1 8 0 L 430 0 A 8 8 0 0 1 438 8 L 438 36 L 0 36 Z" fill="#ECFDF5"/>
+    <text x="219" y="23" class="card-banner-text" fill="#047857">USER EXPERIENCE &amp; DEPLOYMENT PATH</text>
+
+    <!-- Top Flow: Deployment Path -->
+    <g transform="translate(0, 68)">
+      <!-- 1. GitHub (Center X = 65) -->
+      <g transform="translate(65, 10)">
+        <circle cx="0" cy="24" r="36" fill="#0F172A" filter="url(#subtle-shadow)"/>
+        <path d="M12 4a8 8 0 0 0-2.5 15.6c.4.1.5-.2.5-.4v-1.4c-2.2.5-2.7-1.1-2.7-1.1-.4-.9-0.9-1.2-0.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.2 1.9.9 2.3.7.1-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4a3.1 3.1 0 0 1 .8-2.1c-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.6 7.6 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.8-3.7 4 .3.3.6.8.6 1.6v2.4c0 .2.1.5.5.4A8 8 0 0 0 12 4z" transform="translate(-21, 3) scale(1.7)" fill="#FFF"/>
+        <text x="0" y="78" class="ux-title">GitHub</text>
+        <text x="0" y="96" class="ux-desc">Version Control</text>
+        <text x="0" y="110" class="ux-desc">(Git &amp; GitHub)</text>
+      </g>
+
+      <!-- Flow Arrow 1 & 2 with Dashed Animation -->
+      <path d="M 112 34 L 168 34" stroke="#475569" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#arrow-gray)">
+        <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.8s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 270 34 L 326 34" stroke="#475569" stroke-width="2.2" stroke-dasharray="6,4" marker-end="url(#arrow-gray)">
+        <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.8s" repeatCount="indefinite"/>
+      </path>
+
+      <!-- Traveling Pulse Particle on Deployment Flow -->
+      <circle r="4.5" fill="#0D9488" opacity="0.9">
+        <animateMotion dur="3.5s" repeatCount="indefinite">
+          <mpath href="#deploy-flow-path"/>
+        </animateMotion>
+      </circle>
+
+      <!-- 2. Streamlit Cloud (EXACT CENTER X = 219) -->
+      <g transform="translate(219, 10)">
+        <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" transform="translate(-45, -10) scale(2.4)" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5" filter="url(#subtle-shadow)"/>
+        <path d="M32 17h16l4-9-5 4.5-7-9.5-5 9.5-5-4.5z" transform="translate(-22, 0) scale(0.75)" fill="#FF4B4B"/>
+        <text x="0" y="78" class="ux-title">Streamlit</text>
+        <text x="0" y="92" class="ux-title">Community Cloud</text>
+        <text x="0" y="110" class="ux-desc">Auto deploy from</text>
+        <text x="0" y="124" class="ux-desc">GitHub repository</text>
+      </g>
+
+      <!-- 3. Web Browser (Center X = 373) -->
+      <g transform="translate(373, 10)">
+        <rect x="-42" y="-8" width="84" height="60" rx="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.2" filter="url(#subtle-shadow)"/>
+        <line x1="-42" y1="6" x2="42" y2="6" stroke="#0F172A" stroke-width="1.8"/>
+        <circle cx="-32" cy="-1" r="2.5" fill="#EF4444"/>
+        <circle cx="-25" cy="-1" r="2.5" fill="#F59E0B"/>
+        <circle cx="-18" cy="-1" r="2.5" fill="#10B981"/>
+        <circle cx="0" cy="28" r="13" fill="none" stroke="#2563EB" stroke-width="1.6"/>
+        <line x1="-13" y1="28" x2="13" y2="28" stroke="#2563EB" stroke-width="1.6"/>
+        <ellipse cx="0" cy="28" rx="6" ry="13" fill="none" stroke="#2563EB" stroke-width="1.6"/>
+        
+        <text x="0" y="78" class="ux-title">Web Browser</text>
+        <text x="0" y="96" class="ux-desc">Access anywhere</text>
+        <text x="0" y="110" class="ux-desc">on any device</text>
+      </g>
+    </g>
+
+    <!-- Dashed Divider Line -->
+    <line x1="20" y1="250" x2="418" y2="250" stroke="#CBD5E1" stroke-width="1.2" stroke-dasharray="5 5"/>
+
+    <!-- Bottom Flow: PERSONA BADGES WITH SMIL BREATHING PULSE -->
+    <g transform="translate(0, 298)">
+      <!-- 1. Students (Center X = 65) -->
+      <g transform="translate(65, 0)">
+        <rect x="-34" y="-4" width="68" height="68" rx="18" fill="rgba(29, 78, 216, 0.08)">
+          <animate attributeName="transform" type="scale" values="1;1.06;1" dur="4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="-30" y="0" width="60" height="60" rx="14" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.5" filter="url(#subtle-shadow)"/>
+        <path d="M-16 18 L0 9 L16 18 L0 27 Z" fill="none" stroke="#1D4ED8" stroke-width="2.2" stroke-linejoin="round"/>
+        <path d="M-10 22 V29 C-10 31.5 0 35 0 35 C0 35 10 31.5 10 29 V22" fill="none" stroke="#1D4ED8" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M13 21 V32 M15 32 A 2.2 2.2 0 1 1 11 32 A 2.2 2.2 0 1 1 15 32" fill="none" stroke="#1D4ED8" stroke-width="1.8" stroke-linecap="round"/>
+        
+        <text x="0" y="84" class="ux-title" fill="#1D4ED8">Students</text>
+        <text x="0" y="104" class="ux-desc">Learn &amp; Practice</text>
+      </g>
+
+      <!-- 2. Teachers (Center X = 219) -->
+      <g transform="translate(219, 0)">
+        <rect x="-34" y="-4" width="68" height="68" rx="18" fill="rgba(13, 148, 136, 0.08)">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4s" begin="1.3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="-30" y="0" width="60" height="60" rx="14" fill="#CCFBF1" stroke="#99F6E4" stroke-width="1.5" filter="url(#subtle-shadow)"/>
+        <rect x="-16" y="9" width="32" height="23" rx="3.5" fill="none" stroke="#0D9488" stroke-width="2.2"/>
+        <line x1="-7" y1="32" x2="-11" y2="44" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="7" y1="32" x2="11" y2="44" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M-9 17 L-2 22 L7 15" fill="none" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        
+        <text x="0" y="84" class="ux-title" fill="#0D9488">Teachers</text>
+        <text x="0" y="104" class="ux-desc">Teach &amp; Assign</text>
+      </g>
+
+      <!-- 3. Self-Learners (Center X = 373) -->
+      <g transform="translate(373, 0)">
+        <rect x="-34" y="-4" width="68" height="68" rx="18" fill="rgba(124, 58, 237, 0.08)">
+          <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4s" begin="2.6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="-30" y="0" width="60" height="60" rx="14" fill="#F3E8FF" stroke="#E9D5FF" stroke-width="1.5" filter="url(#subtle-shadow)"/>
+        <circle cx="0" cy="30" r="16" fill="none" stroke="#7C3AED" stroke-width="2.2"/>
+        <polygon points="5,20 -2,27 -5,39 2,32" fill="#7C3AED"/>
+        <polygon points="-5,39 2,32 5,20 -2,27" fill="#A855F7" opacity="0.6"/>
+        
+        <text x="0" y="84" class="ux-title" fill="#7C3AED">Self-Learners</text>
+        <text x="0" y="104" class="ux-desc">Explore &amp; Grow</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ==================== INTER-CARD CONNECTORS WITH SMIL DATA FLOW PULSES ==================== -->
+  <g stroke="#475569" stroke-width="2" stroke-dasharray="6,4" fill="none">
+    <path d="M 267 532.5 L 296 532.5" marker-end="url(#arrow-gray)" marker-start="url(#arrow-gray)">
+      <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.5s" repeatCount="indefinite"/>
+    </path>
+    <path d="M 504 532.5 L 518 532.5" marker-end="url(#arrow-gray)" marker-start="url(#arrow-gray)"/>
+    <path d="M 726 532.5 L 740 532.5" marker-end="url(#arrow-gray)" marker-start="url(#arrow-gray)"/>
+    <path d="M 962 532.5 L 978 532.5" marker-end="url(#arrow-gray)" marker-start="url(#arrow-gray)">
+      <animate attributeName="stroke-dashoffset" values="0;-20" dur="1.5s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <circle r="3.5" fill="#1E40AF">
+    <animateMotion dur="2.5s" repeatCount="indefinite">
+      <mpath href="#intercard-flow-1"/>
+    </animateMotion>
+  </circle>
+  <circle r="3.5" fill="#047857">
+    <animateMotion dur="2.5s" repeatCount="indefinite">
+      <mpath href="#intercard-flow-2"/>
+    </animateMotion>
+  </circle>
+
+  <!-- ==================== SECTION 3: TECHNOLOGY STACK ==================== -->
+  <g transform="translate(30, 785)">
+    <rect x="0" y="0" width="1388" height="110" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#shadow)"/>
+    
+    <rect x="594" y="0" width="200" height="24" rx="4" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="694" y="16" class="tech-header">TECHNOLOGY STACK</text>
+
+    <!-- 7 Thin Vertical Divider Lines -->
+    <g stroke="#E2E8F0" stroke-width="1.2">
+      <line x1="203.5" y1="36" x2="203.5" y2="96"/>
+      <line x1="377.0" y1="36" x2="377.0" y2="96"/>
+      <line x1="550.5" y1="36" x2="550.5" y2="96"/>
+      <line x1="724.0" y1="36" x2="724.0" y2="96"/>
+      <line x1="897.5" y1="36" x2="897.5" y2="96"/>
+      <line x1="1071.0" y1="36" x2="1071.0" y2="96"/>
+      <line x1="1244.5" y1="36" x2="1244.5" y2="96"/>
+    </g>
+
+    <g transform="translate(0, 38)">
+      <!-- 1. Streamlit -->
+      <g transform="translate(71, 8)">
+        <path d="M32 17h16l4-9-5 4.5-7-9.5-5 9.5-5-4.5z" transform="translate(-14, -2) scale(0.7)" fill="#FF4B4B"/>
+        <text x="34" y="14" class="tech-label">Frontend</text>
+        <text x="34" y="32" class="tech-val">Streamlit</text>
+      </g>
+
+      <!-- 2. Python -->
+      <g transform="translate(248, 6)">
+        <g transform="translate(-4, 0) scale(1.4)">
+          <path fill="#3776AB" d="M11.9 2C6.4 2 6.8 2.4 6.8 4.6v2.2h5.2v.7H5.4S2 7.1 2 11.5c0 4.4 3 4.3 3 4.3h1.8v-2.5s-.1-3 3-3h5.2s2.9.1 2.9-2.9V4.6S17.4 2 11.9 2zm-1.5 1.6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+          <path fill="#FFD43B" d="M12.1 22c5.5 0 5.1-.4 5.1-2.6v-2.2h-5.2v-.7h6.6s3.4.4 3.4-4c0-4.4-3-4.3-3-4.3h-1.8v2.5s.1 3-3 3h-5.2s-2.9-.1-2.9 2.9v2.8S6.6 22 12.1 22zm1.5-1.6a1 1 0 1 1 0 -2 1 1 0 0 1 0 2z"/>
+        </g>
+        <text x="38" y="16" class="tech-label">Backend</text>
+        <text x="38" y="34" class="tech-val">Python</text>
+      </g>
+
+      <!-- 3. SymPy Engine -->
+      <g transform="translate(408, 8)">
+        <g transform="translate(0, 0)">
+          <circle cx="16" cy="16" r="16" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.2"/>
+          <text x="16" y="24" font-size="20" font-weight="900" fill="#16A34A" text-anchor="middle">S</text>
+        </g>
+        <text x="42" y="14" class="tech-label">Math Engine</text>
+        <text x="42" y="32" class="tech-val">SymPy</text>
+      </g>
+
+      <!-- 4. Matplotlib / Plotly -->
+      <g transform="translate(580, 2)">
+        <g transform="translate(0, 6)">
+          <rect x="0" y="0" width="32" height="32" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1.2"/>
+          <path d="M6 22v-6M11 22v-12M16 22v-8M21 22v-14" transform="translate(2, 2)" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"/>
+        </g>
+        <text x="40" y="12" class="tech-label">Visualization</text>
+        <text x="40" y="26" class="tech-val">Matplotlib /</text>
+        <text x="40" y="39" class="tech-val">Plotly</text>
+      </g>
+
+      <!-- 5. Data Format -->
+      <g transform="translate(755, 2)">
+        <g transform="translate(0, 6)">
+          <rect x="0" y="0" width="32" height="32" rx="6" fill="#0F172A"/>
+          <text x="16" y="22" font-size="14" font-weight="900" fill="#FFF" text-anchor="middle">M↓</text>
+        </g>
+        <text x="40" y="12" class="tech-label">Data Format</text>
+        <text x="40" y="26" class="tech-val">Markdown /</text>
+        <text x="40" y="39" class="tech-val">YAML</text>
+      </g>
+
+      <!-- 6. Version Control -->
+      <g transform="translate(920, 2)">
+        <g transform="translate(0, 6)">
+          <circle cx="16" cy="16" r="16" fill="#0F172A"/>
+          <path d="M12 4a8 8 0 0 0-2.5 15.6c.4.1.5-.2.5-.4v-1.4c-2.2.5-2.7-1.1-2.7-1.1-.4-.9-0.9-1.2-0.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.2 1.9.9 2.3.7.1-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4a3.1 3.1 0 0 1 .8-2.1c-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.6 7.6 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.8-3.7 4 .3.3.6.8.6 1.6v2.4c0 .2.1.5.5.4A8 8 0 0 0 12 4z" transform="translate(4, 4) scale(1.1)" fill="#FFF"/>
+        </g>
+        <text x="40" y="12" class="tech-label">Version Control</text>
+        <text x="40" y="26" class="tech-val">Git &amp;</text>
+        <text x="40" y="39" class="tech-val">GitHub</text>
+      </g>
+
+      <!-- 7. Deployment -->
+      <g transform="translate(1088, 0)">
+        <g transform="translate(0, 8)">
+          <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" transform="translate(-2, 0) scale(1.2)" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+          <path d="M32 17h16l4-9-5 4.5-7-9.5-5 9.5-5-4.5z" transform="translate(5, 5) scale(0.4)" fill="#FF4B4B"/>
+        </g>
+        <text x="40" y="12" class="tech-label">Deployment</text>
+        <text x="40" y="25" class="tech-val">Streamlit</text>
+        <text x="40" y="37" class="tech-val">Community Cloud</text>
+      </g>
+
+      <!-- 8. Access -->
+      <g transform="translate(1287, 2)">
+        <g transform="translate(0, 6)">
+          <rect x="0" y="2" width="32" height="28" rx="5" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.8"/>
+          <line x1="0" y1="9" x2="32" y2="9" stroke="#0F172A" stroke-width="1.2"/>
+          <circle cx="16" cy="18" r="6" fill="none" stroke="#2563EB" stroke-width="1.2"/>
+        </g>
+        <text x="40" y="12" class="tech-label">Access</text>
+        <text x="40" y="26" class="tech-val">Web</text>
+        <text x="40" y="39" class="tech-val">Browser</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ==================== SECTION 4: DEVELOPMENT PRINCIPLES ==================== -->
+  <g transform="translate(30, 915)">
+    <text x="694" y="24" class="principle-header">DEVELOPMENT PRINCIPLES</text>
+
+    <g transform="translate(0, 45)">
+      <!-- 1. Pedagogical First -->
+      <g transform="translate(50, 10)">
+        <g transform="translate(0, 0)">
+          <circle cx="18" cy="18" r="18" fill="none" stroke="#0F172A" stroke-width="2"/>
+          <circle cx="18" cy="18" r="11" fill="none" stroke="#0F172A" stroke-width="1.5"/>
+          <circle cx="18" cy="18" r="4" fill="#0F172A"/>
+        </g>
+        <text x="46" y="14" class="principle-title">Pedagogical First</text>
+        <text x="46" y="30" class="principle-desc">Learning outcomes</text>
+        <text x="46" y="42" class="principle-desc">drive every feature</text>
+      </g>
+
+      <!-- 2. Accuracy & Clarity -->
+      <g transform="translate(320, 10)">
+        <g transform="translate(0, 0)">
+          <circle cx="18" cy="18" r="18" fill="none" stroke="#0F172A" stroke-width="2"/>
+          <path d="M12 18l4 4 8-8" fill="none" stroke="#0F172A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <text x="46" y="14" class="principle-title">Accuracy &amp; Clarity</text>
+        <text x="46" y="30" class="principle-desc">Mathematical correctness</text>
+        <text x="46" y="42" class="principle-desc">and clear explanations</text>
+      </g>
+
+      <!-- 3. Modular & Maintainable -->
+      <g transform="translate(600, 10)">
+        <g transform="translate(0, 0)">
+          <rect x="2" y="4" width="12" height="12" rx="2" fill="none" stroke="#0F172A" stroke-width="2"/>
+          <rect x="18" y="4" width="12" height="12" rx="2" fill="none" stroke="#0F172A" stroke-width="2"/>
+          <rect x="2" y="20" width="12" height="12" rx="2" fill="none" stroke="#0F172A" stroke-width="2"/>
+          <rect x="18" y="20" width="12" height="12" rx="2" fill="none" stroke="#0F172A" stroke-width="2"/>
+        </g>
+        <text x="46" y="14" class="principle-title">Modular &amp; Maintainable</text>
+        <text x="46" y="30" class="principle-desc">Clean structure, reusable</text>
+        <text x="46" y="42" class="principle-desc">components</text>
+      </g>
+
+      <!-- 4. Responsive & Accessible -->
+      <g transform="translate(880, 10)">
+        <g transform="translate(0, 0)">
+          <rect x="5" y="2" width="18" height="30" rx="3" fill="none" stroke="#0F172A" stroke-width="2"/>
+          <line x1="11" y1="6" x2="17" y2="6" stroke="#0F172A" stroke-width="1.5"/>
+          <circle cx="14" cy="27" r="1.5" fill="#0F172A"/>
+        </g>
+        <text x="46" y="14" class="principle-title">Responsive &amp; Accessible</text>
+        <text x="46" y="30" class="principle-desc">Works on all devices,</text>
+        <text x="46" y="42" class="principle-desc">easy to use</text>
+      </g>
+
+      <!-- 5. Iterative Improvement -->
+      <g transform="translate(1150, 10)">
+        <g transform="translate(0, 0)">
+          <path d="M7 26c-1.5 1.2 -2 5 -2 5s3.7 -.5 5 -2c.7 -.8 .7 -2.1 0 -2.9a2.2 2.2 0 0 0 -3 0zM14.5 24.5l-3-3M17.5 18.5l-3-3M11.5 24.5c-3-1-4-5-4-5l5-4c2-2 5-3 8-3 0 3-1 6-3 8l-4 5z" fill="none" stroke="#0F172A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <text x="46" y="14" class="principle-title">Iterative Improvement</text>
+        <text x="46" y="30" class="principle-desc">Continuously enhance</text>
+        <text x="46" y="42" class="principle-desc">with feedback</text>
+      </g>
+    </g>
+  </g>
+
+</svg>

@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MATH tutor — Wireframe (blockout)</title>
+<style>
+  /* ===== true wireframe: no colors, grayscale only ===== */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Tahoma, "Sarabun", Arial, sans-serif;
+    background: #ffffff;
+    color: #222;
+    line-height: 1.5;
+    padding: 24px 18px 60px;
+  }
+
+  h1 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  h2 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .doc-note { font-size: 12px; color: #888; margin-bottom: 22px; }
+
+  /* frame of one screen */
+  .screen {
+    border: 1.5px solid #000;
+    margin-bottom: 34px;
+  }
+  .screen > .tag {
+    display: inline-block; margin: -12px 0 0 12px; padding: 0 8px;
+    background: #fff; border: 1px solid #000;
+    font-size: 11px; font-weight: 700; letter-spacing: .5px;
+  }
+  .appbar {
+    border-bottom: 1.5px solid #000;
+    padding: 8px 14px;
+    font-size: 13px; font-weight: 700;
+  }
+  .row { display: flex; min-height: 220px; }
+  .sidebar {
+    width: 150px; flex-shrink: 0;
+    border-right: 1.5px solid #000;
+    padding: 10px;
+  }
+  .sidebar .nav-item {
+    border: 1px dashed #999; padding: 5px 8px; margin-bottom: 6px;
+    font-size: 12px; color: #555;
+  }
+  .sidebar .nav-item.act { border-style: solid; color: #000; font-weight: 700; }
+  .main { flex: 1; padding: 14px; min-width: 0; }
+
+  /* placeholder blocks */
+  .ph {
+    border: 1px dashed #999; color: #888;
+    padding: 10px 12px; margin-bottom: 12px; font-size: 12px;
+  }
+  .ph.small { padding: 6px 10px; margin-bottom: 8px; }
+  .ph.row2 { display: flex; gap: 10px; }
+  .ph.row2 > div { flex: 1; border: 1px dashed #999; padding: 10px; color: #888; font-size: 12px; text-align: center; }
+  .ph.grid4 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .ph.grid4 > div { border: 1px dashed #999; padding: 18px 10px; text-align: center; color: #888; font-size: 12px; }
+  .ph.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ph.answers > div { border: 1px dashed #999; padding: 14px; color: #888; font-size: 12px; }
+
+  /* real (short) content */
+  .eq { font-size: 15px; margin: 2px 0; }
+  .eq .lbl { color: #888; font-size: 12px; margin-right: 6px; }
+
+  /* worked example — the one detailed part */
+  .example { border: 1px solid #000; margin-bottom: 14px; }
+  .example .ex-head {
+    border-bottom: 1px solid #000; padding: 6px 12px;
+    font-size: 13px; font-weight: 700;
+  }
+  .example .ex-body { padding: 10px 14px; }
+  .example .q { font-size: 14px; margin-bottom: 8px; }
+  .example .step { font-size: 13px; margin: 4px 0 4px 14px; }
+  .example .step .no { display: inline-block; width: 16px; color: #888; font-size: 11px; }
+  .example .ans { font-size: 14px; font-weight: 700; margin-top: 8px; border-top: 1px dotted #999; padding-top: 6px; }
+
+  .legend { font-size: 11px; color: #888; margin-top: 18px; }
+</style>
+</head>
+<body>
+
+<h1>MATH tutor — Wireframe (โครงร่างคร่าวๆ)</h1>
+<p class="doc-note">ยังไม่มีสี / ยังไม่มีเนื้อหายาว — แสดงเฉพาะโครงสร้าง สมการ และตัวอย่างวิธีทำ 6 ข้อ (ส่วนที่ยังไม่กำหนดให้เป็นกล่องเส้นประ)</p>
+
+<!-- ================= SCREEN 1: หน้าหลัก ================= -->
+<div class="screen">
+  <div class="tag">หน้าจอ 1 · หน้าหลัก</div>
+  <div class="appbar">[ ชื่อเว็บ : MATH tutor ]</div>
+  <div class="row">
+    <div class="sidebar">
+      <div class="nav-item act">หน้าหลัก</div>
+      <div class="nav-item">บทเรียน</div>
+      <div class="nav-item">แก้โจทย์</div>
+      <div class="nav-item">เลือกหัวข้อ</div>
+      <div class="nav-item">เกมทบทวน</div>
+      <div class="nav-item">ประวัติที่ทำ</div>
+      <div class="nav-item">ช่วยเหลือ</div>
+    </div>
+    <div class="main">
+      <div class="ph">[ ช่องค้นหา ]</div>
+      <div class="ph grid4">
+        <div>[ เมนู 1 ]</div>
+        <div>[ เมนู 2 ]</div>
+        <div>[ เมนู 3 ]</div>
+        <div>[ เมนู 4 ]</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SCREEN 2: บทเรียน ================= -->
+<div class="screen">
+  <div class="tag">หน้าจอ 2 · บทเรียน</div>
+  <div class="appbar">[ ชื่อเว็บ : MATH tutor ]</div>
+  <div class="row">
+    <div class="sidebar">
+      <div class="nav-item">หน้าหลัก</div>
+      <div class="nav-item act">บทเรียน</div>
+      <div class="nav-item">แก้โจทย์</div>
+      <div class="nav-item">เลือกหัวข้อ</div>
+      <div class="nav-item">เกมทบทวน</div>
+      <div class="nav-item">ประวัติที่ทำ</div>
+      <div class="nav-item">ช่วยเหลือ</div>
+    </div>
+    <div class="main">
+      <div class="ph small">[ ชื่อบท : ... ]</div>
+      <div class="ph small">[ เนื้อหา: สมการตัวอย่าง ]</div>
+      <div class="eq"><span class="lbl">สมการ:</span> ∫ x<sup>n</sup> dx = x<sup>n+1</sup>/(n+1) + C &nbsp;(n ≠ −1)</div>
+      <div class="eq"><span class="lbl">ตัวอย่าง:</span> ∫ x² dx = x³/3 + C</div>
+      <div class="ph small" style="margin-top:14px">[ แบบฝึกหัดท้ายบท ]</div>
+      <div class="ph small">[ ข้อ 1 ]</div>
+      <div class="ph small">[ ข้อ 2 ]</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SCREEN 3: แก้โจทย์ + วิธีทำตัวอย่าง ================= -->
+<div class="screen">
+  <div class="tag">หน้าจอ 3 · แก้โจทย์ (พร้อมวิธีทำโจทย์ตัวอย่าง 6 ข้อ)</div>
+  <div class="appbar">[ ชื่อเว็บ : MATH tutor ]</div>
+  <div class="row">
+    <div class="sidebar">
+      <div class="nav-item">หน้าหลัก</div>
+      <div class="nav-item">บทเรียน</div>
+      <div class="nav-item act">แก้โจทย์</div>
+      <div class="nav-item">เลือกหัวข้อ</div>
+      <div class="nav-item">เกมทบทวน</div>
+      <div class="nav-item">ประวัติที่ทำ</div>
+      <div class="nav-item">ช่วยเหลือ</div>
+    </div>
+    <div class="main">
+      <div class="ph small">[ เลือกประเภท : อินทิเกรต / อนุพันธ์ / ลิมิต ]</div>
+      <div class="ph small">[ ช่องใส่โจทย์ : ... ]</div>
+      <div class="ph small">[ แถบปุ่มสูตร : ∫  d/dx  lim  √  π  sin  cos  tan ]</div>
+      <div class="ph small">[ ปุ่ม : คำนวณ ]</div>
+
+      <h2 style="margin-top:16px">วิธีทำโจทย์ตัวอย่าง (6 ข้อ)</h2>
+
+      <!-- ตัวอย่างที่ 1 -->
+      <div class="example">
+        <div class="ex-head">ตัวอย่างที่ 1 · ปริพันธ์ (กฎกำลัง)</div>
+        <div class="ex-body">
+          <div class="q">จงหา ∫ 3x² dx</div>
+          <div class="step"><span class="no">1)</span> เขียนอินทิกรัล : ∫ 3x² dx</div>
+          <div class="step"><span class="no">2)</span> ดึงค่าคงที่ออก : 3 ∫ x² dx</div>
+          <div class="step"><span class="no">3)</span> ใช้กฎกำลัง ∫ x<sup>n</sup> dx = x<sup>n+1</sup>/(n+1) + C โดย n = 2 :</div>
+          <div class="step" style="margin-left:30px">∫ x² dx = x³/3 + C</div>
+          <div class="step"><span class="no">4)</span> คูณกลับค่าคงที่ : 3 · x³/3 + C = x³ + C</div>
+          <div class="ans">คำตอบ : ∫ 3x² dx = x³ + C</div>
+        </div>
+      </div>
+
+      <!-- ตัวอย่างที่ 2 -->
+      <div class="example">
+        <div class="ex-head">ตัวอย่างที่ 2 · ปริพันธ์ (กฎกำลัง)</div>
+        <div class="ex-body">
+          <div class="q">จงหา ∫ x⁴ dx</div>
+          <div class="step"><span class="no">1)</span> ใช้กฎกำลัง โดย n = 4 : ∫ x⁴ dx = x⁵/5 + C</div>
+          <div class="ans">คำตอบ : ∫ x⁴ dx = x⁵/5 + C</div>
+        </div>
+      </div>
+
+      <!-- ตัวอย่างที่ 3 -->
+      <div class="example">
+        <div class="ex-head">ตัวอย่างที่ 3 · ปริพันธ์ (กฎผลบวก)</div>
+        <div class="ex-body">
+          <div class="q">จงหา ∫ (2x + 7) dx</div>
+          <div class="step"><span class="no">1)</span> แยกผลบวก : ∫ (2x + 7) dx = ∫ 2x dx + ∫ 7 dx</div>
+          <div class="step"><span class="no">2)</span> ∫ 2x dx = 2 · x²/2 + C = x² + C</div>
+          <div class="step"><span class="no">3)</span> ∫ 7 dx = 7x + C</div>
+          <div class="step"><span class="no">4)</span> รวมผลลัพธ์ : x² + 7x + C</div>
+          <div class="ans">คำตอบ : ∫ (2x + 7) dx = x² + 7x + C</div>
+        </div>
+      </div>
+
+      <!-- ตัวอย่างที่ 4 -->
+      <div class="example">
+        <div class="ex-head">ตัวอย่างที่ 4 · ปริพันธ์ (ฟังก์ชัน 1/x)</div>
+        <div class="ex-body">
+          <div class="q">จงหา ∫ (1/x) dx</div>
+          <div class="step"><span class="no">1)</span> ใช้สูตร ∫ (1/x) dx = ln|x| + C</div>
+          <div class="ans">คำตอบ : ∫ (1/x) dx = ln|x| + C</div>
+        </div>
+      </div>
+
+      <!-- ตัวอย่างที่ 5 -->
+      <div class="example">
+        <div class="ex-head">ตัวอย่างที่ 5 · อนุพันธ์ (กฎกำลัง)</div>
+        <div class="ex-body">
+          <div class="q">จงหา d/dx (x³)</div>
+          <div class="step"><span class="no">1)</span> ใช้กฎกำลัง d/dx (x<sup>n</sup>) = n·x<sup>n−1</sup> โดย n = 3</div>
+          <div class="step"><span class="no">2)</span> d/dx (x³) = 3x²</div>
+          <div class="ans">คำตอบ : d/dx (x³) = 3x²</div>
+        </div>
+      </div>
+
+      <!-- ตัวอย่างที่ 6 -->
+      <div class="example">
+        <div class="ex-head">ตัวอย่างที่ 6 · ลิมิต (แยกตัวประกอบ)</div>
+        <div class="ex-body">
+          <div class="q">จงหา lim<sub>x→2</sub> (x² − 4)/(x − 2)</div>
+          <div class="step"><span class="no">1)</span> แทนค่า x = 2 ตรงๆ ได้ 0/0 → รูปแบบไม่กำหนด</div>
+          <div class="step"><span class="no">2)</span> แยกตัวประกอบตัวเศษ : x² − 4 = (x − 2)(x + 2)</div>
+          <div class="step"><span class="no">3)</span> ตัดทอน (เมื่อ x ≠ 2) : (x − 2)(x + 2)/(x − 2) = x + 2</div>
+          <div class="step"><span class="no">4)</span> แทนค่า x = 2 : 2 + 2 = 4</div>
+          <div class="ans">คำตอบ : lim<sub>x→2</sub> (x² − 4)/(x − 2) = 4</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SCREEN 4: เกมทบทวน ================= -->
+<div class="screen">
+  <div class="tag">หน้าจอ 4 · เกมทบทวน</div>
+  <div class="appbar">[ ชื่อเว็บ : MATH tutor ]</div>
+  <div class="row">
+    <div class="sidebar">
+      <div class="nav-item">หน้าหลัก</div>
+      <div class="nav-item">บทเรียน</div>
+      <div class="nav-item">แก้โจทย์</div>
+      <div class="nav-item">เลือกหัวข้อ</div>
+      <div class="nav-item act">เกมทบทวน</div>
+      <div class="nav-item">ประวัติที่ทำ</div>
+      <div class="nav-item">ช่วยเหลือ</div>
+    </div>
+    <div class="main">
+      <div class="ph small">[ ข้อที่ 1 / 5 · คะแนน : 0 ]</div>
+      <div class="ph small">[ โจทย์ : จงหา ∫ ... ]</div>
+      <div class="ph answers">
+        <div>[ ก ]</div>
+        <div>[ ข ]</div>
+        <div>[ ค ]</div>
+        <div>[ ง ]</div>
+      </div>
+      <div class="ph small">[ ปุ่ม : ข้อถัดไป ]</div>
+    </div>
+  </div>
+</div>
+
+<p class="legend">เส้นทึบ = โครงสร้างจริงของหน้าจอ · เส้นประ = ตำแหน่งเนื้อหาที่ยังไม่กำหนด (placeholder) · สมการ/วิธีทำตัวอย่าง 6 ข้อ = เนื้อหาตัวอย่างที่อาจารย์กำหนดให้ละเอียด</p>
+
+</body>
+</html>

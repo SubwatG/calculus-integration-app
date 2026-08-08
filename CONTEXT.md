@@ -4,9 +4,20 @@
 
 อินทิเกรต (integration) คือหัวข้อหลักของแอป ใช้ครอบคลุมทั้งแนวคิดปฏิยานุพันธ์และการสะสมในระดับแคลคูลัสเบื้องต้น
 
-## Lesson
+## Lesson (interactive)
 
-บทเรียน (lesson) คือเนื้อหา Markdown หนึ่งหน่วยที่มี learning objectives, แนวคิด, สูตร, ตัวอย่าง, common mistakes และโจทย์ลองทำ
+บทเรียน (lesson) ในปัจจุบันคือบทเรียน interactive ที่ประกอบด้วย 5 ส่วนต่อบท:
+theory dict ใน `utils/theory.py`, solver ใน `utils/<topic>_solver.py`,
+plotter ใน `utils/plotter.py`, หน้า UI ใน `pages/<topic>.py` และ test ใน `tests/`
+
+บทเรียนตัวอย่างที่สมบูรณ์: Riemann Sum (`pages/riemann.py`)
+บทเรียนที่เหลือ (tangent, limit, substitution, volume, area_between, improper)
+เป็น skeleton รอ implement ตาม `docs/interactive-lessons-plan.md`
+
+## Reference content
+
+`data/lessons/*.md` (60 ไฟล์ แบ่ง cal1/cal2) คือเอกสารอ้างอิงฉบับเต็ม
+ไม่ใช่บทเรียนหลัก เปิดดูได้ใน tab "เอกสารอ้างอิง" ของหน้าเรียน
 
 ## Quiz
 
