@@ -12,7 +12,8 @@ Streamlit teaching app สำหรับแคลคูลัสเบื้อ
 - [Step-by-step: สร้างบทเรียน interactive](docs/student-interactive-lesson-guide.md)
 - [แผนบทเรียน interactive (หัวข้อ + ขอบเขต)](docs/interactive-lessons-plan.md)
 - [คู่มือ Markdown และ LaTeX สำหรับบทเรียน](docs/markdown-latex-guide.qmd)
-  - ดูแบบเว็บ: [docs/markdown-latex-guide.html](docs/markdown-latex-guide.html) · แบบ PDF: [docs/markdown-latex-guide.pdf](docs/markdown-latex-guide.pdf)
+  - ดูแบบเว็บ (ออนไลน์): https://htmlpreview.github.io/?https://raw.githubusercontent.com/SubwatG/calculus-integration-app/main/docs/markdown-latex-guide.html
+  - ดูแบบ PDF: [docs/markdown-latex-guide.pdf](docs/markdown-latex-guide.pdf)
 - [กฎการเขียนโค้ดสำหรับนักศึกษา](AGENTS.md)
 
 ## Requirements
