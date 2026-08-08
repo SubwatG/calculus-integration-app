@@ -148,7 +148,7 @@ $$ \lim _ { x \rightarrow 0 } \frac { 2 \sin x } { 2 x + x ^ { 2 } } = \lim _ { 
 แบบฝึกหัด 4.1
 จงหาลิมิตในแต่ละข้อต่อไปนี้
 1.  $\lim _ { x \rightarrow 0 } \frac { \sin x } { 2 x }$
-2.  $\lim _ { x \rightarrow \frac { \sqrt { x } - 1 - 2 } { x ^ { 2 } - 25 }$
+2.  $\lim_{x \to 5} \frac{\sqrt{x-1}-2}{x^2-25}$
 3.  $\lim _ { x \rightarrow 2 } \frac { 2 x ^ { 2 } - 5 x + 2 } { 5 x ^ { 2 } - 7 x - 6 }$
 4.  $\lim _ { x \rightarrow 1 } \frac { x ^ { 3 } - 3 x + 2 } { x ^ { 2 } - 2 x - 1 }$
 5.  $\lim _ { x \rightarrow 0 } \frac { \sin x - x } { \tan x - x }$

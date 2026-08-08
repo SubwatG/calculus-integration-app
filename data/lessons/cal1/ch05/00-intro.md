@@ -192,7 +192,7 @@ O
 4.  $\lim(x_n - y_n) = \lim x_n - \lim y_n = L - M$
 5.  $\lim(x_n y_n) = (\lim x_n)(\lim y_n) = LM$
 6.  $\lim_{n \to \infty} \frac{x_n}{y_n} = \frac{\lim_{n \to \infty} \frac{x_n}{y_n}}{\lim_{n \to \infty} \frac{y_n}{M}} = \frac{L}{M}$ เมื่อ $y_n \neq 0$ สำหรับทุก ๆ $n \in \mathbb{N}$ และ $M \neq 0$
-7.  $\lim_{n \to \infty} \sqrt[m]{x_n} = \sqrt[m]{\lim_{n \to \infty} x_n} = \sqrt[L]{M}$ เมื่อ $\sqrt[L]{M}, \sqrt[L]{x_n} \in \mathbb{R}$ และทุกจำนวนนับ $m \geq 2$
+7.  $\lim_{n \to \infty} \sqrt[m]{x_n} = \sqrt[m]{\lim_{n \to \infty} x_n} = \sqrt[m]{L}$ เมื่อ $\sqrt[m]{M}, \sqrt[m]{x_n} \in \mathbb{R}$ และทุกจำนวนนับ $m \geq 2$
 8.  ถ้ามี $n_0 \in \mathbb{N}$ ซึ่ง $x_n \leq z_n \leq y_n$ สำหรับทุก ๆ $n \geq n_0$ และ $L = M$ แล้วจะได้ว่า $\lim_{n \to \infty} z_n = L$
 9.  ถ้า $f$ เป็นฟังก์ชันต่อเนื่องที่จุด $a$ และ $\{a_n\}$ เป็นลำดับในโดเมนของ $f$ ซึ่งลู่เข้าสู่ $a$ แล้ว $\lim_{n \to \infty} f(a_n) = f(\lim_{n \to \infty} a_n) = f(a)$
 บทพิสูจน์ ในที่นี้จะพิสูจน์เฉพาะ (3) – (5)
