@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คัมภีร์ระบบและขั้นตอนวิธีทางคณิตศาสตร์: Calculus Interactive App</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --border: #cbd5e1;
+      --border-dark: #94a3b8;
+      --primary: #0369a1;
+      --primary-soft: #f0f9ff;
+      --primary-border: #bae6fd;
+      --accent: #b45309;
+      --accent-soft: #fffbeb;
+      --success: #15803d;
+      --success-soft: #f0fdf4;
+      --danger: #b91c1c;
+      --danger-soft: #fef2f2;
+      --code-bg: #090d16;
+      --code-text: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.85;
+      font-size: 16px;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    h1 { font-size: 2.2rem; color: var(--primary); }
+    h2 { font-size: 1.6rem; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-top: 40px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
+    h3 { font-size: 1.25rem; color: #1e293b; margin-top: 24px; margin-bottom: 12px; }
+    h4 { font-size: 1.1rem; color: var(--primary); margin-top: 18px; margin-bottom: 8px; }
+
+    p { margin-bottom: 16px; }
+    ul, ol { margin-left: 28px; margin-bottom: 20px; }
+    li { margin-bottom: 8px; }
+
+    /* Cards & Containers */
+    header {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-top: 6px solid var(--primary);
+      border-radius: 12px;
+      padding: 36px 40px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+
+    .doc-badge {
+      display: inline-block;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
+      padding: 4px 14px;
+      border-radius: 6px;
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px 40px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    }
+
+    /* Callout Boxes */
+    .callout {
+      border-left: 5px solid;
+      border-radius: 0 8px 8px 0;
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-size: 0.98rem;
+    }
+
+    .callout-info {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      color: #034f77;
+    }
+
+    .callout-warning {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: #78350f;
+    }
+
+    .callout-danger {
+      background: var(--danger-soft);
+      border-color: var(--danger);
+      color: #7f1d1d;
+    }
+
+    .callout-success {
+      background: var(--success-soft);
+      border-color: var(--success);
+      color: #14532d;
+    }
+
+    /* Code Blocks */
+    pre, code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    code {
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      border: 1px solid #e2e8f0;
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 22px 26px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 20px 0;
+      line-height: 1.65;
+      font-size: 0.9rem;
+      border: 1px solid #1e293b;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    .syn-comment { color: #64748b; font-style: italic; }
+    .syn-keyword { color: #f472b6; font-weight: bold; }
+    .syn-func { color: #38bdf8; }
+    .syn-str { color: #a7f3d0; }
+    .syn-num { color: #fbbf24; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 14px 18px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f1f5f9;
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    tr:nth-child(even) td {
+      background: #fcfcfd;
+    }
+
+    /* Step Box for Pedagogical Flow */
+    .step-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      background: #ffffff;
+      position: relative;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step-badge {
+      background: #0f172a;
+      color: white;
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    .step-title {
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .toc-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 28px;
+      margin: 24px 0;
+    }
+
+    .toc-card ul {
+      margin-bottom: 0;
+      margin-left: 20px;
+    }
+
+    .toc-card a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .toc-card a:hover {
+      text-decoration: underline;
+    }
+
+    .nav-tag {
+      font-size: 0.75rem;
+      background: #e2e8f0;
+      color: #475569;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header Section -->
+  <header>
+    <span class="doc-badge">DOCUMENT ARCHITECTURE & IMPLEMENTATION GUIDE 2026</span>
+    <h1>คัมภีร์ระบบและขั้นตอนวิธีทางคณิตศาสตร์</h1>
+    <h3 style="color: var(--text-muted); font-weight: 400; margin-top: -6px;">โครงการพัฒนาเว็บแอปพลิเคชันเพื่อการเรียนรู้แคลคูลัสเชิงปฏิสัมพันธ์ (Calculus Integration App)</h3>
+    <p style="margin-top: 14px;">
+      เอกสารฉบับนี้จัดทำขึ้นเพื่อเป็น <strong>คู่มือทางวิชาการและการเขียนโค้ด (Comprehensive Architecture & Implementation Blueprint)</strong> สำหรับอาจารย์ที่ปรึกษาและนิสิตผู้พัฒนา ใช้ในการทบทวนงานได้ตลอดทั้งภาคการศึกษาโดยไม่มีการหลงลืม มีรายละเอียดครบถ้วนตั้งแต่ภาพรวมสถาปัตยกรรม แผนภาพกระบวนการทำงาน การแจกแจงขั้นตอนวิธีทางคณิตศาสตร์ (Deconstruction Algorithms) สำหรับการเขียนโค้ดภาษา Python ทีละไฟล์ ตลอดจนการวางแผนชุดทดสอบอัตโนมัติ (Automated Testing) และการเตรียมการรับมือคำถามกรรมการสอบอย่างรัดกุม
+    </p>
+
+    <div class="toc-card">
+      <h4 style="margin-top: 0; margin-bottom: 10px;">สารบัญนำทางด่วน (Quick Navigation)</h4>
+      <ul>
+        <li><a href="#section-overview">1. สถาปัตยกรรมระบบ 3 ชั้น และแผนภาพกระบวนการทำงานรวม (System Workflow)</a></li>
+        <li><a href="#section-contract">2. โครงสร้างข้อมูลมาตรฐานของผลลัพธ์ (Data Contract: Standard Return Dictionary)</a></li>
+        <li><a href="#section-math-limit">3. การแจกแจงคณิตศาสตร์เชิงลึก: ลิมิตรูปแบบยังไม่กำหนด 0/0 (utils/limit_solver.py)</a></li>
+        <li><a href="#section-math-tangent">4. การแจกแจงคณิตศาสตร์เชิงลึก: อนุพันธ์และเส้นสัมผัสโค้ง (utils/tangent_solver.py)</a></li>
+        <li><a href="#section-math-riemann">5. การแจกแจงคณิตศาสตร์เชิงลึก: ผลรวมรีมันน์และการลู่เข้า (utils/riemann_solver.py)</a></li>
+        <li><a href="#section-math-sub">6. การแจกแจงคณิตศาสตร์เชิงลึก: การอินทิเกรตด้วยการแทนค่าตัวแปร u (utils/substitution_solver.py)</a></li>
+        <li><a href="#section-ui-scaffolding">7. การเชื่อมต่อไปยังหน้าจอผู้ใช้แบบนั่งร้านทางปัญญา (Interactive Scaffolding UI)</a></li>
+        <li><a href="#section-qa-plan">8. แผนการทดสอบอัตโนมัติและเกณฑ์ประกันคุณภาพ (Automated Test Suite Plan)</a></li>
+        <li><a href="#section-defense-qa">9. คู่มือตั้งการ์ดและสคริปต์ตอบคำถามกรรมการสอบ (Oral Defense Script)</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- หมวดที่ 1: ภาพรวมสถาปัตยกรรมและ Workflow -->
+  <section id="section-overview" class="section-card">
+    <h2>
+      <span>1. สถาปัตยกรรมระบบ 3 ชั้น และแผนภาพการไหลของข้อมูล</span>
+      <span class="nav-tag">ARCHITECTURE</span>
+    </h2>
+
+    <p>
+      ระบบนี้ถูกออกแบบตามหลักการวิศวกรรมซอฟต์แวร์ <strong>Separation of Concerns (SoC)</strong> อย่างเข้มงวด โดยแยกโค้ดการคำนวณคณิตศาสตร์ ออกจากหน้าจอแสดงผล และชุดทดสอบความถูกต้องอย่างเด็ดขาด เพื่อป้องกันไม่ให้เกิดความสับสนเมื่อนิสิตกลับมาแก้ไขโค้ด
+    </p>
+
+    <div style="margin: 24px 0;">
+      <div class="step-box">
+        <div class="step-header">
+          <span class="step-badge">ชั้นที่ 1</span>
+          <span class="step-title">Mathematical Engine (กลไกคำนวณและแจกแจงขั้นตอนคณิตศาสตร์)</span>
+        </div>
+        <p><strong>ตำแหน่งโฟลเดอร์:</strong> <code>utils/*_solver.py</code></p>
+        <p><strong>บทบาทหน้าที่:</strong> เป็นส่วนประมวลผลทางคณิตศาสตร์บริสุทธิ์ (Pure Logic) ไม่ขึ้นกับหน้าเว็บ ไม่ใช้คำสั่งของ Streamlit แม้แต่บรรทัดเดียว รับพารามิเตอร์เป็นสตริงสมการและตัวเลข จากนั้นแปลงเป็น Expression Tree ด้วย SymPy, วิเคราะห์รูปแบบ (Pattern Matching), แยกขั้นตอนการคำนวณทีละบรรทัด, และคืนค่าเป็น Dictionary ที่ประกอบด้วยสูตร LaTeX และคำอธิบายภาษาไทย</p>
+      </div>
+
+      <div class="step-box">
+        <div class="step-header">
+          <span class="step-badge">ชั้นที่ 2</span>
+          <span class="step-title">Interactive Scaffolding UI (ส่วนประสานงานผู้ใช้เชิงนั่งร้านทางปัญญา)</span>
+        </div>
+        <p><strong>ตำแหน่งโฟลเดอร์:</strong> <code>pages/*.py</code> และ <code>app.py</code></p>
+        <p><strong>บทบาทหน้าที่:</strong> สร้างด้วย Streamlit ทำหน้าที่รับ Input จากผู้เรียน, บันทึกตัวแปรข้ามการ Rerun ผ่าน <code>st.session_state</code>, แสดงกล่องตัวเลือกกลยุทธ์แก้ปัญหาเพื่อฝึกคิด (Scaffolding Checkpoint), วาดกราฟการเคลื่อนที่ของฟังก์ชันแบบ Real-time ด้วย Matplotlib, และเรนเดอร์สมการคณิตศาสตร์ด้วย KaTeX</p>
+      </div>
+
+      <div class="step-box">
+        <div class="step-header">
+          <span class="step-badge">ชั้นที่ 3</span>
+          <span class="step-title">Automated Verification Gate (ชุดทดสอบความถูกต้องอัตโนมัติ)</span>
+        </div>
+        <p><strong>ตำแหน่งโฟลเดอร์:</strong> <code>tests/test_*.py</code></p>
+        <p><strong>บทบาทหน้าที่:</strong> ขับเคลื่อนด้วย <code>pytest</code> เป็นเครื่องมือประกันคุณภาพ (QA) และเป็นหลักฐานทางวิชาการยืนยันว่าโปรแกรมคำนวณถูกต้องตามหลักคณิตศาสตร์ 100% ตรวจสอบความถูกต้องของคำตอบ จำนวนขั้นตอนการแสดงผล และการดักจับข้อผิดพลาด (Edge Cases) เช่น กรณีส่วนเป็นศูนย์ หรือผู้ใช้ป้อนสมการผิดรูปแบบ</p>
+      </div>
+    </div>
+
+    <h4>แผนภาพกระบวนการทำงานระดับระบบ (System Workflow Architecture)</h4>
+    <pre><code>┌──────────────────────────────────────────────────────────────────────────────────┐
+│                             ผู้เรียน (USER INTERACTION)                            │
+│                  - ป้อนนิพจน์ฟังก์ชัน เช่น "(x^2 - 9)/(x - 3)"                      │
+│                  - กำหนดจุดเป้าหมาย หรือเลื่อน Slider เช่น a = 3                    │
+└─────────────────────────────────────────┬────────────────────────────────────────┘
+                                          │
+                                          ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                   STREAMLIT INTERACTION LAYER (pages/limit.py)                   │
+│  1. ตรวจสอบ Session State และดักจับ Input ว่างเปล่า                                 │
+│  2. แสดงกล่องให้ผู้เรียน "เลือกแนวคิด": จะแทนค่าตรง / แยกตัวประกอบ / คูณสังยุค       │
+│  3. ส่งข้อมูลต่อไปยังกลไกคำนวณ                                                     │
+└─────────────────────────────────────────┬────────────────────────────────────────┘
+                                          │
+                   (ส่ง expr_str = "(x^2-9)/(x-3)", a = 3)
+                                          │
+                                          ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                    MATHEMATICAL ENGINE (utils/limit_solver.py)                   │
+│                                                                                  │
+│  [Step A: Parsing & Sanity Check]                                                │
+│   └── ใช้ SymPy parse_expr แปลงสตริงเป็น Expression Tree                           │
+│                                                                                  │
+│  [Step B: Indeterminate Form Classification]                                     │
+│   └── แทนค่า x = a: ตรวจเศษและส่วน ถ้าได้ [0/0] ทำการแตกกิ่งการคำนวณ                 │
+│                                                                                  │
+│  [Step C: Algorithmic Transformation & Intermediate States]                      │
+│   ├── กรณีพหุนาม: เรียก sp.factor() แยกตัวประกอบเศษและส่วน                        │
+│   ├── ทำการตัดทอนตัวร่วม (x - a) ด้วย sp.cancel()                                 │
+│   └── แทนค่า x = a ซ้ำอีกครั้งในนิพจน์ที่ลดรูปแล้ว                                    │
+│                                                                                  │
+│  [Step D: LaTeX Step Assembly]                                                   │
+│   └── บันทึกแต่ละขั้นตอนลงใน List: คำอธิบายภาษาไทย + โค้ดสูตร LaTeX                │
+└─────────────────────────────────────────┬────────────────────────────────────────┘
+                                          │
+               (คืนผลลัพธ์เป็น Standard Return Dictionary)
+                                          │
+                                          ▼
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                         PRESENTATION & FEEDBACK LAYER                            │
+│  1. นำ steps ไปแสดงผลในแท็บ "ขั้นตอนการคำนวณ" ด้วย st.latex                      │
+│  2. ให้ระบบตรวจว่าตัวเลือกที่ผู้เรียนเลือกตรงกับขั้นตอนจริงหรือไม่ พร้อมให้คำอธิบาย     │
+│  3. พล็อตจุดโปร่ง (Hole) บนกราฟ Matplotlib ที่พิกัด (3, 6)                         │
+└──────────────────────────────────────────────────────────────────────────────────┘</code></pre>
+  </section>
+
+  <!-- หมวดที่ 2: Data Contract -->
+  <section id="section-contract" class="section-card">
+    <h2>
+      <span>2. โครงสร้างข้อมูลมาตรฐานของผลลัพธ์ (Data Contract)</span>
+      <span class="nav-tag">SPECIFICATION</span>
+    </h2>
+
+    <p>
+      เพื่อให้นักศึกษาทั้งสองคนสามารถเขียนโค้ดฝั่งคำนวณ (utils) และฝั่งหน้าจอ (pages) ขนานกันได้โดยไม่ต้องรอคอยกัน ทุกฟังก์ชันใน <code>utils/*_solver.py</code> <strong>ต้องส่งค่ากลับ (Return Value) เป็น Dictionary ที่มีโครงสร้างตายตัวดังนี้เสมอ:</strong>
+    </p>
+
+    <pre><code><span class="syn-comment"># โครงสร้างผลลัพธ์มาตรฐานที่ทุก Solver ใน utils/ ต้องส่งกลับ</span>
+{
+    <span class="syn-str">"ok"</span>: <span class="syn-keyword">bool</span>,             <span class="syn-comment"># สถานะการทำงาน: True เมื่อคำนวณสำเร็จ, False เมื่อเกิด Error</span>
+    <span class="syn-str">"result"</span>: <span class="syn-keyword">float</span> | <span class="syn-keyword">None</span>, <span class="syn-comment"># คำตอบสุดท้ายเชิงตัวเลข (สำหรับนำไปพล็อตกราฟหรือเปรียบเทียบ)</span>
+    <span class="syn-str">"latex"</span>: <span class="syn-keyword">str</span>,           <span class="syn-comment"># สูตรคณิตศาสตร์ของคำตอบสุดท้ายในรูปแบบ LaTeX</span>
+    <span class="syn-str">"steps"</span>: <span class="syn-func">list</span>[<span class="syn-keyword">str</span>],     <span class="syn-comment"># ลิสต์ของขั้นตอนการคำนวณทีละบรรทัด (ภาษาไทย + LaTeX)</span>
+    <span class="syn-str">"expr"</span>: sp.Expr | <span class="syn-keyword">None</span>, <span class="syn-comment"># อ็อบเจกต์ SymPy ของนิพจน์ที่ผ่านการ Parse แล้ว</span>
+    <span class="syn-str">"error"</span>: <span class="syn-keyword">str</span> | <span class="syn-keyword">None</span>     <span class="syn-comment"># ข้อความอธิบายข้อผิดพลาดภาษาไทย (เมื่อ ok เป็น False)</span>
+}</code></pre>
+
+    <div class="callout callout-warning">
+      <strong>ข้อควรระวังสำคัญอย่างยิ่งสำหรับนิสิต:</strong><br>
+      ห้ามเปลี่ยนชื่อคีย์ (Key) ใน Dictionary เป็นอย่างอื่นเด็ดขาด เช่น เปลี่ยนจาก <code>result</code> เป็น <code>answer</code> เพราะจะทำให้หน้า UI ที่เขียนดักไว้ และชุดทดสอบใน <code>tests/</code> พังเสียหายทั้งหมด
+    </div>
+  </section>
+
+  <!-- หมวดที่ 3: Deep Dive Limit Solver -->
+  <section id="section-math-limit" class="section-card">
+    <h2>
+      <span>3. ขั้นตอนวิธีทางคณิตศาสตร์: ลิมิตรูปแบบยังไม่กำหนด 0/0</span>
+      <span class="nav-tag">utils/limit_solver.py</span>
+    </h2>
+
+    <p>
+      หัวข้อลิมิตเป็นจุดแรกที่นิสิตที่เรียนแคลคูลัสมักจะสับสน โดยเฉพาะเมื่อเจอรูปแบบยังไม่กำหนด $\left[\frac{0}{0}\right]$ นิสิตมักจะด่วนสรุปว่า "หาค่าไม่ได้" หรือไม่รู้วิธีการจัดรูปพีชคณิต โมดูลนี้จึงต้องทำหน้าที่แกะขั้นตอนอย่างเป็นระบบ
+    </p>
+
+    <h4>กระบวนการทางคณิตศาสตร์ 4 ขั้นตอน (Algorithmic Logic):</h4>
+    <ol>
+      <li>
+        <strong>การแทนค่าตรง (Direct Substitution Check):</strong><br>
+        แยกนิพจน์ $f(x)$ ออกเป็นเศษ $N(x)$ และส่วน $D(x)$ ด้วย <code>expr.as_numer_denom()</code> จากนั้นแทนค่า $x = a$ เพื่อหาค่า $N(a)$ และ $D(a)$<br>
+        - ถ้า $D(a) \neq 0$: ลิมิตหาค่าได้ทันทีโดยการแทนค่าตรง $L = \frac{N(a)}{D(a)}$<br>
+        - ถ้า $D(a) = 0$ และ $N(a) \neq 0$: ลิมิตมีค่าเป็นอนันต์หรือหาค่าไม่ได้ (เส้นกำกับแนวดิ่ง)<br>
+        - ถ้า $D(a) = 0$ และ $N(a) = 0$: ติดป้ายสถานะเป็น <strong>รูปแบบยังไม่กำหนด (Indeterminate Form $\frac{0}{0}$)</strong> ต้องดำเนินการจัดรูปในขั้นตอนถัดไป
+      </li>
+      <li>
+        <strong>การจำแนกประเภทโครงสร้างพีชคณิต (Pattern Classification):</strong><br>
+        ตรวจสอบว่าในเศษ $N(x)$ หรือส่วน $D(x)$ มีพจน์ที่เป็นรากที่สอง (Square Root หรือ <code>is_Pow</code> ที่มีกำลังเป็น $1/2$) หรือไม่<br>
+        - <strong>กรณีที่ 1 (พหุนามตรรกยะ):</strong> ใช้ขั้นตอนวิธีแยกตัวประกอบ (Factorization Strategy)<br>
+        - <strong>กรณีที่ 2 (ฟังก์ชันติดกรณฑ์):</strong> ใช้ขั้นตอนวิธีคูณด้วยสังยุค (Conjugate Multiplication Strategy)
+      </li>
+      <li>
+        <strong>การกำจัดตัวประกอบร่วมและการลดรูป (Simplification & Cancellation):</strong><br>
+        หัวใจของการหาลิมิตเมื่อ $x \to a$ คือ $x \neq a$ ดังนั้นพจน์ $(x - a) \neq 0$ เราจึงสามารถตัดทอนพจน์ $(x - a)$ ที่เป็นตัวการทำให้เกิด $\frac{0}{0}$ ออกไปได้<br>
+        ได้ฟังก์ชันใหม่ $g(x)$ ที่มีนิยามที่จุด $a$
+      </li>
+      <li>
+        <strong>การคำนวณลิมิตขั้นสุดท้าย (Final Evaluation):</strong><br>
+        แทนค่า $x = a$ ลงใน $g(x)$ จะได้ค่าลิมิตจริง $L = g(a)$
+      </li>
+    </ol>
+
+    <h4>ตัวอย่างโค้ดฉบับสมบูรณ์สำหรับ <code>utils/limit_solver.py</code>:</h4>
+    <pre><code><span class="syn-comment"># utils/limit_solver.py</span>
+<span class="syn-keyword">from</span> typing <span class="syn-keyword">import</span> Any
+<span class="syn-keyword">import</span> sympy <span class="syn-keyword">as</span> sp
+<span class="syn-keyword">from</span> sympy.parsing.sympy_parser <span class="syn-keyword">import</span> (
+    parse_expr,
+    standard_transformations,
+    implicit_multiplication_application,
+)
+
+TRANSFORMATIONS = standard_transformations + (
+    implicit_multiplication_application,
+)
+
+X = sp.Symbol(<span class="syn-str">"x"</span>)
+
+<span class="syn-keyword">def</span> <span class="syn-func">_parse_input</span>(expr_str: <span class="syn-keyword">str</span>) -> sp.Expr:
+    clean = (expr_str <span class="syn-keyword">or</span> <span class="syn-str">""</span>).strip()
+    <span class="syn-keyword">if</span> <span class="syn-keyword">not</span> clean:
+        <span class="syn-keyword">raise</span> ValueError(<span class="syn-str">"กรุณากรอกฟังก์ชัน f(x)"</span>)
+    <span class="syn-keyword">return</span> parse_expr(clean, transformations=TRANSFORMATIONS)
+
+<span class="syn-keyword">def</span> <span class="syn-func">compute_limit_near</span>(expr_str: <span class="syn-keyword">str</span>, a: <span class="syn-keyword">float</span>) -> <span class="syn-keyword">dict</span>[<span class="syn-keyword">str</span>, Any]:
+    <span class="syn-str">"""คำนวณลิมิต lim_{x->a} f(x) พร้อมสร้างขั้นตอนแสดงผลเชิงการสอน (Pedagogical Steps)"""</span>
+    <span class="syn-keyword">try</span>:
+        expr = _parse_input(expr_str)
+        a_sym = sp.Rational(str(a)).limit_denominator(<span class="syn-num">1000</span>)
+        num, den = expr.as_numer_denom()
+        steps = []
+
+        <span class="syn-comment"># ขั้นตอนที่ 1: วิเคราะห์การแทนค่าตรง</span>
+        val_num = sp.simplify(num.subs(X, a_sym))
+        val_den = sp.simplify(den.subs(X, a_sym))
+
+        steps.append(
+            <span class="syn-str">f"**ขั้นที่ 1: ตรวจสอบโดยการแทนค่าตรง (Direct Substitution)**\n"</span>
+            <span class="syn-str">f"ลองแทนค่า $x = {sp.latex(a_sym)}$ ในฟังก์ชัน $f(x) = \\frac{{{sp.latex(num)}}}{{{sp.latex(den)}}}$\n"</span>
+            <span class="syn-str">f"$$f({sp.latex(a_sym)}) = \\frac{{{sp.latex(val_num)}}}{{{sp.latex(val_den)}}}$$"</span>
+        )
+
+        <span class="syn-keyword">if</span> val_den == <span class="syn-num">0</span> <span class="syn-keyword">and</span> val_num == <span class="syn-num">0</span>:
+            steps.append(
+                <span class="syn-str">"**ขั้นที่ 2: วินิจฉัยรูปแบบยังไม่กำหนด (Indeterminate Form)**\n"</span>
+                <span class="syn-str">"พบว่าผลลัพธ์อยู่ในรูป $\\left[\\frac{0}{0}\\right]$ ซึ่งยังไม่สามารถสรุปคำตอบได้ "</span>
+                <span class="syn-str">"จำเป็นต้องจัดรูปทางพีชคณิตเพื่อตัดทอนตัวประกอบร่วม $(x - "</span> + sp.latex(a_sym) + <span class="syn-str">")$ ออกก่อน"</span>
+            )
+
+            <span class="syn-comment"># ตรวจจับกรณีมีเครื่องหมายรากที่สอง (Square Root) เพื่อเลือกใช้สังยุค</span>
+            has_sqrt = <span class="syn-func">any</span>(arg.is_Pow <span class="syn-keyword">and</span> arg.exp == sp.Rational(<span class="syn-num">1</span>, <span class="syn-num">2</span>) <span class="syn-keyword">for</span> arg <span class="syn-keyword">in</span> expr.atoms())
+
+            <span class="syn-keyword">if</span> has_sqrt:
+                steps.append(
+                    <span class="syn-str">"**ขั้นที่ 3: การใช้สังยุค (Conjugate Multiplication)**\n"</span>
+                    <span class="syn-str">"เนื่องจากฟังก์ชันมีพจน์ติดกรณฑ์ เราจะนำสังยุคของพจน์นั้นมาคูณทั้งเศษและส่วน "</span>
+                    <span class="syn-str">"เพื่อใช้เอกลักษณ์ผลต่างกำลังสอง $A^2 - B^2 = (A-B)(A+B)$"</span>
+                )
+            <span class="syn-keyword">else</span>:
+                factored_num = sp.factor(num)
+                factored_den = sp.factor(den)
+                steps.append(
+                    <span class="syn-str">f"**ขั้นที่ 3: การแยกตัวประกอบ (Factorization)**\n"</span>
+                    <span class="syn-str">f"ทำการแยกตัวประกอบของเศษและส่วน:\n"</span>
+                    <span class="syn-str">f"$$\\frac{{{sp.latex(num)}}}{{{sp.latex(den)}}} = \\frac{{{sp.latex(factored_num)}}}{{{sp.latex(factored_den)}}}$$"</span>
+                )
+
+            <span class="syn-comment"># ทำการตัดทอนตัวร่วม</span>
+            simplified_expr = sp.cancel(expr)
+            steps.append(
+                <span class="syn-str">f"**ขั้นที่ 4: การตัดทอนตัวประกอบร่วม (Cancellation)**\n"</span>
+                <span class="syn-str">f"เมื่อ $x \\neq {sp.latex(a_sym)}$ เราสามารถตัดทอนพจน์ร่วม $(x - {sp.latex(a_sym)})$ ออกได้:\n"</span>
+                <span class="syn-str">f"$$g(x) = {sp.latex(simplified_expr)}$$"</span>
+            )
+
+            <span class="syn-comment"># แทนค่าซ้ำในนิพจน์ที่ลดรูปแล้ว</span>
+            final_res = sp.simplify(simplified_expr.subs(X, a_sym))
+            steps.append(
+                <span class="syn-str">f"**ขั้นที่ 5: การแทนค่าหลังตัดทอน (Final Evaluation)**\n"</span>
+                <span class="syn-str">f"แทนค่า $x = {sp.latex(a_sym)}$ ลงในฟังก์ชันที่ลดรูปแล้ว:\n"</span>
+                <span class="syn-str">f"$$\\lim_{{x \\to {sp.latex(a_sym)}}} f(x) = g({sp.latex(a_sym)}) = {sp.latex(final_res)}$$"</span>
+            )
+
+            <span class="syn-keyword">return</span> {
+                <span class="syn-str">"ok"</span>: <span class="syn-keyword">True</span>,
+                <span class="syn-str">"result"</span>: <span class="syn-func">float</span>(final_res.evalf()),
+                <span class="syn-str">"latex"</span>: <span class="syn-str">f"\\lim_{{x \\to {sp.latex(a_sym)}}} {sp.latex(expr)} = {sp.latex(final_res)}"</span>,
+                <span class="syn-str">"steps"</span>: steps,
+                <span class="syn-str">"expr"</span>: expr,
+                <span class="syn-str">"error"</span>: <span class="syn-keyword">None</span>,
+            }
+        <span class="syn-keyword">elif</span> val_den != <span class="syn-num">0</span>:
+            <span class="syn-comment"># กรณีแทนค่าได้ทันที</span>
+            final_res = sp.simplify(val_num / val_den)
+            steps.append(
+                <span class="syn-str">f"**สรุปผลการคำนวณ:**\n"</span>
+                <span class="syn-str">f"เนื่องจากตัวส่วนไม่เป็นศูนย์ ลิมิตมีค่าเท่ากับการแทนค่าตรง:\n"</span>
+                <span class="syn-str">f"$$\\lim_{{x \\to {sp.latex(a_sym)}}} f(x) = {sp.latex(final_res)}$$"</span>
+            )
+            <span class="syn-keyword">return</span> {
+                <span class="syn-str">"ok"</span>: <span class="syn-keyword">True</span>,
+                <span class="syn-str">"result"</span>: <span class="syn-func">float</span>(final_res.evalf()),
+                <span class="syn-str">"latex"</span>: <span class="syn-str">f"\\lim_{{x \\to {sp.latex(a_sym)}}} {sp.latex(expr)} = {sp.latex(final_res)}"</span>,
+                <span class="syn-str">"steps"</span>: steps,
+                <span class="syn-str">"expr"</span>: expr,
+                <span class="syn-str">"error"</span>: <span class="syn-keyword">None</span>,
+            }
+        <span class="syn-keyword">else</span>:
+            <span class="syn-keyword">return</span> {
+                <span class="syn-str">"ok"</span>: <span class="syn-keyword">False</span>,
+                <span class="syn-str">"result"</span>: <span class="syn-keyword">None</span>,
+                <span class="syn-str">"latex"</span>: <span class="syn-str">""</span>,
+                <span class="syn-str">"steps"</span>: steps,
+                <span class="syn-str">"expr"</span>: expr,
+                <span class="syn-str">"error"</span>: <span class="syn-str">f"ตัวส่วนเป็นศูนย์แต่ตัวเศษไม่เป็นศูนย์ ลิมิตหาค่าไม่ได้ (เกิดเส้นกำกับแนวดิ่งที่ x = {a})"</span>,
+            }
+
+    <span class="syn-keyword">except</span> Exception <span class="syn-keyword">as</span> e:
+        <span class="syn-keyword">return</span> {
+            <span class="syn-str">"ok"</span>: <span class="syn-keyword">False</span>,
+            <span class="syn-str">"result"</span>: <span class="syn-keyword">None</span>,
+            <span class="syn-str">"latex"</span>: <span class="syn-str">""</span>,
+            <span class="syn-str">"steps"</span>: [],
+            <span class="syn-str">"expr"</span>: <span class="syn-keyword">None</span>,
+            <span class="syn-str">"error"</span>: <span class="syn-str">f"เกิดข้อผิดพลาดในการคำนวณ: {e}"</span>,
+        }
+</code></pre>
+  </section>
+
+  <!-- หมวดที่ 4: Tangent Solver -->
+  <section id="section-math-tangent" class="section-card">
+    <h2>
+      <span>4. ขั้นตอนวิธีทางคณิตศาสตร์: เส้นสัมผัสโค้งและอนุพันธ์</span>
+      <span class="nav-tag">utils/tangent_solver.py</span>
+    </h2>
+
+    <p>
+      นิสิตส่วนใหญ่มักจำสูตรการดิฟลัดได้ (เช่น $\frac{d}{dx}x^2 = 2x$) แต่มักขาดมโนทัศน์ว่า <strong>"อนุพันธ์คือความชันของเส้นสัมผัสเส้นโค้งที่ได้จากการลู่เข้าของเส้นตัดโค้ง (Secant Line)"</strong> โมดูลนี้จึงต้องสร้างกระบวนการคำนวณ 2 ระดับ:
+    </p>
+
+    <h4>กระบวนการทางคณิตศาสตร์ (Algorithmic Logic):</h4>
+    <ol>
+      <li>
+        <strong>การคำนวณพิกัดจุดสัมผัส $(a, f(a))$:</strong><br>
+        แทนค่า $x = a$ เพื่อหาพิกัดจุดสัมผัสบนกราฟ $y_0 = f(a)$
+      </li>
+      <li>
+        <strong>การแสดงอัตราส่วนผลต่าง (Difference Quotient Formulation):</strong><br>
+        สร้างนิพจน์ตามนิยามลิมิตของอนุพันธ์:
+        $$f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h}$$
+        แสดงให้เห็นการกระจายพจน์ $f(a+h)$ และการลบด้วย $f(a)$ ซึ่งจะทำให้พจน์คงตัวหักล้างกันไป เหลือเพียงพจน์ที่มี $h$ เป็นตัวร่วม
+      </li>
+      <li>
+        <strong>การตัดทอนตัวแปร $h$ และคำนวณความชัน $m$:</strong><br>
+        ดึงตัวร่วม $h$ ออกจากตัวเศษ แล้วตัดทอนกับ $h$ ในตัวส่วน จากนั้นเทคลิมิต $h \to 0$ เพื่อหาค่าความชันที่แท้จริง $m = f'(a)$
+      </li>
+      <li>
+        <strong>การหาสมการเส้นสัมผัส (Point-Slope Form):</strong><br>
+        นำความชัน $m$ และพิกัดจุด $(a, y_0)$ เข้าสู่รูปสมการเส้นตรง:
+        $$y - y_0 = m(x - a) \implies y = mx - ma + y_0$$
+      </li>
+    </ol>
+
+    <h4>โครงร่างฟังก์ชันหลักใน <code>utils/tangent_solver.py</code>:</h4>
+    <pre><code><span class="syn-comment"># utils/tangent_solver.py</span>
+H = sp.Symbol(<span class="syn-str">"h"</span>)
+
+<span class="syn-keyword">def</span> <span class="syn-func">compute_tangent</span>(expr_str: <span class="syn-keyword">str</span>, a: <span class="syn-keyword">float</span>) -> <span class="syn-keyword">dict</span>[<span class="syn-keyword">str</span>, Any]:
+    <span class="syn-str">"""คำนวณความชันและสมการเส้นสัมผัสโค้งตามนิยามลิมิตทีละขั้น"""</span>
+    <span class="syn-keyword">try</span>:
+        expr = _parse_input(expr_str)
+        a_sym = sp.Rational(str(a)).limit_denominator(<span class="syn-num">1000</span>)
+        steps = []
+
+        <span class="syn-comment"># 1. หาพิกัด y_0</span>
+        y0 = expr.subs(X, a_sym)
+        steps.append(<span class="syn-str">f"**ขั้นที่ 1: คำนวณพิกัดจุดบนเส้นโค้งที่ $x = {sp.latex(a_sym)}$**\n"</span>
+                     <span class="syn-str">f"แทนค่า $x$ ในสมการ $f(x)$ จะได้จุดสัมผัส $(x_0, y_0) = ({sp.latex(a_sym)}, {sp.latex(y0)})$"</span>)
+
+        <span class="syn-comment"># 2. ตั้งนิยามอนุพันธ์</span>
+        f_a_plus_h = expr.subs(X, a_sym + H)
+        diff_quotient = (f_a_plus_h - y0) / H
+        steps.append(<span class="syn-str">f"**ขั้นที่ 2: ตั้งสมการตามนิยามความชันของเส้นสัมผัส**\n"</span>
+                     <span class="syn-str">f"$$m = \\lim_{{h \\to 0}} \\frac{{f({sp.latex(a_sym)} + h) - f({sp.latex(a_sym)})}}{{h}} = \\lim_{{h \\to 0}} \\frac{{{sp.latex(sp.expand(f_a_plus_h))} - ({sp.latex(y0)})}}{{h}}$$"</span>)
+
+        <span class="syn-comment"># 3. ตัดทอน h และเทคลิมิต</span>
+        diff_simplified = sp.cancel(diff_quotient)
+        slope = sp.limit(diff_quotient, H, <span class="syn-num">0</span>)
+        steps.append(<span class="syn-str">f"**ขั้นที่ 3: ตัดทอนพจน์ $h$ และเทคลิมิตเข้าสู่ 0**\n"</span>
+                     <span class="syn-str">f"$$m = \\lim_{{h \\to 0}} ({sp.latex(diff_simplified)}) = {sp.latex(slope)}$$"</span>)
+
+        <span class="syn-comment"># 4. หาสมการเส้นสัมผัส</span>
+        tangent_line = sp.simplify(slope * (X - a_sym) + y0)
+        steps.append(<span class="syn-str">f"**ขั้นที่ 4: หาสมการเส้นสัมผัสในรูป $y - y_0 = m(x - x_0)$**\n"</span>
+                     <span class="syn-str">f"$$y - ({sp.latex(y0)}) = {sp.latex(slope)}(x - {sp.latex(a_sym)}) \\implies y = {sp.latex(tangent_line)}$$"</span>)
+
+        <span class="syn-keyword">return</span> {
+            <span class="syn-str">"ok"</span>: <span class="syn-keyword">True</span>,
+            <span class="syn-str">"result"</span>: <span class="syn-func">float</span>(slope.evalf()),
+            <span class="syn-str">"latex"</span>: <span class="syn-str">f"y = {sp.latex(tangent_line)}"</span>,
+            <span class="syn-str">"steps"</span>: steps,
+            <span class="syn-str">"expr"</span>: expr,
+            <span class="syn-str">"error"</span>: <span class="syn-keyword">None</span>,
+        }
+    <span class="syn-keyword">except</span> Exception <span class="syn-keyword">as</span> e:
+        <span class="syn-keyword">return</span> {<span class="syn-str">"ok"</span>: <span class="syn-keyword">False</span>, <span class="syn-str">"result"</span>: <span class="syn-keyword">None</span>, <span class="syn-str">"latex"</span>: <span class="syn-str">""</span>, <span class="syn-str">"steps"</span>: [], <span class="syn-str">"expr"</span>: <span class="syn-keyword">None</span>, <span class="syn-str">"error"</span>: <span class="syn-func">str</span>(e)}
+</code></pre>
+  </section>
+
+  <!-- หมวดที่ 5: Riemann Solver Blueprint -->
+  <section id="section-math-riemann" class="section-card">
+    <h2>
+      <span>5. ขั้นตอนวิธีทางคณิตศาสตร์: ผลรวมรีมันน์และการลู่เข้าสู่ปริพันธ์</span>
+      <span class="nav-tag">utils/riemann_solver.py</span>
+    </h2>
+
+    <p>
+      โมดูล <code>utils/riemann_solver.py</code> เป็นโมดูลที่พัฒนาเสร็จสมบูรณ์ 100% แล้วในคลังโค้ดปัจจุบัน และถือเป็น <strong>"ต้นแบบสมบูรณ์แบบ (Golden Standard)"</strong> ที่นิสิตต้องศึกษาเป็นตัวอย่าง
+    </p>
+
+    <h4>สูตรทางคณิตศาสตร์ทั้ง 3 วิธี:</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>วิธีการแบ่งช่วง (Method)</th>
+          <th>สัญลักษณ์</th>
+          <th>จุดตัวแทนในแต่ละช่วงย่อย ($x_i^*$)</th>
+          <th>สูตรผลรวมรีมันน์</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>จุดซ้าย (Left Endpoint)</strong></td>
+          <td>$L_n$</td>
+          <td>$x_i = a + i\Delta x$</td>
+          <td>$$L_n = \sum_{i=0}^{n-1} f(x_i)\Delta x$$</td>
+        </tr>
+        <tr>
+          <td><strong>จุดขวา (Right Endpoint)</strong></td>
+          <td>$R_n$</td>
+          <td>$x_i = a + (i+1)\Delta x$</td>
+          <td>$$R_n = \sum_{i=1}^{n} f(x_i)\Delta x$$</td>
+        </tr>
+        <tr>
+          <td><strong>จุดกึ่งกลาง (Midpoint)</strong></td>
+          <td>$M_n$</td>
+          <td>$\bar{x}_i = a + (i + 0.5)\Delta x$</td>
+          <td>$$M_n = \sum_{i=0}^{n-1} f(\bar{x}_i)\Delta x$$</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-info">
+      <strong>จุดเชื่อมโยงเชิงมโนทัศน์ที่ต้องแสดงบน UI:</strong><br>
+      เมื่อผู้เรียนเลื่อน Slider ปรับค่าจำนวนช่วงย่อย $n$ จาก $4 \to 10 \to 50 \to 100$ ระบบจะต้องคำนวณค่าผลรวม $S_n$ ควบคู่ไปกับค่าปริพันธ์จำกัดเขตจริง $I = \int_a^b f(x)\,dx$ และแสดงค่าความคลาดเคลื่อน (Error = $|I - S_n|$) เพื่อให้นิสิตประจักษ์ด้วยสายตาว่า $\lim_{n \to \infty} S_n = \int_a^b f(x)\,dx$
+    </div>
+  </section>
+
+  <!-- หมวดที่ 6: Substitution Solver -->
+  <section id="section-math-sub" class="section-card">
+    <h2>
+      <span>6. ขั้นตอนวิธีทางคณิตศาสตร์: การอินทิเกรตด้วยการแทนค่าตัวแปร u</span>
+      <span class="nav-tag">utils/substitution_solver.py</span>
+    </h2>
+
+    <p>
+      การอินทิเกรตด้วยการเปลี่ยนตัวแปร $u$ (u-Substitution) เป็นหัวข้อที่ท้าทายที่สุดในการเขียนโค้ดอัตโนมัติ เนื่องจากคอมพิวเตอร์ทั่วไปจะอินทิเกรตรวดเดียว แต่ในการสอน เราต้องแยกแยะ 4 ขั้นตอน:
+    </p>
+
+    <h4>การแจกแจงขั้นตอนวิธีสำหรับโมดูล <code>substitution_solver.py</code>:</h4>
+    <div class="step-box">
+      <p><strong>1. การเลือกฟังก์ชันภายใน $u = g(x)$ (Sub-expression Heuristic):</strong><br>
+      ใช้อัลกอริทึมค้นหาพจน์ย่อยที่อยู่ภายในวงเล็บยกกำลัง หรืออยู่ใต้เครื่องหมายกรณฑ์ เช่น ในนิพจน์ $2x(x^2 + 1)^3$ ระบบจะตรวจพบว่าฐาน $x^2 + 1$ คือตัวเลือกที่ดีที่สุดสำหรับกำหนดให้เป็น $u$</p>
+      
+      <p><strong>2. การหาอนุพันธ์และจัดรูปผลต่างเชิงอนุพันธ์ (Differential $du$):</strong><br>
+      คำนวณ $g'(x) = \frac{d}{dx}g(x)$ จากนั้นจัดรูปเพื่อแทนค่า $dx = \frac{du}{g'(x)}$</p>
+
+      <p><strong>3. การแทนค่าลงในปริพันธ์และตัดทอนตัวแปร $x$ ให้หมดสิ้น:</strong><br>
+      นำ $u$ และ $dx$ ไปแทนค่าใน $\int f(x)\,dx$ แล้วทำการตัดทอนตัวแปร $x$ ด้วยคำสั่ง <code>sp.simplify()</code> หากยังมีตัวแปร $x$ หลงเหลืออยู่ แสดงว่าฟังก์ชันนี้ไม่เหมาะกับการใช้วิธีเปลี่ยนตัวแปร $u$ พื้นฐาน</p>
+
+      <p><strong>4. การอินทิเกรตเทียบกับ $u$ และการแทนตัวแปรเดิมกลับ (Back Substitution):</strong><br>
+      ใช้สูตรเลขชี้กำลัง $\int u^n\,du = \frac{u^{n+1}}{n+1} + C$ จากนั้นแทน $u = g(x)$ กลับเข้าไปในคำตอบสุดท้าย</p>
+    </div>
+  </section>
+
+  <!-- หมวดที่ 7: UI & Scaffolding -->
+  <section id="section-ui-scaffolding" class="section-card">
+    <h2>
+      <span>7. การออกแบบหน้าจอเพื่อการเรียนรู้แบบนั่งร้านทางปัญญา</span>
+      <span class="nav-tag">STREAMLIT UI</span>
+    </h2>
+
+    <p>
+      เพื่อไม่ให้กรรมการสอบข้อเสนอวิจารณ์ว่า <em>"นี่เป็นเพียงเว็บแจกเฉลยสำเร็จรูป (Passive Solver)"</em> การออกแบบหน้าจอในโฟลเดอร์ <code>pages/</code> ต้องใช้แนวคิด <strong>Active Scaffolding Framework</strong> ดังนี้:
+    </p>
+
+    <div style="margin: 20px 0;">
+      <h4>โครงสร้างหน้าจอ 4 องค์ประกอบ (Per-page Structure):</h4>
+      <ol>
+        <li><strong>Hero Banner & Concept Overview:</strong> ใช้ฟังก์ชัน <code>render_hero()</code> สรุปใจความสำคัญของบทเรียน กฎนิยาม และคำเตือนจุดที่มักผิดพลาดบ่อย (Misconceptions)</li>
+        <li><strong>Interactive Experiment Canvas:</strong> มีตัวควบคุม (Sliders/Inputs) ให้ผู้เรียนได้ทดลองเปลี่ยนค่าตัวแปร เช่น ปรับค่า $a$ หรือจำนวน $n$ แล้วเห็นกราฟขยับทันที</li>
+        <li><strong>Strategy Decision Checkpoint (จุดฝึกตัดสินใจ):</strong> ก่อนที่ระบบจะแสดงขั้นตอนเฉลย ระบบจะมีปุ่ม Radio/Selectbox ให้ผู้เรียนทายก่อนว่า <em>"โจทย์ข้อนี้ควรเริ่มต้นด้วยวิธีใด?"</em> หากเลือกถูก ระบบจะชมและเปิดขั้นตอนถัดไป หากเลือกผิด ระบบจะมีข้อความใบ้แนะนำ</li>
+        <li><strong>Progressive Step Revealer:</strong> ผู้เรียนสามารถกดปุ่ม "ดูขั้นตอนถัดไป" ทีละขั้นได้ เพื่อให้เวลาสมองได้คิดตาม ไม่ใช่แสดงพรวดเดียว 10 บรรทัด</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- หมวดที่ 8: QA & Automated Testing -->
+  <section id="section-qa-plan" class="section-card">
+    <h2>
+      <span>8. แผนการทดสอบอัตโนมัติและการประกันคุณภาพ</span>
+      <span class="nav-tag">TEST SUITE PLAN</span>
+    </h2>
+
+    <p>
+      การมีชุดทดสอบอัตโนมัติในโฟลเดอร์ <code>tests/</code> เป็นหลักฐานชิ้นสำคัญที่สุดที่จะใช้ยันกับคณะกรรมการว่า <strong>"งานนี้มีมาตรฐานทางวิศวกรรมซอฟต์แวร์และการคำนวณที่เชื่อถือได้จริง"</strong>
+    </p>
+
+    <h4>ตารางแผนการเขียนชุดทดสอบ (Test Cases Coverage):</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>ไฟล์ทดสอบ</th>
+          <th>กรณีทดสอบปกติ (Happy Path)</th>
+          <th>กรณีทดสอบขอบเขต / ผิดพลาด (Edge Cases)</th>
+          <th>เกณฑ์การผ่าน (Assertion)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>test_limit_solver.py</code></td>
+          <td>
+            • $(x^2-4)/(x-2)$ เมื่อ $x \to 2$<br>
+            • $(x^2-9)/(x-3)$ เมื่อ $x \to 3$
+          </td>
+          <td>
+            • สตริงว่าง <code>""</code><br>
+            • ตัวส่วนเป็น 0 แต่เศษไม่เป็น 0 (เช่น $1/x$ ที่ $x \to 0$)<br>
+            • ลิมิตที่แทนค่าตรงได้เลย (เช่น $x^2+1$ ที่ $x \to 2$)
+          </td>
+          <td>
+            <code>assert res["ok"] is True</code><br>
+            <code>assert res["result"] == 4.0</code><br>
+            <code>assert len(res["steps"]) >= 4</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>test_tangent_solver.py</code></td>
+          <td>
+            • $f(x) = x^2$ ที่จุด $x = 2$<br>
+            • $f(x) = x^3 - 3x$ ที่จุด $x = 1$
+          </td>
+          <td>
+            • ฟังก์ชันค่าคงที่ $f(x) = 5$<br>
+            • สัญลักษณ์ตัวแปรอื่นที่ไม่ใช่ $x$
+          </td>
+          <td>
+            <code>assert res["result"] == 4.0</code><br>
+            <code>assert "y = 4*x - 4" in res["latex"]</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>test_riemann_solver.py</code></td>
+          <td>
+            • $f(x) = x^2$ ช่วง $[0, 2]$, $n=4$ ทั้ง 3 วิธี
+          </td>
+          <td>
+            • $a \ge b$ (ขอบเขตกลับด้าน)<br>
+            • ค่า $n \le 0$ หรือ $n$ เป็นทศนิยม
+          </td>
+          <td>
+            <code>assert abs(res["result"] - 2.666) &lt; 0.1</code><br>
+            <code>assert res["ok"] is True</code>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- หมวดที่ 9: Oral Defense Script -->
+  <section id="section-defense-qa" class="section-card">
+    <h2>
+      <span>9. คู่มือตั้งการ์ดและแนวทางตอบคำถามคณะกรรมการสอบ</span>
+      <span class="nav-tag">ORAL DEFENSE</span>
+    </h2>
+
+    <p>
+      รวม 3 คำถามที่พบบ่อยที่สุดในการสอบข้อเสนอโครงงาน พร้อมแนวคิดและสคริปต์คำตอบภาษาไทยที่เป็นทางการและแสดงวุฒิภาวะทางวิชาการ:
+    </p>
+
+    <div class="step-box" style="border-left: 5px solid var(--danger);">
+      <h4 style="color: var(--danger); margin-top: 0;">คำถามที่ 1: "โปรแกรมอย่าง Symbolab หรือ ChatGPT ก็แก้โจทย์ได้หมดแล้ว นิสิตจะทำซ้ำไปทำไม?"</h4>
+      <p><strong>แนวคิดในการตอบ:</strong> ชี้ให้เห็นความแตกต่างระหว่าง "โปรแกรมคิดเลขหาคำตอบสุดท้าย (Passive Answer Engine)" กับ "เครื่องมือฝึกคิดเชิงนั่งร้านทางปัญญา (Active Scaffolding)"</p>
+      <div class="callout callout-info" style="margin-bottom: 0;">
+        <strong>สคริปต์ตอบ:</strong><br>
+        "กราบเรียนคณะกรรมการครับ ซอฟต์แวร์สำเร็จรูปอย่าง Symbolab หรือ LLM มักทำงานในรูปแบบ Black-box หรือเน้นการพ่นคำตอบและแสดงเฉลยรวดเดียวจบ ทำให้ผู้เรียนกลายเป็นเพียง 'ผู้อ่านเฉลยตาม' โดยไม่ได้ผ่านกระบวนการคิดวิเคราะห์ด้วยตนเอง<br><br>
+        แต่ระบบของพวกเราถูกออกแบบให้เป็น <strong>Interactive Scaffolding Tool</strong> ที่บังคับให้ผู้เรียนต้องฝึกการตัดสินใจในแต่ละขั้นตอน เช่น การเลือกกลยุทธ์การกำจัดรูปแบบยังไม่กำหนด $0/0$ ด้วยตนเอง พร้อมมีระบบตรวจสอบความถูกต้องระหว่างทางและมีกราฟิกแสดงผลเพื่อลดความเข้าใจผิด (Misconception) ทางคณิตศาสตร์ครับ"
+      </div>
+    </div>
+
+    <div class="step-box" style="border-left: 5px solid var(--accent);">
+      <h4 style="color: var(--accent); margin-top: 0;">คำถามที่ 2: "ทำไมขอบเขตมีแค่ 3 หัวข้อ? งานเบาเกินไปสำหรับนิสิต ป.ตรี 2 คนหรือไม่?"</h4>
+      <p><strong>แนวคิดในการตอบ:</strong> ยืนยันว่างานเน้น "ความลึกของการแจกแจงขั้นตอนวิธีและระบบทดสอบ (Algorithm Deconstruction & QA)" ไม่ใช่การต่อยอดปริมาณแบบผิวเผิน</p>
+      <div class="callout callout-info" style="margin-bottom: 0;">
+        <strong>สคริปต์ตอบ:</strong><br>
+        "กราบเรียนอาจารย์ครับ หากเป็นการเรียกใช้ฟังก์ชันสำเร็จรูปเพื่อหาคำตอบตัวเลข งานจะมีเพียงไม่กี่บรรทัดจริงครับ แต่เนื้องานหลักของพวกเราคือ <strong>การสร้างกลไก Deconstruction Engine</strong> ที่ต้องอ่านโครงสร้างทางพีชคณิต (AST), จัดการกรณีพิเศษ, และดึงสมการระหว่างทางออกมาแปลงเป็นขั้นตอนทางคณิตศาสตร์อย่างถูกต้องสมบูรณ์<br><br>
+        นอกจากนี้ยังครอบคลุมการออกแบบชุดทดสอบอัตโนมัติด้วย Pytest เพื่อยืนยันความถูกต้อง 100% การเลือกทำ 3 หัวข้อที่เป็นคอขวดของการเรียนรู้ จึงทำให้เราสามารถลงลึกในเชิงขั้นตอนวิธีและส่งมอบงานที่มีคุณภาพสูงสุดได้ภายในระยะเวลา 1 ภาคการศึกษาครับ"
+      </div>
+    </div>
+
+    <div class="step-box" style="border-left: 5px solid var(--primary);">
+      <h4 style="color: var(--primary); margin-top: 0;">คำถามที่ 3: "จะพิสูจน์ทางวิชาการอย่างไรว่าแอปนี้ช่วยให้ผู้เรียนเข้าใจจริง?"</h4>
+      <p><strong>แนวคิดในการตอบ:</strong> นำเสนอระเบียบวิธีวิจัยแบบ Two-tier Evaluation (วัดความถูกต้องของระบบคู่กับผลสัมฤทธิ์ทางการเรียน)</p>
+      <div class="callout callout-info" style="margin-bottom: 0;">
+        <strong>สคริปต์ตอบ:</strong><br>
+        "ทางกลุ่มวางแผนการประเมินผลออกเป็น 2 มิติครับ มิติแรกคือ <strong>System & Mathematical Rigor</strong> โดยวัดความถูกต้องของขั้นตอนและผลเฉลยผ่านชุด Automated Test Cases ที่ครอบคลุมโจทย์มาตรฐานและ Edge Cases ทั้งหมด<br><br>
+        และมิติที่สองคือ <strong>Pedagogical Effectiveness</strong> ซึ่งเราจะไม่ใช้เพียงแบบสอบถามความพึงพอใจทั่วไป แต่จะทำการทดสอบกับกลุ่มตัวอย่างนิสิตด้วย <strong>แบบทดสอบวัดมโนทัศน์ก่อนและหลังใช้งาน (Pre-test / Post-test)</strong> ในจุดที่มักเกิดข้อผิดพลาดซ้ำซาก เพื่อประเมินว่าระบบสามารถช่วยลดอัตราความเข้าใจผิดทางคณิตศาสตร์ได้อย่างมีนัยสำคัญหรือไม่ครับ"
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 24px 0; border-top: 1px solid var(--border);">
+    <p>คู่มือสถาปัตยกรรมระบบและขั้นตอนวิธีทางคณิตศาสตร์ • Calculus Integration App 2026</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

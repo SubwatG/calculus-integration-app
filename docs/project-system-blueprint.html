@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>พิมพ์เขียวและสถาปัตยกรรมโครงงาน: Calculus Interactive Learning Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Noto+Sans+Thai:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- KaTeX for crisp math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-inner: #0f172a;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --primary: #38bdf8;
+      --primary-dark: #0284c7;
+      --accent: #f59e0b;
+      --accent-light: #fef3c7;
+      --success: #34d399;
+      --danger: #f87171;
+      --code-bg: #030712;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans Thai', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      padding: 32px 16px;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    h1 { font-size: 2rem; color: var(--primary); margin-bottom: 8px; }
+    .subtitle { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 16px; }
+
+    .meta-badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .section-title {
+      font-size: 1.45rem;
+      color: #f1f5f9;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-tag {
+      font-size: 0.8rem;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background: var(--border);
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Diagram & Workflow styling */
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin: 20px 0;
+    }
+
+    .wf-step {
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+    }
+
+    .wf-step.highlight {
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+    }
+
+    .wf-num {
+      position: absolute;
+      top: -12px;
+      left: 18px;
+      background: var(--primary);
+      color: #0f172a;
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 2px 10px;
+      border-radius: 6px;
+    }
+
+    .wf-title {
+      font-size: 1.15rem;
+      margin: 8px 0 10px 0;
+      color: #38bdf8;
+    }
+
+    /* Deep Dive Math Pipeline Box */
+    .math-pipeline {
+      background: var(--code-bg);
+      border: 1px solid #1e293b;
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 18px 0;
+      font-size: 0.95rem;
+    }
+
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 14px 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .comment { color: #64748b; }
+    .keyword { color: #f472b6; }
+    .func { color: #38bdf8; }
+    .string { color: #a7f3d0; }
+
+    /* Comparison Table */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 0.92rem;
+    }
+
+    .spec-table th, .spec-table td {
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+
+    .spec-table th {
+      background: var(--card-inner);
+      color: var(--primary);
+      font-family: 'Chakra Petch', sans-serif;
+    }
+
+    .spec-table tr:hover {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .badge-done {
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--success);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .badge-todo {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .rule-box {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-top: 18px;
+      color: #fde68a;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="meta-badge">PROJECT SYSTEM BLUEPRINT 2026</div>
+    <h1>พิมพ์เขียวโครงงาน: ระบบการสอนแคลคูลัสเชิงปฏิสัมพันธ์</h1>
+    <p class="subtitle">สรุปภาพรวมสถาปัตยกรรม (Architecture), แผนภูมิการไหลของระบบ (Workflow), และรายละเอียดเชิงลึกทางคณิตศาสตร์ในการเขียนโมดูลคำนวณทีละขั้น (Step-by-Step Solver)</p>
+    <p style="font-size: 0.95rem; color: var(--text-muted);">เอกสารนี้เขียนขึ้นเพื่อให้อาจารย์ที่ปรึกษาและนิสิตสามารถกลับมาอ่านทบทวนความเข้าใจได้ตลอดเวลา แม้จะทิ้งช่วงการทำงานไปหลายสัปดาห์ โดยระบุชัดเจนว่าจุดใดที่ต้องทำ จุดใดต้องระวัง และมีขั้นตอนทางคณิตศาสตร์อย่างไร</p>
+  </header>
+
+  <!-- ส่วนที่ 1: ภาพรวมระบบและ Workflow รวม -->
+  <section class="section-card">
+    <div class="section-title">
+      <span>1. สถาปัตยกรรม 3 ชั้น (3-Tier Separation of Concerns)</span>
+      <span class="section-tag">ARCHITECTURE</span>
+    </div>
+
+    <p>ระบบถูกออกแบบตามหลักการวิศวกรรมซอฟต์แวร์ เพื่อป้องกันไม่ให้โค้ดการคำนวณและการแสดงผลปะปนกัน โดยแบ่งเป็น 3 ชั้นเด็ดขาด:</p>
+
+    <div class="workflow-grid">
+      <div class="wf-step highlight">
+        <div class="wf-num">TIER 1</div>
+        <h3 class="wf-title">Mathematical Engine</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">โฟลเดอร์ <code>utils/*_solver.py</code></p>
+        <p>หัวใจหลักของงานวิจัย ทำหน้าที่แกะโครงสร้างทางคณิตศาสตร์ (AST), ตรวจสอบกรณีเฉพาะ (เช่น 0/0), แตกขั้นตอนทีละสเต็ป, และคืนผลลัพธ์เป็นโครงสร้างข้อมูลมาตรฐาน (Data Dictionary) ที่มีสูตร LaTeX สมบูรณ์</p>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-num">TIER 2</div>
+        <h3 class="wf-title">Interactive Scaffolding UI</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">โฟลเดอร์ <code>pages/*.py</code></p>
+        <p>สร้างด้วย Streamlit รับ Input จากผู้เรียน, บันทึกสถานะ (State) ความคืบหน้า, มีตัวสไลเดอร์ปรับค่าแบบ Real-time, และแสดงคำใบ้ (Hint) หากผู้เรียนเลือกกลยุทธ์แก้ปัญหาผิดพลาด</p>
+      </div>
+
+      <div class="wf-step">
+        <div class="wf-num">TIER 3</div>
+        <h3 class="wf-title">Automated Verification Gate</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">โฟลเดอร์ <code>tests/test_*.py</code></p>
+        <p>ชุดทดสอบอัตโนมัติด้วย <code>pytest</code> ทำหน้าที่เป็นหลักฐานทางวิชาการ (Academic Proof) ยืนยันว่าทุกฟังก์ชันคำนวณถูกต้องตามหลักคณิตศาสตร์ 100% ครอบคลุมทั้งโจทย์ปกติและ Edge Cases</p>
+      </div>
+    </div>
+
+    <!-- ASCII Box Workflow Visualization -->
+    <h4 style="margin: 24px 0 12px 0; color: var(--primary);">แผนภาพการไหลของข้อมูล (System Data Flow)</h4>
+    <div class="code-block">
+┌─────────────────────────┐
+│ ผู้เรียนป้อนสมการ f(x)    │ ── (ผ่าน UI บน Streamlit)
+└───────────┬─────────────┘
+            │ 1. ส่ง String ไปยัง Parser
+            ▼
+┌─────────────────────────┐
+│ _parse_input(expr_str)  │ ── (ใช้ SymPy แปลงเป็น Expression Tree ป้องกัน syntax พัง)
+└───────────┬─────────────┘
+            │ 2. วิเคราะห์โครงสร้างพีชคณิต
+            ▼
+┌─────────────────────────┐
+│ Strategy Dispatcher     │ ── [ตรวจจับกรณีพิเศษ: 0/0, รากที่สอง, พหุนาม, ผลรวมรีมันน์]
+└───────────┬─────────────┘
+            │ 3. แยกย่อยขั้นตอนระหว่างทาง (Intermediate States)
+            ▼
+┌─────────────────────────┐
+│ Step-by-Step Generator  │ ── [ประกอบข้อความคำอธิบายภาษาไทย + สูตรคณิตศาสตร์ KaTeX]
+└───────────┬─────────────┘
+            │ 4. ส่ง Dictionary มาตรฐานกลับไปแสดงผล
+            ▼
+┌────────────────────────────────────────────────────────┐
+│ UI Renderer (แสดงผลกราฟิก + ช่องรับคำตอบฝึกคิด + เฉลย) │
+└────────────────────────────────────────────────────────┘
+    </div>
+  </section>
+
+  <!-- ส่วนที่ 2: เจาะลึกทางคณิตศาสตร์และการทำ Solver ทีละขั้น -->
+  <section class="section-card">
+    <div class="section-title">
+      <span>2. การลงลึกทางคณิตศาสตร์: สร้าง Step-by-Step Solvers อย่างไร?</span>
+      <span class="section-tag">MATH ENGINE DEEP DIVE</span>
+    </div>
+
+    <p>ปัญหาคลาสสิกคือ ถ้าใช้คำสั่งอย่าง <code>sp.limit(f, x, a)</code> ของ SymPy มันจะพ่นคำตอบสุดท้ายออกมาทันที เช่น ได้ $4$ แต่นิสิตจะไม่เห็นกระบวนการคิด ดังนั้นเราต้องเขียน <strong>"Mathematical Deconstruction Algorithm"</strong> ดังนี้:</p>
+
+    <!-- Case A: ลิมิต -->
+    <div class="math-pipeline">
+      <h3 style="color: var(--primary); margin-bottom: 8px;">กรณีที่ 1: การหาลิมิต $\lim_{x \to a} f(x)$ ในรูปแบบยังไม่กำหนด $\frac{0}{0}$ (Indeterminate Form)</h3>
+      <p style="margin-bottom: 12px;">ในแคลคูลัส 1 นิสิตมักติดกับดักเมื่อแทนค่า $x = a$ แล้วตัวส่วนเป็นศูนย์ โมดูล <code>utils/limit_solver.py</code> ต้องดำเนินตาม 4 ขั้นตอนนี้:</p>
+
+      <ol style="margin-left: 20px; margin-bottom: 14px;">
+        <li><strong>Direct Substitution Check:</strong> แทนค่า $x = a$ เข้าไปตรง ๆ ในเศษ $N(a)$ และส่วน $D(a)$ ถ้า $D(a) = 0$ และ $N(a) = 0$ ให้ติดป้ายว่าเกิดรูปแบบ $\left[\frac{0}{0}\right]$ ทันที</li>
+        <li><strong>Structural Branching (จำแนกรูปแบบสมการ):</strong>
+          <ul style="margin-left: 20px; margin-top: 6px;">
+            <li><strong>กรณีพหุนาม (Rational):</strong> ดึงตัวประกอบ $(x - a)$ ออกจากทั้งเศษและส่วนด้วยคำสั่ง <code>sp.factor()</code> จากนั้นทำการตัดทอน (Cancel out) แล้วแทนค่า $a$ ใหม่อีกครั้ง</li>
+            <li><strong>กรณีมีกรณฑ์ (Conjugate):</strong> ถ้าตรวจพบฟังก์ชันกรณฑ์ เช่น $\sqrt{g(x)} - c$ ให้หาสังยุคคือ $\sqrt{g(x)} + c$ นำมาคูณทั้งเศษและส่วน แล้วใช้ผลต่างกำลังสอง $A^2 - B^2$ เพื่อปลดราก</li>
+          </ul>
+        </li>
+        <li><strong>Emitting Pedagogical Steps:</strong> บันทึกสมการในแต่ละบรรทัดลงในลิสต์ <code>steps</code> โดยเก็บเป็นข้อความ LaTeX ที่สมบูรณ์</li>
+      </ol>
+
+      <div class="code-block">
+<span class="comment"># ตัวอย่างการเขียน Logic ใน utils/limit_solver.py</span>
+<span class="keyword">def</span> <span class="func">solve_indeterminate_limit</span>(expr, a):
+    steps = []
+    num, den = expr.as_numer_denom()
+    
+    <span class="comment"># ขั้นที่ 1: ตรวจสอบ 0/0</span>
+    val_num = num.subs(X, a)
+    val_den = den.subs(X, a)
+    <span class="keyword">if</span> val_den == 0 <span class="keyword">and</span> val_num == 0:
+        steps.append(<span class="string">r"\text{เมื่อแทนค่า } x = %s \text{ พบว่าอยู่ในรูปแบบยังไม่กำหนด } \left[\frac{0}{0}\right]"</span> % a)
+    
+    <span class="comment"># ขั้นที่ 2: ตรวจหารูปแบบกรณฑ์เพื่อใช้สังยุค</span>
+    <span class="keyword">if</span> any(arg.is_Pow <span class="keyword">and</span> arg.exp == sp.Rational(1, 2) <span class="keyword">for</span> arg <span class="keyword">in</span> num.atoms()):
+        steps.append(<span class="string">r"\text{สังเกตเห็นเครื่องหมายกรณฑ์ จึงนำสังยุคมาคูณทั้งเศษและส่วน}"</span>)
+        <span class="comment"># คำนวณสังยุคและแสดงรูปคูณ</span>
+    <span class="keyword">else</span>:
+        <span class="comment"># แยกตัวประกอบพหุนาม</span>
+        factored_num = sp.factor(num)
+        factored_den = sp.factor(den)
+        steps.append(<span class="string">r"\text{แยกตัวประกอบ: } \frac{%s}{%s}"</span> % (sp.latex(factored_num), sp.latex(factored_den)))
+        
+        simplified = sp.cancel(expr)
+        steps.append(<span class="string">r"\text{ตัดทอนตัวประกอบร่วม }(x - %s)\text{ ได้: } %s"</span> % (a, sp.latex(simplified)))
+        
+        final_ans = simplified.subs(X, a)
+        steps.append(<span class="string">r"\text{แทนค่า } x = %s \text{ อีกครั้ง จะได้คำตอบเท่ากับ } %s"</span> % (a, sp.latex(final_ans)))
+        
+    <span class="keyword">return</span> {<span class="string">"ok"</span>: <span class="keyword">True</span>, <span class="string">"result"</span>: float(final_ans), <span class="string">"steps"</span>: steps}
+      </div>
+    </div>
+
+    <!-- Case B: รีมันน์ -->
+    <div class="math-pipeline" style="border-left-color: var(--success); margin-top: 24px;">
+      <h3 style="color: var(--success); margin-bottom: 8px;">กรณีที่ 2: ผลรวมรีมันน์ (Riemann Sum) และการลู่เข้าสู่อินทิกรัล</h3>
+      <p style="margin-bottom: 12px;">ใน <code>utils/riemann_solver.py</code> ที่ทำเสร็จสมบูรณ์แล้ว ถือเป็น <strong>พิมพ์เขียวตัวอย่างชั้นดี</strong> ที่นิสิตต้องใช้เป็นแนวทางในบทอื่น ๆ:</p>
+      <ul style="margin-left: 20px; line-height: 1.8;">
+        <li>คำนวณความกว้างของแต่ละช่วงย่อย: $\Delta x = \frac{b - a}{n}$</li>
+        <li>คำนวณพิกัดจุดตัวแทนตาม 3 วิธี:
+          <br>• จุดซ้าย: $x_i = a + i\Delta x$
+          <br>• จุดขวา: $x_i = a + (i+1)\Delta x$
+          <br>• จุดกึ่งกลาง: $\bar{x}_i = a + (i + 0.5)\Delta x$
+        </li>
+        <li>นำความสูง $f(x_i)$ คูณกับ $\Delta x$ เพื่อหาพื้นที่แท่งสี่เหลี่ยมแต่ละแท่ง แล้วรวมกัน:
+          $$\sum_{i=1}^n f(x_i^*) \Delta x$$
+        </li>
+        <li><strong>ความเชื่อมโยงระดับลึก:</strong> ในหน้าเว็บ นิสิตต้องแสดงให้เห็นว่า เมื่อเลื่อนแถบสไลเดอร์ให้ $n \to \infty$ ค่าผลรวมรีมันน์จะวิ่งเข้าหาค่าอินทิกรัลจำกัดเขต $\int_a^b f(x)\,dx$ พอดี นี่คือจุดที่ทำให้เกิดมโนทัศน์ ไม่ใช่แค่ดูสูตร</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ส่วนที่ 3: แผนผังสถานะโมดูลและงานที่ต้องทำต่อ -->
+  <section class="section-card">
+    <div class="section-title">
+      <span>3. สถานะปัจจุบันและสิ่งที่ต้องลงรายละเอียดให้ลึก</span>
+      <span class="section-tag">PROJECT ROADMAP</span>
+    </div>
+
+    <p>ตารางสรุปสถานะของโค้ดในโปรเจกต์ปัจจุบัน สิ่งที่เสร็จแล้ว และสิ่งที่เป็นโครงเปล่า (Skeleton) ที่ต้องลงมือเขียน:</p>
+
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>หัวข้อบทเรียน</th>
+          <th>ไฟล์ Solver</th>
+          <th>สถานะ</th>
+          <th>สิ่งที่ต้องลงลึก / จุดวิกฤติทางคณิตศาสตร์</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>ผลรวมรีมันน์ (Riemann Sum)</strong></td>
+          <td><code>riemann_solver.py</code></td>
+          <td><span class="badge-done">สมบูรณ์ 100%</span></td>
+          <td>ใช้เป็นต้นแบบ (Blueprint) ให้กับบทอื่น ๆ ทั้งการคืน Dict และการเขียน Test</td>
+        </tr>
+        <tr>
+          <td><strong>ลิมิตเข้าใกล้จุด (Limits)</strong></td>
+          <td><code>limit_solver.py</code></td>
+          <td><span class="badge-todo">Skeleton รอเติม</span></td>
+          <td>เขียน Rule-based แตกกรณีพหุนาม vs กรณฑ์สังยุค สำหรับรูปแบบ $0/0$</td>
+        </tr>
+        <tr>
+          <td><strong>เส้นสัมผัสและอนุพันธ์ (Tangent)</strong></td>
+          <td><code>tangent_solver.py</code></td>
+          <td><span class="badge-todo">Skeleton รอเติม</span></td>
+          <td>แสดงนิยาม $f'(a) = \lim_{h\to 0}\frac{f(a+h)-f(a)}{h}$ และหาสมการเส้นตรง $y - y_1 = m(x - x_1)$</td>
+        </tr>
+        <tr>
+          <td><strong>การอินทิเกรตด้วยการแทนค่า (u-sub)</strong></td>
+          <td><code>substitution_solver.py</code></td>
+          <td><span class="badge-todo">Skeleton รอเติม</span></td>
+          <td><strong>ยากที่สุด:</strong> ต้องมีขั้นตอนสมมติตัวแปร $u = g(x)$, หา $du = g'(x)dx$, และแทนค่ากลับ</td>
+        </tr>
+        <tr>
+          <td><strong>พื้นที่ระหว่างเส้นโค้ง (Area Between)</strong></td>
+          <td><code>area_solver.py</code></td>
+          <td><span class="badge-todo">Skeleton รอเติม</span></td>
+          <td>ต้องคำนวณจุดตัดของกราฟ 2 เส้น และแยกช่วงว่ากราฟไหนอยู่บน/ล่าง: $\int (f - g)dx$</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="rule-box">
+      <strong>ข้อแนะนำเชิงกลยุทธ์สำหรับอาจารย์และนิสิต:</strong><br>
+      สำหรับการสอบจบและทำรูปเล่ม <strong>ไม่จำเป็นต้องทำครบทั้ง 6 หัวข้อ</strong> หากเวลาจำกัด ให้ล็อกเป้าไว้ที่ <strong>3 หัวข้อหลักแรกเท่านั้น (Riemann + Limit + Tangent)</strong> แต่ทำระบบแจกแจงขั้นตอน (Step-by-step) ให้ลึก แม่นยำ และมี Pytest ครอบคลุมสมบูรณ์ ดีกว่าเปิดหลายหัวข้อแล้วด้านในกลวงหรือพังง่าย
+    </div>
+  </section>
+
+  <!-- ส่วนที่ 4: สรุปสิ่งที่นิสิตจะได้รับ (Learning Outcomes) -->
+  <section class="section-card">
+    <div class="section-title">
+      <span>4. สิ่งที่นิสิตและโครงงานนี้จะได้เป็นชิ้นงานจริง (Deliverables)</span>
+      <span class="section-tag">DELIVERABLES</span>
+    </div>
+
+    <ul style="margin-left: 20px; line-height: 2;">
+      <li><strong>เว็บแอปพลิเคชันเพื่อการศึกษา (Interactive Web App):</strong> ทำงานได้จริงบนเบราว์เซอร์ พร้อม UI ที่รองรับการสไลด์ปรับตัวแปรและดูการเปลี่ยนแปลงของกราฟ</li>
+      <li><strong>คลังขั้นตอนวิธีทางคณิตศาสตร์ (Math Solver Package):</strong> โมดูลภาษา Python ใน <code>utils/</code> ที่ถอดรหัสขั้นตอนการแก้โจทย์แคลคูลัสเป็น LaTeX step-by-step</li>
+      <li><strong>ชุดทดสอบความถูกต้องอัตโนมัติ (Automated Test Suite):</strong> การการันตีคุณภาพซอฟต์แวร์ด้วย <code>pytest</code> ซึ่งเป็นทักษะวิชาชีพสำคัญของสาย Data/Software</li>
+      <li><strong>รายงานโครงงานฉบับสมบูรณ์ (Thesis Document):</strong> ที่มีระเบียบวิธีวิจัยชัดเจน อธิบายสถาปัตยกรรมระบบ และผลการทดสอบเชิงวิชาการ</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>เอกสารสรุปพิมพ์เขียวระบบโครงงานปริญญาตรี • Calculus Integration App Architecture</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

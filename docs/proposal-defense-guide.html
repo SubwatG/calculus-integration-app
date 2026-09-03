@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คู่มือเตรียมสอบหัวข้อโครงงาน: เว็บแอปช่วยเรียนรู้แคลคูลัส</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Noto+Sans+Thai:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #1d4ed8;
+      --primary-light: #eff6ff;
+      --danger: #b91c1c;
+      --danger-light: #fef2f2;
+      --success: #15803d;
+      --success-light: #f0fdf4;
+      --warning: #b45309;
+      --warning-light: #fffbeb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans Thai', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      padding: 32px 16px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    h1, h2, h3 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    h1 { font-size: 1.75rem; margin-bottom: 8px; color: var(--primary); }
+    .subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 16px; }
+
+    .toc {
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-top: 16px;
+    }
+    .toc ul { margin-left: 20px; }
+    .toc a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .toc a:hover { text-decoration: underline; }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .section-title {
+      font-size: 1.35rem;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qa-box {
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .q-header {
+      background: #f1f5f9;
+      padding: 14px 18px;
+      font-weight: 600;
+      color: #0f172a;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+    }
+    .q-badge {
+      background: var(--danger);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-family: 'Chakra Petch', sans-serif;
+      white-space: nowrap;
+      height: fit-content;
+    }
+
+    .q-body { padding: 18px; }
+
+    .bad-answer {
+      background: var(--danger-light);
+      border-left: 4px solid var(--danger);
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.95rem;
+    }
+    .bad-answer strong { color: var(--danger); }
+
+    .good-answer {
+      background: var(--success-light);
+      border-left: 4px solid var(--success);
+      padding: 14px 18px;
+      border-radius: 0 6px 6px 0;
+      font-size: 1rem;
+    }
+    .good-answer strong { color: var(--success); }
+
+    .speech-box {
+      background: white;
+      border: 1px dashed #86efac;
+      padding: 12px 16px;
+      margin-top: 10px;
+      border-radius: 6px;
+      color: #14532d;
+      font-style: normal;
+    }
+
+    .tip-box {
+      background: var(--warning-light);
+      border-left: 4px solid var(--warning);
+      padding: 14px 18px;
+      margin-top: 14px;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.92rem;
+      color: #78350f;
+    }
+
+    .division-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 0.95rem;
+    }
+    .division-table th, .division-table td {
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+    .division-table th {
+      background: #f8fafc;
+      font-family: 'Chakra Petch', sans-serif;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: #0f172a;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>คู่มือเตรียมตัวสอบข้อเสนอโครงงาน (Proposal Defense)</h1>
+    <p class="subtitle">หัวข้อ: การพัฒนาเว็บแอปพลิเคชันช่วยเรียนรู้แคลคูลัสเฉพาะเรื่อง (Interactive Calculus Learning App)</p>
+    <p>รวบรวมคำถามที่คณะกรรมการมักจะใช้สอบถาม ข้อควรระวัง คำตอบที่ไม่ควรตอบ และแนวทางการตอบภาษาไทยที่ชัดเจน ตรงประเด็น และเข้าใจง่าย สำหรับอาจารย์ที่ปรึกษาและนิสิต</p>
+
+    <div class="toc">
+      <strong>สารบัญหัวข้อสำคัญ:</strong>
+      <ul>
+        <li><a href="#section-1">1. ประเด็นความซ้ำซ้อน: ทำไมไม่ใช้เว็บสำเร็จรูปอย่าง Symbolab หรือ ChatGPT?</a></li>
+        <li><a href="#section-2">2. ประเด็นขอบเขตและปริมาณงาน: งานน้อยไปไหมสำหรับนิสิต 2 คน?</a></li>
+        <li><a href="#section-3">3. ประเด็นระเบียบวิธีวิจัย: รู้ได้อย่างไรว่าแอปนี้ช่วยให้เด็กเรียนเข้าใจจริง?</a></li>
+        <li><a href="#section-4">4. การแบ่งหน้าที่รับผิดชอบของนิสิตทั้งสองคน</a></li>
+        <li><a href="#section-5">5. กฎเหล็ก 4 ข้อที่นิสิตต้องจำให้ขึ้นใจก่อนเดินเข้าห้องสอบ</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- หมวดที่ 1 -->
+  <section id="section-1" class="section-card">
+    <h2 class="section-title">1. ประเด็นความซ้ำซ้อน: "ต่างจากโปรแกรมคิดเลขที่มีอยู่แล้วอย่างไร?"</h2>
+
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-badge">คำถามกรรมการ</span>
+        <div>"โปรแกรมอย่าง Symbolab, Photomath หรือแม้แต่ ChatGPT ก็แก้โจทย์แคลคูลัสได้ มีขั้นตอนภาษาไทยครบ แล้วนิสิตจะมาทำซ้ำทำไม งานนี้มีประโยชน์ตรงไหน?"</div>
+      </div>
+      <div class="q-body">
+        
+        <div class="bad-answer">
+          <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong><br>
+          "เพราะแอปของเราเป็นภาษาไทยครับ" หรือ "เพราะของเราทำเป็นเว็บให้เพื่อนเข้ามาใช้ฟรีครับ"<br>
+          <em>(เหตุผล: กรรมการจะมองว่างานไม่มีคุณค่าทางวิชาการ เพราะโปรแกรมอื่นเขาก็แปลไทยและเปิดให้ใช้ฟรีอยู่แล้ว)</em>
+        </div>
+
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ (ภาษาไทยเข้าใจง่าย):</strong><br>
+          โปรแกรมเหล่านั้นเป็น <strong>"เครื่องคิดเลขสำเร็จรูป"</strong> ที่เน้นป้อนโจทย์แล้วแสดงเฉลยทันที ทำให้ผู้เรียนกลายเป็นเพียง <strong>"ผู้อ่านเฉลยตาม"</strong> แต่แอปของเราออกแบบให้เป็น <strong>"เครื่องมือช่วยฝึกคิดทีละขั้น"</strong> ที่ผู้เรียนต้องมีส่วนร่วมในการแก้ปัญหาจริง
+
+          <div class="speech-box">
+            <strong>คำพูดแนะนำสำหรับนิสิต:</strong><br>
+            "กราบเรียนคณะกรรมการครับ เว็บทั่วไปอย่าง Symbolab หรือ ChatGPT ถูกสร้างมาเพื่อเป็นเครื่องมือหาคำตอบสุดท้าย เมื่อผู้เรียนกรอกโจทย์ ระบบจะพ่นเฉลยออกมารวดเดียว ทำให้นิสิตมักจะก๊อปปี้คำตอบหรือแค่อ่านผ่านๆ โดยไม่ได้เข้าใจวิธีคิดจริง<br><br>
+            แต่งานของเราออกแบบให้เป็น <strong>สื่อการเรียนรู้แบบมีปฏิสัมพันธ์ (Interactive Learning)</strong> ครับ ตัวระบบจะบังคับให้ผู้เรียนต้องเลือกวิธีแก้ปัญหาก่อน เช่น ในเรื่องลิมิตที่แทนค่าแล้วได้ ศูนย์ส่วนศูนย์ ผู้เรียนต้องเป็นคนตัดสินใจเองว่าจะใช้วิธีแยกตัวประกอบ หรือวิธีคูณด้วยสังยุค จากนั้นระบบจะคอยตรวจสอบว่าแต่ละขั้นตอนที่ผู้เรียนทำนั้นถูกต้องหรือไม่ หากผิดพลาดระบบจะมีคำใบ้ชี้จุดผิดให้เห็นทันที จึงเป็นการฝึกกระบวนการคิด ไม่ใช่แค่การแจกเฉลยครับ"
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- หมวดที่ 2 -->
+  <section id="section-2" class="section-card">
+    <h2 class="section-title">2. ประเด็นขอบเขตและปริมาณงาน: "งานแค่นี้ พอสำหรับ ป.ตรี 2 คนหรือ?"</h2>
+
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-badge">คำถามกรรมการ</span>
+        <div>"ถ้าทำแค่เรื่อง ลิมิต กับ ผลรวมรีมันน์ นิดหน่อย งานมันดูเบาไปไหม? เขียนโค้ดสูตรคำนวณไม่กี่บรรทัดก็เสร็จ ปริญญาตรีทำกัน 2 คนทั้งเทอม ทำไมทำแค่นี้?"</div>
+      </div>
+      <div class="q-body">
+
+        <div class="bad-answer">
+          <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong><br>
+          "คิดว่ายากพอดีแล้วครับ เดี๋ยวจะลองเพิ่มหัวข้ออื่นเข้าไปเรื่อยๆ ถ้าเวลาเหลือ"<br>
+          <em>(เหตุผล: แสดงถึงการวางแผนที่ลอยตัว ไม่มีหลักยึด และควบคุมขอบเขตไม่เป็น)</em>
+        </div>
+
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong><br>
+          งานชิ้นนี้เน้น <strong>"ความลึกในการอธิบายขั้นตอนและการตรวจสอบความถูกต้อง"</strong> ไม่ใช่การเขียนสูตรผิวเผิน ความยากไม่ได้อยู่ที่การหาคำตอบ แต่อยู่ที่การเขียนระบบให้แยกแยะรูปแบบทางคณิตศาสตร์และดึงขั้นตอนระหว่างทางออกมาแสดงผลอย่างถูกต้อง
+
+          <div class="speech-box">
+            <strong>คำพูดแนะนำสำหรับนิสิต:</strong><br>
+            "กราบเรียนอาจารย์ครับ หากเป็นการคำนวณหาตัวเลขตัวเดียว โค้ดจะมีเพียงไม่กี่บรรทัดจริงครับ แต่เนื้องานหลักของพวกเราคือ <strong>การสร้างระบบแจกแจงขั้นตอนทางคณิตศาสตร์</strong> ซึ่งมีความซับซ้อนสูงมาก เช่น:<br>
+            1. ระบบต้องอ่านสมการที่ผู้ใช้พิมพ์เข้ามา แล้วแยกแยะรูปแบบว่าเป็นพหุนาม หรือเป็นกรณฑ์ (Square root)<br>
+            2. ต้องคุมให้ระบบค่อยๆ แสดงขั้นตอนระหว่างทางทีละบรรทัด พร้อมแปลงเป็นสูตรคณิตศาสตร์ที่สวยงามและถูกต้อง<br>
+            3. ต้องเขียนชุดทดสอบอัตโนมัติครอบคลุมโจทย์รูปแบบต่างๆ เพื่อให้แน่ใจว่าระบบจะไม่คำนวณผิดพลาด<br>
+            ดังนั้น การจำกัดขอบเขตไว้ที่หัวข้อหลักที่นิสิตมักมีปัญหา จึงเป็นขนาดของงานที่เหมาะสมและทำให้เราสามารถลงลึกในรายละเอียดของระบบได้อย่างสมบูรณ์ภายในเวลาที่กำหนดครับ"
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- หมวดที่ 3 -->
+  <section id="section-3" class="section-card">
+    <h2 class="section-title">3. ประเด็นระเบียบวิธีวิจัย: "รู้ได้อย่างไรว่าแอปนี้ช่วยให้เด็กเข้าใจจริง?"</h2>
+
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-badge">คำถามกรรมการ</span>
+        <div>"สร้างเว็บเสร็จแล้ว ถ้าแค่เอาไปให้เพื่อนลองเล่นแล้วแจกแบบสอบถามความพึงพอใจ 5 ระดับ มันไม่ใช่งานวิจัย คุณจะพิสูจน์ทางวิชาการอย่างไรว่าแอปของคุณมีประโยชน์จริง?"</div>
+      </div>
+      <div class="q-body">
+
+        <div class="bad-answer">
+          <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong><br>
+          "ตั้งใจว่าจะแจกแบบสอบถามความพึงพอใจให้เพื่อนในสาขาช่วยทำสัก 30 คนครับ"<br>
+          <em>(เหตุผล: แบบสอบถามความพึงพอใจวัดแค่ว่าเว็บสวยไหม ใช้ง่ายไหม แต่วัดไม่ได้เลยว่าเด็กเรียนเก่งขึ้นหรือเข้าใจคณิตศาสตร์จริงหรือไม่)</em>
+        </div>
+
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong><br>
+          เราวางแผนการประเมินผลไว้ <strong>2 ด้านอย่างชัดเจน</strong> คือ ด้านความถูกต้องของโปรแกรมทางคณิตศาสตร์ และ ด้านผลลัพธ์การเรียนรู้ของผู้ใช้งาน
+
+          <div class="speech-box">
+            <strong>คำพูดแนะนำสำหรับนิสิต:</strong><br>
+            "ทางกลุ่มได้วางแผนการประเมินผลออกเป็น 2 ส่วนหลักครับ:<br><br>
+            <strong>ส่วนที่ 1: การทดสอบความถูกต้องของระบบ (System Rigor):</strong><br>
+            เราใช้การเขียนชุดทดสอบคำนวณอัตโนมัติ (Automated Test) ด้วยโจทย์มาตรฐานมากกว่า 30-50 ข้อ ทั้งโจทย์ปกติและกรณีพิเศษ เพื่อยืนยันว่าขั้นตอนและคำตอบถูกต้องตรงตามหลักคณิตศาสตร์ 100%<br><br>
+            <strong>ส่วนที่ 2: การประเมินผลการเรียนรู้ของผู้ใช้ (Learning Assessment):</strong><br>
+            เราไม่ได้วัดแค่ความพึงพอใจครับ แต่เราจะทดลองกับกลุ่มนิสิตที่กำลังเรียนวิชาแคลคูลัส โดยมีการทำ <strong>แบบทดสอบวัดความเข้าใจก่อนใช้และหลังใช้งาน (Pre-test / Post-test)</strong> ในจุดที่นิสิตมักจะเข้าใจผิดบ่อยๆ เพื่อดูว่าหลังจากได้ลองฝึกแก้โจทย์ผ่านขั้นตอนในแอปแล้ว อัตราความเข้าใจผิดเหล่านั้นลดลงจริงหรือไม่ครับ"
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- หมวดที่ 4 -->
+  <section id="section-4" class="section-card">
+    <h2 class="section-title">4. การแบ่งงานของนิสิต 2 คน (ให้ชัดเจน ไม่ทับซ้อน)</h2>
+    <p>กรรมการมักจะถามว่า <em>"ใครทำอะไรบ้าง?"</em> หากตอบไม่ชัด จะถูกมองว่ามีคนใดคนหนึ่งกินแรงเพื่อน ให้ตอบแบ่งหน้าที่ตามตารางนี้:</p>
+
+    <table class="division-table">
+      <thead>
+        <tr>
+          <th style="width: 25%;">ด้าน</th>
+          <th style="width: 35%;">นิสิตคนที่ 1 (เน้นระบบคำนวณและทดสอบ)</th>
+          <th style="width: 40%;">นิสิตคนที่ 2 (เน้นการสอนและการแสดงผล)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>หน้าที่หลัก</strong></td>
+          <td>ผู้พัฒนากลไกคณิตศาสตร์ (Math Engine)</td>
+          <td>ผู้พัฒนาส่วนการเรียนรู้และหน้าจอ (Interactive UI)</td>
+        </tr>
+        <tr>
+          <td><strong>รายละเอียดงาน</strong></td>
+          <td>
+            • จัดการตัวอ่านสมการ (Formula Parser)<br>
+            • เขียนฟังก์ชันแยกขั้นตอน ลิมิต และ ผลรวมรีมันน์<br>
+            • เขียนชุดทดสอบความถูกต้องอัตโนมัติ (Pytest)
+          </td>
+          <td>
+            • ออกแบบขั้นตอนการสอนแบบทีละขั้น (Scaffolding Flow)<br>
+            • จัดการส่วนติดต่อผู้ใช้ด้วย Streamlit<br>
+            • จัดทำแบบทดสอบวัดผลสัมฤทธิ์ (Pre/Post Test)
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- หมวดที่ 5 -->
+  <section id="section-5" class="section-card">
+    <h2 class="section-title">5. กฎเหล็ก 4 ข้อที่นิสิตต้องจำก่อนเข้าห้องสอบ</h2>
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+      <div style="padding: 12px 16px; background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 4px;">
+        <strong>1. พูดความจริงเรื่องขอบเขต:</strong> ยอมรับแต่แรกว่าแอปทำได้เฉพาะหัวข้อที่กำหนด ไม่ต้องพยายามโม้ว่าแก้โจทย์ได้ทุกข้อในโลก
+      </div>
+      <div style="padding: 12px 16px; background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 4px;">
+        <strong>2. หลีกเลี่ยงศัพท์เทคนิคที่ตัวเองไม่เข้าใจ:</strong> อย่าใช้คำว่า "ปัญญาประดิษฐ์ (AI)", "Machine Learning" หรือศัพท์คอมพิวเตอร์ลึกๆ ถ้าเราไม่ได้ทำจริง เพราะกรรมการสายคอมจะจี้ถามจนตอบไม่ได้
+      </div>
+      <div style="padding: 12px 16px; background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 4px;">
+        <strong>3. ชูจุดเด่นเรื่อง 'การฝึกคิด' แทน 'การบอกคำตอบ':</strong> ทุกครั้งที่กรรมการเปรียบเทียบกับแอปอื่น ให้ย้ำเสมอว่าแอปอื่นเน้นให้ผลเฉลย แต่แอปเราเน้นสร้างความเข้าใจทีละขั้น
+      </div>
+      <div style="padding: 12px 16px; background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 4px;">
+        <strong>4. สุภาพและรับฟังข้อเสนอแนะ:</strong> หากกรรมการท้วงติงจุดบกพร่อง ไม่ต้องเถียงหัวชนฝา ให้ตอบว่า <em>"ขอบพระคุณอาจารย์ครับ ทางกลุ่มจะนำประเด็นนี้ไปปรับปรุงในขอบเขตและระเบียบวิธีวิจัยในเล่มจริงครับ"</em>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>เอกสารสรุปเตรียมสอบหัวข้อโครงงานวิจัยระดับปริญญาตรี • จัดทำเพื่อการเตรียมตัวและปรับปรุงเนื้อหาอย่างต่อเนื่อง</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
