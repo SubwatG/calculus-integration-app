@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายงานการตรวจสอบสิทธิ์และวิจารณ์เชิงลึกโดย Codex (Math Hostile Audit Report)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0B0F19;
+            --bg-surface: #131C31;
+            --bg-card: #1E293B;
+            --border: #334155;
+            --danger: #F43F5E;
+            --danger-bg: rgba(244, 63, 94, 0.12);
+            --warning: #F59E0B;
+            --warning-bg: rgba(245, 158, 11, 0.12);
+            --success: #10B981;
+            --success-bg: rgba(16, 185, 129, 0.12);
+            --accent: #38BDF8;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding: 2.5rem 1rem;
+        }
+
+        .container { max-width: 960px; margin: 0 auto; }
+
+        .header-box {
+            background: linear-gradient(145deg, #1E293B, #0F172A);
+            border: 2px solid var(--danger);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(244, 63, 94, 0.2);
+        }
+
+        .badge-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .b-danger { background: var(--danger-bg); color: #FDA4AF; border: 1px solid var(--danger); }
+        .b-accent { background: rgba(56, 189, 248, 0.15); color: #7DD3FC; border: 1px solid var(--accent); }
+        .b-amber { background: var(--warning-bg); color: #FDE68A; border: 1px solid var(--warning); }
+
+        h1 {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 1.8rem;
+            color: #FFFFFF;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-text { color: var(--text-secondary); font-size: 0.95rem; }
+
+        .section-title {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin: 2rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .danger-card {
+            border-left: 5px solid var(--danger);
+            background: linear-gradient(90deg, var(--danger-bg) 0%, var(--bg-surface) 100%);
+        }
+
+        .solution-card {
+            border-left: 5px solid var(--success);
+            background: linear-gradient(90deg, var(--success-bg) 0%, var(--bg-surface) 100%);
+        }
+
+        .card-header {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .danger-card .card-header { color: #FB7185; }
+        .solution-card .card-header { color: #4ADE80; }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: #38BDF8;
+            font-size: 0.88em;
+        }
+
+        .code-location {
+            color: #FBBF24;
+            font-size: 0.82rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        ul, ol { margin-left: 1.5rem; margin-bottom: 0.5rem; }
+        li { margin-bottom: 0.4rem; }
+
+        .quote-verdict {
+            background: rgba(0,0,0,0.4);
+            border: 1px dashed var(--danger);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            color: #FECDD3;
+            font-size: 0.95rem;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .table-custom th, .table-custom td {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        .table-custom th { background: rgba(0,0,0,0.3); color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header-box">
+        <div class="badge-bar">
+            <span class="badge b-danger">Direct Evidence Audit</span>
+            <span class="badge b-accent">Codex CLI (gpt-5.6-luna) Verified</span>
+            <span class="badge b-amber">Unbiased Hard Evaluation</span>
+        </div>
+        <h1>ผลการตรวจสอบเจาะลึกโดย Codex CLI (หลักฐานจริงจาก Codebase)</h1>
+        <p class="meta-text">การรัน Hostile Review ตรวจสอบโครงงานจากไฟล์จริงใน <code>calculus-integration-app</code> เพื่อตอบข้อสงสัยว่าทำไมโครงงานนี้ถึงเสี่ยงตกจริง และแนวทางแก้ให้รอด 100%</p>
+    </div>
+
+    <div class="quote-verdict">
+        <strong>คำวินิจฉัยเปิดหน้าชกโดยตรงจาก Codex:</strong><br>
+        <em>"สภาพปัจจุบันเสี่ยงตกสูงมาก เพราะตัวคำนวณ 6 หัวข้อยัง raise NotImplementedError (คืน ok=False), ตัววาดกราฟยังเป็นแค่กรอบเปล่าที่เขียน TODO, ทฤษฎีเต็มไปด้วย TODO และไม่มีการตรวจความถูกต้องทางคณิตศาสตร์ที่เป็นระบบ ถ้าส่งสภาพนี้แล้วบอกว่าทำมาแข่งกับ ChatGPT กรรมการจะฟันตกทันที"</em>
+    </div>
+
+    <div class="section-title">🚨 1. ทำไมโค้ดใน Repo ปัจจุบันถึง "เสี่ยงตก 100%" (หลักฐานบรรทัดต่อบรรทัด)</div>
+
+    <div class="card danger-card">
+        <div class="card-header">
+            <span>1.1 ตัวคำนวณหลัก 6 โมดูลยังเป็นแค่โครงว่าง (Not Implemented)</span>
+            <span class="code-location">utils/*_solver.py</span>
+        </div>
+        <p>ในไฟล์ตัวคำนวณ เช่น <code>limit_solver.py</code>, <code>volume_solver.py</code>, <code>improper_solver.py</code>, <code>area_solver.py</code>, <code>tangent_solver.py</code>, <code>substitution_solver.py</code> พบว่า:</p>
+        <ul>
+            <li>ฟังก์ชันยัง <code>raise NotImplementedError("ยังไม่ implement ให้นักศึกษาเติม")</code></li>
+            <li>ทำให้เมื่อกดคำนวณบนหน้าเว็บจริง จะได้ <code>ok=False</code> และไม่แสดงผลลัพธ์ใด ๆ</li>
+            <li><strong>ผลกระทบในการสอบ:</strong> กรรมการกดปุ่มบนหน้าเว็บแล้วแอปพัง/นิ่งทันที</li>
+        </ul>
+    </div>
+
+    <div class="card danger-card">
+        <div class="card-header">
+            <span>1.2 กราฟแบบมีปฏิสัมพันธ์ยังเป็นแค่ "ภาพว่างเขียน TODO"</span>
+            <span class="code-location">utils/plotter.py:121-163</span>
+        </div>
+        <p>ในไฟล์ <code>utils/plotter.py</code> ฟังก์ชัน <code>plot_tangent</code>, <code>plot_limit_near</code>, <code>plot_volume</code>, <code>plot_area_between</code>, <code>plot_improper</code> ทั้งหมดถูกผูกไว้กับฟังก์ชัน <code>_stub_figure()</code> ซึ่งพ่นแค่ภาพสี่เหลี่ยมสีเทาเขียนว่า <code>(TODO: ยังไม่ implement กราฟนี้)</code></p>
+    </div>
+
+    <div class="card danger-card">
+        <div class="card-header">
+            <span>1.3 ทฤษฎีและเงื่อนไขยังเป็นข้อความ Placeholder รกเต็มไฟล์</span>
+            <span class="code-location">utils/theory.py:55-195</span>
+        </div>
+        <p>ในพจนานุกรมทฤษฎี <code>THEORY_CONTENT</code> มีข้อความ <code>"TODO: เติมเงื่อนไขเพิ่มเติม..."</code>, <code>"TODO: เติมสูตร..."</code>, <code>"TODO: เติมข้อควรระวัง..."</code> ตกค้างอยู่แทบทุกหัวข้อ แสดงถึงความยังไม่พร้อมของเนื้อหาวิชาการ</p>
+    </div>
+
+    <div class="card danger-card">
+        <div class="card-header">
+            <span>1.4 สถาปัตยกรรมยังเป็นแค่ "ตัวครอบ SymPy" ขาดกระบวนการเรียนรู้</span>
+            <span class="code-location">utils/sympy_solver.py</span>
+        </div>
+        <p>หน้า <code>solver.py</code> เป็นเพียงการส่งสตริงเข้าไปที่ <code>sp.integrate()</code> แล้วคืนคำตอบออกมาบรรทัดเดียว ซึ่ง <strong>ChatGPT-4o หรือ Wolfram ทำได้ดีกว่า สวยกว่า และครอบคลุมกว่าอย่างเทียบไม่ติด</strong></p>
+    </div>
+
+    <div class="section-title">🛡️ 2. จุดเปลี่ยนเพื่อเอาตัวรอด: ต้องปรับจุดขายอย่างไรโดย "ไม่เปลี่ยนชื่อเรื่อง"?</div>
+
+    <div class="card solution-card">
+        <div class="card-header">
+            <span>2.1 เปลี่ยนจุดยืน: จาก "เครื่องคิดเลข/แอปแก้โจทย์" เป็น "ระบบผู้ช่วยเรียนรู้แบบตรวจสอบย้อนกลับได้"</span>
+        </div>
+        <p>ต้องยืนยันกับกรรมการว่า เราไม่ได้สร้างโปรแกรมมาหาคำตอบแข่งกับ AI แต่สร้าง <strong>ระบบตรวจสอบและนำทางความคิด (Pedagogical Verification System)</strong> ที่บังคับให้ผู้เรียนต้องทำความเข้าใจก่อนเห็นเฉลย</p>
+    </div>
+
+    <div class="card solution-card">
+        <div class="card-header">
+            <span>2.2 4 ฟังก์ชันทางคณิตศาสตร์ที่ต้องรีบเติมในโค้ด (ที่ AI ทำไม่ได้ในธรรมชาติ)</span>
+        </div>
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>ฟังก์ชันที่ต้องเติม</th>
+                    <th>สิ่งที่โค้ดต้องทำจริง</th>
+                    <th>จุดเด่นที่เหนือกว่า AI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Live Error Convergence</strong></td>
+                    <td>ใน <code>riemann.py</code> ให้พล็อตกราฟคู่ขนาน $\log(\text{Error})$ เทียบ $\log(n)$ คำนวณความชัน $O(1/n)$ สด</td>
+                    <td>เห็นการลู่เข้าจริงแบบเรียลไทม์ขณะเลื่อนแถบ $n$</td>
+                </tr>
+                <tr>
+                    <td><strong>Scaffolding Step Guesser</strong></td>
+                    <td>ใน <code>substitution.py</code> ให้ผู้เรียนเลือกตัวแปร $u$ ก่อน ถ้าเลือกผิดให้จำลองสมการที่ติดตัน</td>
+                    <td>ฝึกกระบวนการตัดสินใจเลือกเทคนิคอินทิเกรต ไม่ใช่การรออ่านเฉลย</td>
+                </tr>
+                <tr>
+                    <td><strong>Singularity Guard</strong></td>
+                    <td>ใน <code>improper_solver.py</code> เช็กความต่อเนื่องบน $[a,b]$ ดักจับ $\int_{-1}^1 \frac{1}{x^2}dx$</td>
+                    <td>ป้องกันการแทนค่าตรง ๆ ที่ผิดทฤษฎีบท</td>
+                </tr>
+                <tr>
+                    <td><strong>Self-Derivative Check</strong></td>
+                    <td>นำผลลัพธ์อินทิเกรตมาหาอนุพันธ์ย้อนกลับ ($f(x) \stackrel{?}{=} \frac{d}{dx} F(x)$) โชว์การพิสูจน์</td>
+                    <td>ยืนยันความถูกต้องทางคณิตศาสตร์แบบ Deterministic 100%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card solution-card">
+        <div class="card-header">
+            <span>2.3 ซ่อมแซมระบบ Automated Unit Test (Pytest)</span>
+            <span class="code-location">tests/test_*.py</span>
+        </div>
+        <p>ต้องเขียนเทสต์ใน <code>tests/</code> ให้ครอบคลุมทั้ง 6 โมดูลจริง และรัน <code>pytest tests/ -v</code> ให้ผ่าน 100% เพื่อใช้เป็นหลักฐานแสดงต่อกรรมการว่าระบบคำนวณถูกต้องตามทฤษฎีบท ไม่ใช่โค้ดกลวง</p>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บันทึกการโต้วาทีเชิงวิชาการ (Academic Debate Log) — การปกป้องหัวข้อโครงงานแคลคูลัสในยุค AI</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0F172A;
+            --bg-surface: #1E293B;
+            --bg-surface-hover: #334155;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border: #334155;
+            
+            --team-a: #10B981; /* Emerald: Project Defender */
+            --team-a-bg: rgba(16, 185, 129, 0.1);
+            --team-a-border: rgba(16, 185, 129, 0.3);
+            
+            --team-b: #EF4444; /* Rose/Red: Hostile AI Auditor */
+            --team-b-bg: rgba(239, 68, 68, 0.1);
+            --team-b-border: rgba(239, 68, 68, 0.3);
+            
+            --moderator: #F59E0B; /* Amber: Hermes Moderator */
+            --moderator-bg: rgba(245, 158, 11, 0.1);
+            --moderator-border: rgba(245, 158, 11, 0.3);
+            
+            --accent-blue: #38BDF8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--team-b), var(--moderator), var(--team-a));
+        }
+
+        .badge-bar {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-red { background: rgba(239, 68, 68, 0.2); color: #FCA5A5; border: 1px solid var(--team-b-border); }
+        .badge-green { background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border: 1px solid var(--team-a-border); }
+        .badge-amber { background: rgba(245, 158, 11, 0.2); color: #FCD34D; border: 1px solid var(--moderator-border); }
+
+        h1 {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .meta-item strong {
+            color: var(--accent-blue);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Nav controls */
+        .controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .btn-filter {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-filter:hover, .btn-filter.active {
+            background: var(--accent-blue);
+            color: #0F172A;
+            font-weight: 600;
+            border-color: var(--accent-blue);
+        }
+
+        /* Round Section */
+        .round-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .round-header {
+            padding: 1.25rem 1.75rem;
+            background: rgba(15, 23, 42, 0.6);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .round-title {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dialogue-stream {
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        /* Speech bubbles */
+        .speech-box {
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .speech-box:hover {
+            transform: translateY(-2px);
+        }
+
+        .speaker-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .speaker-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .speaker-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .speaker-name {
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .speaker-role {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Side A */
+        .side-a {
+            background: var(--team-a-bg);
+            border: 1px solid var(--team-a-border);
+            border-left: 5px solid var(--team-a);
+        }
+        .side-a .speaker-avatar { background: var(--team-a); color: #064E3B; }
+        .side-a .speaker-name { color: #34D399; }
+
+        /* Side B */
+        .side-b {
+            background: var(--team-b-bg);
+            border: 1px solid var(--team-b-border);
+            border-left: 5px solid var(--team-b);
+        }
+        .side-b .speaker-avatar { background: var(--team-b); color: #7F1D1D; }
+        .side-b .speaker-name { color: #F87171; }
+
+        /* Moderator */
+        .side-mod {
+            background: var(--moderator-bg);
+            border: 1px solid var(--moderator-border);
+            border-left: 5px solid var(--moderator);
+        }
+        .side-mod .speaker-avatar { background: var(--moderator); color: #78350F; }
+        .side-mod .speaker-name { color: #FBBF24; }
+
+        .content-body p {
+            margin-bottom: 0.85rem;
+        }
+        .content-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .content-body ul, .content-body ol {
+            margin-left: 1.5rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .highlight-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 3px solid var(--accent-blue);
+            font-size: 0.95rem;
+        }
+
+        /* Summary Verdict Box */
+        .verdict-card {
+            background: linear-gradient(145deg, #1E293B, #0F172A);
+            border: 2px solid var(--accent-blue);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 3rem;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+        }
+
+        .verdict-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .verdict-title {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 1.6rem;
+            color: var(--accent-blue);
+        }
+
+        .verdict-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .verdict-col {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+        }
+
+        .verdict-col h3 {
+            font-family: 'Chakra Petch', sans-serif;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .col-kill h3 { color: #F87171; }
+        .col-survive h3 { color: #34D399; }
+        .col-action h3 { color: #FBBF24; }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0,0,0,0.4);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #E2E8F0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <header>
+        <div class="badge-bar">
+            <span class="badge badge-red">Hostile AI Examination</span>
+            <span class="badge badge-green">Pedagogical Defense</span>
+            <span class="badge badge-amber">Round-Table Protocol v2.2</span>
+        </div>
+        <h1>บันทึกการโต้วาทีเชิงวิชาการ (Round-Table Debate Log)</h1>
+        <p class="subtitle">การประชันวิสัยทัศน์: "ความชอบธรรมของโครงงานสื่อช่วยสอนแคลคูลัสแบบมีปฏิสัมพันธ์ ในยุคที่โมเดลภาษาขนาดใหญ่ (LLMs) และเครื่องมือคำนวณครองโลก"</p>
+        
+        <div class="meta-grid">
+            <div class="meta-item">
+                <strong>หัวข้อประเมิน (Topic):</strong>
+                การสอบโครงร่างคณิตศาสตร์ประยุกต์ (Calculus Interactive Tutor)
+            </div>
+            <div class="meta-item">
+                <strong>ฝ่ายรุก (Hostile AI Auditor):</strong>
+                ChatGPT-4o / Gemini / Wolfram Alpha Representation
+            </div>
+            <div class="meta-item">
+                <strong>ฝ่ายรับ (Project Defender):</strong>
+                นิสิตผู้พัฒนา & ฝ่ายสนับสนุนสื่อการสอน Scaffolding
+            </div>
+            <div class="meta-item">
+                <strong>ผู้ดำเนินรายการ (Moderator):</strong>
+                Hermes Main (Academic Curriculum Orchestrator)
+            </div>
+        </div>
+    </header>
+
+    <!-- Round 1 -->
+    <section class="round-card" id="round-1">
+        <div class="round-header">
+            <div class="round-title">
+                <span>⚔️</span> รอบที่ 1: การปะทะเรื่อง "ความจำเป็นและคุณค่าที่แท้จริง" (Core Value Proposition)
+            </div>
+            <span class="badge badge-amber">Round 01</span>
+        </div>
+        <div class="dialogue-stream">
+            
+            <!-- Side B -->
+            <div class="speech-box side-b">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">AI</div>
+                        <div>
+                            <div class="speaker-name">กรรมการฝ่ายรุก (Hostile AI Auditor)</div>
+                            <div class="speaker-role">ตัวแทน LLM & เครื่องมือคำนวณระดับโลก</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>"ขอเปิดประเด็นแบบตรงไปตรงมาและไร้ความปรานี: โครงงานนี้กำลังทำสิ่งที่ 'ล้าหลังและไร้ประโยชน์' อยู่หรือไม่?"</strong></p>
+                    <p>ในปี 2026 ผู้เรียนแค่ถ่ายรูปโจทย์ส่งเข้า <code>ChatGPT</code> หรือ <code>Gemini</code> โมเดลก็สามารถ:</p>
+                    <ol>
+                        <li>แจกแจงวิธีทำทีละบรรทัด (Step-by-step solution) พร้อมคำอธิบายภาษาไทยที่สละสลวยและปรับระดับความง่าย-ยากได้ตามสั่ง</li>
+                        <li>เขียนโค้ด Python เพื่อพล็อตกราฟ 2D/3D ออกมาให้ดูได้ในเสี้ยววินาที</li>
+                        <li>ถ้าต้องการความแม่นยำ 100% ก็มี <code>WolframAlpha</code>, <code>Symbolab</code> หรือ <code>Desmos</code> ที่เป็นเครื่องมือระดับโลกและฟรี</li>
+                    </ol>
+                    <p>การที่นิสิตปริญญาตรีภาควิชาคณิตศาสตร์ใช้เวลา 1 ปี มานั่งเขียน Streamlit เอาหน้าเว็บครอบเครื่องมือคำนวณสำเร็จรูป แล้วบอกว่าเป็น 'สื่อการสอน' มันมีความใหม่อะไรตรงไหน? ถ้าผมเป็นกรรมการสอบโครงร่าง <strong>ผมให้ตกทันที เพราะนี่คืองานที่ไม่มีทั้งคุณค่าทางวิทยาการและไม่มีประโยชน์ต่อผู้ใช้จริง</strong></p>
+                </div>
+            </div>
+
+            <!-- Side A -->
+            <div class="speech-box side-a">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">DEV</div>
+                        <div>
+                            <div class="speaker-name">ฝ่ายยืนยันโครงงาน (Project Defender)</div>
+                            <div class="speaker-role">นิสิตผู้พัฒนา & ผู้ออกแบบปฏิสัมพันธ์การเรียนรู้</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>"กรรมการกำลังสับสนระหว่าง 'เครื่องมือส่งมอบคำตอบ (Answer Delivery Tool)' กับ 'สภาพแวดล้อมเพื่อสร้างความเข้าใจ (Cognitive Scaffolding Environment)'"</strong></p>
+                    <p>เราไม่ปฏิเสธว่า AI ตอบคำถามได้เก่งมาก แต่พฤติกรรมจริงของผู้เรียนเมื่อใช้ ChatGPT คือ <strong>'ความเฉื่อยชาทางปัญญา (Cognitive Passivity)'</strong> เด็กพิมพ์โจทย์ $\to$ นั่งรอ 3 วินาที $\to$ ก๊อปปี้ข้อความวิธีทำไปส่งครู โดยแทบไม่ได้ผ่านกระบวนการคิดหรือทดลองใด ๆ เลย</p>
+                    <div class="highlight-box">
+                        <strong>ความแตกต่างเชิงประจักษ์:</strong>
+                        AI ทำงานแบบ <em>Text/Chat Interface</em> ซึ่งเด็กต้อง 'รู้ว่าจะถามอะไร' ถึงจะได้คำตอบ แต่เด็กปี 1 ที่กำลังติดปัญหา เขาไม่รู้แม้กระทั่งว่าตัวเองไม่เข้าใจตรงไหน ระบบของเราจึงถูกสร้างขึ้นเป็น <strong>'ห้องปฏิบัติการคณิตศาสตร์ที่มีการควบคุม (Constrained Learning Sandbox)'</strong> ที่บังคับให้ผู้เรียนต้องปฏิสัมพันธ์กับตัวแปรจริง ไม่ใช่แค่นั่งอ่านเฉลย
+                    </div>
+                </div>
+            </div>
+
+            <!-- Moderator -->
+            <div class="speech-box side-mod">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">H</div>
+                        <div>
+                            <div class="speaker-name">ผู้ดำเนินรายการ (Hermes Moderator)</div>
+                            <div class="speaker-role">สรุปประเด็นรอบที่ 1</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>ประเด็นปะทะชัดเจน:</strong> ฝ่าย AI ชี้ว่า <em>"ผลลัพธ์สุดท้าย (Artifact/Answer)"</em> AI ทำได้เหนือกว่าทุกประตู แต่ฝ่ายผู้พัฒนาชี้ว่า <em>"กระบวนการเรียนรู้ (Pedagogical Process)"</em> เกิดจากการลงมือปรับค่า ไม่ใช่การอ่านตัวหนังสือสำเร็จรูป</p>
+                    <p><strong>คำถามชี้นำสู่รอบ 2:</strong> แล้ว 'ปฏิสัมพันธ์' ที่ว่านั้น Streamlit ของเราทำได้ดีกว่า Geogebra หรือ Desmos จริงหรือ? หรือเรากำลังทำของเลียนแบบที่แย่กว่า?</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Round 2 -->
+    <section class="round-card" id="round-2">
+        <div class="round-header">
+            <div class="round-title">
+                <span>🎮</span> รอบที่ 2: เจาะลึก "ปฏิสัมพันธ์, กราฟ และเกม" (Interactive Graphs & Gamification)
+            </div>
+            <span class="badge badge-amber">Round 02</span>
+        </div>
+        <div class="dialogue-stream">
+            
+            <!-- Side B -->
+            <div class="speech-box side-b">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">AI</div>
+                        <div>
+                            <div class="speaker-name">กรรมการฝ่ายรุก (Hostile AI Auditor)</div>
+                            <div class="speaker-role">ข้อซักถามเชิงเปรียบเทียบเครื่องมือ</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>"ถ้าอ้างเรื่องปฏิสัมพันธ์และการเห็นภาพ... ทำไมไม่ใช้ GeoGebra Applets?"</strong></p>
+                    <p>GeoGebra มี Applet เรื่อง Riemann Sum, การหมุนหาปริมาตร (Solids of Revolution) ที่สร้างโดยอาจารย์ระดับโลกนับหมื่นชิ้น ลื่นไหล ปรับมุมมอง 3D ด้วยนิ้วสัมผัสได้ทันที</p>
+                    <p>ส่วนถ้าพูดเรื่อง 'เกม' (Gamification) นิสิตจะเพิ่มอะไร? แค่ทำแบบทดสอบชอยส์ 4 ตัวเลือก มีคะแนนขึ้น หรือทำแถบหลอดเลือด (HP Bar)? งานแบบนี้มันคืองานระดับ ม.ปลาย หรือการประกวดโครงงานเด็กเขียนแอป ไม่ใช่งานวิชาการระดับปริญญาตรีคณิตศาสตร์ประยุกต์เลยแม้แต่น้อย!</p>
+                </div>
+            </div>
+
+            <!-- Side A -->
+            <div class="speech-box side-a">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">DEV</div>
+                        <div>
+                            <div class="speaker-name">ฝ่ายยืนยันโครงงาน (Project Defender)</div>
+                            <div class="speaker-role">การเสนอรูปแบบ Micro-Interactions & Custom Partitioning</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>"GeoGebra คือผืนผ้าใบเปล่า (Open Canvas) แต่ระบบของเราคือ 'ระบบฝึกทักษะการตัดสินใจทางคณิตศาสตร์ (Guided Decision Framework)'"</strong></p>
+                    <p>สิ่งที่เราพัฒนาไม่ได้มีแค่สไลเดอร์เลื่อน $n$ แต่มีกลไกทางคณิตศาสตร์เฉพาะตัว 3 ด้านที่ GeoGebra สำเร็จรูปและ AI ทั่วไปไม่มี:</p>
+                    <ul>
+                        <li><strong>1. การแบ่งช่วงย่อยแบบกำหนดเองตามใจชอบ (Interactive Non-uniform Partitioning):</strong> 
+                            GeoGebra ทั่วไปแบ่งช่วงเท่ากันเสมอ ($\Delta x$ คงที่) แต่ระบบของเราเปิดให้ผู้เรียนคลิกลากจุดแบ่งช่วง $x_0, x_1, \dots, x_n$ ได้เองอย่างอิสระ พร้อมคำนวณ $\|P\| = \max \Delta x_i$ สด ๆ เพื่อให้เด็กเข้าใจนิยามจริงของ Riemann Integral ว่าไม่จำเป็นต้องแบ่งเท่ากัน แต่ถ้า $\|P\| \to 0$ ค่าผลรวมจะลู่เข้าสู่ปริพันธ์เดียวกันเสมอ
+                        </li>
+                        <li><strong>2. กราฟคู่ขนานวิเคราะห์ความคลาดเคลื่อนสด (Live Log-Error Dual Plot):</strong> 
+                            ฝั่งซ้ายเป็นรูปสี่เหลี่ยมแนบกราฟ ฝั่งขวาเป็นกราฟ $\log(\text{Error})$ เทียบกับ $\log(n)$ เมื่อเด็กขยับสไลเดอร์ จุดบนเส้นกราฟฝั่งขวาจะวิ่งลงตามทฤษฎี $O(1/n)$ หรือ $O(1/n^2)$ ทำให้เกิดการเชื่อมโยงระหว่างเรขาคณิตกับการวิเคราะห์เชิงตัวเลข
+                        </li>
+                        <li><strong>3. กลไก Gamified Decision Tree:</strong> 
+                            ไม่ใช่การตอบชอยส์เอาคะแนน แต่เป็น <em>'ต้นไม้ตัดสินใจเลือกเทคนิค'</em> เช่น เมื่อเจอ $\int x \cos(x) dx$ ระบบจะให้เด็กทดลองเลือกทางแยกระหว่าง Substitution vs By Parts ถ้าเลือกผิด ระบบจะจำลองผลลัพธ์ว่าสมการจะติดลูปอย่างไร
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Moderator -->
+            <div class="speech-box side-mod">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">H</div>
+                        <div>
+                            <div class="speaker-name">ผู้ดำเนินรายการ (Hermes Moderator)</div>
+                            <div class="speaker-role">สรุปประเด็นรอบที่ 2</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>จุดเปลี่ยนสำคัญ:</strong> ฝ่าย Defender เริ่มวางตำแหน่งงานได้ชัดเจนขึ้น ว่าไม่ใช่แค่การเอาสไลเดอร์มาขยับภาพ แต่เป็นการสร้าง <em>'การทดลองนิยามทางคณิตศาสตร์ (Definition-level Experimentation)'</em> เช่น การลากแบ่งช่วงไม่เท่ากัน และการพลอตอัตราการลู่เข้าเชิงประจักษ์</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Round 3 -->
+    <section class="round-card" id="round-3">
+        <div class="round-header">
+            <div class="round-title">
+                <span>🎯</span> รอบที่ 3: กับดักความเข้าใจผิด & ความลึกซึ้งทางคณิตศาสตร์ (Misconceptions & Math Rigor)
+            </div>
+            <span class="badge badge-amber">Round 03</span>
+        </div>
+        <div class="dialogue-stream">
+            
+            <!-- Side B -->
+            <div class="speech-box side-b">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">AI</div>
+                        <div>
+                            <div class="speaker-name">กรรมการฝ่ายรุก (Hostile AI Auditor)</div>
+                            <div class="speaker-role">การซักฟอกเรื่องความลึกซึ้งและกระบวนการสร้าง</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>"ถึงจะมีฟังก์ชันเหล่านั้น... นิสิตเขียนเองทั้งหมดหรือแค่เรียกใช้ Library สำเร็จรูป?"</strong></p>
+                    <p>การเอา SymPy มาเรียก <code>sp.integrate()</code> หรือใช้ Matplotlib พล็อตเส้นตรงสี่เหลี่ยม มันเป็นโค้ดสั้น ๆ แค่ 10-20 บรรทัด ไม่ได้แสดงถึงความสามารถทางคณิตศาสตร์ขั้นสูงเลย</p>
+                    <p>และถ้าผู้ใช้พิมพ์โจทย์ที่มีความซับซ้อน เช่น ฟังก์ชันที่มีจุดไม่ต่อเนื่องอย่างรุนแรง (เช่น Dirichlet function หรือ $\sin(1/x)$) ระบบนิสิตก็แครช (Crash) หรือไม่ก็พล็อตไม่ออกอยู่ดี ในขณะที่ ChatGPT สามารถอธิบายเชิงทฤษฎีได้อย่างลึกซึ้งกว่า</p>
+                </div>
+            </div>
+
+            <!-- Side A -->
+            <div class="speech-box side-a">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">DEV</div>
+                        <div>
+                            <div class="speaker-name">ฝ่ายยืนยันโครงงาน (Project Defender)</div>
+                            <div class="speaker-role">การยืนยันสถาปัตยกรรมและการตรวจสอบความถูกต้อง</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>"นี่คือเหตุผลที่เราต้องมี Automated Unit Tests (Pytest) และระบบดักจับ Misconception โดยเฉพาะ"</strong></p>
+                    <p>โครงงานนี้ไม่ได้มีแค่โค้ดหน้าเว็บ แต่ประกอบด้วยกระดูกสันหลังทางคณิตศาสตร์ 3 ส่วน:</p>
+                    <ol>
+                        <li><strong>ขั้นตอนวิธีการคำนวณที่เขียนเอง (Scratch Algorithms):</strong> 
+                            เราไม่ได้พึ่งพาฟังก์ชันสำเร็จรูปอย่างเดียว แต่เราเขียนขั้นตอนวิธี <code>Midpoint Riemann Sum</code>, <code>Trapezoidal Rule</code>, และ <code>Adaptive Simpson</code> ขึ้นมาเอง พร้อมวิเคราะห์ Big-O ความคลาดเคลื่อน
+                        </li>
+                        <li><strong>ระบบดักจับกับดักทางมโนทัศน์ (Curated Misconception Traps):</strong> 
+                            เราสร้างคลังโจทย์เฉพาะทางที่เด็กมักเข้าใจผิด เช่น $\int_{-1}^1 \frac{1}{x^2} dx$ ที่เด็กมักเผลอใช้วิธีแทนค่าตรง ๆ ได้ $-2$ ระบบจะมีกลไกตรวจสอบเงื่อนไขความต่อเนื่องบนช่วงปิด $[a, b]$ ก่อนเริ่มคำนวณเสมอ
+                        </li>
+                        <li><strong>การทดสอบความถูกต้องอย่างเข้มงวด (Pytest Suite):</strong> 
+                            มีชุดทดสอบครอบคลุมทั้ง <em>Theoretical Accuracy</em>, <em>Convergence Verification</em>, และ <em>Exception Handling</em> กว่า 40+ เคส
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Moderator -->
+            <div class="speech-box side-mod">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">H</div>
+                        <div>
+                            <div class="speaker-name">ผู้ดำเนินรายการ (Hermes Moderator)</div>
+                            <div class="speaker-role">สรุปประเด็นรอบที่ 3</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>ข้อสรุปเชิงเทคนิค:</strong> จุดที่ทำให้งานนี้พ้นจากคำว่า 'การบ้านเขียนเว็บ' คือการที่นิสิต **ลงมือเขียน Algorithm ทางการวิเคราะห์เชิงตัวเลขด้วยตนเอง** และมี **ชุดทดสอบ Pytest ทางคณิตศาสตร์** ยืนยันความแม่นยำ</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Round 4 -->
+    <section class="round-card" id="round-4">
+        <div class="round-header">
+            <div class="round-title">
+                <span>🤝</span> รอบที่ 4: การประนีประนอมและการตกผลึกสูตรสำเร็จ (Consensus & Winning Formula)
+            </div>
+            <span class="badge badge-amber">Round 04</span>
+        </div>
+        <div class="dialogue-stream">
+            
+            <!-- Side B -->
+            <div class="speech-box side-b">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">AI</div>
+                        <div>
+                            <div class="speaker-name">กรรมการฝ่ายรุก (Hostile AI Auditor)</div>
+                            <div class="speaker-role">ข้อเสนอแนะและเงื่อนไขการให้ผ่าน</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>"ถ้าจะให้ผมในฐานะกรรมการอนุมัติหัวข้อนี้... นิสิตต้องยอมรับและปรับแก้ 3 เงื่อนไขเด็ดขาดนี้:"</strong></p>
+                    <ol>
+                        <li><strong>ห้ามนำเสนอว่าเป็น 'แอปพลิเคชันแก้โจทย์/คำนวณพื้นที่':</strong> เพราะแพ้ AI และโปรแกรมสำเร็จรูปแน่นอน ให้เปลี่ยนเป็น <em>'ระบบสิ่งแวดล้อมเพื่อการเรียนรู้และทดลองมโนทัศน์แคลคูลัส (Interactive Calculus Conceptual Sandbox)'</em></li>
+                        <li><strong>ต้องมีฟังก์ชันที่ AI ทำไม่ได้จริง ๆ ในหน้าเว็บ:</strong> ต้องมี Interactive Partitioning ลากจุดแบ่งช่วงเองได้จริง มี Live Error Convergence Plot และมี Decision Tree Step-by-Step</li>
+                        <li><strong>ต้องมีระเบียบวิธีวิจัยวัดผลเชิงประจักษ์:</strong> ต้องนำไปทดสอบกับนิสิตปี 1 จริง เก็บผลคะแนนความเข้าใจก่อน-หลัง (Pre/Post Test) และแบบประเมินความสะดวกในการใช้งาน (System Usability Scale: SUS)</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Side A -->
+            <div class="speech-box side-a">
+                <div class="speaker-header">
+                    <div class="speaker-info">
+                        <div class="speaker-avatar">DEV</div>
+                        <div>
+                            <div class="speaker-name">ฝ่ายยืนยันโครงงาน (Project Defender)</div>
+                            <div class="speaker-role">การยอมรับเงื่อนไขและข้อตกลงในการพัฒนา</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <p><strong>"เรายอมรับเงื่อนไขทั้ง 3 ข้ออย่างสมบูรณ์ และพร้อมบรรจุลงในเอกสารโครงร่างและสไลด์สอบทันที"</strong></p>
+                    <p>เรามั่นใจว่ากรอบการพัฒนานี้ยังคงรักษาคอนเซปต์เดิมของโครงงาน คือการเป็น <strong>'สื่อช่วยสอนแคลคูลัสแบบมีปฏิสัมพันธ์'</strong> โดยไม่ต้องเปลี่ยนชื่อหัวข้อให้ยุ่งยาก แต่เพิ่มความลึกซึ้งทางวิชาการและจุดขายที่เหนือกว่า AI อย่างแท้จริง</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Verdict & Action Plan -->
+    <div class="verdict-card">
+        <div class="verdict-header">
+            <div style="font-size: 2.5rem;">🏆</div>
+            <div>
+                <div class="verdict-title">บทสรุปมติที่ประชุมและกลยุทธ์สอบให้ผ่าน 100%</div>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">(Executive Synthesis & Defense Blueprint for Student Project)</p>
+            </div>
+        </div>
+
+        <div class="verdict-grid">
+            <div class="verdict-col col-kill">
+                <h3>🚫 จุดที่ต้องตัดทิ้ง / ห้ามพูดในห้องสอบ</h3>
+                <ul style="font-size: 0.9rem; margin-left: 1.2rem; color: #CBD5E1;">
+                    <li>ห้ามพูดว่า "ทำเว็บมาแก้โจทย์คณิตศาสตร์"</li>
+                    <li>ห้ามพูดว่า "ทำมาเพื่อให้นิสิตดูเฉลยได้สะดวก"</li>
+                    <li>ห้ามอวดแค่การกดปุ่มแล้วได้คำตอบ (เพราะ AI ทำได้ดีกว่า)</li>
+                    <li>ห้ามใช้คำว่า "สร้างเกม" ถ้าเป็นแค่ควิซชอยส์ 4 ตัวเลือกธรรมดา</li>
+                </ul>
+            </div>
+
+            <div class="verdict-col col-survive">
+                <h3>💎 3 ฟีเจอร์ชูโรงที่ต้องมีใน Streamlit/HTML</h3>
+                <ul style="font-size: 0.9rem; margin-left: 1.2rem; color: #CBD5E1;">
+                    <li><strong>Live Error Convergence Plot:</strong> กราฟคู่ขนานที่เลื่อน $n$ แล้วเห็นจุดวิ่งลงบนเส้นความชัน $\log(\text{Error})$ ทันที</li>
+                    <li><strong>Custom Partitioning Drag:</strong> ให้ผู้เรียนใช้เมาส์ลากจุดแบ่งช่วงบนแกน $x$ ได้เองอย่างอิสระ</li>
+                    <li><strong>Decision Tree Scaffolding:</strong> ระบบทดลองเลือกเทคนิคอินทิเกรตทีละขั้นพร้อมจำลองผลกรณีเลือกผิด</li>
+                </ul>
+            </div>
+
+            <div class="verdict-col col-action">
+                <h3>📜 ประโยคเด็ดสำหรับตอบกรรมการ</h3>
+                <div style="font-size: 0.88rem; font-style: italic; color: #FDE68A; background: rgba(0,0,0,0.3); padding: 0.75rem; border-radius: 6px;">
+                    "AI ในปัจจุบันทำหน้าที่เป็นเพียง 'ผู้เฉลยคำตอบ' ที่ทำให้ผู้เรียนเกิดความเฉื่อยชาทางปัญญา แต่ระบบที่เราพัฒนาถูกออกแบบเป็น 'ห้องทดลองคณิตศาสตร์เชิงมโนทัศน์' ที่เปิดให้ผู้เรียนได้ทดลองลากจุดแบ่งช่วงตามนิยามจริง และเห็นพฤติกรรมการลู่เข้าของความคลาดเคลื่อนแบบเรียลไทม์ ซึ่งกระบวนการเรียนรู้เชิงทดลองเช่นนี้ AI แบบถามตอบทั่วไปไม่สามารถตอบสนองได้ครับ"
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        บันทึกการประชุมจัดทำขึ้นเพื่อใช้เป็นหลักฐานและคู่มือเตรียมตัวสอบข้อเสนอโครงงาน (Proposal Defense)<br>
+        เอกสารอ้างอิง: <code>calculus-integration-app/docs/debate/debate-record.html</code> | วันที่บันทึก: 28 สิงหาคม 2569
+    </footer>
+
+</div>
+
+</body>
+</html>

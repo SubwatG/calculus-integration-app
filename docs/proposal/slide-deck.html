@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>การนำเสนอโครงร่างโครงงาน | Calculus Tutor Web Application</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai+Looped:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- KaTeX Math Rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<style>
+:root {
+  /* Formal Academic Palette */
+  --bg-app: #F1F5F9;
+  --bg-slide: #FFFFFF;
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  
+  --primary-navy: #0A2540;
+  --primary-blue: #1D4ED8;
+  --accent-blue: #2563EB;
+  --accent-blue-light: #EFF6FF;
+  --accent-teal: #0D9488;
+  --accent-teal-light: #F0FDFA;
+  --accent-emerald: #059669;
+  --accent-emerald-light: #ECFDF5;
+  --accent-amber: #D97706;
+  --accent-amber-light: #FFFBEB;
+  --accent-crimson: #DC2626;
+  --accent-crimson-light: #FEF2F2;
+  --accent-purple: #7C3AED;
+  --accent-purple-light: #F5F3FF;
+  
+  --border-subtle: #E2E8F0;
+  --border-medium: #CBD5E1;
+  --card-bg: #F8FAFC;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Sans Thai Looped', 'Inter', sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Header Chrome */
+.top-nav {
+  height: 52px;
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.ku-badge {
+  background: #006644;
+  color: #FFFFFF;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.nav-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--primary-navy);
+}
+
+.defense-tag {
+  background: var(--accent-blue-light);
+  color: var(--primary-blue);
+  border: 1px solid #BFDBFE;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.backup-badge {
+  background: var(--accent-purple-light);
+  color: var(--accent-purple);
+  border: 1px solid #DDD6FE;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.btn-action {
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+}
+
+.btn-action:hover {
+  background: #F8FAFC;
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+}
+
+.btn-primary-action {
+  background: var(--primary-navy);
+  border-color: var(--primary-navy);
+  color: #FFFFFF;
+}
+.btn-primary-action:hover {
+  background: #1E293B;
+  color: #FFFFFF;
+}
+
+/* Progress rail */
+.progress-rail {
+  width: 100%;
+  height: 3px;
+  background: var(--border-subtle);
+}
+.progress-fill {
+  height: 100%;
+  background: var(--primary-blue);
+  width: 0%;
+  transition: width 0.25s ease-out;
+}
+
+/* Canvas & Slide Container */
+.deck-canvas {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 2rem;
+  position: relative;
+}
+
+.slide {
+  width: 100%;
+  max-width: 1240px;
+  height: 92%;
+  max-height: 740px;
+  background: var(--bg-slide);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  padding: 2.5rem 3.2rem;
+  display: none;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+}
+
+.slide.active {
+  display: flex;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Slide Typography & Layouts */
+.slide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-label {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary-blue);
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.section-label.backup {
+  color: var(--accent-purple);
+}
+
+.main-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--primary-navy);
+  margin-top: 0.25rem;
+  line-height: 1.3;
+}
+
+.slide-counter-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--card-bg);
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+}
+
+.slide-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+/* Structural Components */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.academic-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.3rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.academic-card.highlight {
+  background: var(--accent-blue-light);
+  border-color: #BFDBFE;
+}
+.academic-card.teal {
+  background: var(--accent-teal-light);
+  border-color: #99F6E4;
+}
+.academic-card.emerald {
+  background: var(--accent-emerald-light);
+  border-color: #A7F3D0;
+}
+.academic-card.amber {
+  background: var(--accent-amber-light);
+  border-color: #FDE68A;
+}
+.academic-card.crimson {
+  background: var(--accent-crimson-light);
+  border-color: #FECACA;
+}
+.academic-card.purple {
+  background: var(--accent-purple-light);
+  border-color: #DDD6FE;
+}
+.academic-card.dark {
+  background: var(--primary-navy);
+  border-color: #1E293B;
+  color: #FFFFFF;
+}
+
+.card-heading {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--primary-navy);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding-bottom: 0.4rem;
+}
+.academic-card.dark .card-heading {
+  color: #FFFFFF;
+  border-bottom-color: rgba(255,255,255,0.15);
+}
+
+p, li {
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.academic-card.dark p, .academic-card.dark li {
+  color: #CBD5E1;
+}
+
+ul, ol {
+  padding-left: 1.3rem;
+}
+li {
+  margin-bottom: 0.35rem;
+}
+
+.code-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  background: #F1F5F9;
+  color: #0F172A;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-medium);
+}
+
+.code-snippet {
+  background: #0F172A;
+  color: #E2E8F0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.83rem;
+  line-height: 1.55;
+  padding: 0.9rem 1.1rem;
+  border-radius: 6px;
+  border: 1px solid #1E293B;
+  overflow-x: auto;
+}
+
+.math-box {
+  background: #F8FAFC;
+  border-left: 4px solid var(--primary-blue);
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.95rem;
+  border-top: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.table-academic {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.table-academic th, .table-academic td {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+}
+.table-academic th {
+  background: #F8FAFC;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  color: var(--primary-navy);
+}
+
+/* Modal Grid Overview */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  padding: 3rem;
+  overflow-y: auto;
+}
+.modal-overlay.active { display: block; }
+.grid-thumbs {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+.thumb-item {
+  background: #FFFFFF;
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  padding: 1.2rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.thumb-item:hover {
+  border-color: var(--primary-blue);
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.15);
+  transform: translateY(-2px);
+}
+.thumb-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+}
+.thumb-title {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--primary-navy);
+}
+
+/* Footer Chrome */
+.bottom-footer {
+  height: 32px;
+  background: #FFFFFF;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.key-badge {
+  background: #F1F5F9;
+  border: 1px solid var(--border-medium);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+}
+</style>
+</head>
+<body>
+
+<!-- Header Top Bar -->
+<div class="top-nav">
+  <div class="brand-meta">
+    <span class="ku-badge">KU KPS</span>
+    <span class="nav-title">สาขาวิชาคณิตศาสตร์ประยุกต์ • คณะศิลปศาสตร์และวิทยาศาสตร์</span>
+    <span class="defense-tag">Main Presentation (15m)</span>
+    <span class="backup-badge">Backup Defense & Code (10m)</span>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-action" onclick="prevSlide()">◀ ก่อนหน้า</button>
+    <button class="btn-action" onclick="nextSlide()">ถัดไป ▶</button>
+    <button class="btn-action" onclick="toggleOverview()">🗂️ ภาพรวม (G)</button>
+    <button class="btn-action btn-primary-action" onclick="toggleFullScreen()">⛶ เต็มจอ (F)</button>
+  </div>
+</div>
+<div class="progress-rail">
+  <div class="progress-fill" id="progressFill"></div>
+</div>
+
+<!-- Presentation Canvas -->
+<div class="deck-canvas">
+
+  <!-- SLIDE 1: Title Slide -->
+  <div class="slide active">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">เอกสารนำเสนอโครงร่างโครงงานคณิตศาสตร์ประยุกต์ ประจำปีการศึกษา 2569</div>
+        <div class="main-title" style="font-size: 2.2rem; color: var(--primary-navy); margin-top: 0.4rem;">
+          การพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้น
+        </div>
+        <div style="font-size: 1.1rem; color: var(--text-muted); font-weight: 500; margin-top: 0.3rem;">
+          Development of a Math Tutor Web Application for Introductory Calculus
+        </div>
+      </div>
+      <div class="slide-counter-chip">01 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2" style="gap: 1.8rem; align-items: stretch;">
+        <div class="academic-card highlight" style="justify-content: center; padding: 1.8rem;">
+          <div class="card-heading" style="font-size: 1.15rem; color: var(--primary-blue);">
+            🏛️ สังกัดภาควิชาและสถาบัน
+          </div>
+          <p style="font-size: 1.02rem; margin-top: 0.5rem;">
+            <strong>ภาควิชา:</strong> วิทยาการคำนวณและเทคโนโลยีดิจิทัล<br>
+            <strong>คณะ:</strong> ศิลปศาสตร์และวิทยาศาสตร์<br>
+            <strong>สถาบัน:</strong> มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตกำแพงแสน
+          </p>
+          <div style="margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed #BFDBFE; font-size: 0.95rem;">
+            <strong>อาจารย์ที่ปรึกษาโครงงาน:</strong><br>
+            อาจารย์กิตติพงษ์ ทรัพย์วัฒนชัย
+          </div>
+        </div>
+        
+        <div class="academic-card" style="justify-content: center; padding: 1.8rem;">
+          <div class="card-heading" style="font-size: 1.15rem;">
+            👩‍🎓 คณะผู้จัดทำโครงงาน
+          </div>
+          <div style="margin-top: 0.6rem;">
+            <p style="font-size: 1.05rem; font-weight: 600; color: var(--primary-navy);">
+              1. นางสาวขวัญเรือน สำเนียงดี
+            </p>
+            <p style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 0.8rem;">
+              รหัสนิสิต <span class="code-pill">6621602928</span> • สาขาวิชาคณิตศาสตร์ประยุกต์
+            </p>
+            
+            <p style="font-size: 1.05rem; font-weight: 600; color: var(--primary-navy);">
+              2. นางสาวเบญจกัฬยาณี พิทยากูล
+            </p>
+            <p style="font-size: 0.92rem; color: var(--text-muted);">
+              รหัสนิสิต <span class="code-pill">6621602979</span> • สาขาวิชาคณิตศาสตร์ประยุกต์
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: Problem & Research Gap -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">1. ที่มาและความสำคัญของโครงงาน</div>
+        <div class="main-title">สภาพปัญหาการเรียนรู้และช่องว่างของสื่อที่มีอยู่ในปัจจุบัน (Research Gap)</div>
+      </div>
+      <div class="slide-counter-chip">02 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="academic-card crimson">
+          <div class="card-heading" style="color: var(--accent-crimson);">
+            ⚠️ สภาพปัญหาของผู้เรียน (Student Pain Points)
+          </div>
+          <ul>
+            <li><strong>ความซับซ้อนของมโนทัศน์:</strong> นิสิตส่วนใหญ่ประสบปัญหาในหัวข้อ <em>ลิมิต อนุพันธ์ และปริพันธ์</em> เนื่องจากเป็นแนวคิดเชิงนามธรรมที่ต้องเชื่อมโยงระหว่างเรขาคณิตและพีชคณิต</li>
+            <li><strong>ขาดความเข้าใจเงื่อนไขและที่มา:</strong> ผู้เรียนมักจดจำเฉพาะสูตรสำเร็จ แต่ขาดความเข้าใจในเงื่อนไขการใช้สูตร (เช่น เงื่อนไขความต่อเนื่อง)</li>
+            <li><strong>สื่อการเรียนรู้กระจัดกระจาย:</strong> เนื้อหาที่มีอยู่ทั่วไปไม่สอดคล้องกับหลักสูตรมหาวิทยาลัย และไม่มีระบบที่รวบรวมครบถ้วนในที่เดียว</li>
+          </ul>
+        </div>
+        
+        <div class="academic-card highlight">
+          <div class="card-heading" style="color: var(--primary-blue);">
+            🔍 ข้อจำกัดของเครื่องมือเดิม (The "Black-Box" Problem)
+          </div>
+          <ul>
+            <li><strong>เครื่องคำนวณสำเร็จรูป (Wolfram, Symbolab, ChatGPT):</strong> ส่วนใหญ่เป็น <em>Black-Box</em> ที่แสดงเฉพาะคำตอบสุดท้าย ข้ามขั้นตอนการให้เหตุผลทางคณิตศาสตร์ที่จำเป็น</li>
+            <li><strong>ขาดการจัดนั่งร้านทางปัญญา (Scaffolding):</strong> ไม่มีคำอธิบายภาษาไทยที่ชี้จุดผิดที่พบบ่อย (Misconceptions) และไม่มีเครื่องมือกราฟิกปรับเปลี่ยนค่าได้แบบ Real-time</li>
+            <li><strong>เป้าหมายของโครงงาน:</strong> พัฒนา Interactive Math Tutor ที่แสดงวิธีทำอย่างเป็นขั้นตอน โปร่งใส และถูกต้องตามหลักวิชาการ 100%</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: Objectives & Scope -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">2. วัตถุประสงค์และขอบเขตโครงงาน</div>
+        <div class="main-title">วัตถุประสงค์การวิจัยและขอบเขต 6 โมดูลแคลคูลัสหลัก</div>
+      </div>
+      <div class="slide-counter-chip">03 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="academic-card">
+          <div class="card-heading">🎯 วัตถุประสงค์ของโครงงาน (Objectives)</div>
+          <ol>
+            <li>เพื่อพัฒนาเว็บแอปพลิเคชันช่วยเรียนแคลคูลัสเบื้องต้นด้วยภาษา <strong>Python</strong> และเฟรมเวิร์ก <strong>Streamlit</strong></li>
+            <li>เพื่อรวบรวมเนื้อหา ทฤษฎีบท ตัวอย่าง และแบบฝึกหัดโต้ตอบไว้ในระบบศูนย์รวมเดียว</li>
+            <li>เพื่อพัฒนาระบบประมวลผลคณิตศาสตร์เชิงสัญลักษณ์ (CAS) ที่แสดงขั้นตอนวิธีทำอย่างละเอียดทีละขั้น</li>
+            <li>เพื่อทวนสอบความถูกต้องทางคณิตศาสตร์ 100% ด้วย <strong>Pytest</strong> และประเมินความสะดวกในการใช้งานด้วย <strong>SUS</strong></li>
+          </ol>
+        </div>
+        
+        <div class="academic-card teal">
+          <div class="card-heading" style="color: var(--accent-teal);">📚 ขอบเขตเนื้อหา 6 โมดูลหลัก (Core Modules)</div>
+          <div class="grid-2" style="gap: 0.6rem; font-size: 0.92rem;">
+            <div class="academic-card" style="padding: 0.6rem;">1. เส้นสัมผัส & อนุพันธ์<br><small style="color:var(--text-muted);">Tangent & Derivatives</small></div>
+            <div class="academic-card" style="padding: 0.6rem;">2. ลิมิตเข้าใกล้จุด<br><small style="color:var(--text-muted);">Limits & Indeterminate</small></div>
+            <div class="academic-card" style="padding: 0.6rem;">3. ผลรวมรีมันน์<br><small style="color:var(--text-muted);">Riemann Sum Approximation</small></div>
+            <div class="academic-card" style="padding: 0.6rem;">4. การแทนค่าตัวแปร $u$<br><small style="color:var(--text-muted);">u-Substitution Method</small></div>
+            <div class="academic-card" style="padding: 0.6rem;">5. พื้นที่ระหว่างเส้นโค้ง<br><small style="color:var(--text-muted);">Area Between Curves</small></div>
+            <div class="academic-card" style="padding: 0.6rem;">6. ปริพันธ์ไม่ตรงแบบ<br><small style="color:var(--text-muted);">Improper Integrals</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Development Workflow -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">3. วิธีการดำเนินการศึกษา</div>
+        <div class="main-title">วงจรการพัฒนาซอฟต์แวร์ 5 ขั้นตอนหลัก (Development Workflow)</div>
+      </div>
+      <div class="slide-counter-chip">04 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="academic-card">
+          <div class="card-heading" style="color: var(--primary-blue);">
+            1. Plan & Design
+          </div>
+          <p>• กำหนดวัตถุประสงค์การเรียนรู้ (CLO)<br>• ออกแบบผังหน้าจอต้นแบบ (Wireframe)<br>• กำหนด Data Schema 6 มิติ</p>
+        </div>
+        
+        <div class="academic-card">
+          <div class="card-heading" style="color: var(--accent-teal);">
+            2. Content Creation
+          </div>
+          <p>• สังเคราะห์เนื้อหาจากตำรา ม.ศิลปากร<br>• จัดทำขั้นตอนวิธีทำตัวอย่างในรูป LaTeX<br>• จัดทำคลังแบบฝึกหัดโต้ตอบ</p>
+        </div>
+        
+        <div class="academic-card">
+          <div class="card-heading" style="color: var(--accent-emerald);">
+            3. System Development
+          </div>
+          <p>• พัฒนา Frontend ด้วย Streamlit<br>• เชื่อมต่อ SymPy Solver Engine<br>• สร้างโมดูล Visualization 2D</p>
+        </div>
+      </div>
+      
+      <div class="grid-2" style="margin-top: 0.5rem;">
+        <div class="academic-card amber">
+          <div class="card-heading" style="color: var(--accent-amber);">
+            4. Verification & Testing (Pytest)
+          </div>
+          <p>• ทดสอบผลลัพธ์เทียบค่าคำนวณมือ (Accuracy Test)<br>• ทดสอบคุณสมบัติการลู่เข้าเชิงตัวเลข (Convergence Test)<br>• ทดสอบการจัดการกรณีข้อมูลนำเข้าผิดพลาด (Domain Validation)</p>
+        </div>
+        
+        <div class="academic-card highlight">
+          <div class="card-heading" style="color: var(--primary-blue);">
+            5. Deployment & User Evaluation
+          </div>
+          <p>• เผยแพร่ระบบบน Streamlit Community Cloud ผ่าน GitHub<br>• ทดลองใช้งานกับกลุ่มนิสิตนำร่อง 15–20 คน ประเมินด้วยเกณฑ์ SUS</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: 3-Layer System Architecture -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">3. วิธีการดำเนินการศึกษา • Software Architecture</div>
+        <div class="main-title">สถาปัตยกรรมระบบ 3 ชั้น (Separation of Concerns: SoC)</div>
+      </div>
+      <div class="slide-counter-chip">05 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="academic-card">
+          <div class="card-heading" style="color: var(--primary-blue);">
+            🖥️ Presentation Layer
+          </div>
+          <p style="font-size:0.85rem; font-weight:700; color:var(--primary-blue);">Frontend (Streamlit)</p>
+          <ul style="font-size:0.88rem;">
+            <li>Sidebar Navigation Router</li>
+            <li>Interactive Lesson Pages</li>
+            <li>Step-by-Step Solver Interface</li>
+            <li>Interactive Quiz Engine</li>
+            <li>Visualization Lab (Plotter)</li>
+          </ul>
+        </div>
+        
+        <div class="academic-card dark">
+          <div class="card-heading">
+            ⚙️ Computation Layer
+          </div>
+          <p style="font-size:0.85rem; font-weight:700; color:#93C5FD;">Backend Services (SymPy Engine)</p>
+          <ul style="font-size:0.88rem;">
+            <li><strong>Symbolic Solver:</strong> แก้สมการเชิงสัญลักษณ์</li>
+            <li><strong>Solution Engine:</strong> สร้างวิธีทำทีละขั้น</li>
+            <li><strong>Plotter Module:</strong> เรนเดอร์กราฟิก Matplotlib</li>
+            <li><strong>Error Filter:</strong> ตรวจสอบ Domain/Singularity</li>
+          </ul>
+        </div>
+        
+        <div class="academic-card">
+          <div class="card-heading" style="color: var(--accent-emerald);">
+            📦 Data & Content Layer
+          </div>
+          <p style="font-size:0.85rem; font-weight:700; color:var(--accent-emerald);">Data Store (Markdown & YAML)</p>
+          <ul style="font-size:0.88rem;">
+            <li><span class="code-pill">utils/theory.py</span> กรอบ 6 มิติ</li>
+            <li><span class="code-pill">data/lessons/*.md</span> บทเรียน LaTeX</li>
+            <li><span class="code-pill">data/quizzes/*.json</span> คลังข้อสอบ</li>
+            <li>แยกเนื้อหาออกจากโค้ด ง่ายต่อการบำรุงรักษา</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="math-box" style="font-size: 0.9rem;">
+        <strong>จุดเด่นทางวิศวกรรม:</strong> การแยกชั้นการทำงานอย่างเด็ดขาดทำให้ระบบมีความมั่นคงสูง สามารถเขียน Unit Test ครอบคลุมฟังก์ชันคำนวณได้ 100% โดยไม่ต้องเปิดหน้าเว็บ
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: UI/UX Wireframe -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">3. วิธีการดำเนินการศึกษา • UI/UX Design</div>
+        <div class="main-title">การออกแบบโครงสร้างส่วนต่อประสานผู้ใช้ (UI/UX Wireframe)</div>
+      </div>
+      <div class="slide-counter-chip">06 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="academic-card">
+          <div class="card-heading">📐 โครงสร้างหน้าจอหลัก 2 คอลัมน์</div>
+          <ul>
+            <li><strong>เมนูนำทางด้านซ้าย (Sidebar Navigation):</strong> ตรึงตำแหน่งถาวร เข้าถึงบทเรียน (Lessons), เครื่องมือคำนวณ (Solvers), และแบบฝึกหัด (Quizzes) ได้รวดเร็ว</li>
+            <li><strong>พื้นที่แสดงผลหลักด้านขวา (Interactive Work Area):</strong>
+              <ul>
+                <li>Hero Header ชี้แจงวัตถุประสงค์ของแต่ละบท</li>
+                <li>Slider & Parameter Input สำหรับเปลี่ยนค่าตัวแปรทันที</li>
+                <li>KaTeX Equation Block แสดงสมการคมชัดระดับสิ่งพิมพ์</li>
+                <li>Matplotlib Visualization ตอบสนองต่อการปรับค่า Real-time</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="academic-card highlight">
+          <div class="card-heading" style="color: var(--primary-blue);">🎯 หลักการออกแบบเพื่อการเรียนรู้ (Pedagogical UX)</div>
+          <ul>
+            <li><strong>การลดภาระทางปัญญา (Cognitive Load Reduction):</strong> ใช้ Accordion ซ่อนขั้นตอนย่อย เพื่อให้ผู้เรียนค่อยๆ เปิดดูทีละขั้นตอนตามความพร้อม</li>
+            <li><strong>ความสามารถในการโต้ตอบ (Interactivity):</strong> การปรับเปลี่ยนตัวแปรแล้วเห็นกราฟขยับทันที ช่วยสร้าง Intuition ทางคณิตศาสตร์</li>
+            <li><strong>รองรับอุปกรณ์หลากหลาย (Responsive Layout):</strong> ใช้งานได้ราบรื่นทั้งคอมพิวเตอร์ แท็บเล็ต และสมาร์ตโฟน</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: 6-Dimension Scaffolding Framework -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">3. วิธีการดำเนินการศึกษา • หัวใจสำคัญทางวิชาการ</div>
+        <div class="main-title">กรอบการจัดนั่งร้านทางปัญญา 6 มิติ (6-Dimension Scaffolding Framework)</div>
+      </div>
+      <div class="slide-counter-chip">07 / 20</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:0.95rem; color:var(--text-secondary);">
+        โครงสร้างข้อมูลมาตรฐานใน <span class="code-pill">utils/theory.py</span> ที่กำกับให้ทุกบทเรียนมีองค์ประกอบการสอนที่สมบูรณ์:
+      </p>
+      <div class="grid-3">
+        <div class="academic-card">
+          <div class="card-heading" style="color: var(--primary-blue);">1. Conditions ⚠️</div>
+          <p style="font-size:0.88rem;">เงื่อนไขการใช้สูตร เช่น $f(x)$ ต้องมีความต่อเนื่องบนช่วงปิด $[a,b]$ หรือเงื่อนไข $f(x) \ge 0$</p>
+        </div>
+        <div class="academic-card">
+          <div class="card-heading" style="color: var(--accent-teal);">2. Formulas 📐</div>
+          <p style="font-size:0.88rem;">สูตร นิยาม และทฤษฎีบทหลักในรูปสัญลักษณ์ LaTeX ที่ถูกต้องตามมาตรฐานสากล</p>
+        </div>
+        <div class="academic-card">
+          <div class="card-heading" style="color: var(--accent-emerald);">3. Properties 🔍</div>
+          <p style="font-size:0.88rem;">สมบัติสำคัญ เช่น การลู่เข้าของผลรวมสู่ค่าปริพันธ์ หรือความสัมพันธ์ลิมิตซ้าย-ขวา</p>
+        </div>
+        <div class="academic-card crimson">
+          <div class="card-heading" style="color: var(--accent-crimson);">4. Misconceptions 🚫</div>
+          <p style="font-size:0.88rem;">ข้อควรระวัง เช่น การลืมคูณ $\Delta x$ ในผลรวม หรือการลืมใส่ค่าสัมบูรณ์เมื่อพื้นที่อยู่ใต้แกน $x$</p>
+        </div>
+        <div class="academic-card amber">
+          <div class="card-heading" style="color: var(--accent-amber);">5. Applications 🚀</div>
+          <p style="font-size:0.88rem;">การประยุกต์ใช้จริง เช่น การหาระยะทางจากการอินทิเกรตความเร็ว หรืองานในวิศวกรรม</p>
+        </div>
+        <div class="academic-card highlight">
+          <div class="card-heading" style="color: var(--primary-blue);">6. Decision Guide 🧭</div>
+          <p style="font-size:0.88rem;">แนวทางการตัดสินใจเลือกใช้เทคนิคคำนวณให้เหมาะสมกับรูปแบบของฟังก์ชัน</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Mathematical Algorithm: Riemann Sum -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">3. วิธีการดำเนินการศึกษา • Mathematical Rigor</div>
+        <div class="main-title">ขั้นตอนวิธีคณิตศาสตร์: กรณีศึกษาผลรวมรีมันน์ (Midpoint Riemann Sum)</div>
+      </div>
+      <div class="slide-counter-chip">08 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="academic-card">
+          <div class="card-heading" style="color: var(--primary-blue);">🧮 ตรรกะการคำนวณ (Algorithm Logic)</div>
+          <ol style="font-size:0.9rem;">
+            <li><strong>ความกว้างช่วงย่อย ($\Delta x$):</strong>
+              $$\Delta x = \frac{b - a}{n}$$
+            </li>
+            <li><strong>จุดตัวแทนกึ่งกลางแต่ละช่วง ($x_i$):</strong>
+              $$x_i = a + (i + 0.5)\Delta x, \quad i = 0, 1, \dots, n-1$$
+            </li>
+            <li><strong>ผลรวมพื้นที่สี่เหลี่ยมย่อย ($M_n$):</strong>
+              $$M_n = \sum_{i=0}^{n-1} f(x_i)\Delta x$$
+            </li>
+          </ol>
+        </div>
+        
+        <div class="academic-card teal">
+          <div class="card-heading" style="color: var(--accent-teal);">📊 ตัวอย่างการทำงานจริง ($f(x)=x^2$ บน $[0,2]$, $n=8$)</div>
+          <ul style="font-size:0.88rem;">
+            <li>$\Delta x = \frac{2-0}{8} = 0.25$</li>
+            <li>เซตจุดตัวแทน: $\{0.125, 0.375, 0.625, 0.875, \dots, 1.875\}$</li>
+            <li>ผลรวมประมาณค่า: $M_8 = \sum f(x_i)(0.25) \approx \mathbf{2.65625}$</li>
+            <li><strong>การเปรียบเทียบกับค่าจริงด้วย SymPy CAS:</strong>
+              $$\int_0^2 x^2 \, dx = \left[ \frac{x^3}{3} \right]_0^2 = \frac{8}{3} \approx \mathbf{2.66667}$$
+            </li>
+            <li>$\text{Error} = |2.66667 - 2.65625| = 0.01042$ (แสดงการลู่เข้าชัดเจน)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: SymPy & Plotter Integration -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">3. วิธีการดำเนินการศึกษา • CAS & Visualization</div>
+        <div class="main-title">การผสานพลัง SymPy CAS และ Matplotlib Visualizer</div>
+      </div>
+      <div class="slide-counter-chip">09 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="academic-card dark">
+          <div class="card-heading">⚙️ SymPy Computer Algebra System</div>
+          <ul>
+            <li><strong>การคำนวณเชิงสัญลักษณ์แท้จริง:</strong> ใช้ <span class="code-pill">sympy.diff()</span>, <span class="code-pill">sympy.integrate()</span>, และ <span class="code-pill">sympy.limit()</span> คำนวณนิพจน์ติดตัวแปร</li>
+            <li><strong>การสกัดวิธีทำเป็น LaTeX อัตโนมัติ:</strong> ใช้ <span class="code-pill">sympy.latex()</span> แปลงผลลัพธ์เป็นสมการแสดงผลบน KaTeX ทันที</li>
+            <li><strong>การตรวจคำตอบแบบ Analytic:</strong> ตรวจสอบความถูกต้องของคำตอบแบบฝึกหัดได้แม่นยำเทียบเท่าเฉลยในตำรา</li>
+          </ul>
+        </div>
+        
+        <div class="academic-card">
+          <div class="card-heading" style="color: var(--primary-blue);">📈 Dynamic Plotter Visualization</div>
+          <ul>
+            <li><strong>Riemann Bars Simulation:</strong> วาดกราฟแท่งสี่เหลี่ยมซ้อนทับเส้นโค้งจริง พร้อมปรับจำนวน $n$ แบบ Real-time</li>
+            <li><strong>Dynamic Tangent Line:</strong> แสดงเส้นสัมผัสโค้งที่ขยับตามจุดสัมผัส $x_0$ ที่ผู้เรียนเลือกบน Slider</li>
+            <li><strong>Area Between Curves Shading:</strong> คำนวณจุดตัดและแรเงาพื้นที่ปิดล้อมระหว่าง 2 ฟังก์ชันอย่างแม่นยำ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: 6 Core Modules Matrix -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">3. วิธีการดำเนินการศึกษา • รายละเอียดโมดูล</div>
+        <div class="main-title">ตารางสรุปรายละเอียดโมดูลการเรียนรู้ 6 หัวข้อ (Module Matrix)</div>
+      </div>
+      <div class="slide-counter-chip">10 / 20</div>
+    </div>
+    <div class="slide-body">
+      <table class="table-academic">
+        <thead>
+          <tr>
+            <th style="width: 22%;">หัวข้อโมดูล</th>
+            <th style="width: 26%;">ทฤษฎีคณิตศาสตร์หลัก</th>
+            <th style="width: 26%;">ตรรกะการคำนวณ (Solver)</th>
+            <th style="width: 26%;">การแสดงผลกราฟิก (Plotter)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. เส้นสัมผัส & อนุพันธ์</strong></td>
+            <td>$m = \lim_{h \to 0} \frac{f(x+h)-f(x)}{h}$</td>
+            <td>คำนวณความชัน $f'(x_0)$ และสมการเส้นสัมผัส</td>
+            <td>เส้นโค้งพร้อมเส้นสัมผัสเลื่อนตาม Slider</td>
+          </tr>
+          <tr>
+            <td><strong>2. ลิมิตเข้าใกล้จุด</strong></td>
+            <td>ลิมิตซ้าย-ขวา และรูปแบบ $\frac{0}{0}$</td>
+            <td>แยกตัวประกอบและคำนวณลิมิตสองด้าน</td>
+            <td>จุดทดสอบวิ่งเข้าหาจุดวิกฤตบนกราฟ</td>
+          </tr>
+          <tr>
+            <td><strong>3. ผลรวมรีมันน์</strong></td>
+            <td>$M_n = \sum f(x_i)\Delta x$</td>
+            <td>คำนวณผลรวม Left, Right, Midpoint</td>
+            <td>แท่งสี่เหลี่ยมซ้อนทับพื้นที่ใต้กราฟจริง</td>
+          </tr>
+          <tr>
+            <td><strong>4. การแทนค่าตัวแปร $u$</strong></td>
+            <td>$\int f(g(x))g'(x)dx = \int f(u)du$</td>
+            <td>แสดงผังแปลงรูปสมการและแทนค่ากลับ</td>
+            <td>ผังแสดงขั้นตอนวิธีทำ LaTeX ละเอียด</td>
+          </tr>
+          <tr>
+            <td><strong>5. พื้นที่ระหว่างเส้นโค้ง</strong></td>
+            <td>$A = \int_a^b [f(x) - g(x)]dx$</td>
+            <td>หาจุดตัดและคำนวณพื้นที่สุทธิบน-ล่าง</td>
+            <td>แรเงาพื้นที่ปิดล้อมระหว่าง 2 ฟังก์ชัน</td>
+          </tr>
+          <tr>
+            <td><strong>6. ปริพันธ์ไม่ตรงแบบ</strong></td>
+            <td>$\lim_{t \to \infty} \int_a^t f(x)dx$</td>
+            <td>ตรวจสอบการลู่เข้า/ลู่ออกของปริพันธ์</td>
+            <td>แรเงาพื้นที่หางยาววิ่งเข้าสู่อนันต์</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: Testing & Mathematical Quality Assurance -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">3. วิธีการดำเนินการศึกษา • Quality Assurance</div>
+        <div class="main-title">การทดสอบและทวนสอบความถูกต้องทางคณิตศาสตร์ด้วย Pytest</div>
+      </div>
+      <div class="slide-counter-chip">11 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="academic-card emerald">
+          <div class="card-heading" style="color: var(--accent-emerald);">1. Theoretical Accuracy</div>
+          <p style="font-size:0.9rem;">
+            ตรวจสอบผลการคำนวณเทียบกับค่าคำนวณมือ (Hand Calculation) ทุกกรณี เช่น $M_2$ ของ $f(x)=x^2$ บน $[0,2]$ ต้องได้ $2.5$ เป๊ะ โดย Error $\le 10^{-9}$
+          </p>
+        </div>
+        
+        <div class="academic-card highlight">
+          <div class="card-heading" style="color: var(--primary-blue);">2. Convergence Property</div>
+          <p style="font-size:0.9rem;">
+            ตรวจสอบคุณสมบัติการลู่เข้า เมื่อเพิ่ม $n=50$ ช่วง ค่าผลรวมรีมันน์ $M_{50}$ ต้องเข้าใกล้ค่าจริง $\frac{8}{3}$ โดย Relative Error $< 0.01$
+          </p>
+        </div>
+        
+        <div class="academic-card amber">
+          <div class="card-heading" style="color: var(--accent-amber);">3. Domain & Error Handling</div>
+          <p style="font-size:0.9rem;">
+            ดักจับกรณีข้อมูลนำเข้าผิดพลาด เช่น $b \le a$, $n < 1$, หรือฟังก์ชันไม่ต่อเนื่อง พร้อมแปลงเป็นข้อความสอนคณิตศาสตร์ที่เป็นมิตร
+          </p>
+        </div>
+      </div>
+      
+      <div class="academic-card dark" style="padding: 0.8rem 1.2rem; font-family:'JetBrains Mono', monospace; font-size:0.85rem;">
+        $ pytest tests/ -v<br>
+        <span style="color:#34D399;">test_riemann_solver.py::test_midpoint_accuracy PASSED [ 25%]</span><br>
+        <span style="color:#34D399;">test_riemann_solver.py::test_convergence_n50 PASSED [ 50%]</span><br>
+        <span style="color:#34D399;">test_domain_validation.py::test_invalid_interval PASSED [ 75%]</span><br>
+        <span style="color:#34D399;">test_sympy_solver.py::test_exact_integration PASSED [100%]</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: Usability Evaluation Plan -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">3. วิธีการดำเนินการศึกษา • การประเมินผล</div>
+        <div class="main-title">แผนการประเมินผลผู้ใช้งาน (System Usability Scale: SUS Evaluation)</div>
+      </div>
+      <div class="slide-counter-chip">12 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="academic-card">
+          <div class="card-heading">👥 แผนการทดสอบกับกลุ่มตัวอย่างนำร่อง (Pilot Testing)</div>
+          <ul>
+            <li><strong>กลุ่มเป้าหมาย:</strong> นิสิตระดับปริญญาตรีที่กำลังศึกษาวิชาแคลคูลัส จำนวน <strong>15–20 คน</strong></li>
+            <li><strong>วิธีการทดสอบ:</strong> ทดลองศึกษาบทเรียนและฝึกแก้โจทย์จริงผ่านเว็บแอปพลิเคชันทั้ง 6 โมดูล</li>
+            <li><strong>การเก็บข้อมูล:</strong> ทำแบบทดสอบวัดผลและตอบแบบสอบถามความพึงพอใจผ่านระบบออนไลน์</li>
+          </ul>
+        </div>
+        
+        <div class="academic-card teal">
+          <div class="card-heading" style="color: var(--accent-teal);">📋 มาตรวัดความสะดวกในการใช้งานตามมาตรฐาน SUS</div>
+          <ul>
+            <li><strong>แบบประเมิน SUS 10 ข้อ:</strong> วัดความง่ายในการเรียนรู้, ความคล่องตัว, และความมั่นใจของผู้เรียน</li>
+            <li><strong>เกณฑ์ความสำเร็จเชิงวิจัย:</strong> ต้องได้คะแนนเฉลี่ย SUS $\ge 70$ คะแนน (อยู่ในระดับ <em>Good / Acceptable</em>)</li>
+            <li><strong>ข้อเสนอแนะเชิงคุณภาพ (Qualitative Feedback):</strong> รวบรวมเพื่อปรับปรุง UI/UX ให้สมบูรณ์แบบก่อนส่งมอบเล่มฉบับสมบูรณ์</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: Project Timeline (Gantt Chart) -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">4. แผนการดำเนินงาน</div>
+        <div class="main-title">แผนและระยะเวลาการดำเนินโครงงาน (Project Timeline & Workplan)</div>
+      </div>
+      <div class="slide-counter-chip">13 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="academic-card" style="padding: 0.8rem;">
+        <table class="table-academic" style="font-size: 0.88rem;">
+          <thead>
+            <tr>
+              <th style="width: 40%;">กิจกรรมการดำเนินงาน</th>
+              <th style="text-align:center; width: 12%;">ส.ค. 69</th>
+              <th style="text-align:center; width: 12%;">ก.ย. 69</th>
+              <th style="text-align:center; width: 12%;">ต.ค. 69</th>
+              <th style="text-align:center; width: 12%;">พ.ย. 69</th>
+              <th style="text-align:center; width: 12%;">ธ.ค. 69</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1. ศึกษาทฤษฎี รวบรวมเนื้อหา และนำเสนอโครงร่าง</td>
+              <td style="background:#DCFCE7; text-align:center; font-weight:700; color:#15803D;">●</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>2. พัฒนาระบบ Frontend (Streamlit) และ UI Wireframe</td>
+              <td></td>
+              <td style="background:#DBEAFE; text-align:center; font-weight:700; color:#1D4ED8;">●</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>3. พัฒนา Backend SymPy Solver & 6 โมดูลแคลคูลัส</td>
+              <td></td>
+              <td style="background:#DBEAFE; text-align:center; font-weight:700; color:#1D4ED8;">●</td>
+              <td style="background:#DBEAFE; text-align:center; font-weight:700; color:#1D4ED8;">●</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>4. ทำ Automated Testing (Pytest) และปรับปรุงระบบ</td>
+              <td></td>
+              <td></td>
+              <td style="background:#FEF3C7; text-align:center; font-weight:700; color:#B45309;">●</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>5. ทดลองใช้งานกลุ่มนำร่อง 15–20 คน และประเมิน SUS</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td style="background:#F3E8FF; text-align:center; font-weight:700; color:#7E22CE;">●</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>6. สรุปผลการวิจัย และจัดทำรายงานฉบับสมบูรณ์</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td style="background:#FCE7F3; text-align:center; font-weight:700; color:#BE185D;">●</td>
+              <td style="background:#FCE7F3; text-align:center; font-weight:700; color:#BE185D;">●</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 14: Expected Outcomes -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">5. ประโยชน์ที่คาดว่าจะได้รับ</div>
+        <div class="main-title">ผลผลิตและคุณค่าของโครงงาน (Expected Outcomes & Research Impact)</div>
+      </div>
+      <div class="slide-counter-chip">14 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="academic-card highlight">
+          <div class="card-heading" style="color: var(--primary-blue);">📦 ผลผลิตเชิงนวัตกรรม</div>
+          <p style="font-size:0.9rem;">
+            ได้เว็บแอปพลิเคชันช่วยเรียนแคลคูลัสเบื้องต้นบน Cloud ที่เข้าใช้งานได้ฟรีผ่านเว็บเบราว์เซอร์ พร้อมระบบแก้โจทย์เชิงสัญลักษณ์และกราฟิกจำลอง
+          </p>
+        </div>
+        
+        <div class="academic-card emerald">
+          <div class="card-heading" style="color: var(--accent-emerald);">👨‍🎓 ประโยชน์ต่อนิสิตผู้เรียน</div>
+          <p style="font-size:0.9rem;">
+            ช่วยลดปัญหาความไม่เข้าใจมโนทัศน์แคลคูลัส มีสื่อนั่งร้านช่วยตรวจคำตอบและทบทวนความรู้ด้วยตนเองได้ทุกที่ทุกเวลา
+          </p>
+        </div>
+        
+        <div class="academic-card teal">
+          <div class="card-heading" style="color: var(--accent-teal);">👩‍🏫 ประโยชน์ต่อการจัดการเรียนการสอน</div>
+          <p style="font-size:0.9rem;">
+            อาจารย์ผู้สอนสามารถนำเว็บแอปพลิเคชันไปใช้เป็นสื่อประกอบการสอนในชั้นเรียน ช่วยเพิ่มการมีส่วนร่วมและความเข้าใจเชิงลึกของผู้เรียน
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 15: Conclusion & Q&A Transition -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">สรุปการนำเสนอโครงร่างโครงงาน</div>
+        <div class="main-title">บทสรุปและการเข้าสู่วาระซักถาม-ตอบข้อเสนอแนะ (Q&A Session)</div>
+      </div>
+      <div class="slide-counter-chip">15 / 20</div>
+    </div>
+    <div class="slide-body" style="text-align: center; justify-content: center; align-items: center;">
+      <div class="academic-card highlight" style="max-width: 800px; padding: 2.5rem; text-align: center;">
+        <h2 style="font-family:'Chakra Petch', sans-serif; font-size: 2rem; color: var(--primary-navy); margin-bottom: 0.8rem;">
+          ขอขอบพระคุณคณะกรรมการทุกท่าน
+        </h2>
+        <p style="font-size: 1.15rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+          คณะผู้จัดทำพร้อมรับฟังข้อเสนอแนะและตอบข้อซักถาม<br>
+          เพื่อนำไปพัฒนาโครงงานให้เกิดประโยชน์สูงสุดต่อสาขาวิชาและนิสิตครับ/ค่ะ
+        </p>
+        <div style="display: flex; justify-content: center; gap: 1rem;">
+          <span class="defense-tag" style="font-size: 0.95rem; padding: 0.35rem 1rem;">15-Minute Presentation Complete</span>
+          <span class="defense-tag" style="font-size: 0.95rem; padding: 0.35rem 1rem; background:#ECFDF5; color:#047857; border-color:#A7F3D0;">10-Minute Q&A Ready</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- BACKUP SLIDES: PREPARED FOR DEFENSE Q&A    -->
+  <!-- ========================================== -->
+
+  <!-- SLIDE 16: BACKUP 1 - Integration Deep-Dive (Scope & Beyond) -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label backup">🛡️ สไลด์เตรียมตอบคำถามเสริม (Backup Q&A 1)</div>
+        <div class="main-title">ขอบเขตหัวข้อปริพันธ์ (Integration Scope) และการต่อยอดเทคนิคขั้นสูง</div>
+      </div>
+      <div class="slide-counter-chip">16 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="academic-card highlight">
+          <div class="card-heading" style="color:var(--primary-blue);">
+            📌 หากกรรมการถาม: "เรื่องปริพันธ์ทำถึงเรื่องไหนบ้าง?"
+          </div>
+          <ul style="font-size:0.9rem;">
+            <li><strong>ขอบเขตปัจจุบันในแคลคูลัส 1–2 เบื้องต้น:</strong>
+              <ol style="margin-top:0.3rem;">
+                <li><strong>นิยามและค่าประมาณ:</strong> ผลรวมรีมันน์ (Riemann Sum Approximation)</li>
+                <li><strong>ทฤษฎีบทหลักมูล (FTC):</strong> ปฏิยานุพันธ์ และปริพันธ์จำกัดเขต</li>
+                <li><strong>เทคนิคพื้นฐาน:</strong> การอินทิเกรตโดยการแทนค่าตัวแปร $u$ (Substitution)</li>
+                <li><strong>การประยุกต์เรขาคณิต:</strong> การหาพื้นที่ระหว่างเส้นโค้ง (Area Between Curves)</li>
+                <li><strong>การขยายขอบเขต:</strong> ปริพันธ์ไม่ตรงแบบ (Improper Integrals ชนิดที่ 1 และ 2)</li>
+              </ol>
+            </li>
+          </ul>
+        </div>
+
+        <div class="academic-card purple">
+          <div class="card-heading" style="color:var(--accent-purple);">
+            🚀 หากถามต่อ: "แล้วเทคนิคขั้นสูง (By Parts / Partial Fractions) วางวิธีคิดอย่างไร?"
+          </div>
+          <p style="font-size:0.88rem; margin-bottom:0.4rem;">
+            <strong>หลักคิดสำคัญ:</strong> ไม่ใช่แค่ให้ SymPy คำนวณรวดเดียว แต่ต้อง <em>สกัดขั้นตอนการตัดสินใจทางคณิตศาสตร์ (Pedagogical Rule Engine)</em>
+          </p>
+          <ul style="font-size:0.88rem;">
+            <li><strong>Integration by Parts ($\int u \, dv = uv - \int v \, du$):</strong><br>
+              ระบบต้องมีกฎ <strong>LIATE Rule</strong> เพื่อแนะนำผู้เรียนในการเลือก $u$ และ $dv$ ทีละขั้นอย่างมีเหตุผล
+            </li>
+            <li><strong>Partial Fractions (การแยกเศษส่วนย่อย):</strong><br>
+              ระบบแยกตัวประกอบตัวส่วน ตรวจสอบรูปแบบ $(ax+b)$ หรือ $(ax^2+bx+c)$ และแสดงการเทียบสัมประสิทธิ์หาค่า $A, B$
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 17: BACKUP 2 - Pedagogical Flow for Advanced Integral Example -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label backup">🛡️ สไลด์เตรียมตอบคำถามเสริม (Backup Q&A 2)</div>
+        <div class="main-title">ตัวอย่างวิธีคิดและการออกแบบการสอน: เทคนิค Integration by Parts</div>
+      </div>
+      <div class="slide-counter-chip">17 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="academic-card dark">
+          <div class="card-heading">
+            🧩 ตัวอย่างโจทย์: $\int x e^x \, dx$
+          </div>
+          <div style="font-size:0.88rem; line-height:1.6;">
+            <strong>Step 1: การใช้ Decision Guide (LIATE Rule)</strong><br>
+            • ผู้เรียนเปรียบเทียบระหว่าง $x$ (Algebraic) และ $e^x$ (Exponential)<br>
+            • ระบบแนะนำ: ให้ $u = x \implies du = dx$ และ $dv = e^x dx \implies v = e^x$<br><br>
+            <strong>Step 2: แทนค่าลงในสูตร</strong><br>
+            $$\int x e^x \, dx = x e^x - \int e^x \, dx$$<br>
+            <strong>Step 3: อินทิเกรตพจน์ที่เหลือและสรุปคำตอบ</strong><br>
+            $$= x e^x - e^x + C = (x-1)e^x + C$$
+          </div>
+        </div>
+
+        <div class="academic-card teal">
+          <div class="card-heading" style="color:var(--accent-teal);">
+            💡 กลไกของเว็บแอปพลิเคชันที่สอดคล้องกับโครงงาน
+          </div>
+          <ul style="font-size:0.88rem;">
+            <li><strong>Scaffolding Step-by-Step:</strong> ระบบไม่แสดงคำตอบ $(x-1)e^x$ ในทันที แต่มีปุ่มกด <em>'ตรวจสอบการเลือก u'</em> และ <em>'แสดงขั้นตอนการหา v'</em> ทีละขั้น</li>
+            <li><strong>Misconception Alert:</strong> แจ้งเตือนกรณีผู้เรียนสลับเลือก $u = e^x, dv = x dx$ ซึ่งจะทำให้พจน์อินทิเกรตซับซ้อนขึ้นเป็น $\int \frac{x^2}{2} e^x dx$</li>
+            <li><strong>SymPy Verification:</strong> ระบบใช้ SymPy คำนวณ Derivative กลับเพื่อพิสูจน์ $\frac{d}{dx}[(x-1)e^x] = x e^x$ ยืนยันความถูกต้อง 100%</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 18: BACKUP 3 - Why Python & Streamlit over React/Fullstack -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label backup">🛡️ สไลด์เตรียมตอบคำถามเสริม (Backup Q&A 3)</div>
+        <div class="main-title">ความสมเหตุสมผลในการเลือกเครื่องมือทางเทคนิค (Tech Stack Justification)</div>
+      </div>
+      <div class="slide-counter-chip">18 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="academic-card highlight">
+          <div class="card-heading" style="color:var(--primary-blue);">
+            🐍 1. Python Native Ecosystem
+          </div>
+          <p style="font-size:0.88rem;">
+            สามารถเชื่อมต่อ Symbolic Engine (SymPy), Numerical Engine (NumPy), และ Test Suite (Pytest) ได้โดยตรง โดยไม่ต้องสร้าง REST API เชื่อมระหว่างภาษา ซึ่งลดจุดเกิดข้อผิดพลาด (Failure Points) ในระบบ
+          </p>
+        </div>
+
+        <div class="academic-card emerald">
+          <div class="card-heading" style="color:var(--accent-emerald);">
+            ⚡ 2. KaTeX & MathJax Native
+          </div>
+          <p style="font-size:0.88rem;">
+            Streamlit รองรับฟังก์ชัน <span class="code-pill">st.latex()</span> ในตัว ทำให้เรนเดอร์สมการคณิตศาสตร์ที่ดึงมาจาก SymPy ได้ทันทีโดยไม่ต้องเขียน Parser หรือจัดการ State การเรนเดอร์เองฝั่ง JavaScript
+          </p>
+        </div>
+
+        <div class="academic-card amber">
+          <div class="card-heading" style="color:var(--accent-amber);">
+            🎯 3. Focus on Math & Pedagogy
+          </div>
+          <p style="font-size:0.88rem;">
+            โครงงานสาขาคณิตศาสตร์ประยุกต์ควรให้น้ำหนัก 70% กับความถูกต้องของขั้นตอนวิธีทางคณิตศาสตร์และเนื้อหาการสอน การใช้ Streamlit ช่วยลดภาระการเขียน CSS/HTML ทำให้ทุ่มเทเวลากับ Math Logic ได้เต็มที่
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 19: BACKUP 4 - Core Code Toolkit & Key Commands -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label backup">🛡️ สไลด์เตรียมตอบคำถามเสริม (Backup Q&A 4)</div>
+        <div class="main-title">คำสั่งและฟังก์ชันพื้นฐานที่ใช้บ่อยในโครงงาน (Core Code Toolkit)</div>
+      </div>
+      <div class="slide-counter-chip">19 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-3">
+        <div class="academic-card">
+          <div class="card-heading" style="color:var(--primary-blue);">
+            🧮 1. SymPy (Math Engine)
+          </div>
+          <div class="code-snippet">
+<span style="color:#7DD3FC;">import</span> sympy <span style="color:#7DD3FC;">as</span> sp
+<span style="color:#7DD3FC;">from</span> sympy.parsing.sympy_parser <span style="color:#7DD3FC;">import</span> parse_expr, standard_transformations, implicit_multiplication_application
+
+<span style="color:#64748B;"># 1. Parse string to math</span>
+T = standard_transformations + (implicit_multiplication_application,)
+expr = parse_expr(<span style="color:#86EFAC;">"2x*sin(x)"</span>, transformations=T)
+
+<span style="color:#64748B;"># 2. Calculus operations</span>
+diff_res = sp.diff(expr, x)
+int_res = sp.integrate(expr, (x, 0, sp.pi))
+lim_res = sp.limit(expr/x, x, 0)
+
+<span style="color:#64748B;"># 3. Export LaTeX</span>
+latex_str = sp.latex(int_res)
+          </div>
+        </div>
+
+        <div class="academic-card">
+          <div class="card-heading" style="color:var(--accent-teal);">
+            🖥️ 2. Streamlit (UI & State)
+          </div>
+          <div class="code-snippet">
+<span style="color:#7DD3FC;">import</span> streamlit <span style="color:#7DD3FC;">as</span> st
+
+<span style="color:#64748B;"># 1. Interactive Inputs</span>
+n = st.slider(<span style="color:#86EFAC;">"จำนวนช่วง (n)"</span>, 1, 50, 8)
+f_str = st.text_input(<span style="color:#86EFAC;">"ฟังก์ชัน f(x)"</span>, <span style="color:#86EFAC;">"x**2"</span>)
+
+<span style="color:#64748B;"># 2. Math & Accordion</span>
+st.latex(f<span style="color:#86EFAC;">r"M_{{{n}}} \approx {res:.4f}"</span>)
+<span style="color:#7DD3FC;">with</span> st.expander(<span style="color:#86EFAC;">"📖 ดูวิธีทำทีละขั้น"</span>):
+    <span style="color:#7DD3FC;">for</span> s <span style="color:#7DD3FC;">in</span> steps:
+        st.latex(s)
+
+<span style="color:#64748B;"># 3. Session State</span>
+<span style="color:#7DD3FC;">if</span> <span style="color:#86EFAC;">"score"</span> <span style="color:#7DD3FC;">not in</span> st.session_state:
+    st.session_state.score = 0
+          </div>
+        </div>
+
+        <div class="academic-card">
+          <div class="card-heading" style="color:var(--accent-emerald);">
+            📈 3. Matplotlib & Vectorize
+          </div>
+          <div class="code-snippet">
+<span style="color:#7DD3FC;">import</span> matplotlib.pyplot <span style="color:#7DD3FC;">as</span> plt
+<span style="color:#7DD3FC;">from</span> matplotlib.patches <span style="color:#7DD3FC;">import</span> Rectangle
+<span style="color:#7DD3FC;">import</span> numpy <span style="color:#7DD3FC;">as</span> np
+
+<span style="color:#64748B;"># 1. SymPy to NumPy fast func</span>
+f_num = sp.lambdify(x, expr, <span style="color:#86EFAC;">"numpy"</span>)
+x_vals = np.linspace(a, b, 200)
+
+<span style="color:#64748B;"># 2. Plot Curve & Bars</span>
+fig, ax = plt.subplots(figsize=(6, 3.5))
+ax.plot(x_vals, f_num(x_vals), color=<span style="color:#86EFAC;">"#105D38"</span>)
+<span style="color:#7DD3FC;">for</span> xi <span style="color:#7DD3FC;">in</span> midpoints:
+    rect = Rectangle((xi-dx/2, 0), dx, f_num(xi), alpha=0.4)
+    ax.add_patch(rect)
+
+st.pyplot(fig)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 20: BACKUP 5 - End-to-End Concrete Code Example (Riemann Solver Module) -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label backup">🛡️ สไลด์เตรียมตอบคำถามเสริม (Backup Q&A 5)</div>
+        <div class="main-title">ตัวอย่างโค้ดจริงในโครงงาน: โมดูลคำนวณผลรวมรีมันน์ (utils/riemann_solver.py)</div>
+      </div>
+      <div class="slide-counter-chip">20 / 20</div>
+    </div>
+    <div class="slide-body">
+      <div class="grid-2">
+        <div class="academic-card dark">
+          <div class="card-heading">
+            💻 โค้ดคำนวณจริงในระบบ (<span class="code-pill" style="background:#1E293B; color:#93C5FD;">utils/riemann_solver.py</span>)
+          </div>
+          <div class="code-snippet" style="font-size:0.8rem; line-height:1.5;">
+<span style="color:#7DD3FC;">def</span> <span style="color:#93C5FD;">solve_riemann</span>(expr_str: str, a: float, b: float, n: int, method=<span style="color:#86EFAC;">"midpoint"</span>) -> dict:
+    <span style="color:#7DD3FC;">if</span> b <= a:
+        <span style="color:#7DD3FC;">return</span> {<span style="color:#86EFAC;">"ok"</span>: False, <span style="color:#86EFAC;">"error"</span>: <span style="color:#86EFAC;">"ขอบบน (b) ต้องมากกว่าขอบล่าง (a)"</span>}
+    
+    expr = _parse_input(expr_str)
+    dx = (b - a) / n
+    f_num = sp.lambdify(X, expr, <span style="color:#86EFAC;">"numpy"</span>)
+    
+    <span style="color:#64748B;"># สร้างจุดตัวแทนตามวิธี Midpoint</span>
+    xi_list = [a + (i + 0.5) * dx <span style="color:#7DD3FC;">for</span> i <span style="color:#7DD3FC;">in</span> range(n)]
+    f_vals = [float(f_num(xi)) <span style="color:#7DD3FC;">for</span> xi <span style="color:#7DD3FC;">in</span> xi_list]
+    approx_val = sum(f_vals) * dx
+    
+    <span style="color:#64748B;"># คำนวณค่าจริงเชิงสัญลักษณ์ด้วย SymPy</span>
+    exact_val = float(sp.integrate(expr, (X, a, b)))
+    
+    <span style="color:#7DD3FC;">return</span> {
+        <span style="color:#86EFAC;">"ok"</span>: True,
+        <span style="color:#86EFAC;">"approx"</span>: approx_val,
+        <span style="color:#86EFAC;">"exact"</span>: exact_val,
+        <span style="color:#86EFAC;">"error_abs"</span>: abs(exact_val - approx_val),
+        <span style="color:#86EFAC;">"dx"</span>: dx,
+        <span style="color:#86EFAC;">"latex"</span>: sp.latex(sp.Integral(expr, (X, a, b)))
+    }
+          </div>
+        </div>
+
+        <div class="academic-card highlight">
+          <div class="card-heading" style="color:var(--primary-blue);">
+            🧪 การเขียนชุดทดสอบจริง (<span class="code-pill">tests/test_riemann_solver.py</span>)
+          </div>
+          <div class="code-snippet" style="font-size:0.8rem; line-height:1.5;">
+<span style="color:#7DD3FC;">import</span> pytest
+<span style="color:#7DD3FC;">from</span> utils.riemann_solver <span style="color:#7DD3FC;">import</span> solve_riemann
+
+<span style="color:#7DD3FC;">def</span> <span style="color:#93C5FD;">test_midpoint_accuracy</span>():
+    <span style="color:#64748B;"># ทดสอบ f(x)=x^2 บน [0, 2], n=2 (จุดแทน: 0.5, 1.5)</span>
+    <span style="color:#64748B;"># ค่าที่ถูกต้อง: (0.25 + 2.25)*1.0 = 2.50</span>
+    res = solve_riemann(<span style="color:#86EFAC;">"x**2"</span>, 0.0, 2.0, 2, method=<span style="color:#86EFAC;">"midpoint"</span>)
+    <span style="color:#7DD3FC;">assert</span> res[<span style="color:#86EFAC;">"ok"</span>] <span style="color:#7DD3FC;">is</span> True
+    <span style="color:#7DD3FC;">assert</span> abs(res[<span style="color:#86EFAC;">"approx"</span>] - 2.5) < 1e-9
+
+<span style="color:#7DD3FC;">def</span> <span style="color:#93C5FD;">test_domain_validation</span>():
+    <span style="color:#64748B;"># ทดสอบกรณีใส่ช่วงย้อนกลับ (b <= a)</span>
+    res = solve_riemann(<span style="color:#86EFAC;">"x**2"</span>, 2.0, 0.0, 4)
+    <span style="color:#7DD3FC;">assert</span> res[<span style="color:#86EFAC;">"ok"</span>] <span style="color:#7DD3FC;">is</span> False
+    <span style="color:#7DD3FC;">assert</span> <span style="color:#86EFAC;">"ขอบบน"</span> <span style="color:#7DD3FC;">in</span> res[<span style="color:#86EFAC;">"error"</span>]
+          </div>
+          <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.4rem;">
+            💡 ยืนยันว่าโครงงานมีการเขียนโค้ดและชุดทดสอบทางคณิตศาสตร์รองรับจริง ไม่ใช่เพียงแค่ภาพร่าง
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer Bottom Bar -->
+<div class="bottom-footer">
+  <div>
+    กดปุ่ม <span class="key-badge">◀</span> / <span class="key-badge">▶</span> หรือ <span class="key-badge">Space</span> เพื่อเลื่อนสไลด์ • <span class="key-badge">F</span> เต็มจอ • <span class="key-badge">G</span> ดูภาพรวม
+  </div>
+  <div id="slideCounterText" style="font-family:'JetBrains Mono', monospace; font-weight:600;">
+    Slide 1 of 20
+  </div>
+</div>
+
+<!-- Modal Overview Grid -->
+<div class="modal-overlay" id="modalOverlay" onclick="toggleOverview()">
+  <div class="grid-thumbs" onclick="event.stopPropagation()">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<script>
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+const progressFill = document.getElementById('progressFill');
+const slideCounterText = document.getElementById('slideCounterText');
+const modalOverlay = document.getElementById('modalOverlay');
+const gridThumbs = document.querySelector('.grid-thumbs');
+
+// Build Thumbnails
+slides.forEach((slide, index) => {
+  const titleEl = slide.querySelector('.main-title');
+  const titleText = titleEl ? titleEl.innerText.replace(/[\n\r]/g, ' ') : `Slide ${index+1}`;
+  const labelEl = slide.querySelector('.section-label');
+  const labelText = labelEl ? labelEl.innerText : '';
+
+  const isBackup = index >= 15;
+
+  const thumb = document.createElement('div');
+  thumb.className = 'thumb-item';
+  if (isBackup) {
+    thumb.style.borderColor = '#DDD6FE';
+    thumb.style.background = '#FAF5FF';
+  }
+  thumb.innerHTML = `
+    <div>
+      <div class="thumb-num" style="${isBackup ? 'color:#7C3AED;' : ''}">${String(index+1).padStart(2, '0')} • ${labelText.substring(0, 30)}</div>
+      <div class="thumb-title" style="margin-top:0.4rem;">${titleText.substring(0, 50)}...</div>
+    </div>
+    <div style="font-size:0.75rem; color:#64748B; text-align:right;">คลิกเพื่อเปิด</div>
+  `;
+  thumb.onclick = () => {
+    goToSlide(index);
+    toggleOverview();
+  };
+  gridThumbs.appendChild(thumb);
+});
+
+function updateSlide() {
+  slides.forEach((slide, index) => {
+    slide.classList.toggle('active', index === currentSlide);
+  });
+  
+  const pct = ((currentSlide + 1) / totalSlides) * 100;
+  progressFill.style.width = pct + '%';
+  slideCounterText.innerText = `Slide ${currentSlide + 1} of ${totalSlides}`;
+
+  if (window.renderMathInElement) {
+    renderMathInElement(slides[currentSlide], {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+}
+
+function nextSlide() {
+  if (currentSlide < totalSlides - 1) {
+    currentSlide++;
+    updateSlide();
+  }
+}
+
+function prevSlide() {
+  if (currentSlide > 0) {
+    currentSlide--;
+    updateSlide();
+  }
+}
+
+function goToSlide(index) {
+  if (index >= 0 && index < totalSlides) {
+    currentSlide = index;
+    updateSlide();
+  }
+}
+
+function toggleOverview() {
+  modalOverlay.classList.toggle('active');
+}
+
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  }
+}
+
+// Keyboard controls
+window.addEventListener('keydown', (e) => {
+  if (modalOverlay.classList.contains('active')) {
+    if (e.key === 'Escape' || e.key === 'g' || e.key === 'G') toggleOverview();
+    return;
+  }
+
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+    e.preventDefault();
+    nextSlide();
+  } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    e.preventDefault();
+    prevSlide();
+  } else if (e.key === 'Home') {
+    e.preventDefault();
+    goToSlide(0);
+  } else if (e.key === 'End') {
+    e.preventDefault();
+    goToSlide(totalSlides - 1);
+  } else if (e.key === 'f' || e.key === 'F') {
+    e.preventDefault();
+    toggleFullScreen();
+  } else if (e.key === 'g' || e.key === 'G' || e.key === 'o' || e.key === 'O') {
+    e.preventDefault();
+    toggleOverview();
+  }
+});
+
+// Initial trigger
+document.addEventListener('DOMContentLoaded', () => {
+  updateSlide();
+  if (window.renderMathInElement) {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+});
+</script>
+
+</body>
+</html>

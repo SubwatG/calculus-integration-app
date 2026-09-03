@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายงานการวิจารณ์สายโหด (Hardcore Hostile Audit) โดย OpenAI Codex</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- KaTeX CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0A0E17;
+            --bg-surface: #111827;
+            --bg-card: #1F2937;
+            --border: #374151;
+            
+            --blood: #DC2626;
+            --blood-bg: rgba(220, 38, 38, 0.1);
+            --blood-border: rgba(220, 38, 38, 0.4);
+            
+            --gold: #F59E0B;
+            --gold-bg: rgba(245, 158, 11, 0.1);
+            --gold-border: rgba(245, 158, 11, 0.3);
+            
+            --cyan: #06B6D4;
+            --emerald: #10B981;
+            
+            --text-main: #F9FAFB;
+            --text-sub: #9CA3AF;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.75;
+            padding: 2.5rem 1rem;
+        }
+
+        .container { max-width: 980px; margin: 0 auto; }
+
+        .header-banner {
+            background: linear-gradient(135deg, #1E1B4B 0%, #0F172A 50%, #1F2937 100%);
+            border: 2px solid var(--blood);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 15px 35px rgba(220, 38, 38, 0.25);
+            position: relative;
+        }
+
+        .badge-list { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        .tag-blood { background: var(--blood-bg); color: #FCA5A5; border: 1px solid var(--blood-border); }
+        .tag-gold { background: var(--gold-bg); color: #FDE68A; border: 1px solid var(--gold-border); }
+        .tag-cyan { background: rgba(6, 182, 212, 0.15); color: #67E8F9; border: 1px solid var(--cyan); }
+
+        h1 {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 0.75rem;
+        }
+
+        .alert-box {
+            background: var(--blood-bg);
+            border: 1px solid var(--blood-border);
+            border-left: 6px solid var(--blood);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+            color: #FECDD3;
+            font-size: 1rem;
+        }
+
+        .section-header {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin: 2.5rem 0 1.2rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .audit-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.75rem;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.2s;
+        }
+
+        .audit-card:hover {
+            border-color: #64748B;
+        }
+
+        .card-danger { border-left: 5px solid var(--blood); }
+        .card-warning { border-left: 5px solid var(--gold); }
+        .card-solution { border-left: 5px solid var(--emerald); }
+
+        .card-title {
+            font-family: 'Chakra Petch', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-danger .card-title { color: #F87171; }
+        .card-warning .card-title { color: #FBBF24; }
+        .card-solution .card-title { color: #34D399; }
+
+        .math-block {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.95rem;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.5);
+            color: #38BDF8;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.88em;
+        }
+
+        ul, ol { margin-left: 1.5rem; margin-bottom: 0.75rem; }
+        li { margin-bottom: 0.35rem; }
+
+        .q-box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--blood-border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .q-title {
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 700;
+            color: #FDA4AF;
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .fix-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            margin-top: 0.75rem;
+            font-size: 0.92rem;
+            color: #A7F3D0;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .table-custom th, .table-custom td {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            text-align: left;
+        }
+        .table-custom th { background: rgba(0,0,0,0.4); color: var(--cyan); font-family: 'Chakra Petch', sans-serif; }
+
+        footer {
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            margin-top: 3.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header-banner">
+        <div class="badge-list">
+            <span class="tag tag-blood">Hardcore Hostile Review</span>
+            <span class="tag tag-gold">Codex CLI (gpt-5.6-luna)</span>
+            <span class="tag tag-cyan">Assessment Validity Framework</span>
+        </div>
+        <h1>รายงานผลการวิจารณ์สายโหดต่อ "แผนการนำเสนอของนิสิต"</h1>
+        <p style="color: var(--text-sub);">การสแกนจับผิดและทุบช่องโหว่แบบไร้ความปรานี เพื่ออุดรอยรั่วก่อนเข้าห้องสอบจริง</p>
+        
+        <div class="alert-box">
+            <strong>⚠️ คำตัดสินเปิดหน้าชกจาก Codex:</strong><br>
+            <em>"ถ้านำเสนอด้วยแผนนี้ในวันนี้ ผมยังไม่รับว่าเป็น 'ระบบฝึกทักษะการหาปริพันธ์ที่มีหลักฐานรองรับ' แต่จะมองว่าเป็น (1) เดโมจัดฉากไม่กี่กรณี (2) แบบทดสอบเลือกตอบธรรมดา และ (3) การทดลองนำร่องแบบกลุ่มเดียวที่สรุปประสิทธิผลไม่ได้ <strong>และที่ร้ายแรงที่สุดคือ ตัวอย่าง $u$-substitution มีการตัดสินถูก-ผิดที่ผิดหลักคณิตศาสตร์อย่างร้ายแรง!</strong>"</em>
+        </div>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="section-header">🚨 1. ช่องโหว่ทางคณิตศาสตร์และซอฟต์แวร์ (จุดตายที่นิสิตคิดไม่ถึง)</div>
+
+    <div class="audit-card card-danger">
+        <div class="card-title">
+            <span>1.1 จุดตายร้ายแรง: ตัวอย่าง $u$-Substitution สอนคณิตศาสตร์ผิด!</span>
+        </div>
+        <p>ในแผนบอกว่า โจทย์ $\int 2x\sqrt{x^2+1}\,dx$ ถ้าผู้เรียนเลือก $u=x$ หรือ $u=2x$ แล้วระบบจะบอกว่า <strong>"ผิด เพราะติดตัวแปร $x$ ตัดไม่ลง"</strong> $\to$ <strong>นี่คือการตัดสินที่ผิดหลักคณิตศาสตร์!</strong></p>
+        
+        <div class="math-block">
+            <strong>ความจริงทางคณิตศาสตร์:</strong><br>
+            • ถ้าเลือก $u=x$ จะได้ $\int 2x\sqrt{x^2+1}\,dx = \int 2u\sqrt{u^2+1}\,du$ $\to$ <em>แทนตัวแปรถูกต้องตามทฤษฎี เพียงแต่ไม่ได้ช่วยให้รูปง่ายขึ้น</em><br>
+            • ถ้าเลือก $u=2x$ จะได้ $x = u/2, dx = du/2$ กลายเป็น $\int \frac{u}{2}\sqrt{\frac{u^2}{4}+1}\,du$ $\to$ <em>ก็ยังถูกต้องตามทฤษฎีเช่นกัน!</em><br>
+            • ตัวเลือก $u=x^2+1$ คือตัวเลือกที่ <strong>"เหมาะสมที่สุด (Preferred/Optimal)"</strong> เพราะ $du = 2x\,dx$ ทำให้ยุบเหลือ $\int \sqrt{u}\,du$
+        </div>
+        <div class="fix-box">
+            <strong>🛠️ ทางแก้เพื่ออุดช่องโหว่:</strong><br>
+            ห้ามใช้ระบบแบ่ง 2 ขั้วแบบ "ถูก vs ผิด" แต่ต้องแบ่งเป็น 3 สถานะ: 
+            <code>1. แทนค่าไม่ได้จริง (Invalid)</code> | <code>2. แทนค่าได้แต่ไม่ช่วยให้ง่ายขึ้น (Valid but Inefficient)</code> | <code>3. เหมาะสมที่สุด (Preferred)</code>
+        </div>
+    </div>
+
+    <div class="audit-card card-warning">
+        <div class="card-title">
+            <span>1.2 ตาราง Riemann Error ยังเป็นแค่ "ภาพประกอบ" ไม่ใช่การพิสูจน์</span>
+        </div>
+        <p>การโชว์ตารางตัวเลข 3 แถวแล้วเห็น Error ลดลง กรรมการจะมองว่า <strong>"จัดฉาก Hardcode สูตรไว้เฉพาะ $f(x)=x^2$ บน $[0, 1]$"</strong></p>
+        <div class="math-block">
+            สำหรับ $f(x)=x^2$ บน $[0,1]$ ค่าจริง $I = 1/3$<br>
+            $$L_n = \frac{1}{3} - \frac{1}{2n} + \frac{1}{6n^2}, \qquad M_n = \frac{1}{3} - \frac{1}{12n^2}$$
+            $$|L_n - I| = O(n^{-1}), \qquad |M_n - I| = O(n^{-2})$$
+        </div>
+        <p>ถ้ากรรมการสั่งสดในห้องสอบว่า <em>"เปลี่ยนเป็นช่วง $[-2, 3]$ แล้วให้ $n=37$ ซิ"</em> ถ้าระบบคำนวณสดไม่ได้ นิสิตจะตกทันที!</p>
+        <div class="fix-box">
+            <strong>🛠️ ทางแก้เพื่ออุดช่องโหว่:</strong> ระบบต้องรับฟังก์ชันและช่วงแบบ Parameterized จริง และต้องพล็อตกราฟ Log-Log scale ให้เห็นความชันลดลงจริง ไม่ใช่ตารางนิ่ง
+        </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="section-header">📊 2. ช่องโหว่เชิงระเบียบวิธีวิจัย (การทดลองกับเด็ก 15–20 คน)</div>
+
+    <div class="audit-card card-danger">
+        <div class="card-title">
+            <span>2.1 จุดอ่อนที่กรรมการสายสถิติ/วิจัยจะสับแหลก</span>
+        </div>
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>สิ่งที่นิสิตมักจะอ้าง</th>
+                    <th>ความจริงที่ข้อมูลรองรับได้</th>
+                    <th>จุดอ่อนที่กรรมการจะโจมตี</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>"คะแนน Post-test สูงขึ้น แปลว่าแอปมีประสิทธิภาพ"</td>
+                    <td>บอกได้แค่คะแนนในกลุ่มเปลี่ยน</td>
+                    <td><strong>ไม่มีกลุ่มควบคุม (Control Group):</strong> คะแนนขึ้นอาจเพราะเด็กจำข้อสอบได้ หรือครูเพิ่งสอนในคาบ</td>
+                </tr>
+                <tr>
+                    <td>"ผลการทดสอบสามารถสรุปภาพรวมเด็กปี 1 ได้"</td>
+                    <td>ไม่รองรับ</td>
+                    <td><strong>Selection Bias:</strong> 15-20 คน เป็นกลุ่มตัวอย่างตามสะดวก (Convenience sample) ไม่ได้สุ่มตามหลักสถิติ</td>
+                </tr>
+                <tr>
+                    <td>"SUS สูง แปลว่าแอปสอนเข้าใจดี"</td>
+                    <td>ไม่รองรับ</td>
+                    <td><strong>SUS วัดแค่ Usability (ความใช้ง่าย):</strong> ไม่ได้วัดความเข้าใจทางคณิตศาสตร์เลย</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="fix-box">
+            <strong>🛠️ ทางแก้เพื่ออุดช่องโหว่:</strong><br>
+            ในเล่มบทที่ 1 และ 5 ให้เปลี่ยนคำอ้างจาก <em>"การพิสูจน์ประสิทธิผลทางการเรียน"</em> $\to$ เป็น <strong>"การศึกษาความเป็นไปได้และความสามารถในการใช้งานเบื้องต้นของระบบต้นแบบ (Usability & Feasibility Pilot Study)"</strong> เพื่อไม่ให้ขัดกับหลักระเบียบวิธีวิจัย
+        </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="section-header">🧩 3. Scaffolding vs Quiz ธรรมดา (ต่างจาก Google Forms ตรงไหน?)</div>
+
+    <div class="audit-card card-warning">
+        <div class="card-title">
+            <span>3.1 ถ้าแค่กดเลือกช้อยส์ $u$ มันก็คือ Google Forms / Kahoot ธรรมดา!</span>
+        </div>
+        <p>การค้ำจุนการเรียนรู้ (Scaffolding) ที่แท้จริง ไม่ใช่แค่มีชอยส์แล้วบอกว่าถูกหรือผิด แต่ต้องมี <strong>3 องค์ประกอบหลัก</strong>:</p>
+        <ol>
+            <li><strong>Adaptive Hints:</strong> คำใบ้ต้องเปลี่ยนไปตามชนิดของข้อผิดพลาดที่ผู้เรียนเลือก</li>
+            <li><strong>Scaffolding Fading (การค่อย ๆ ถอนตัวช่วย):</strong> ข้อแรก ๆ มีชอยส์ $u$ ให้เลือก $\to$ ข้อถัดไปให้พิมพ์ $u$ เอง $\to$ ข้อท้ายสุดให้ทำเองทั้งหมดโดยไม่มีตัวช่วย</li>
+            <li><strong>Transfer Task:</strong> มีโจทย์ข้อใหม่ที่เป็นรูปประยุกต์เพื่อทดสอบว่าผู้เรียนทำเองได้จริงหรือไม่หลังถอดตัวช่วย</li>
+        </ol>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="section-header">☠️ 4. คำถามเชือดคอหอย 3 ข้อ (Killer Questions) & สคริปต์ตอบปิดปาก</div>
+
+    <div class="q-box">
+        <div class="q-title">❓ คำถามเชือดที่ 1: "ในโจทย์ $\int 2x\sqrt{x^2+1}\,dx$ คุณเอาหลักอะไรมาบอกว่า $u=x$ กับ $u=2x$ ผิด?"</div>
+        <p style="font-size: 0.92rem; color: #CBD5E1;"><em>(ถ้านิสิตตอบว่า: "เพราะมันติดตัวแปร $x$ ตัดไม่ลงค่ะ/ครับ" $\to$ <strong>ตกทันที เพราะไม่เข้าใจทฤษฎี Integration by Substitution</strong>)</em></p>
+        <div class="fix-box">
+            <strong>🎯 คำตอบที่ถูกต้องที่ต้องตอบกรรมการ:</strong><br>
+            "ในทางคณิตศาสตร์ ทั้ง $u=x$ และ $u=2x$ เป็นการแทนตัวแปรที่ถูกต้องตามนิยามครับ แต่เป็น <em>Valid but Inefficient</em> คือไม่ได้ช่วยให้อยู่ในรูปที่อินทิเกรตง่ายขึ้น ในขณะที่ $u=x^2+1$ เป็น <em>Preferred Substitution</em> ระบบของเราจึงออกแบบเพื่อชี้ให้ผู้เรียนเห็นความต่างระหว่าง 'การแทนค่าที่ถูกต้องตามกฎ' กับ 'การแทนค่าที่มีประสิทธิภาพ' ครับ"
+        </div>
+    </div>
+
+    <div class="q-box">
+        <div class="q-title">❓ คำถามเชือดที่ 2: "ตาราง $f(x)=x^2$ พิสูจน์ $O(1/n)$ ได้อย่างไร แล้วถ้าผมเปลี่ยนโจทย์สดเป็นช่วง $[-2, 3]$ ระบบยังรันได้ไหม?"</div>
+        <div class="fix-box">
+            <strong>🎯 คำตอบที่ถูกต้องที่ต้องตอบกรรมการ:</strong><br>
+            "ระบบของเราเขียนฟังก์ชันคำนวณแบบ Parameterized ทั้งหมดครับ ไม่ได้ Hardcode โดยเรารับฟังก์ชัน $f(x)$ ช่วง $[a, b]$ และ $n$ ใด ๆ เข้าไปประมวลผลสด และใช้สูตรขอบเขตความคลาดเคลื่อนทางทฤษฎี $|I - M_n| \le \frac{M(b-a)^3}{24n^2}$ เพื่อยืนยันว่าอัตราการลู่เข้าเชิงประจักษ์สอดคล้องกับทฤษฎีบทครับ (พร้อมเปิดหน้าเว็บกรอกค่าที่กรรมการสั่งทันที)"
+        </div>
+    </div>
+
+    <div class="q-box">
+        <div class="q-title">❓ คำถามเชือดที่ 3: "ทดสอบกับเด็กแค่ 15-20 คน คุณมีสิทธิ์สรุปได้เหรอว่าแอปทำให้เด็กเรียนเก่งขึ้นจริง?"</div>
+        <div class="fix-box">
+            <strong>🎯 คำตอบที่ถูกต้องที่ต้องตอบกรรมการ:</strong><br>
+            "ด้วยขนาดกลุ่มตัวอย่าง 15-20 คน วัตถุประสงค์ของการทดลองจึงมุ่งเน้นที่ **'การศึกษาความเป็นไปได้และความสามารถในการใช้งาน (Usability & Feasibility Pilot Study)'** ร่วมกับการสำรวจความเข้าใจคลาดเคลื่อนเบื้องต้นครับ ไม่ได้อ้างผลสรุปเชิงสาเหตุในระดับประชากร แต่เป็นข้อมูลสะท้อนกลับ (Feedback Loop) เพื่อปรับปรุงระบบต้นแบบตามมาตรฐาน SUS ครับ"
+        </div>
+    </div>
+
+    <footer>
+        เอกสารวิจารณ์เจาะลึกจัดทำขึ้นเพื่อเตรียมความพร้อมสอบโครงร่าง (Proposal Defense)<br>
+        บันทึกในระบบ: <code>calculus-integration-app/docs/debate/hostile-audit-plan.html</code>
+    </footer>
+
+</div>
+
+</body>
+</html>

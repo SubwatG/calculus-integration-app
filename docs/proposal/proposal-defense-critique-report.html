@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>รายงานการตรวจสอบและข้อเสนอแนะโครงร่างโครงงานคณิตศาสตร์ประยุกต์ (Calculus Tutor Web App)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=IBM+Plex+Sans+Thai+Looped:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-card: #1c2128;
+  --border-color: #30363d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --accent-blue: #58a6ff;
+  --accent-cyan: #39c5cf;
+  --accent-green: #3fb950;
+  --accent-orange: #d29922;
+  --accent-red: #f85149;
+  --accent-purple: #bc8cff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'IBM Plex Sans Thai Looped', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.75;
+  padding: 2.5rem 1rem;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+header {
+  background: linear-gradient(135deg, #1c2128 0%, #24292f 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2.2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+header h1 {
+  color: var(--accent-cyan);
+  font-size: 1.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 1.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.92rem;
+}
+
+.meta-item {
+  color: var(--text-secondary);
+}
+.meta-item strong {
+  color: var(--text-primary);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: 'Chakra Petch', sans-serif;
+  margin-right: 0.4rem;
+}
+.badge-danger { background: rgba(248, 81, 73, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+.badge-warning { background: rgba(210, 153, 34, 0.2); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
+.badge-success { background: rgba(63, 185, 80, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+.badge-info { background: rgba(57, 197, 207, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+.badge-purple { background: rgba(188, 140, 255, 0.2); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+
+.card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.8rem;
+  margin-bottom: 2rem;
+}
+
+.card h2 {
+  font-size: 1.45rem;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+th, td {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+th {
+  background-color: var(--bg-card);
+  color: var(--accent-blue);
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.code-inline {
+  font-family: 'JetBrains Mono', monospace;
+  background-color: rgba(110, 118, 129, 0.2);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  color: #ff7b72;
+  font-size: 0.88rem;
+}
+
+.code-fixed {
+  font-family: 'JetBrains Mono', monospace;
+  background-color: rgba(63, 185, 80, 0.15);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  color: var(--accent-green);
+  font-size: 0.88rem;
+}
+
+.highlight-box {
+  background-color: rgba(210, 153, 34, 0.08);
+  border-left: 4px solid var(--accent-orange);
+  padding: 1.1rem 1.3rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.2rem 0;
+}
+
+.danger-box {
+  background-color: rgba(248, 81, 73, 0.08);
+  border-left: 4px solid var(--accent-red);
+  padding: 1.1rem 1.3rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.2rem 0;
+}
+
+.success-box {
+  background-color: rgba(63, 185, 80, 0.08);
+  border-left: 4px solid var(--accent-green);
+  padding: 1.1rem 1.3rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.2rem 0;
+}
+
+.timeline-grid {
+  display: grid;
+  grid-template-columns: 85px 1fr;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}
+
+.time-slot {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  background: var(--bg-card);
+  padding: 0.6rem 0.4rem;
+  border-radius: 6px;
+  text-align: center;
+  align-self: start;
+  border: 1px solid var(--border-color);
+}
+
+.time-content {
+  background: var(--bg-card);
+  padding: 1rem 1.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+}
+
+.qna-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.3rem;
+  margin-bottom: 1.2rem;
+}
+
+.qna-q {
+  color: var(--accent-orange);
+  font-weight: 600;
+  font-size: 1.08rem;
+  margin-bottom: 0.6rem;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.qna-a {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.qna-tip {
+  margin-top: 0.8rem;
+  font-size: 0.88rem;
+  color: var(--accent-cyan);
+  background: rgba(57, 197, 207, 0.1);
+  padding: 0.5rem 0.9rem;
+  border-radius: 4px;
+  border-left: 3px solid var(--accent-cyan);
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <span class="badge badge-info">Proposal Defense Audit</span>
+        <span class="badge badge-purple">15m Presentation + 10m Q&A</span>
+        <span class="badge badge-success">File Relocated</span>
+      </div>
+      <div style="color:var(--text-secondary); font-size:0.85rem;">
+        วันที่ตรวจสอบ: 27 สิงหาคม 2569
+      </div>
+    </div>
+    <h1 style="margin-top:0.8rem;">รายงานการตรวจสอบและข้อเสนอแนะโครงร่างโครงงานคณิตศาสตร์ประยุกต์</h1>
+    <p style="color:var(--text-secondary); font-size:1.05rem;">
+      การพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้น (Calculus Tutor Web Application)
+    </p>
+    
+    <div class="meta-grid">
+      <div class="meta-item">
+        ผู้จัดทำ: <strong>น.ส.ขวัญเรือน สำเนียงดี & น.ส.เบญจกัฬยาณี พิทยากูล</strong>
+      </div>
+      <div class="meta-item">
+        สาขาวิชา: <strong>คณิตศาสตร์ประยุกต์ (วท.บ.)</strong>
+      </div>
+      <div class="meta-item">
+        ภาควิชา/คณะ: <strong>วิทยาการคำนวณและเทคโนโลยีดิจิทัล คณะศิลปศาสตร์และวิทยาศาสตร์</strong>
+      </div>
+      <div class="meta-item">
+        ตำแหน่งไฟล์ปัจจุบัน: <strong>01-Inbox/STUDENT-PROJECT/project-calculus-tutor-2569/inbox/</strong>
+      </div>
+    </div>
+  </header>
+
+  <!-- Section 1: File Relocation -->
+  <div class="card">
+    <h2><span class="badge badge-success">1</span> การจัดเก็บและย้ายไฟล์ (Workspace Relocation)</h2>
+    <p>ได้ดำเนินการเคลื่อนย้ายไฟล์เอกสารโครงร่างต้นฉบับเข้าสู่พื้นที่ทำงานที่เป็นทางการตามมาตรฐานการกำกับดูแลเอกสารนิสิต (STUDENT-PROJECT Architecture) เรียบร้อยแล้ว:</p>
+    <div class="success-box">
+      <strong>📁 ตำแหน่งจัดเก็บต้นฉบับที่เป็นทางการ:</strong><br>
+      <span class="code-fixed">/home/kitti/Downloads/01-Inbox/STUDENT-PROJECT/project-calculus-tutor-2569/inbox/โครงร่างคณิตศาสตร์ประยุกต์.docx</span>
+    </div>
+    <p style="font-size:0.9rem; color:var(--text-secondary);">
+      * โฟลเดอร์ <span class="code-inline">inbox/</span> มีสถานะเป็น Read-Only สำหรับเก็บไฟล์ต้นฉบับที่นิสิตส่งเข้ามา ส่วนรายงานสรุปและการแก้ไขจะถูกสร้างที่โฟลเดอร์ <span class="code-inline">output/</span>
+    </p>
+  </div>
+
+  <!-- Section 2: Detailed Correction Points -->
+  <div class="card">
+    <h2><span class="badge badge-danger">2</span> ตารางรายการจุดที่ต้องแก้ไข (คำผิด / วรรคตอน / ไวยากรณ์ / โครงสร้าง)</h2>
+    <p>จากการตรวจสอบเอกสารอย่างละเอียดทีละย่อหน้า พบจุดบกพร่องทั้งคำสะกดผิด วรรคตอน และข้อผิดพลาดเชิงโครงสร้าง ดังนี้:</p>
+    
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 10%;">ตำแหน่ง</th>
+            <th style="width: 15%;">ประเภท</th>
+            <th style="width: 25%;">ข้อความเดิมในเอกสาร</th>
+            <th style="width: 25%;">ข้อความที่ถูกต้อง/แนะนำ</th>
+            <th style="width: 25%;">เหตุผลและความสำคัญ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>P23</strong></td>
+            <td><span class="badge badge-danger">สะกดผิด</span></td>
+            <td><span class="code-inline">...ไปสู่การรัยนรู้ด้วยตนเอง...</span></td>
+            <td><span class="code-fixed">...ไปสู่การเรียนรู้ด้วยตนเอง...</span></td>
+            <td>คำว่า "เรียนรู้" พิมพ์สระผิดเป็น "รัยนรู้"</td>
+          </tr>
+          <tr>
+            <td><strong>P23</strong></td>
+            <td><span class="badge badge-danger">สะกดผิด</span></td>
+            <td><span class="code-inline">...ผ่านสื่ออนไลน์มากยิ่งขึ้น...</span></td>
+            <td><span class="code-fixed">...ผ่านสื่อออนไลน์มากยิ่งขึ้น...</span></td>
+            <td>คำว่า "สื่อออนไลน์" ตกสระออ (อ)</td>
+          </tr>
+          <tr>
+            <td><strong>P23</strong></td>
+            <td><span class="badge badge-warning">ตกคำ/วรรคตอน</span></td>
+            <td><span class="code-inline">...อุปกรณ์อิเล็กทรอนิกส์ต่างๆผลให้...</span></td>
+            <td><span class="code-fixed">...อุปกรณ์อิเล็กทรอนิกส์ต่าง ๆ ส่งผลให้...</span></td>
+            <td>ตกคำว่า "ส่ง" และไม้ยมกต้องเว้นวรรคหน้า-หลัง</td>
+          </tr>
+          <tr>
+            <td><strong>P23</strong></td>
+            <td><span class="badge badge-warning">วรรคตอนผิด</span></td>
+            <td><span class="code-inline">...ได้เป็นอย่างดี .แคลคูลัสเป็นวิชา...</span></td>
+            <td><span class="code-fixed">...ได้เป็นอย่างดี<br><br>&nbsp;&nbsp;&nbsp;&nbsp;แคลคูลัสเป็นวิชา...</span></td>
+            <td>มีเครื่องหมายจุด (.) เกินติดหน้าคำว่าแคลคูลัส และควรตัดขึ้นย่อหน้าใหม่</td>
+          </tr>
+          <tr>
+            <td><strong>P24</strong></td>
+            <td><span class="badge badge-info">การเว้นวรรค</span></td>
+            <td><span class="code-inline">...และเฟรมเวิร์กStreamlit ซึ่ง...</span></td>
+            <td><span class="code-fixed">...และเฟรมเวิร์ก Streamlit ซึ่ง...</span></td>
+            <td>ภาษาไทยและภาษาอังกฤษต้องเว้นวรรค 1 เคาะเสมอ</td>
+          </tr>
+          <tr>
+            <td><strong>P24</strong></td>
+            <td><span class="badge badge-info">การเว้นวรรค</span></td>
+            <td><span class="code-inline">...สำหรับการพัฒนาเว็บ   แอปพลิเคชัน...</span></td>
+            <td><span class="code-fixed">...สำหรับการพัฒนาเว็บแอปพลิเคชัน...</span></td>
+            <td>มี Space เคาะเกินระหว่างคำว่า เว็บ กับ แอปพลิเคชัน</td>
+          </tr>
+          <tr>
+            <td><strong>P24</strong></td>
+            <td><span class="badge badge-info">การเว้นวรรค</span></td>
+            <td><span class="code-inline">...อย่าง เป็นขั้นตอน / เพิ่มความ สะดวก...</span></td>
+            <td><span class="code-fixed">...อย่างเป็นขั้นตอน / เพิ่มความสะดวก...</span></td>
+            <td>เว้นวรรคกลางคำ พบบ่อยในเอกสาร</td>
+          </tr>
+          <tr>
+            <td><strong>P25</strong></td>
+            <td><span class="badge badge-warning">ไวยากรณ์</span></td>
+            <td><span class="code-inline">...ในหัวข้อการลิมิต อนุพันธ์ และปริพันธ์...</span></td>
+            <td><span class="code-fixed">...ในหัวข้อลิมิต อนุพันธ์ และปริพันธ์...</span></td>
+            <td>คำว่า "ลิมิต" เป็นคำนามเฉพาะ ไม่ต้องมีคำว่า "การ" นำหน้า</td>
+          </tr>
+          <tr>
+            <td><strong>P28 vs P33</strong></td>
+            <td><span class="badge badge-warning">คำทับศัพท์ไม่นิ่ง</span></td>
+            <td>P28: <span class="code-inline">ไพธอน (Python)</span><br>P33: <span class="code-inline">ไพทอน (Python)</span></td>
+            <td>เลือกใช้ <span class="code-fixed">ไพธอน (Python)</span> หรือ <span class="code-fixed">Python</span> ให้ตรงกันทั้งเล่ม</td>
+            <td>ความสอดคล้องของคำศัพท์เทคนิค (Terminology Consistency)</td>
+          </tr>
+          <tr>
+            <td><strong>P33</strong></td>
+            <td><span class="badge badge-danger">สะกดผิด</span></td>
+            <td><span class="code-inline">...เพื่อประยุกต์ใชเความรู้...</span></td>
+            <td><span class="code-fixed">...เพื่อประยุกต์ใช้ความรู้...</span></td>
+            <td>ใช้สระเอ (เ) แทนสระไอไม้มลาย/ไม้โท</td>
+          </tr>
+          <tr>
+            <td><strong>P42</strong></td>
+            <td><span class="badge badge-warning">คำซ้ำซ้อน</span></td>
+            <td><span class="code-inline">...ช่วยให้ผู้เรียนรู้เข้าใจยิ่งขึ้น...</span></td>
+            <td><span class="code-fixed">...ช่วยให้ผู้เรียนเข้าใจยิ่งขึ้น...</span></td>
+            <td>ใช้คำซ้ำซ้อน "ผู้เรียนรู้" → "ผู้เรียน"</td>
+          </tr>
+          <tr style="background-color: rgba(248, 81, 73, 0.1);">
+            <td><strong>P50 – P55</strong></td>
+            <td><span class="badge badge-danger">ข้อผิดพลาดโครงสร้างรุนแรง</span></td>
+            <td>ใส่เนื้อหา "ผลที่คาดว่าจะได้รับ" 6 ข้อย่อย มาโผล่ใต้หัวข้อ <strong>4.ความรู้พื้นฐาน</strong></td>
+            <td><strong>ต้องลบ P50–P55 ในข้อ 4 ทิ้งทั้งหมด</strong></td>
+            <td>เป็นเนื้อหาที่ซ้ำกับข้อ 6.ผลที่คาดว่าจะได้รับ (P164–P169) ทำให้อาจารย์และกรรมการสับสนอย่างมาก</td>
+          </tr>
+          <tr>
+            <td><strong>P55 & P169</strong></td>
+            <td><span class="badge badge-danger">สะกดผิด</span></td>
+            <td><span class="code-inline">...ในการเรียนแคลตคูลัสเบื้องต้น...</span></td>
+            <td><span class="code-fixed">...ในการเรียนแคลคูลัสเบื้องต้น...</span></td>
+            <td>มีตัวอักษร ต เกินมาในคำว่า "แคลตคูลัส"</td>
+          </tr>
+          <tr>
+            <td><strong>P64</strong></td>
+            <td><span class="badge badge-warning">สมการซ้ำ</span></td>
+            <td><span class="code-inline">f'(x) = 2x sin x + x² cos x = 2x sin x + x² cos x</span></td>
+            <td><span class="code-fixed">f'(x) = 2x sin x + x² cos x</span></td>
+            <td>พิมพ์เครื่องหมายเท่ากับและผลลัพธ์ซ้ำ 2 รอบในตัวอย่างที่ 4.2</td>
+          </tr>
+          <tr>
+            <td><strong>P148–P151</strong></td>
+            <td><span class="badge badge-info">การจัดรูปสมการ</span></td>
+            <td><span class="code-inline">(]ระบบต้องส่งคืนค่า 1.0)]</span></td>
+            <td><span class="code-fixed">(ระบบต้องส่งคืนค่า 1.0)</span></td>
+            <td>เกิดจากเครื่องหมายวงเล็บปนกับบล็อกสมการ Word Equation (OMML)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 3: In-depth Structural & Academic Critique -->
+  <div class="card">
+    <h2><span class="badge badge-warning">3</span> การวิพากษ์และข้อเสนอแนะเชิงวิชาการ (Academic & Structural Critique)</h2>
+    
+    <div class="danger-box">
+      <h3>🚨 จุดวิกฤตที่ต้องจัดการก่อนส่งกรรมการ: หัวข้อ 4.ความรู้พื้นฐาน (P49–P75)</h3>
+      <p style="margin-top:0.5rem;">
+        1. <strong>ข้อความหลุด:</strong> ย่อหน้า P50–P55 คือข้อความของ "ผลที่คาดว่าจะได้รับ" ที่หลุดมาวางไว้ใต้หัวข้อ 4 โดยไม่ได้ตั้งใจ ต้องลบออกทันที<br>
+        2. <strong>ความเหมาะสมของเนื้อหา:</strong> ในข้อเสนอโครงร่าง (Proposal) กรรมการต้องการดู <strong>"วิธีทำและสถาปัตยกรรมระบบ (ข้อ 5)"</strong> มากกว่าทฤษฎีแคลคูลัสพื้นฐาน 2 ข้อ (อนุพันธ์และปริพันธ์) ที่ใส่มาลอยๆ ในข้อ 4 แนะนำให้ย่อข้อ 4 เป็นภาพรวมสั้นๆ ของ 6 โมดูล หรือย้ายตัวอย่างทฤษฎีละเอียดไปไว้ในบทที่ 2 ของรูปเล่มฉบับสมบูรณ์
+      </p>
+    </div>
+
+    <div class="success-box">
+      <h3>🌟 จุดแข็งที่ทำได้ยอดเยี่ยมมากในข้อ 5 (วิธีการดำเนินการศึกษา):</h3>
+      <ul style="margin-left: 1.5rem; margin-top:0.5rem;">
+        <li><strong>สถาปัตยกรรมระบบชัดเจน (5.1.1):</strong> แยกหน้าที่ Frontend (Streamlit), Backend Services (SymPy + Solution Engine), Data Layer (Markdown/YAML) ตามหลัก <em>Separation of Concerns</em></li>
+        <li><strong>มีกรอบนั่งร้านทางปัญญา 6 มิติ (5.1.3):</strong> Conditions, Formulas, Properties, Cautions, Applications, Decision Guide ซึ่งยกระดับจากเว็บแก้โจทย์ทั่วไป (Black-box) สู่ระบบช่วยสอนคณิตศาสตร์แท้จริง</li>
+        <li><strong>มีขั้นตอนวิธีคณิตศาสตร์เชิงลึก (5.1.4):</strong> แสดงอัลกอริทึม Midpoint Riemann Sum พร้อมการคำนวณเซตจุดตัวแทนและการพิสูจน์การลู่เข้าอย่างรัดกุม</li>
+        <li><strong>มีชุดทดสอบ Pytest 3 ด้าน (5.1.6):</strong> Theoretical Accuracy, Convergence Verification, และ Input Domain Validation ซึ่งสร้างความมั่นใจให้กรรมการด้านความถูกต้องทางคณิตศาสตร์ 100%</li>
+        <li><strong>มีแผนประเมินผล SUS (5.1.7):</strong> วางแผนทดสอบกับกลุ่มนำร่อง 15–20 คนอย่างเป็นรูปธรรม</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 4: 15-Min Presentation Strategy -->
+  <div class="card">
+    <h2><span class="badge badge-purple">4</span> แผนกลยุทธ์การนำเสนอ 15 นาที (15-Minute Presentation Breakdown)</h2>
+    <p>การแบ่งสัดส่วนเวลาสไลด์เพื่อให้กรรมการเห็นความสำคัญและความลึกซึ้งทางคณิตศาสตร์ประยุกต์อย่างครบถ้วน:</p>
+    
+    <div class="timeline-grid">
+      <div class="time-slot">2 นาที</div>
+      <div class="time-content">
+        <strong>สไลด์ 1–2: ที่มา ปัญหา และช่องว่างของงานเดิม (Problem Statement & Gap)</strong><br>
+        <span style="color:var(--text-secondary); font-size:0.9rem;">
+          • ชี้ให้เห็นว่าเครื่องมือแก้โจทย์ปัจจุบัน (Symbolab/Wolfram/ChatGPT) เป็น <em>Black-Box</em> ที่บอกแค่คำตอบ แต่ขาดการจัดนั่งร้านทางปัญญา (Scaffolding)<br>
+          • นิสิตปี 1 ติดปัญหาพื้นฐานเรื่องลิมิตและอินทิเกรต ขาดสื่อภาษาไทยที่มีขั้นตอนวิธีทำและกราฟิกโต้ตอบ
+        </span>
+      </div>
+
+      <div class="time-slot">2 นาที</div>
+      <div class="time-content">
+        <strong>สไลด์ 3–4: วัตถุประสงค์และขอบเขต 6 หัวข้อหลัก (Objectives & Scope)</strong><br>
+        <span style="color:var(--text-secondary); font-size:0.9rem;">
+          • วัตถุประสงค์ 4 ข้อ (พัฒนาเว็บแอป, รวม 6 หัวข้อสำคัญ, สร้างระบบเฉลยทีละขั้น, ทดสอบความถูกต้อง 100%)<br>
+          • ขอบเขตเนื้อหา 6 โมดูล (Tangent, Limit, Riemann Sum, Substitution, Area Between Curves, Improper Integrals)
+        </span>
+      </div>
+
+      <div class="time-slot">3 นาที</div>
+      <div class="time-content">
+        <strong>สไลด์ 5–6: สถาปัตยกรรมระบบและโครงร่างหน้าจอ (System Architecture & UI Wireframe)</strong><br>
+        <span style="color:var(--text-secondary); font-size:0.9rem;">
+          • แสดงภาพผัง 5 ขั้นตอน (Plan → Content → Dev → Test → Deploy)<br>
+          • อธิบาย 3-Layer Architecture: Streamlit UI ↔ SymPy Solver Engine ↔ Markdown/YAML Content<br>
+          • โชว์ภาพ Wireframe 2 คอลัมน์ (Sidebar Navigation + Interactive Main Area)
+        </span>
+      </div>
+
+      <div class="time-slot">4 นาที</div>
+      <div class="time-content">
+        <strong>สไลด์ 7–9: ไฮไลท์วิชาการ — นั่งร้านทางปัญญา 6 มิติ & Mathematical Algorithm (หัวใจสำคัญ!)</strong><br>
+        <span style="color:var(--text-secondary); font-size:0.9rem;">
+          • อธิบายโมเดล 6 มิติ (Conditions, Formulas, Properties, Misconceptions, Applications, Decision Guide)<br>
+          • <strong>เจาะลึก Riemann Sum Algorithm:</strong> แสดงสูตรจุดตัวแทน Midpoint $x_i$, การหาพื้นที่แท่งสี่เหลี่ยม, และการใช้ SymPy เทียบกับค่าจริง $\int_0^2 x^2 dx = \frac{8}{3}$ พร้อมพล็อตกราฟ Matplotlib
+        </span>
+      </div>
+
+      <div class="time-slot">2 นาที</div>
+      <div class="time-content">
+        <strong>สไลด์ 10–11: การรับประกันคุณภาพ (Pytest QA) และแผนการประเมินผลผู้ใช้ (Evaluation)</strong><br>
+        <span style="color:var(--text-secondary); font-size:0.9rem;">
+          • แผน Automated Testing ด้วย Pytest 3 มิติ (Exact Values, Convergence Rate, Error Domain Handling)<br>
+          • แผนประเมินความสะดวกในการใช้งานกับนิสิต 15–20 คน ด้วยแบบประเมิน SUS (System Usability Scale)
+        </span>
+      </div>
+
+      <div class="time-slot">2 นาที</div>
+      <div class="time-content">
+        <strong>สไลด์ 12–13: แผนการดำเนินงาน (Gantt Chart) และผลที่คาดว่าจะได้รับ</strong><br>
+        <span style="color:var(--text-secondary); font-size:0.9rem;">
+          • แผนงานตามสัปดาห์ (การพัฒนาโมดูล 1–6, การทำ Testing, การทดลองกลุ่มนำร่อง, การจัดทำเล่ม)<br>
+          • สรุปผลลัพธ์และคุณประโยชน์ต่อภาควิชาและนิสิต
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: 10-Min Defense Q&A Preparation -->
+  <div class="card">
+    <h2><span class="badge badge-info">5</span> เตรียมความพร้อมตอบคำถามกรรมการ 10 นาที (Anticipated Q&A & Defense Script)</h2>
+    <p>5 คำถามเจาะลึกที่กรรมการมักจะถาม พร้อมแนวทางการตอบอย่างมั่นใจและตรงหลักวิชาการ:</p>
+    
+    <div class="qna-card">
+      <div class="qna-q">คำถามที่ 1: "ปัจจุบันมี Wolfram Alpha, Symbolab หรือแม้กระทั่ง ChatGPT ที่แก้โจทย์แคลคูลัสได้อยู่แล้ว ทำไมเราจึงต้องพัฒนาเว็บแอปพลิเคชันนี้ขึ้นมาอีก?"</div>
+      <div class="qna-a">
+        <strong>แนวทางการตอบ:</strong> เครื่องมือเหล่านั้นส่วนใหญ่เป็น <em>Black-Box Calculator</em> ที่เน้นการให้คำตอบสุดท้าย หรือข้ามขั้นตอนการให้เหตุผลทางคณิตศาสตร์ที่จำเป็นสำหรับผู้เรียน นอกจากนี้ยังมีข้อจำกัดด้านภาษา (ไม่มีคำอธิบายภาษาไทยที่สอดคล้องกับหลักสูตรมหาวิทยาลัย) และไม่ได้จัดลำดับการสอนตามกรอบนั่งร้านทางปัญญา (Scaffolding Framework) 
+        <br><br>
+        โครงงานนี้ไม่ได้มุ่งสร้างแค่เครื่องคิดเลข แต่สร้าง <strong>"สื่อการเรียนรู้เชิงโต้ตอบแบบมีนั่งร้าน"</strong> ที่ชี้จุดผิดที่พบบ่อย (Misconceptions), เงื่อนไขการใช้สูตร (Conditions), และการแสดงผลกราฟิกเชื่อมโยงเรขาคณิตกับการคำนวณพีชคณิตแบบ Real-time ซึ่งระบบที่มีอยู่เดิมไม่ได้ออกแบบมาเพื่อการเรียนรู้ด้วยตนเองของนิสิตไทย
+      </div>
+      <div class="qna-tip">💡 คำสำคัญที่ควรพูด: Pedagogical Scaffolding, Black-Box vs Transparent Step-by-Step, Misconception Diagnosis</div>
+    </div>
+
+    <div class="qna-card">
+      <div class="qna-q">คำถามที่ 2: "โครงงานนี้เป็นสาขาคณิตศาสตร์ประยุกต์ ความเป็นคณิตศาสตร์ (Mathematical Rigor) อยู่ตรงส่วนไหน หรือเป็นแค่งานพัฒนาเว็บธรรมดา?"</div>
+      <div class="qna-a">
+        <strong>แนวทางการตอบ:</strong> ความเป็นคณิตศาสตร์ประยุกต์อยู่ใน 3 แกนหลักครับ/ค่ะ:
+        <ol style="margin-left: 1.5rem; margin-top:0.3rem;">
+          <li><strong>Symbolic Math Engine:</strong> การสร้างและเชื่อมต่อ Computer Algebra System (SymPy) ในการสกัดขั้นตอนวิธีแก้โจทย์เชิงสัญลักษณ์ (ไม่ใช่แค่คำนวณตัวเลข) เช่น การแยกเศษส่วนย่อย, การหาปฏิยานุพันธ์, และการแทนค่าตัวแปร $u$</li>
+          <li><strong>Numerical Algorithm & Convergence:</strong> การเขียนขั้นตอนวิธีคำนวณประมาณค่าพื้นที่ (Riemann Sum) และทดสอบคุณสมบัติการลู่เข้า (Convergence Rate) ทางคณิตศาสตร์</li>
+          <li><strong>Formal Verification:</strong> การออกแบบ Test Suite ด้วย Pytest เพื่อทวนสอบความถูกต้องตามทฤษฎีบทคณิตศาสตร์ 100% ครอบคลุมทั้งกรณีต่อเนื่อง ไม่ต่อเนื่อง และขอบเขตวิกฤต</li>
+        </ol>
+      </div>
+      <div class="qna-tip">💡 คำสำคัญที่ควรพูด: Computer Algebra System (CAS), Numerical Convergence, Separation of Concerns (Math Engine vs UI)</div>
+    </div>
+
+    <div class="qna-card">
+      <div class="qna-q">คำถามที่ 3: "หากผู้ใช้ป้อนโจทย์ที่ไม่มีคำตอบ ฟังก์ชันไม่ต่อเนื่อง หรือหารด้วยศูนย์ ระบบจะจัดการอย่างไรเพื่อไม่ให้โปรแกรม Error?"</div>
+      <div class="qna-a">
+        <strong>แนวทางการตอบ:</strong> ระบบได้ออกแบบโมดูล <strong>Input Domain & Error Handling</strong> ไว้ล่วงหน้าในส่วน Backend (แสดงในหัวข้อ 5.1.6 ข้อ 3):
+        <ul style="margin-left: 1.5rem; margin-top:0.3rem;">
+          <li>มีการตรวจสอบโดเมนและความถูกต้องของนิพจน์ก่อนส่งเข้าประมวลผล (เช่น ตรวจสอบขอบเขต $a < b$, ตรวจสอบ $n \ge 1$)</li>
+          <li>หากผู้ใช้ป้อนฟังก์ชันที่มีภาวะเอกฐาน (Singularity) หรือหารด้วยศูนย์ ระบบจะใช้กลไก Try-Except ดักจับและแปลงข้อความแจ้งเตือนทางเทคนิคให้กลายเป็น <strong>"คำอธิบายทางคณิตศาสตร์ที่เป็นมิตร"</strong> เช่น <em>'ฟังก์ชันนี้ไม่มีความต่อเนื่องบนช่วงที่กำหนด เนื่องจากส่วนเป็นศูนย์ที่ x = ...'</em> เพื่อให้ผู้เรียนได้เรียนรู้จากข้อผิดพลาด</li>
+        </ul>
+      </div>
+      <div class="qna-tip">💡 คำสำคัญที่ควรพูด: Domain Validation, Graceful Error Handling, Pedagogical Feedback Messages</div>
+    </div>
+
+    <div class="qna-card">
+      <div class="qna-q">คำถามที่ 4: "การประเมินผลด้วยกลุ่มตัวอย่าง 15–20 คน เพียงพอหรือไม่ และจะวัดได้อย่างไรว่าผู้เรียน 'เข้าใจแคลคูลัสดีขึ้นจริง'?"</div>
+      <div class="qna-a">
+        <strong>แนวทางการตอบ:</strong> ในขอบเขตของโครงร่างนี้ เราแบ่งการประเมินเป็น 2 ระยะ:
+        <ul style="margin-left: 1.5rem; margin-top:0.3rem;">
+          <li><strong>ระยะที่ 1 (ในเล่มข้อเสนอนี้):</strong> มุ่งเน้นการประเมินความถูกต้องของระบบ 100% (Technical Verification) และการทดสอบความสะดวกในการใช้งาน (Usability Testing) ด้วยแบบประเมินมาตรฐานสากล SUS (System Usability Scale) กับกลุ่มนำร่อง 15–20 คน เพื่อยืนยันว่าระบบใช้งานได้จริงโดยไม่ติดขัด</li>
+          <li><strong>ระยะที่ 2 (การต่อยอดในบทที่ 4–5):</strong> ผู้จัดทำได้วางแผนแบบทดสอบย่อยก่อน-หลังเรียน (Pre/Post Quiz Engine) ที่ฝังอยู่ในแอปพลิเคชัน เพื่อเก็บสถิติคะแนนความก้าวหน้าทางการเรียน (Learning Gain / Normalized Gain) ของผู้เรียนรายบุคคล นำมาวิเคราะห์ผลสัมฤทธิ์ทางการเรียนต่อไป</li>
+        </ul>
+      </div>
+      <div class="qna-tip">💡 คำสำคัญที่ควรพูด: System Usability Scale (SUS), Formative Assessment, Normalized Learning Gain</div>
+    </div>
+
+    <div class="qna-card">
+      <div class="qna-q">คำถามที่ 5: "ทำไมถึงเลือกใช้ Streamlit แทนที่จะใช้ React หรือ Flutter ที่ปรับแต่งหน้าตาได้อิสระมากกว่า?"</div>
+      <div class="qna-a">
+        <strong>แนวทางการตอบ:</strong> Streamlit มีข้อได้เปรียบเชิงยุทธศาสตร์สำหรับงานด้าน Data Science และ Scientific Computing เนื่องจาก:
+        <ol style="margin-left: 1.5rem; margin-top:0.3rem;">
+          <li><strong>Native Python Ecosystem:</strong> สามารถทำงานร่วมกับ SymPy, NumPy, Matplotlib และ Pytest ได้อย่างไร้รอยต่อโดยไม่ต้องสร้าง API Gateway ซับซ้อน</li>
+          <li><strong>KaTeX / LaTeX Integration:</strong> เรนเดอร์สมการคณิตศาสตร์ที่มีความซับซ้อนสูงได้ทันทีด้วยความเร็วสูง</li>
+          <li><strong>Rapid Prototyping & Maintainability:</strong> ช่วยให้ทีมงานทุ่มเทเวลาไปกับการพัฒนาอัลกอริทึมคณิตศาสตร์และเนื้อหาเชิงลึก (Scaffolding Content) มากกว่าการเสียเวลากับการจัดการ CSS/State ฝั่ง Frontend ที่ซับซ้อน</li>
+        </ol>
+      </div>
+      <div class="qna-tip">💡 คำสำคัญที่ควรพูด: Python Native Ecosystem, KaTeX Math Rendering, Focus on Mathematical Logic</div>
+    </div>
+  </div>
+
+  <!-- Summary Footer -->
+  <div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 1.5rem 0;">
+    จัดทำโดยระบบกำกับดูแลโครงงานนิสิต (Education Student Project Supervision) • มหาวิทยาลัยเกษตรศาสตร์
+  </div>
+
+</div>
+
+</body>
+</html>
