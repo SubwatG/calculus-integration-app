@@ -36,16 +36,27 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def compute_limit_near(expr_str: str, a: float) -> dict:
-    """คำนวณ lim_{x->a} f(x) และแสดงการแทนค่า x เข้าใกล้ a ทีละขั้น
-
-    Args:
-        expr_str: นิพจน์ f(x), a: จุดที่ x เข้าใกล้
-
-    TODO: implement ให้ครบตาม blueprint ของ riemann_solver
-    """
+    """คำนวณลิมิตสองด้าน x -> a และแสดงขั้นตอน"""
     try:
-        # TODO: ใส่ logic การคำนวณจริงที่นี่
-        raise NotImplementedError("ยังไม่ implement ให้นักศึกษาเติม")
+        expr = _parse_input(expr_str)
+        lim_val = sp.limit(expr, X, a)
+        lim_left = sp.limit(expr, X, a, dir="-")
+        lim_right = sp.limit(expr, X, a, dir="+")
+
+        steps = [
+            f"กำหนดโจทย์: \\lim_{{x \\to {a}}} {sp.latex(expr)}",
+            f"พิจารณาลิมิตทางซ้าย: \\lim_{{x \\to {a}^-}} {sp.latex(expr)} = {sp.latex(lim_left)}",
+            f"พิจารณาลิมิตทางขวา: \\lim_{{x \\to {a}^+}} {sp.latex(expr)} = {sp.latex(lim_right)}",
+            f"สรุปค่าลิมิตสองด้าน: \\lim_{{x \\to {a}}} {sp.latex(expr)} = {sp.latex(lim_val)}",
+        ]
+        return {
+            "ok": True,
+            "result": float(lim_val) if lim_val.is_number and lim_val.is_real else None,
+            "latex": f"\\lim_{{x \\to {a}}} {sp.latex(expr)} = {sp.latex(lim_val)}",
+            "steps": steps,
+            "expr": expr,
+            "error": None,
+        }
     except Exception as e:
         return {
             "ok": False,
@@ -53,5 +64,5 @@ def compute_limit_near(expr_str: str, a: float) -> dict:
             "latex": "",
             "steps": [],
             "expr": None,
-            "error": f"ยังไม่พร้อมใช้งาน: {e}",
+            "error": f"ไม่สามารถคำนวณได้: {e}",
         }

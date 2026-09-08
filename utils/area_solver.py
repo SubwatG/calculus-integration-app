@@ -36,16 +36,27 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
-    """หาจุดตัด f(x)=g(x) แล้วคำนวณ A = ∫(f-g)dx
-
-    Args:
-        f_str: เส้นโค้งบน, g_str: เส้นโค้งล่าง, a, b
-
-    TODO: implement ให้ครบตาม blueprint ของ riemann_solver
-    """
+    """หาจุดตัด f(x)=g(x) แล้วคำนวณ A = ∫(f-g)dx"""
     try:
-        # TODO: ใส่ logic การคำนวณจริงที่นี่
-        raise NotImplementedError("ยังไม่ implement ให้นักศึกษาเติม")
+        f_expr = _parse_input(f_str)
+        g_expr = _parse_input(g_str)
+        diff_expr = f_expr - g_expr
+        area_val = sp.integrate(diff_expr, (X, a, b))
+
+        steps = [
+            f"ฟังก์ชันบน: f(x) = {sp.latex(f_expr)}, ฟังก์ชันล่าง: g(x) = {sp.latex(g_expr)}",
+            f"ตั้งอินทิกรัลพื้นที่: A = \\int_{{{a}}}^{{{b}}} [{sp.latex(f_expr)} - ({sp.latex(g_expr)})] \\, dx",
+            f"ผลต่างฟังก์ชัน: \\int_{{{a}}}^{{{b}}} ({sp.latex(diff_expr)}) \\, dx",
+            f"คำนวณพื้นที่ปิดล้อม: A = {sp.latex(area_val)}",
+        ]
+        return {
+            "ok": True,
+            "result": float(area_val) if area_val.is_number and area_val.is_real else None,
+            "latex": f"A = \\int_{{{a}}}^{{{b}}} [{sp.latex(diff_expr)}] \\, dx = {sp.latex(area_val)}",
+            "steps": steps,
+            "expr": diff_expr,
+            "error": None,
+        }
     except Exception as e:
         return {
             "ok": False,
@@ -53,5 +64,5 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             "latex": "",
             "steps": [],
             "expr": None,
-            "error": f"ยังไม่พร้อมใช้งาน: {e}",
+            "error": f"ไม่สามารถคำนวณได้: {e}",
         }

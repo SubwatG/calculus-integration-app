@@ -1,9 +1,8 @@
 import streamlit as st
 from utils.theme import inject_css
 
-
 st.set_page_config(
-    page_title="MATH tutor",
+    page_title="Calculus Learning Sandbox",
     page_icon="∫",
     layout="wide",
 )
@@ -20,37 +19,47 @@ def initialize_session_state() -> None:
 
 initialize_session_state()
 
-home_page = st.Page("pages/home.py", title="หน้าหลัก")
-lessons_page = st.Page("pages/lessons.py", title="บทเรียน")
-topics_page = st.Page("pages/topics.py", title="เลือกหัวข้อ")
-riemann_page = st.Page("pages/riemann.py", title="พื้นที่ใต้กราฟ (Riemann)")
-tangent_page = st.Page("pages/tangent.py", title="เส้นสัมผัสและอนุพันธ์")
-limit_page = st.Page("pages/limit_approach.py", title="ลิมิตเข้าใกล้จุด")
-substitution_page = st.Page("pages/substitution.py", title="การอินทิเกรตโดยการแทน")
-volume_page = st.Page("pages/volume_revolution.py", title="ปริมาตรของทรงตัน")
-area_between_page = st.Page("pages/area_between.py", title="พื้นที่ระหว่างเส้นโค้ง")
-improper_page = st.Page("pages/improper_integrals.py", title="อินทิกรัลไม่แท้")
-solver_page = st.Page("pages/solver.py", title="แก้โจทย์")
-quiz_page = st.Page("pages/quiz.py", title="เกมทบทวน")
-history_page = st.Page("pages/history.py", title="ประวัติที่ทำ")
-help_page = st.Page("pages/help.py", title="ช่วยเหลือ")
+# -----------------------------------------------------------------------------
+# 1. ภาพรวมระบบ (Overview)
+# -----------------------------------------------------------------------------
+home_page = st.Page("pages/home.py", title="หน้าหลัก", icon="🏠")
+lessons_page = st.Page("pages/lessons.py", title="ภาพรวมบทเรียนและทฤษฎี", icon="📖")
+
+# -----------------------------------------------------------------------------
+# 2. โมดูลการเรียนรู้ (6 หัวข้อหลักตามโครงร่างโครงงาน)
+# -----------------------------------------------------------------------------
+tangent_page = st.Page("pages/tangent.py", title="1. เส้นสัมผัสและอนุพันธ์", icon="📈")
+limit_page = st.Page("pages/limit_approach.py", title="2. ลิมิตเข้าใกล้จุด", icon="🎯")
+riemann_page = st.Page("pages/riemann.py", title="3. ผลรวมรีมันน์ (พื้นที่ใต้กราฟ)", icon="📊")
+substitution_page = st.Page("pages/substitution.py", title="4. เทคนิคการอินทิเกรต (u-Sub & By Parts)", icon="🧩")
+area_between_page = st.Page("pages/area_between.py", title="5. พื้นที่ระหว่างเส้นโค้ง", icon="📐")
+improper_page = st.Page("pages/improper_integrals.py", title="6. ปริพันธ์ไม่ตรงแบบ", icon="♾️")
+
+# -----------------------------------------------------------------------------
+# 3. เครื่องมือและการประเมิน (Tools & Assessment)
+# -----------------------------------------------------------------------------
+solver_page = st.Page("pages/solver.py", title="เครื่องคิดเลขสัญลักษณ์ SymPy", icon="⚙️")
+quiz_page = st.Page("pages/quiz.py", title="แบบทดสอบมโนทัศน์ (มีคำใบ้)", icon="📝")
+
+# -----------------------------------------------------------------------------
+# 4. ข้อมูลระบบ (System Info)
+# -----------------------------------------------------------------------------
+history_page = st.Page("pages/history.py", title="ประวัติคะแนนในเซสชัน", icon="🏆")
+help_page = st.Page("pages/help.py", title="คู่มือการใช้งานและโครงงาน", icon="ℹ️")
 
 pg = st.navigation(
     {
-        "หน้าหลัก": [home_page],
-        "เรียน": [
-            lessons_page,
-            topics_page,
-            riemann_page,
+        "ภาพรวม": [home_page, lessons_page],
+        "โมดูลการเรียนรู้ (6 หัวข้อหลัก)": [
             tangent_page,
             limit_page,
+            riemann_page,
             substitution_page,
-            volume_page,
             area_between_page,
             improper_page,
         ],
-        "ฝึก": [solver_page, quiz_page],
-        "อื่น ๆ": [history_page, help_page],
+        "เครื่องมือและการประเมิน": [solver_page, quiz_page],
+        "ข้อมูลระบบ": [history_page, help_page],
     },
     position="sidebar",
 )

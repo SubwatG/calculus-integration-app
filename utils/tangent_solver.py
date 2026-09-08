@@ -36,16 +36,28 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def compute_tangent(expr_str: str, a: float) -> dict:
-    """คำนวณความชันเส้นสัมผัส f'(a) และสมการเส้นสัมผัส y = f'(a)(x-a) + f(a)
-
-    Args:
-        expr_str: นิพจน์ f(x) เช่น 'x**2', a: จุดที่หาอนุพันธ์
-
-    TODO: implement ให้ครบตาม blueprint ของ riemann_solver
-    """
+    """คำนวณความชันเส้นสัมผัส f'(a) และสมการเส้นสัมผัส y = f'(a)(x-a) + f(a)"""
     try:
-        # TODO: ใส่ logic การคำนวณจริงที่นี่
-        raise NotImplementedError("ยังไม่ implement ให้นักศึกษาเติม")
+        expr = _parse_input(expr_str)
+        df = sp.diff(expr, X)
+        fa = expr.subs(X, a)
+        slope = df.subs(X, a)
+        tangent_eq = slope * (X - a) + fa
+
+        steps = [
+            f"กำหนดฟังก์ชัน: f(x) = {sp.latex(expr)} ที่จุด a = {a}",
+            f"หาอนุพันธ์: f'(x) = {sp.latex(df)}",
+            f"คำนวณความชัน: m = f'({a}) = {sp.latex(slope)}",
+            f"สมการเส้นสัมผัส: y = {sp.latex(sp.simplify(tangent_eq))}",
+        ]
+        return {
+            "ok": True,
+            "result": float(slope) if slope.is_number and slope.is_real else None,
+            "latex": f"y = {sp.latex(sp.simplify(tangent_eq))}",
+            "steps": steps,
+            "expr": expr,
+            "error": None,
+        }
     except Exception as e:
         return {
             "ok": False,
@@ -53,5 +65,5 @@ def compute_tangent(expr_str: str, a: float) -> dict:
             "latex": "",
             "steps": [],
             "expr": None,
-            "error": f"ยังไม่พร้อมใช้งาน: {e}",
+            "error": f"ไม่สามารถคำนวณได้: {e}",
         }

@@ -36,16 +36,25 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def compute_improper(expr_str: str, a: float, b: float | None = None) -> dict:
-    """คำนวณอินทิกรัลไม่แท้ผ่านลิมิต ตรวจลู่เข้า/ลู่ออก
-
-    Args:
-        expr_str: f(x), a, b หรือ inf
-
-    TODO: implement ให้ครบตาม blueprint ของ riemann_solver
-    """
+    """คำนวณอินทิกรัลไม่ตรงแบบผ่านลิมิต ตรวจลู่เข้า/ลู่ออก"""
     try:
-        # TODO: ใส่ logic การคำนวณจริงที่นี่
-        raise NotImplementedError("ยังไม่ implement ให้นักศึกษาเติม")
+        expr = _parse_input(expr_str)
+        upper = sp.oo if b is None else b
+        res_val = sp.integrate(expr, (X, a, upper))
+
+        steps = [
+            f"กำหนดอินทิกรัลไม่ตรงแบบ: \\int_{{{a}}}^{{\\infty}} {sp.latex(expr)} \\, dx",
+            f"แปลงเป็นลิมิต: \\lim_{{t \\to \\infty}} \\int_{{{a}}}^{{t}} {sp.latex(expr)} \\, dx",
+            f"คำนวณผลลัพธ์ลิมิต: {sp.latex(res_val)}",
+        ]
+        return {
+            "ok": True,
+            "result": float(res_val) if res_val.is_number and res_val.is_real else None,
+            "latex": f"\\int_{{{a}}}^{{\\infty}} {sp.latex(expr)} \\, dx = {sp.latex(res_val)}",
+            "steps": steps,
+            "expr": expr,
+            "error": None,
+        }
     except Exception as e:
         return {
             "ok": False,
@@ -53,5 +62,5 @@ def compute_improper(expr_str: str, a: float, b: float | None = None) -> dict:
             "latex": "",
             "steps": [],
             "expr": None,
-            "error": f"ยังไม่พร้อมใช้งาน: {e}",
+            "error": f"ไม่สามารถคำนวณได้: {e}",
         }

@@ -13,7 +13,7 @@ from utils.riemann_solver import X
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
 
-render_hero("อินทิกรัลไม่แท้", "ตรวจสอบการลู่เข้าของอินทิกรัลไม่แท้")
+render_hero("ปริพันธ์ไม่ตรงแบบ", "สำรวจการลู่เข้าหรือลู่ออกของปริพันธ์บนช่วงอนันต์และจุดเอกฐาน")
 
 theory = THEORY_CONTENT["improper"]
 
