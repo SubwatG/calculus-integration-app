@@ -57,7 +57,7 @@ if filtered_cards:
             with st.container(border=True):
                 st.markdown(f"### {card['title']}")
                 st.markdown(
-                    f"<p style='color: #5a6289; font-size: 14px; margin-top: -8px;'>{card['subtitle']}</p>",
+                    f"<p style='color: #475569; font-size: 14px; margin-top: -8px;'>{card['subtitle']}</p>",
                     unsafe_allow_html=True,
                 )
                 if st.button(card["btn_label"], key=card["key"], use_container_width=True):

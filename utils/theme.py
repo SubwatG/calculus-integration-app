@@ -4,64 +4,135 @@ import streamlit as st
 def inject_css() -> None:
     css = """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai+Looped:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+    /* Global Typography & Palette */
     html, body, [data-testid="stAppViewContainer"], .stApp {
-        font-family: "Chakra Petch", "Sarabun", "Tahoma", sans-serif;
-        background-color: #ffffff;
-        color: #1f2937;
+        font-family: "IBM Plex Sans Thai Looped", "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
     }
 
-    [data-testid="stSidebar"] {
-        background-color: #f9fafb;
-        color: #1f2937;
-        border-right: 1px solid #e5e7eb;
+    h1, h2, h3, h4, h5, h6 {
+        font-family: "Chakra Petch", "Inter", sans-serif !important;
+        color: #0A2540 !important;
+        font-weight: 700 !important;
     }
 
-    [data-testid="stSidebar"] * {
-        color: #1f2937;
+    p, span, label, li {
+        color: #1E293B !important;
     }
 
-    [data-testid="stSidebarNav"] a[aria-current="page"],
-    [data-testid="stSidebarNav"] button[aria-current="page"] {
-        background-color: #e5e7eb !important;
-        box-shadow: none;
-        font-weight: 600;
+    /* KaTeX Math Clarity */
+    .katex, .katex-display, .katex * {
+        color: #0F172A !important;
     }
 
+    /* Container Spacing */
     .block-container {
-        padding-top: 4.5rem;
-        padding-bottom: 3rem;
-        max-width: 1080px;
+        padding-top: 3.5rem !important;
+        padding-bottom: 3rem !important;
+        max-width: 1040px !important;
+    }
+
+    /* Cards & Containers */
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    /* Primary Buttons */
+    .stButton > button[kind="primary"],
+    .stButton > button[data-testid="baseButton-primary"] {
+        background-color: #1D4ED8 !important;
+        color: #FFFFFF !important;
+        border-radius: 8px !important;
+        border: 1px solid #1E40AF !important;
+        font-weight: 600 !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
     }
 
     .stButton > button[kind="primary"] *,
     .stButton > button[data-testid="baseButton-primary"] * {
-        color: inherit !important;
+        color: #FFFFFF !important;
     }
 
-    .stButton > button[kind="primary"] {
-        background-color: #111827;
-        color: #ffffff !important;
-        border-radius: 8px;
-        border: none;
-        font-weight: 600;
+    .stButton > button[kind="primary"]:hover,
+    .stButton > button[data-testid="baseButton-primary"]:hover {
+        background-color: #1E40AF !important;
+        border-color: #1E3A8A !important;
+        color: #FFFFFF !important;
     }
 
-    .stButton > button[kind="primary"]:hover {
-        background-color: #374151;
-        color: #ffffff !important;
+    /* Secondary Buttons */
+    .stButton > button[kind="secondary"],
+    .stButton > button[data-testid="baseButton-secondary"] {
+        background-color: #F8FAFC !important;
+        color: #1E293B !important;
+        border-radius: 8px !important;
+        border: 1px solid #CBD5E1 !important;
+        font-weight: 500 !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
     }
 
-    .stButton > button[kind="secondary"] {
-        border-radius: 8px;
-        border: 1px solid #d1d5db;
-        background-color: #ffffff;
-        color: #1f2937;
+    .stButton > button[kind="secondary"] *,
+    .stButton > button[data-testid="baseButton-secondary"] * {
+        color: #1E293B !important;
     }
 
-    .stButton > button[kind="secondary"]:hover {
-        border-color: #9ca3af;
-        background-color: #f9fafb;
-        color: #111827;
+    .stButton > button[kind="secondary"]:hover,
+    .stButton > button[data-testid="baseButton-secondary"]:hover {
+        background-color: #F1F5F9 !important;
+        border-color: #94A3B8 !important;
+        color: #0F172A !important;
+    }
+
+    /* Inputs & Selectboxes */
+    input, textarea, select {
+        color: #0F172A !important;
+        background-color: #FFFFFF !important;
+        border-color: #CBD5E1 !important;
+    }
+
+    /* Sidebar Navigation */
+    [data-testid="stSidebar"] {
+        background-color: #F8FAFC !important;
+        border-right: 1px solid #E2E8F0 !important;
+    }
+
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+        color: #0A2540 !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stSidebarNavItems"] a,
+    [data-testid="stSidebar"] [data-testid="stSidebarNavItems"] button {
+        border-radius: 6px !important;
+        margin: 2px 0 !important;
+    }
+
+    [data-testid="stSidebarNavItems"] a[aria-current="page"],
+    [data-testid="stSidebarNavItems"] button[aria-current="page"] {
+        background-color: #EFF6FF !important;
+        color: #1D4ED8 !important;
+        font-weight: 600 !important;
+        border-left: 3px solid #1D4ED8 !important;
+    }
+
+    /* Radio buttons & Checkboxes */
+    [data-testid="stRadio"] label,
+    [data-testid="stCheckbox"] label {
+        color: #1E293B !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* Alert callouts */
+    [data-testid="stAlert"] {
+        border-radius: 8px !important;
+        font-size: 0.92rem !important;
     }
     </style>
     """
@@ -71,15 +142,16 @@ def inject_css() -> None:
 def render_hero(title: str, subtitle: str) -> None:
     html = f"""
     <div style="
-        background-color: #ffffff;
-        border: 1px solid #e5e7eb;
+        background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+        border: 1px solid #DBEAFE;
+        border-left: 5px solid #1D4ED8;
         border-radius: 12px;
-        padding: 24px 28px;
-        text-align: center;
+        padding: 20px 24px;
         margin-bottom: 22px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
     ">
-        <h1 style="font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 6px 0; border: none; padding: 0;">{title}</h1>
-        <p style="font-size: 14px; color: #6b7280; margin: 0; padding: 0;">{subtitle}</p>
+        <h1 style="font-family: 'Chakra Petch', sans-serif; font-size: 23px; font-weight: 700; color: #0A2540; margin: 0 0 6px 0; padding: 0; border: none;">{title}</h1>
+        <p style="font-family: 'IBM Plex Sans Thai Looped', sans-serif; font-size: 14.5px; color: #475569; margin: 0; padding: 0;">{subtitle}</p>
     </div>
     """
     st.markdown(html, unsafe_allow_html=True)
