@@ -98,30 +98,29 @@ with col_n:
     n_val = st.slider("จำนวนช่วง n", min_value=1, max_value=50, value=8, key="riemann_n")
 
 # ---------------------------------------------------------------------------
-# คำนวณ + แสดงผล
+# คำนวณและแสดงผลแบบโต้ตอบสด (Real-time Interactive Update)
 # ---------------------------------------------------------------------------
-if st.button("คำนวณ", type="primary", key="btn_riemann_calc"):
-    if not expr_input.strip():
-        st.error("กรุณาใส่ฟังก์ชันก่อน")
+if not expr_input.strip():
+    st.info("กรุณาระบุฟังก์ชัน f(x) หรือคลิกเลือกตัวอย่างด้านบน")
+else:
+    res = compute_riemann(expr_input, a_val, b_val, n_val, method_label)
+
+    if res["ok"]:
+        st.markdown("### ผลลัพธ์การประมาณค่า")
+        render_latex(res["latex"])
+        st.divider()
+
+        # กราฟ (ใช้ expr ที่ solver parse แล้ว กันปัญหา x undefined)
+        try:
+            expr = res["expr"]
+            exact = sp.integrate(expr, (X, a_val, b_val))
+            exact_val = float(exact)
+            fig, _ = plot_riemann(expr, a_val, b_val, n_val, method_label, exact_val)
+            st.pyplot(fig)
+        except Exception:
+            st.warning("ไม่สามารถวาดกราฟได้ ตรวจสอบฟังก์ชันอีกครั้ง")
+
+        st.divider()
+        render_steps(res["steps"])
     else:
-        res = compute_riemann(expr_input, a_val, b_val, n_val, method_label)
-
-        if res["ok"]:
-            st.markdown("### ผลลัพธ์")
-            render_latex(res["latex"])
-            st.divider()
-
-            # กราฟ (ใช้ expr ที่ solver parse แล้ว กันปัญหา x undefined)
-            try:
-                expr = res["expr"]
-                exact = sp.integrate(expr, (X, a_val, b_val))
-                exact_val = float(exact)
-                fig, _ = plot_riemann(expr, a_val, b_val, n_val, method_label, exact_val)
-                st.pyplot(fig)
-            except Exception:
-                st.warning("ไม่สามารถวาดกราฟได้ ตรวจสอบฟังก์ชันอีกครั้ง")
-
-            st.divider()
-            render_steps(res["steps"])
-        else:
-            st.error(res["error"])
+        st.error(res["error"])
