@@ -5,7 +5,7 @@ from utils.theme import render_hero
 
 QUIZ_TOPIC = "basic_rules"
 
-render_hero("GAME", "เกมทบทวนความรู้ — ตอบคำถามให้ถูกเพื่อสะสมคะแนน")
+render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำใบ้และสะสมคะแนน")
 
 questions = load_quiz(QUIZ_TOPIC)
 
@@ -17,12 +17,14 @@ if "quiz_user_answers" not in st.session_state:
     st.session_state.quiz_user_answers = {}
 if "quiz_revealed" not in st.session_state:
     st.session_state.quiz_revealed = False
+if "quiz_show_hint" not in st.session_state:
+    st.session_state.quiz_show_hint = False
 if "quiz_done" not in st.session_state:
     st.session_state.quiz_done = False
 if "quiz_current_choice" not in st.session_state:
     st.session_state.quiz_current_choice = None
-# self-contained init (app.py also initializes these; kept here so the page
-# also works when run directly via `streamlit run pages/quiz.py`)
+
+# self-contained init
 if "quiz_scores" not in st.session_state:
     st.session_state.quiz_scores = {}
 if "quiz_answers" not in st.session_state:
@@ -36,6 +38,7 @@ def reset_quiz() -> None:
     st.session_state.quiz_score = 0
     st.session_state.quiz_user_answers = {}
     st.session_state.quiz_revealed = False
+    st.session_state.quiz_show_hint = False
     st.session_state.quiz_done = False
     st.session_state.quiz_current_choice = None
 
@@ -93,7 +96,15 @@ else:
 
         choice_prefixes = ["A", "B", "C", "D"]
         revealed = st.session_state.quiz_revealed
+        show_hint = st.session_state.quiz_show_hint
         current_choice = st.session_state.quiz_current_choice
+
+        # แสดงกล่องคำใบ้หากตอบผิดในรอบแรก
+        if show_hint and not revealed:
+            st.warning(
+                f"💡 **ยังไม่ถูกต้องครับ ลองอ่านคำใบ้นี้แล้วตอบใหม่อีกครั้ง:**\n\n"
+                f"{q.get('hint', 'ลองพิจารณาสูตรและนิยามอีกครั้ง')}"
+            )
 
         col_a1, col_a2 = st.columns(2)
         for i, choice_text in enumerate(q["choices"]):
@@ -120,24 +131,48 @@ else:
                     ):
                         st.session_state.quiz_current_choice = choice_text
                         st.session_state.quiz_user_answers[q_idx] = choice_text
+
                         if choice_text == q["answer"]:
                             st.session_state.quiz_score += 1
-                        st.session_state.quiz_revealed = True
+                            st.session_state.quiz_revealed = True
+                            st.session_state.quiz_show_hint = False
+                        else:
+                            if not show_hint:
+                                # ตอบผิดครั้งแรก ให้แสดงคำใบ้ก่อน ยังไม่เฉลย
+                                st.session_state.quiz_show_hint = True
+                                st.session_state.quiz_revealed = False
+                            else:
+                                # ตอบผิดซ้ำครั้งที่สอง จึงเปิดเฉลย
+                                st.session_state.quiz_revealed = True
+                                st.session_state.quiz_show_hint = False
                         st.rerun()
+
+        # ส่วนจัดการการแสดงผลหลังตอบ
+        if show_hint and not revealed:
+            st.markdown("---")
+            col_hint1, col_hint2 = st.columns(2)
+            with col_hint1:
+                st.info("👆 คลิกเลือกช้อยส์อื่นด้านบนเพื่อลองตอบใหม่อีกครั้ง")
+            with col_hint2:
+                if st.button("ขอดูเฉลยและวิธีทำ", key=f"btn_force_reveal_{q_idx}"):
+                    st.session_state.quiz_revealed = True
+                    st.session_state.quiz_show_hint = False
+                    st.rerun()
 
         if revealed:
             st.divider()
             if current_choice == q["answer"]:
-                st.markdown("✓ **ถูกต้อง**")
+                st.success("✓ **ถูกต้องยอดเยี่ยม!**")
             else:
-                st.markdown(f"✗ **ยังไม่ถูก** (คำตอบที่ถูกคือ: {q['answer']})")
+                st.error(f"✗ **ยังไม่ถูกต้อง** (คำตอบที่ถูกคือ: {q['answer']})")
 
-            st.markdown(f"**คำอธิบาย:** {q['explanation']}")
+            st.markdown(f"**คำอธิบายอย่างละเอียด:**\n\n{q['explanation']}")
 
             if st.button("ข้อถัดไป", type="primary", key=f"btn_next_q_{q_idx}"):
                 if q_idx + 1 < len(questions):
                     st.session_state.quiz_q_index += 1
                     st.session_state.quiz_revealed = False
+                    st.session_state.quiz_show_hint = False
                     st.session_state.quiz_current_choice = None
                 else:
                     st.session_state.quiz_done = True

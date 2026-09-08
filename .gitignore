@@ -33,9 +33,10 @@ docs/*.pdf
 docs/*.tex
 docs/*.html
 docs/*_files/
-# ยกเว้นคู่มือที่ต้องการให้ขึ้น git ด้วย (สั่งโดยอาจารย์ 2026-08-08)
+# ยกเว้นเอกสารสำคัญที่ต้องการให้ขึ้น git ด้วย
 !docs/markdown-latex-guide.pdf
 !docs/markdown-latex-guide.html
-!docs/proposal-defense-guide.html
-!docs/project-system-blueprint.html
-!docs/system-architecture-master.html
+!docs/proposal/**
+!docs/architecture/**
+!docs/mockup/**
+!docs/debate/**

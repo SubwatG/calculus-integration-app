@@ -1,33 +1,124 @@
-# Calculus Tutor: Integration
+# Calculus Learning Sandbox: Interactive Integration App
+> **สื่อการเรียนรู้คณิตศาสตร์เชิงโต้ตอบสำหรับแคลคูลัสเบื้องต้น (การอินทิเกรต)**  
+> โครงงานระดับปริญญาตรี สาขาวิชาคณิตศาสตร์ประยุกต์ ภาควิชาคณิตศาสตร์ มหาวิทยาลัยเกษตรศาสตร์
 
-Streamlit teaching app สำหรับแคลคูลัสเบื้องต้น เรื่องอินทิเกรต
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/)
+[![Framework](https://img.shields.io/badge/Framework-Streamlit-red.svg)](https://streamlit.io/)
+[![Engine](https://img.shields.io/badge/CAS-SymPy-green.svg)](https://www.sympy.org/)
+[![Tests](https://img.shields.io/badge/Tests-Pytest-yellow.svg)](https://pytest.org/)
 
-## สำหรับนักศึกษา
+---
 
-โปรเจกต์นี้ออกแบบให้รันได้ทั้ง Windows และ Linux โดยใช้ Python + Streamlit
+## 📌 วิสัยทัศน์และเป้าหมายของโครงงาน (Project Overview)
 
-เอกสารสำหรับเริ่มต้น:
+ในปัจจุบัน ผู้เรียนมีเครื่องมือแก้โจทย์คณิตศาสตร์หลากหลายประเภท เช่น **ChatGPT, WolframAlpha** หรือ **GeoGebra** แต่เครื่องมือส่วนใหญ่มักเน้นการ **"ให้คำตอบสำเร็จรูป"** หรือเป็นเพียง **"กระดานวาดกราฟว่างเปล่า"** ซึ่งไม่ได้ช่วยส่งเสริมกระบวนการคิดหรือชี้จุดเข้าใจผิดของผู้เรียน
 
-- [คู่มือเริ่มต้นสำหรับนักศึกษาบน Windows](docs/windows-student-setup.md)
-- [Step-by-step: สร้างบทเรียน interactive](docs/student-interactive-lesson-guide.md)
-- [แผนบทเรียน interactive (หัวข้อ + ขอบเขต)](docs/interactive-lessons-plan.md)
-- [คู่มือ Markdown และ LaTeX สำหรับบทเรียน](docs/markdown-latex-guide.qmd)
-  - ดูแบบเว็บ (ออนไลน์): https://htmlpreview.github.io/?https://raw.githubusercontent.com/SubwatG/calculus-integration-app/main/docs/markdown-latex-guide.html
-  - ดูแบบ PDF: [docs/markdown-latex-guide.pdf](docs/markdown-latex-guide.pdf)
-- [กฎการเขียนโค้ดสำหรับนักศึกษา](AGENTS.md)
+**Calculus Learning Sandbox** ถูกออกแบบขึ้นภายใต้หลักคิด **"ห้องทดลองมโนทัศน์ (Conceptual Sandbox)"** ที่ทำหน้าที่เป็นนั่งร้านทางปัญญา (Pedagogical Scaffolding) เพื่อช่วยให้ผู้เรียน:
+1. **สร้างสัญชาตญาณเชิงภาพ (Visual & Geometric Intuition):** เชื่อมโยงความหมายของสูตรคณิตศาสตร์กับภาพเรขาคณิต เช่น การลู่เข้าของผลบวกรีมันน์
+2. **ฝึกกระบวนการตัดสินใจ (Decision-Making Scaffolding):** ทดลองเลือกเทคนิคและตัวแปรในการอินทิเกรต โดยระบบจะสะท้อนผลลัพธ์ว่าสมการง่ายขึ้นหรือซับซ้อนกว่าเดิม
+3. **ตรวจจับจุดเข้าใจผิดที่พบบ่อย (Misconception Detection):** มีระบบแจ้งเตือนกรณีพิเศษ เช่น จุดไม่ต่อเนื่องที่ตัวหารเป็นศูนย์ หรือการเลือกคู่ตัวแปรที่ผิดทิศทาง
+4. **ไม่เฉลยคำตอบในทันที (Delayed Feedback & Active Learning):** แบบทดสอบมีระบบคำใบ้ชี้นำความคิด (Hint) เพื่อเปิดโอกาสให้ผู้เรียนได้คิดทบทวนก่อนเปิดดูเฉลย
 
-## Requirements
+---
 
-- Python 3.11 หรือใหม่กว่า
-- Git
-- Internet สำหรับติดตั้ง package ครั้งแรก
+## ⚖️ ตารางเปรียบเทียบมิติการเรียนรู้ (4-Pillar Comparison Matrix)
 
-## Setup on Windows
+| มิติการเปรียบเทียบ | ปัญญาประดิษฐ์สร้างข้อความ<br>*(ChatGPT / Gemini)* | โปรแกรมคำนวณสำเร็จรูป<br>*(WolframAlpha / Symbolab)* | โปรแกรมวาดกราฟทั่วไป<br>*(GeoGebra / Desmos)* | โครงงานของเรา<br>*(Calculus Learning Sandbox)* |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. หน้าที่หลัก** | ตอบคำถามทั่วไปเชิงข้อความ | แก้โจทย์และคำนวณสำเร็จรูป | กระดานวาดกราฟว่างเปล่า | **ห้องทดลองคณิตศาสตร์สำหรับสร้างมโนทัศน์** |
+| **2. การปฏิสัมพันธ์** | ทางเดียว (ถาม $\to$ อ่านคำตอบ) | ทางเดียว (ใส่โจทย์ $\to$ ดูผลลัพธ์) | ปรับกราฟอิสระบนกระดานว่าง | **โต้ตอบสองทางที่มีโครงสร้างนำทาง** |
+| **3. การช่วยเหลือ** | บอกวิธีทำทั้งหมดทันที | แสดงผลลัพธ์ทันที (วิธีทำติดค่าบริการ) | ไม่มีระบบการสอนในตัว | **ไม่เฉลยคำตอบทันที มีคำใบ้ชี้นำความคิด** |
+| **4. ตรวจจุดเข้าใจผิด** | ตรวจไม่ได้ เสี่ยงแต่งข้อมูลเท็จ | ตรวจไม่ได้ แจ้งเตือนแค่ไวยากรณ์ผิด | ตรวจไม่ได้ วาดตามที่พิมพ์ | **ตรวจจับจุดเข้าใจผิดและแจ้งเตือนตรรกะสด** |
+| **5. ความเข้ากับหลักสูตร** | ตอบกว้าง ไม่ตรงบริบทรายวิชา | มีแต่เครื่องคิดเลข ไม่มีสรุปเนื้อหา | แยกส่วนกับเนื้อหา ไม่มีข้อสอบในตัว | **ครบวงจร: สรุปทฤษฎีไทย $\to$ กราฟ $\to$ ข้อสอบ** |
+| **6. ต้นทุนการเข้าถึง** | โมเดลคิดวิเคราะห์คิดค่าบริการ | วิธีทำแบบละเอียดคิดค่าบริการสูง | ต้องพิมพ์สูตรเชิงเทคนิคเอง | **โอเพนซอร์ส 100% ใช้งานฟรีผ่านเว็บ** |
 
-เปิด PowerShell ในโฟลเดอร์ที่ต้องการเก็บงาน แล้วใช้คำสั่ง:
+---
 
+## 🚀 ฟังก์ชันหลักที่พัฒนาแล้ว (Core Modules)
+
+### 1. พื้นที่ใต้กราฟและการลู่เข้าของรีมันน์ (Riemann Convergence Sandbox)
+* คำนวณผลบวกรีมันน์ 3 วิธี: จุดปลายซ้าย ($L_n$), จุดปลายขวา ($R_n$) และจุดกึ่งกลาง ($M_n$)
+* แถบสไลเดอร์ปรับจำนวนช่วงย่อย $n \in [2, 100]$ พร้อมเรนเดอร์แท่งสี่เหลี่ยมแนบกราฟสด
+* ตารางเปรียบเทียบความคลาดเคลื่อน ($\text{Error} = |I_{\text{exact}} - I_{\text{approx}}|$) แสดงการลู่เข้าหาค่าจริงอย่างแม่นยำ
+
+### 2. ห้องทดลองการตัดสินใจเลือกเทคนิคการอินทิเกรต (Integration Techniques Scaffolding)
+* **การเปลี่ยนตัวแปร ($u$-Substitution):** จำแนกการเลือกตัวแปรเป็น 3 ระดับ  
+  *(🟢 เหมาะสมที่สุด / 🟡 ถูกกฎแต่ไม่ช่วยให้ง่ายขึ้น / 🔴 ผิดหลักการ)*
+* **การอินทิเกรตทีละส่วน (Integration by Parts & LIATE Rule):**  
+  โจทย์ทดสอบ $\int x e^x dx$ จำลองการเลือกคู่ $u, dv$ หากเลือกสลับกัน ระบบจะขึ้นแถบเตือนสีส้มทันทีว่าดีกรีของ $x$ เพิ่มขึ้นเป็น $x^2$ ทำให้เกิดกับดักความซับซ้อน
+
+### 3. แบบทดสอบวัดมโนทัศน์ (Conceptual Diagnostic Quiz with Delayed Feedback)
+* รวมคำถามมโนทัศน์ระดับมหาวิทยาลัย 5 ข้อ (รีมันน์, การแทนค่า, โดเมน $1/x$, จุดเอกฐาน, บายพาร์ท)
+* **ระบบตรวจคำตอบ 2 จังหวะ:** หากตอบผิดในครั้งแรก ระบบจะไม่เฉลยคำตอบ แต่จะแสดง **"💡 คำใบ้ชี้นำความคิด"** ให้ผู้เรียนได้ฉุกคิดและลองตอบใหม่อีกครั้ง
+
+### 4. ตัวคำนวณเชิงสัญลักษณ์แท้จริง (SymPy CAS Engine)
+* แยกการคำนวณคณิตศาสตร์ด้วย SymPy โดยตรง (ไม่พึ่งพา External API ภายนอก)
+* สกัดผลลัพธ์เป็นสมการคณิตศาสตร์ $\LaTeX$ คมชัดผ่าน KaTeX
+
+---
+
+## 📂 สถาปัตยกรรมและโครงสร้างโปรเจกต์ (Project Architecture)
+
+โปรเจกต์แยกความรับผิดชอบออกเป็น 5 ชั้นตามหลัก Separation of Concerns (SoC):
+
+```text
+calculus-integration-app/
+├── app.py                      # Main entry point และ router (st.navigation)
+├── pages/                      # หน้าจอส่วนต่อประสานผู้ใช้ (UI Presentation)
+│   ├── home.py                 # หน้าแรกและเมนูนำทาง
+│   ├── riemann.py              # บทเรียนมโนทัศน์ผลบวกรีมันน์ (เสร็จสมบูรณ์)
+│   ├── substitution.py         # เทคนิคการอินทิเกรต (u-Sub & By Parts) (เสร็จสมบูรณ์)
+│   ├── solver.py               # เครื่องคิดเลขสัญลักษณ์ SymPy
+│   ├── quiz.py                 # เกมทบทวนมโนทัศน์แบบมีคำใบ้ (เสร็จสมบูรณ์)
+│   ├── lessons.py              # เอกสารเนื้อหาอ้างอิง
+│   └── history.py              # ประวัติคะแนนในเซสชัน
+├── utils/                      # ชั้นตรรกะการคำนวณ (Mathematical Logic & Solvers)
+│   ├── riemann_solver.py       # ตรรกะคำนวณพื้นที่และตาราง Error ของรีมันน์
+│   ├── substitution_solver.py  # ตรรกะคำนวณปริพันธ์และการแทนค่าตัวแปร
+│   ├── sympy_solver.py         # ตัวคำนวณสัญลักษณ์ SymPy (diff, int, limit)
+│   ├── plotter.py              # วาดกราฟเรขาคณิตด้วย Matplotlib (Agg backend)
+│   ├── quiz_engine.py          # ตัวโหลดและตรวจข้อสอบ
+│   ├── math_render.py          # ตัวช่วยจัดรูปแบบ LaTeX
+│   └── theme.py                # ธีมและการจัดรูปแบบ UI
+├── data/
+│   ├── lessons/                # บทเรียน Markdown ภาษาไทย
+│   └── quizzes/                # คลังข้อสอบ JSON พร้อมคำใบ้และคำอธิบาย
+├── tests/                      # ชุดทดสอบ Unit Test อัตโนมัติ (pytest tests/ -v)
+└── docs/                       # ศูนย์รวมเอกสารโครงการ (ดูรายละเอียดใน docs/README.md)
+    ├── proposal/               # เล่มโครงร่าง, สไลด์นำเสนอ (slide-deck.html), คู่มือสอบ
+    ├── architecture/           # พิมพ์เขียวและสถาปัตยกรรมระบบแม่บท
+    ├── mockup/                 # ตัวสาธิตต้นแบบ (master-interactive-demo.html)
+    └── debate/                 # บันทึกการตรวจสอบความรัดกุมเชิงวิชาการ
+```
+
+---
+
+## 📚 ศูนย์รวมเอกสารโครงการ (Documentation Hub)
+
+ดูสารบัญเอกสารทั้งหมดอย่างละเอียดได้ที่ 📄 [docs/README.md](docs/README.md)
+
+| หมวดหมู่เอกสาร | เอกสารสำคัญที่แนะนำ | รายละเอียด |
+| :--- | :--- | :--- |
+| **การสอบโครงร่าง** | [slide-deck.html](docs/proposal/slide-deck.html) | สไลด์นำเสนอ 20 สไลด์ พร้อม KaTeX |
+| | [โครงร่างคณิตศาสตร์ประยุกต์.docx](docs/proposal/โครงร่างคณิตศาสตร์ประยุกต์.docx) | เล่มข้อเสนอโครงงานฉบับทางการ |
+| | [proposal-defense-guide.html](docs/proposal/proposal-defense-guide.html) | คู่มือซักซ้อมตอบคำถามกรรมการ |
+| **สถาปัตยกรรมระบบ** | [system-architecture-master.html](docs/architecture/system-architecture-master.html) | แผนผังสถาปัตยกรรมระบบแม่บท |
+| **ตัวสาธิตต้นแบบ** | [master-interactive-demo.html](docs/mockup/master-interactive-demo.html) | สื่อจำลองแบบ Standalone (Canvas 2D) |
+| **คู่มือนักศึกษา** | [windows-student-setup.md](docs/windows-student-setup.md) | ขั้นตอนติดตั้งและรันบน Windows |
+| | [student-interactive-lesson-guide.md](docs/student-interactive-lesson-guide.md) | คู่มือการเขียนโค้ดเพิ่มบทเรียนใหม่ |
+
+---
+
+## 🛠️ วิธีการติดตั้งและรันระบบ (Quick Start)
+
+### 1. ความต้องการของระบบ (Requirements)
+* Python 3.11 หรือใหม่กว่า
+* Git
+
+### 2. รันบน Windows
+เปิด PowerShell ในโฟลเดอร์ที่ต้องการ:
 ```powershell
-git clone <REPOSITORY_URL>
+git clone https://github.com/SubwatG/calculus-integration-app.git
 cd calculus-integration-app
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -36,18 +127,9 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-ถ้า PowerShell ไม่ยอม activate virtual environment ให้รันคำสั่งนี้หนึ่งครั้ง:
-
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-
-จากนั้นปิด PowerShell แล้วเปิดใหม่ ก่อน activate อีกครั้ง
-
-## Setup on Linux
-
+### 3. รันบน Linux / macOS
 ```bash
-git clone <REPOSITORY_URL>
+git clone https://github.com/SubwatG/calculus-integration-app.git
 cd calculus-integration-app
 python3 -m venv .venv
 source .venv/bin/activate
@@ -56,88 +138,16 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## Run after setup
+เปิดเว็บเบราว์เซอร์ที่: `http://localhost:8501`
 
-Windows:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-streamlit run app.py
-```
-
-Linux:
-
+### 4. การรันชุดทดสอบ (Testing)
 ```bash
-source .venv/bin/activate
-streamlit run app.py
+pytest tests/ -v
 ```
 
-เมื่อรันสำเร็จ เปิดเว็บที่:
+---
 
-```text
-http://localhost:8501
-```
-
-## Structure
-
-- `app.py`: Main entry point และ router ด้วย `st.navigation` จัดกลุ่มหน้าเป็นภาษาไทย
-- `pages/home.py`: หน้าแรกและค้นหาเมนู พร้อมแสดงคะแนน quiz ล่าสุด
-- `pages/lessons.py`: หน้าบทเรียน (tab interactive จาก THEORY_CONTENT + tab เอกสารอ้างอิง)
-- `pages/topics.py`: เลือกหัวข้อหลักของการเรียนและแมปไปยังบทเรียนที่มีอยู่
-- `pages/riemann.py`: บทเรียน interactive ตัวอย่าง (พื้นที่ใต้กราฟ / Riemann Sum) — เสร็จสมบูรณ์
-- `pages/tangent.py`, `pages/limit_approach.py`, `pages/substitution.py`,
-  `pages/volume_revolution.py`, `pages/area_between.py`, `pages/improper_integrals.py`:
-  บทเรียน interactive เพิ่มเติม (skeleton รอ implement)
-- `pages/solver.py`: เครื่องคิดเลขแก้โจทย์อินทิเกรต อนุพันธ์ และลิมิตด้วย SymPy
-- `pages/quiz.py`: เกมทบทวนความรู้พร้อมเฉลยและคำอธิบายทีละข้อ
-- `pages/history.py`: แสดงประวัติคะแนนที่สะสมในเซสชันปัจจุบัน
-- `pages/help.py`: คำอธิบายการใช้งาน ไวยากรณ์ SymPy และข้อจำกัด
-- `data/lessons/`: เนื้อหาบทเรียนภาษาไทยรูปแบบ Markdown (เอกสารอ้างอิง cal1/cal2)
-- `data/quizzes/`: คลังข้อสอบรูปแบบ JSON
-- `utils/content_loader.py`: ฟังก์ชันโหลดไฟล์บทเรียนพร้อม cache
-- `utils/quiz_engine.py`: Engine สำหรับโหลดและตรวจแบบทดสอบ
-- `utils/theme.py`: Custom CSS styling (ธีมขาว plain, Chakra Petch font)
-- `utils/sympy_solver.py`: ตัวคำนวณสัญลักษณ์ (SymPy) สำหรับอินทิเกรต อนุพันธ์ และลิมิต
-- `utils/theory.py`: เนื้อหาทฤษฎีบทเรียน interactive (THEORY_CONTENT dict)
-- `utils/riemann_solver.py` + `utils/{topic}_solver.py`: logic การคำนวณทีละขั้นของแต่ละบทเรียน
-- `utils/plotter.py`: วาดกราฟ matplotlib สำหรับบทเรียน interactive
-- `utils/math_render.py`: helper จัดการ LaTeX/KaTeX (error guard)
-- `tests/`: pytest ครอบ logic ใน utils/ (รันด้วย `pytest tests/ -v`)
-- `docs/`: เอกสารสำหรับผู้พัฒนา (คู่มือ Markdown/LaTeX, แผนบทเรียน interactive, step-by-step guide)
-- `AGENTS.md`: กฎการเขียนโค้ดสำหรับนักศึกษา developer
-
-## Development notes
-
-- เขียนเนื้อหาเป็นภาษาไทยใน `data/lessons/*.md` (เอกสารอ้างอิง)
-- บทเรียน interactive: เนื้อหาทฤษฎีอยู่ใน `utils/theory.py` (THEORY_CONTENT)
-  ดู `docs/interactive-lessons-plan.md` และ `docs/student-interactive-lesson-guide.md`
-- ใช้ English สำหรับ code, file names, variable names และ comments
-- ใช้ `$...$` สำหรับ inline math และ `$$...$$` สำหรับ display math
-- Quiz ทุกข้อต้องมี `explanation`
-- logic ต้องแยกไป `utils/` ห้ามเขียนยาวในหน้า
-- รัน test ก่อนส่ง: `pytest tests/ -v`
-- ไม่ใช้ Wolfram API
-- อย่า commit ไฟล์ render artifacts (`.pdf`, `.tex`, `.html` ใน docs/) — ถูก ignore แล้ว
-
-## Git workflow สำหรับทีม
-
-ก่อนเริ่มงานทุกครั้ง:
-
-```bash
-git pull
-```
-
-หลังแก้ไขงาน:
-
-```bash
-git status
-git add .
-git commit -m "Describe your change"
-git push
-```
-
-ถ้าทำงานหลายคน แนะนำให้แต่ละคนสร้าง branch ของตัวเองก่อนแก้:
-
-```bash
-git checkout -b lesson-basic-rules-update
-```
+## 👥 ข้อมูลโครงงาน
+* **สาขาวิชา:** คณิตศาสตร์ประยุกต์ (Applied Mathematics)
+* **ภาควิชา:** คณิตศาสตร์ คณะวิทยาศาสตร์ มหาวิทยาลัยเกษตรศาสตร์
+* **ที่ปรึกษาโครงงาน:** อ.ดร.กิตติพงษ์ ทรัพย์วัฒนชัย

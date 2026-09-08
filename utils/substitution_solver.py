@@ -40,12 +40,25 @@ def solve_substitution(expr_str: str) -> dict:
 
     Args:
         expr_str: อินทิกรัลในรูป f(g(x))*g'(x) เช่น '2*x*exp(x**2)'
-
-    TODO: implement ให้ครบตาม blueprint ของ riemann_solver
     """
     try:
-        # TODO: ใส่ logic การคำนวณจริงที่นี่
-        raise NotImplementedError("ยังไม่ implement ให้นักศึกษาเติม")
+        expr = _parse_input(expr_str)
+        antideriv = sp.integrate(expr, X)
+
+        steps = [
+            f"กำหนดโจทย์อินทิกรัล: \\int {sp.latex(expr)} \\, dx",
+            "พิจารณาเลือกฟังก์ชันข้างใน $u = g(x)$ เพื่อหาอนุพันธ์ $du = g'(x)\\,dx$",
+            f"คำนวณปริพันธ์ผลลัพธ์: {sp.latex(antideriv)} + C",
+        ]
+
+        return {
+            "ok": True,
+            "result": antideriv,
+            "latex": f"\\int {sp.latex(expr)} \\, dx = {sp.latex(antideriv)} + C",
+            "steps": steps,
+            "expr": expr,
+            "error": None,
+        }
     except Exception as e:
         return {
             "ok": False,
@@ -53,5 +66,5 @@ def solve_substitution(expr_str: str) -> dict:
             "latex": "",
             "steps": [],
             "expr": None,
-            "error": f"ยังไม่พร้อมใช้งาน: {e}",
+            "error": f"ไม่สามารถคำนวณได้: {e}",
         }
