@@ -5,7 +5,7 @@
 
 import streamlit as st
 
-from utils.math_render import render_latex, render_steps
+from utils.math_render import preview_math_expr, render_latex, render_steps, render_syntax_guide
 from utils.substitution_solver import solve_substitution
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
@@ -27,7 +27,7 @@ tab1, tab2, tab3 = st.tabs([
 with tab1:
     st.markdown("### การตัดสินใจเลือกตัวแปร $u$ ในเทคนิคการเปลี่ยนตัวแปร")
     st.info(
-        "💡 **หลักการสำคัญ:** การแทนค่าตัวแปรที่ดีต้องทำให้ตัวแปรเดิม $x$ หายไปทั้งหมด "
+        "**[หลักการสำคัญ]** การแทนค่าตัวแปรที่ดีต้องทำให้ตัวแปรเดิม $x$ หายไปทั้งหมด "
         "และทำให้นิพจน์ใหม่อยู่ในรูปที่อินทิเกรตต่อได้ง่ายทันที"
     )
 
@@ -46,7 +46,7 @@ with tab1:
     )
 
     if u_choice == "เลือก $u = x^2 + 1$":
-        st.success("🟢 **การตัดสินใจ: เหมาะสมที่สุด (Preferred Substitution)**")
+        st.success("**การตัดสินใจ: เหมาะสมที่สุด (Preferred Substitution)**")
         st.markdown(
             """
             * **อนุพันธ์ที่ได้:** $du = 2x\\,dx \\implies dx = \\frac{du}{2x}$
@@ -57,7 +57,7 @@ with tab1:
             """
         )
     elif u_choice == "เลือก $u = x$":
-        st.warning("🟡 **การตัดสินใจ: ถูกต้องตามกฎ แต่ไม่ช่วยให้ง่ายขึ้น (Valid but Inefficient)**")
+        st.warning("**การตัดสินใจ: ถูกต้องตามกฎ แต่ไม่ช่วยให้ง่ายขึ้น (Valid but Inefficient)**")
         st.markdown(
             """
             * **อนุพันธ์ที่ได้:** $du = dx$
@@ -67,7 +67,7 @@ with tab1:
             """
         )
     elif u_choice == "เลือก $u = 2x$":
-        st.warning("🟡 **การตัดสินใจ: ถูกต้องตามกฎ แต่ทำให้ซับซ้อนขึ้น (Valid but Inefficient)**")
+        st.warning("**การตัดสินใจ: ถูกต้องตามกฎ แต่ทำให้ซับซ้อนขึ้น (Valid but Inefficient)**")
         st.markdown(
             """
             * **อนุพันธ์ที่ได้:** $du = 2\\,dx \\implies x = \\frac{u}{2}$
@@ -77,7 +77,7 @@ with tab1:
             """
         )
     else:
-        st.error("🔴 **การตัดสินใจ: ไม่ถูกต้องตามหลักการ (Invalid Substitution)**")
+        st.error("**การตัดสินใจ: ไม่ถูกต้องตามหลักการ (Invalid Substitution)**")
         st.markdown(
             """
             * **ผลการวิเคราะห์:** ฟังก์ชัน $\\sin(x)$ ไม่มีความเชื่อมโยงกับนิพจน์ใด ๆ ในโจทย์ตั้งต้น การเลือกนี้จะทำให้ตัวแปร $x$ ไม่สามารถตัดทอนได้
@@ -116,7 +116,7 @@ with tab2:
     )
 
     if "แนวทางที่ 1" in parts_choice:
-        st.success("🟢 **สถานะ: ถูกต้องตามกฎ LIATE (Complexity Reduced)**")
+        st.success("**สถานะ: ถูกต้องตามกฎ LIATE (Complexity Reduced)**")
         st.markdown(
             """
             * **ขั้นตอนการอนุพันธ์และการหาปริพันธ์:**
@@ -130,7 +130,7 @@ with tab2:
             """
         )
     else:
-        st.warning("🟠 **สถานะ: กับดักความซับซ้อน (Complexity Increased Warning)**")
+        st.warning("**สถานะ: กับดักความซับซ้อน (Complexity Increased Warning)**")
         st.markdown(
             """
             * **ขั้นตอนการอนุพันธ์และการหาปริพันธ์:**
@@ -149,10 +149,12 @@ with tab3:
     st.markdown("### คำนวณนิพจน์อิสระด้วย SymPy CAS")
     expr_input = st.text_input(
         "ใส่นิพจน์อินทิกรัลที่ต้องการคำนวณ",
-        value="2*x*exp(x**2)",
-        placeholder="เช่น 2*x*exp(x**2), 3*x**2*cos(x**3)",
+        value="2x*e^(x^2)",
+        placeholder="เช่น 2x*e^(x^2), 3x^2*cos(x^3)",
         key="substitution_expr",
     )
+    preview_math_expr(expr_input)
+    render_syntax_guide()
 
     if st.button("คำนวณ", type="primary", key="btn_substitution_calc"):
         if not expr_input.strip():

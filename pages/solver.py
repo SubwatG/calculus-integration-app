@@ -1,4 +1,5 @@
 import streamlit as st
+from utils.math_render import preview_math_expr, render_syntax_guide
 from utils.sympy_solver import compute_limit, differentiate, integrate
 from utils.theme import render_hero
 
@@ -17,9 +18,11 @@ else:
 
 expr_input = st.text_input(
     "ใส่โจทย์",
-    placeholder="เช่น x**2, sin(x), (x**2-4)/(x-2)",
+    placeholder="เช่น x^2, sin(x), (x^2-4)/(x-2), e^x, 2x",
     key="solver_expr",
 )
+preview_math_expr(expr_input)
+render_syntax_guide()
 
 st.caption("ปุ่มลัดสำหรับใส่ฟังก์ชัน:")
 btn_cols = st.columns(10)

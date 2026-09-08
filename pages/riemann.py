@@ -12,7 +12,7 @@ pages/riemann.py : บทเรียน interactive: พื้นที่ภ�
 import sympy as sp
 import streamlit as st
 
-from utils.math_render import render_latex, render_steps
+from utils.math_render import preview_math_expr, render_latex, render_steps, render_syntax_guide
 from utils.plotter import plot_riemann
 from utils.riemann_solver import METHODS, X, compute_riemann
 from utils.theme import render_hero
@@ -52,14 +52,35 @@ st.divider()
 # ---------------------------------------------------------------------------
 st.markdown("### ลองเล่นกับผลรวมรีมันน์")
 
+st.caption("ตัวอย่างโจทย์ยอดนิยม:")
+col_pre1, col_pre2, col_pre3, col_pre4 = st.columns(4)
+with col_pre1:
+    if st.button("x^2", key="btn_pre_1", use_container_width=True):
+        st.session_state["riemann_expr"] = "x^2"
+        st.rerun()
+with col_pre2:
+    if st.button("x^3 - 2x", key="btn_pre_2", use_container_width=True):
+        st.session_state["riemann_expr"] = "x^3 - 2x"
+        st.rerun()
+with col_pre3:
+    if st.button("sin(x)", key="btn_pre_3", use_container_width=True):
+        st.session_state["riemann_expr"] = "sin(x)"
+        st.rerun()
+with col_pre4:
+    if st.button("1/(x+1)", key="btn_pre_4", use_container_width=True):
+        st.session_state["riemann_expr"] = "1/(x+1)"
+        st.rerun()
+
 col_f, col_m = st.columns([2, 1])
 with col_f:
     expr_input = st.text_input(
         "ฟังก์ชัน f(x)",
-        value="x**2",
-        placeholder="เช่น x**2, sin(x), x**3 - 2*x",
+        value="x^2",
+        placeholder="เช่น x^2, sin(x), x^3 - 2x",
         key="riemann_expr",
     )
+    preview_math_expr(expr_input)
+    render_syntax_guide()
 with col_m:
     method_label = st.selectbox(
         "วิธีคำนวณ",

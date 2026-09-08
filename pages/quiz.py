@@ -102,7 +102,7 @@ else:
         # แสดงกล่องคำใบ้หากตอบผิดในรอบแรก
         if show_hint and not revealed:
             st.warning(
-                f"💡 **ยังไม่ถูกต้องครับ ลองอ่านคำใบ้นี้แล้วตอบใหม่อีกครั้ง:**\n\n"
+                f"**[คำแนะนำ] ยังไม่ถูกต้องครับ ลองอ่านคำใบ้นี้แล้วตอบใหม่อีกครั้ง:**\n\n"
                 f"{q.get('hint', 'ลองพิจารณาสูตรและนิยามอีกครั้ง')}"
             )
 
@@ -152,7 +152,7 @@ else:
             st.markdown("---")
             col_hint1, col_hint2 = st.columns(2)
             with col_hint1:
-                st.info("👆 คลิกเลือกช้อยส์อื่นด้านบนเพื่อลองตอบใหม่อีกครั้ง")
+                st.info("คลิกเลือกตัวเลือกอื่นด้านบนเพื่อลองตอบใหม่อีกครั้ง")
             with col_hint2:
                 if st.button("ขอดูเฉลยและวิธีทำ", key=f"btn_force_reveal_{q_idx}"):
                     st.session_state.quiz_revealed = True

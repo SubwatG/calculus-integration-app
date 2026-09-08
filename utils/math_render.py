@@ -82,3 +82,49 @@ def render_steps(steps) -> None:
             # สูตรเดียวพังไม่ควรซ่อนขั้นอื่น
             st.markdown(f"**ขั้นที่ {i}** (แสดงสูตรไม่สำเร็จ)")
             st.code(s, language=None)
+
+
+def preview_math_expr(expr_str: str, label: str = "สมการที่ระบบเข้าใจ") -> bool:
+    """พรีวิวสมการ LaTeX แบบสด และแจ้งเตือนไวยากรณ์ที่เป็นมิตร"""
+    clean = (expr_str or "").strip()
+    if not clean:
+        return False
+    try:
+        import sympy as sp
+        from sympy.parsing.sympy_parser import (
+            convert_xor,
+            implicit_multiplication_application,
+            parse_expr,
+            standard_transformations,
+        )
+
+        transformations = standard_transformations + (
+            implicit_multiplication_application,
+            convert_xor,
+        )
+        local_dict = {"e": sp.E, "E": sp.E, "pi": sp.pi, "ln": sp.log}
+        parsed = parse_expr(clean, transformations=transformations, local_dict=local_dict)
+        latex_str = sp.latex(parsed)
+        st.caption(f"{label}:")
+        st.latex(f"f(x) = {latex_str}")
+        return True
+    except Exception:
+        st.caption("[คำแนะนำ] ตรวจสอบวงเล็บและรูปแบบฟังก์ชัน เช่น x^2, 2x, sin(x), e^x, sqrt(x)")
+        return False
+
+
+def render_syntax_guide() -> None:
+    """แสดงการ์ดคำแนะนำไวยากรณ์การป้อนสมการสำหรับผู้เริ่มต้น"""
+    with st.expander("คำแนะนำการป้อนสมการ (สำหรับผู้เริ่มต้น)", expanded=False):
+        st.markdown(
+            """
+            * **ยกกำลัง:** พิมพ์ `x^2` หรือ `x**2` (เช่น `x^3 - 2x`)
+            * **การคูณ:** พิมพ์ `2x` หรือ `2*x` (ระบบรองรับการละเครื่องหมายคูณ)
+            * **เอกซ์โพเนนเชียล:** พิมพ์ `e^x` หรือ `exp(x)`
+            * **ลอการิทึมธรรมชาติ:** พิมพ์ `ln(x)` หรือ `log(x)`
+            * **สแควร์รูท:** พิมพ์ `sqrt(x)` (เช่น `sqrt(x^2 + 1)`)
+            * **ฟังก์ชันตรีโกณมิติ:** พิมพ์ `sin(x)`, `cos(x)`, `tan(x)`
+            * **เศษส่วน:** ให้ใส่วงเล็บกำกับ เช่น `1/(x+1)` หรือ `(x^2-4)/(x-2)`
+            """
+        )
+

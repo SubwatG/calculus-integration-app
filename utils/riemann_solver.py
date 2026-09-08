@@ -14,6 +14,7 @@ from typing import Any
 
 import sympy as sp
 from sympy.parsing.sympy_parser import (
+    convert_xor,
     implicit_multiplication_application,
     parse_expr,
     standard_transformations,
@@ -22,7 +23,15 @@ from sympy.parsing.sympy_parser import (
 # NOTE: ห้ามใส่ auto_symbol — พังใน sympy 1.14.0 (เหมือน sympy_solver.py)
 TRANSFORMATIONS = standard_transformations + (
     implicit_multiplication_application,
+    convert_xor,
 )
+
+LOCAL_MATH_DICT = {
+    "e": sp.E,
+    "E": sp.E,
+    "pi": sp.pi,
+    "ln": sp.log,
+}
 
 X = sp.Symbol("x")
 
@@ -38,7 +47,7 @@ def _parse_input(expr_str: str) -> sp.Expr:
     clean = (expr_str or "").strip()
     if not clean:
         raise ValueError("Empty input string")
-    return parse_expr(clean, transformations=TRANSFORMATIONS)
+    return parse_expr(clean, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
 
 
 def _fmt_num(x: float) -> str:

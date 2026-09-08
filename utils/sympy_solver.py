@@ -1,25 +1,31 @@
 from typing import Any
 import sympy as sp
 from sympy.parsing.sympy_parser import (
+    convert_xor,
     implicit_multiplication_application,
     parse_expr,
     standard_transformations,
 )
 
 
-# NOTE: do NOT add auto_symbol here — it is broken in sympy 1.14.0
-# (TypeError: name should be a string, not Symbol). implicit_multiplication_application
-# alone already handles "2x", "sin x", "x**2", "sin(x)".
 TRANSFORMATIONS = standard_transformations + (
     implicit_multiplication_application,
+    convert_xor,
 )
+
+LOCAL_MATH_DICT = {
+    "e": sp.E,
+    "E": sp.E,
+    "pi": sp.pi,
+    "ln": sp.log,
+}
 
 
 def _parse_input(expr_str: str) -> sp.Expr:
     clean_str = expr_str.strip()
     if not clean_str:
         raise ValueError("Empty input string")
-    return parse_expr(clean_str, transformations=TRANSFORMATIONS)
+    return parse_expr(clean_str, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
 
 
 def integrate(expr_str: str) -> dict[str, Any]:
