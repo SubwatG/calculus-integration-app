@@ -588,14 +588,85 @@ li {
     </div>
   </div>
 
-  <!-- SLIDE 3: Objectives & Scope -->
+  <!-- SLIDE 3: Comparative Analysis Matrix -->
+  <div class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="section-label">1. ที่มาและความสำคัญ • การวิเคราะห์เปรียบเทียบระบบเดิม</div>
+        <div class="main-title">ตารางเปรียบเทียบข้อจำกัดของเครื่องมือเดิมกับระบบที่นำเสนอ (Comparison Matrix)</div>
+      </div>
+      <div class="slide-counter-chip">03 / 21</div>
+    </div>
+    <div class="slide-body">
+      <table class="table-academic" style="font-size:0.86rem; line-height:1.5;">
+        <thead>
+          <tr>
+            <th style="width: 17%;">มิติการเปรียบเทียบ</th>
+            <th style="width: 19%;">ปัญญาประดิษฐ์สร้างข้อความ<br><small style="font-weight:normal; color:var(--text-muted);">ChatGPT / Gemini</small></th>
+            <th style="width: 20%;">โปรแกรมคำนวณสำเร็จรูป<br><small style="font-weight:normal; color:var(--text-muted);">WolframAlpha / Symbolab</small></th>
+            <th style="width: 20%;">โปรแกรมวาดกราฟทั่วไป<br><small style="font-weight:normal; color:var(--text-muted);">GeoGebra / Desmos</small></th>
+            <th style="width: 24%; background: #EFF6FF; color: var(--primary-blue); border-left: 2px solid var(--accent-blue);">เว็บแอปช่วยเรียนรู้ของเรา<br><small style="font-weight:bold; color:var(--accent-blue);">Calculus Learning Sandbox</small></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. หน้าที่หลัก</strong></td>
+            <td>ตอบคำถามทั่วไปเชิงข้อความ</td>
+            <td>คำนวณและแก้โจทย์สำเร็จรูป</td>
+            <td>กระดานวาดกราฟและเรขาคณิตว่าง</td>
+            <td style="background:#F8FAFC; font-weight:600; color:var(--primary-navy);">ห้องทดลองคณิตศาสตร์สำหรับสร้างมโนทัศน์</td>
+          </tr>
+          <tr>
+            <td><strong>2. การมีปฏิสัมพันธ์</strong></td>
+            <td>ทางเดียว (ถามแล้วอ่านคำตอบยาว)</td>
+            <td>ทางเดียว (ใส่โจทย์แล้วดูผลลัพธ์)</td>
+            <td>ปรับกราฟอิสระ (ไม่มีโจทย์ในตัว)</td>
+            <td style="background:#F8FAFC; font-weight:600; color:var(--primary-navy);">โต้ตอบสองทางที่มีโครงสร้างนำทางการคิด</td>
+          </tr>
+          <tr>
+            <td><strong>3. การให้วิธีทำ</strong></td>
+            <td>บอกวิธีทำทั้งหมดในคราวเดียว</td>
+            <td>แสดงคำตอบทันที (วิธีทำเสียเงิน)</td>
+            <td>ไม่มีระบบการสอนในตัว</td>
+            <td style="background:#F8FAFC; font-weight:600; color:var(--primary-navy);">ไม่เฉลยคำตอบทันที มีคำใบ้และถอนตัวช่วย</td>
+          </tr>
+          <tr>
+            <td><strong>4. การตรวจจุดเข้าใจผิด</strong></td>
+            <td>ตรวจไม่ได้ เสี่ยงให้ข้อมูลเท็จ</td>
+            <td>ตรวจไม่ได้ แจ้งแค่ไวยากรณ์ผิด</td>
+            <td>ตรวจไม่ได้ วาดตามที่พิมพ์</td>
+            <td style="background:#F8FAFC; font-weight:600; color:var(--accent-blue);">ตรวจจับจุดเข้าใจผิดและแจ้งเตือนตรรกะสด</td>
+          </tr>
+          <tr>
+            <td><strong>5. ความเข้ากับหลักสูตร</strong></td>
+            <td>ตอบกว้าง ไม่ตรงบริบทรายวิชา</td>
+            <td>เน้นคิดเลข ไม่มีสรุปเนื้อหา</td>
+            <td>แยกส่วนกับตำรา ไม่มีข้อสอบในตัว</td>
+            <td style="background:#F8FAFC; font-weight:600; color:var(--primary-navy);">ครบวงจร: สรุปทฤษฎีไทย กราฟสด ข้อสอบ</td>
+          </tr>
+          <tr>
+            <td><strong>6. ต้นทุนและการเข้าถึง</strong></td>
+            <td>โมเดลคิดวิเคราะห์มีค่าบริการ</td>
+            <td>วิธีทำละเอียดมีค่าบริการสูง</td>
+            <td>ต้องมีความเชี่ยวชาญในการพิมพ์สูตร</td>
+            <td style="background:#F8FAFC; font-weight:600; color:var(--accent-emerald);">โอเพนซอร์ส 100% ใช้งานฟรีผ่านเว็บ</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:0.75rem; padding:0.6rem 1rem; background:#EFF6FF; border-left:4px solid var(--primary-blue); border-radius:6px; font-size:0.86rem; color:var(--primary-navy);">
+        <strong>สรุปจุดยืนทางวิชาการ:</strong> โครงงานนี้ไม่ได้สร้างขึ้นเพื่อแข่งหาคำตอบหรือแข่งวาดกราฟ แต่สร้างเป็น <em>"นั่งร้านทางปัญญา (Scaffolding Engine)"</em> เพื่อให้ผู้เรียนได้ทดลอง ตัดสินใจ และเห็นจุดเข้าใจผิดของตนเองอย่างปลอดภัย
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Objectives & Scope -->
   <div class="slide">
     <div class="slide-header">
       <div>
         <div class="section-label">2. วัตถุประสงค์และขอบเขตโครงงาน</div>
         <div class="main-title">วัตถุประสงค์การวิจัยและขอบเขต 6 โมดูลแคลคูลัสหลัก</div>
       </div>
-      <div class="slide-counter-chip">03 / 20</div>
+      <div class="slide-counter-chip">04 / 21</div>
     </div>
     <div class="slide-body">
       <div class="grid-2">
@@ -1514,6 +1585,11 @@ function updateSlide() {
   const pct = ((currentSlide + 1) / totalSlides) * 100;
   progressFill.style.width = pct + '%';
   slideCounterText.innerText = `Slide ${currentSlide + 1} of ${totalSlides}`;
+
+  const chip = slides[currentSlide].querySelector('.slide-counter-chip');
+  if (chip) {
+    chip.innerText = `${String(currentSlide + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+  }
 
   if (window.renderMathInElement) {
     renderMathInElement(slides[currentSlide], {
