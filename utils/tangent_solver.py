@@ -45,10 +45,12 @@ def compute_tangent(expr_str: str, a: float) -> dict:
         tangent_eq = slope * (X - a) + fa
 
         steps = [
-            f"กำหนดฟังก์ชัน: f(x) = {sp.latex(expr)} ที่จุด a = {a}",
-            f"หาอนุพันธ์: f'(x) = {sp.latex(df)}",
-            f"คำนวณความชัน: m = f'({a}) = {sp.latex(slope)}",
-            f"สมการเส้นสัมผัส: y = {sp.latex(sp.simplify(tangent_eq))}",
+            f"กำหนดฟังก์ชันและจุดที่พิจารณา: f(x) = {sp.latex(expr)}, \\quad a = {a}",
+            f"คำนวณพิกัด y ของจุดสัมผัส: f({a}) = {sp.latex(fa)} \\implies (x_0, y_0) = ({a}, {sp.latex(fa)})",
+            f"หาอนุพันธ์เพื่อหาความชันของฟังก์ชัน: f'(x) = \\frac{{d}}{{dx}}\\left[{sp.latex(expr)}\\right] = {sp.latex(df)}",
+            f"แทนค่าจุด a เพื่อหาความชันเส้นสัมผัส m: m = f'({a}) = {sp.latex(slope)}",
+            f"แทนค่าในสูตรสมการเส้นสัมผัส y - y_0 = m(x - x_0): y - ({sp.latex(fa)}) = {sp.latex(slope)}(x - {a})",
+            f"จัดรูปสมการเส้นสัมผัสในรูปชัดแจ้ง: y = {sp.latex(sp.simplify(tangent_eq))}",
         ]
         return {
             "ok": True,

@@ -1,28 +1,36 @@
-"""Test สำหรับ test_limit_solver.py
-
-TODO: นักศึกษา implement solver ให้ test นี้ผ่าน
-ค่าคาดหวังอ้างอิงจาก docs/interactive-lessons-plan.md
-"""
+"""Test สำหรับ test_limit_solver.py"""
 
 import pytest
+import sympy as sp
 
 from utils.limit_solver import compute_limit_near
+from utils.plotter import plot_limit_near
 
 
 class TestComputeLimitNear:
     def test_compute_limit_near_basic(self):
-        res = compute_limit_near('(x**2-4)/(x-2)', 2)
+        res = compute_limit_near("(x**2-4)/(x-2)", 2)
         assert res["ok"] is True
-        # TODO: ตรวจค่า result ตามหัวข้อ
-        assert res["result"] is not None
-        assert len(res["steps"]) >= 3
+        assert res["result"] == 4.0
+        assert len(res["steps"]) >= 4
+
+    def test_compute_limit_sin_x_over_x(self):
+        res = compute_limit_near("sin(x)/x", 0)
+        assert res["ok"] is True
+        assert pytest.approx(res["result"]) == 1.0
 
     def test_compute_limit_near_invalid_input(self):
-        res = compute_limit_near('', 2)
+        res = compute_limit_near("", 2)
         assert res["ok"] is False
         assert res["error"]
 
     def test_compute_limit_near_has_latex_result(self):
-        res = compute_limit_near('(x**2-4)/(x-2)', 2)
+        res = compute_limit_near("(x**2-4)/(x-2)", 2)
         assert res["ok"] is True
-        assert res["latex"]
+        assert "4" in res["latex"]
+
+    def test_plot_limit_near_figure(self):
+        expr = sp.sympify("(x**2-4)/(x-2)")
+        fig, ax = plot_limit_near(expr, 2.0, delta=0.2)
+        assert fig is not None
+        assert ax is not None

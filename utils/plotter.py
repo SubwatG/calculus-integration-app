@@ -132,14 +132,176 @@ def _stub_figure(title: str) -> tuple:
     return fig, ax
 
 
-def plot_tangent(expr, a: float) -> tuple:
-    """วาดเส้นโค้ง f(x) + เส้นสัมผัสที่จุด a (TODO)"""
-    return _stub_figure(f"Tangent line at a = {a}")
+def plot_tangent(expr: sp.Expr, a: float, span: float = 3.0) -> tuple:
+    """วาดเส้นโค้ง f(x) + เส้นสัมผัสที่จุด a
+
+    expr: sympy expression
+    a: จุดที่ต้องการสัมผัส
+    span: ความกว้างช่วงรอบจุด a
+    """
+    df = sp.diff(expr, X)
+    f = sp.lambdify(X, expr, modules=["numpy"])
+
+    fa_sym = expr.subs(X, a)
+    slope_sym = df.subs(X, a)
+
+    try:
+        fa = float(fa_sym)
+    except (TypeError, ValueError):
+        fa = 0.0
+
+    try:
+        slope = float(slope_sym)
+    except (TypeError, ValueError):
+        slope = 0.0
+
+    x_min = a - span
+    x_max = a + span
+    xs = np.linspace(x_min, x_max, 400)
+
+    with np.errstate(all="ignore"):
+        ys = f(xs)
+        if isinstance(ys, (int, float)):
+            ys = np.full_like(xs, ys)
+        else:
+            ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
+
+    ys_tangent = slope * (xs - a) + fa
+
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    ax.plot(xs, ys, color=CURVE, lw=2.5, label="y = f(x)")
+    ax.plot(
+        xs,
+        ys_tangent,
+        color="#D96B27",
+        lw=2,
+        linestyle="--",
+        label=f"Tangent at x={a:.2f} (m={slope:.2f})",
+    )
+    ax.scatter(
+        [a],
+        [fa],
+        color="#C0392B",
+        s=65,
+        zorder=5,
+        label=f"Point ({a:.2f}, {fa:.2f})",
+    )
+
+    ax.axhline(0, color="#999", lw=0.8, linestyle=":")
+    ax.axvline(0, color="#999", lw=0.8, linestyle=":")
+
+    y_valid = ys[np.isfinite(ys)]
+    if len(y_valid) > 0:
+        y_low = min(fa - span, float(np.percentile(y_valid, 5)))
+        y_high = max(fa + span, float(np.percentile(y_valid, 95)))
+        pad = max(1.0, (y_high - y_low) * 0.15)
+        ax.set_ylim(y_low - pad, y_high + pad)
+
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_title(f"Tangent Line at x = {a:.2f}  |  Slope m = {slope:.4f}")
+    ax.grid(True, color=GRID, lw=0.5)
+    ax.legend(loc="best", fontsize=9)
+    fig.tight_layout()
+    return fig, ax
 
 
-def plot_limit_near(expr, a: float) -> tuple:
-    """วาดเส้นโค้ง + จุดวิ่งเข้าใกล้ a (TODO)"""
-    return _stub_figure(f"Limit as x -> {a}")
+def plot_limit_near(expr: sp.Expr, a: float, delta: float = 0.5, span: float = 3.0) -> tuple:
+    """วาดเส้นโค้ง + จุดวิ่งเข้าใกล้ a ทั้งสองด้าน (delta -> 0)
+
+    expr: sympy expression
+    a: จุดที่ต้องการหาลิมิต
+    delta: ระยะห่างการเข้าใกล้จากซ้ายและขวา
+    span: ความกว้างช่วงรอบจุด a
+    """
+    f = sp.lambdify(X, expr, modules=["numpy"])
+    lim_sym = sp.limit(expr, X, a)
+
+    try:
+        lim_val = float(lim_sym)
+        lim_finite = np.isfinite(lim_val)
+    except (TypeError, ValueError):
+        lim_val = None
+        lim_finite = False
+
+    x_min = a - span
+    x_max = a + span
+    # หลีกเลี่ยงจุด a เล็กน้อยเพื่อป้องกัน division by zero ของ numerical evaluation
+    xs_left = np.linspace(x_min, a - 1e-4, 200)
+    xs_right = np.linspace(a + 1e-4, x_max, 200)
+    xs = np.concatenate([xs_left, xs_right])
+
+    with np.errstate(all="ignore"):
+        ys = f(xs)
+        if isinstance(ys, (int, float)):
+            ys = np.full_like(xs, ys)
+        else:
+            ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
+
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    ax.plot(xs, ys, color=CURVE, lw=2.5, label="y = f(x)")
+
+    # เส้นแนวดิ่งที่ x = a
+    ax.axvline(a, color="#9ca3af", lw=1.2, linestyle="--", label=f"x = {a:.2f}")
+    ax.axhline(0, color="#999", lw=0.8, linestyle=":")
+
+    # จุดเป้าหมายลิมิตที่ x = a
+    if lim_finite and lim_val is not None:
+        ax.plot(
+            [a],
+            [lim_val],
+            marker="o",
+            markersize=8,
+            markerfacecolor="white",
+            markeredgecolor="#C0392B",
+            markeredgewidth=2,
+            zorder=5,
+            label=f"Target L = {lim_val:.4f}",
+        )
+        ax.axhline(lim_val, color="#E5E7EB", lw=1, linestyle=":")
+
+    # จุดเข้าใกล้ทางซ้าย x_L = a - delta และทางขวา x_R = a + delta
+    x_l = a - delta
+    x_r = a + delta
+
+    try:
+        y_l = float(expr.subs(X, x_l))
+    except (TypeError, ValueError):
+        y_l = None
+
+    try:
+        y_r = float(expr.subs(X, x_r))
+    except (TypeError, ValueError):
+        y_r = None
+
+    if y_l is not None and np.isfinite(y_l):
+        ax.scatter([x_l], [y_l], color="#2980B9", s=60, zorder=6, label=f"Left: x={x_l:.2f}")
+        if lim_finite and lim_val is not None:
+            ax.annotate(
+                "",
+                xy=(a - 0.05 * delta, lim_val),
+                xytext=(x_l, y_l),
+                arrowprops=dict(arrowstyle="->", color="#2980B9", lw=1.5),
+            )
+
+    if y_r is not None and np.isfinite(y_r):
+        ax.scatter([x_r], [y_r], color="#E67E22", s=60, zorder=6, label=f"Right: x={x_r:.2f}")
+        if lim_finite and lim_val is not None:
+            ax.annotate(
+                "",
+                xy=(a + 0.05 * delta, lim_val),
+                xytext=(x_r, y_r),
+                arrowprops=dict(arrowstyle="->", color="#E67E22", lw=1.5),
+            )
+
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    l_str = f"{lim_val:.4f}" if (lim_finite and lim_val is not None) else str(lim_sym)
+    ax.set_title(f"Limit as x -> {a:.2f}  |  L = {l_str} (delta = {delta:.2f})")
+    ax.grid(True, color=GRID, lw=0.5)
+    ax.legend(loc="best", fontsize=9)
+    fig.tight_layout()
+    return fig, ax
 
 
 def plot_substitution(expr) -> tuple:

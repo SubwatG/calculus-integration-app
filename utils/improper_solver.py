@@ -42,10 +42,11 @@ def compute_improper(expr_str: str, a: float, b: float | None = None) -> dict:
         upper = sp.oo if b is None else b
         res_val = sp.integrate(expr, (X, a, upper))
 
+        bound_latex = "\\infty" if b is None else str(b)
         steps = [
-            f"กำหนดอินทิกรัลไม่ตรงแบบ: \\int_{{{a}}}^{{\\infty}} {sp.latex(expr)} \\, dx",
-            f"แปลงเป็นลิมิต: \\lim_{{t \\to \\infty}} \\int_{{{a}}}^{{t}} {sp.latex(expr)} \\, dx",
-            f"คำนวณผลลัพธ์ลิมิต: {sp.latex(res_val)}",
+            f"กำหนดอินทิกรัลไม่ตรงแบบ: \\int_{{{a}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx",
+            f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขต: \\lim_{{t \\to {bound_latex}}} \\int_{{{a}}}^{{t}} \\left({sp.latex(expr)}\\right) \\, dx",
+            f"คำนวณผลลัพธ์ลิมิต: \\int_{{{a}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx = {sp.latex(res_val)}",
         ]
         return {
             "ok": True,

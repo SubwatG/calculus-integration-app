@@ -44,10 +44,10 @@ def compute_limit_near(expr_str: str, a: float) -> dict:
         lim_right = sp.limit(expr, X, a, dir="+")
 
         steps = [
-            f"กำหนดโจทย์: \\lim_{{x \\to {a}}} {sp.latex(expr)}",
-            f"พิจารณาลิมิตทางซ้าย: \\lim_{{x \\to {a}^-}} {sp.latex(expr)} = {sp.latex(lim_left)}",
-            f"พิจารณาลิมิตทางขวา: \\lim_{{x \\to {a}^+}} {sp.latex(expr)} = {sp.latex(lim_right)}",
-            f"สรุปค่าลิมิตสองด้าน: \\lim_{{x \\to {a}}} {sp.latex(expr)} = {sp.latex(lim_val)}",
+            f"กำหนดโจทย์ลิมิตที่ต้องการหา: \\lim_{{x \\to {a}}} \\left({sp.latex(expr)}\\right)",
+            f"พิจารณาลิมิตทางซ้าย (Left-hand limit): \\lim_{{x \\to {a}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_left)}",
+            f"พิจารณาลิมิตทางขวา (Right-hand limit): \\lim_{{x \\to {a}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_right)}",
+            f"เปรียบเทียบและสรุปค่าลิมิตสองด้าน: \\lim_{{x \\to {a}^-}} f(x) = \\lim_{{x \\to {a}^+}} f(x) = {sp.latex(lim_val)} \\implies \\lim_{{x \\to {a}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_val)}",
         ]
         return {
             "ok": True,

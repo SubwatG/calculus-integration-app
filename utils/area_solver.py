@@ -44,10 +44,10 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         area_val = sp.integrate(diff_expr, (X, a, b))
 
         steps = [
-            f"ฟังก์ชันบน: f(x) = {sp.latex(f_expr)}, ฟังก์ชันล่าง: g(x) = {sp.latex(g_expr)}",
-            f"ตั้งอินทิกรัลพื้นที่: A = \\int_{{{a}}}^{{{b}}} [{sp.latex(f_expr)} - ({sp.latex(g_expr)})] \\, dx",
-            f"ผลต่างฟังก์ชัน: \\int_{{{a}}}^{{{b}}} ({sp.latex(diff_expr)}) \\, dx",
-            f"คำนวณพื้นที่ปิดล้อม: A = {sp.latex(area_val)}",
+            f"กำหนดฟังก์ชันขอบเขตบนและล่าง: f(x) = {sp.latex(f_expr)}, \\quad g(x) = {sp.latex(g_expr)}",
+            f"ตั้งสูตรอินทิกรัลพื้นที่ระหว่างเส้นโค้ง: A = \\int_{{{a}}}^{{{b}}} [f(x) - g(x)] \\, dx",
+            f"แทนค่าฟังก์ชันและหาผลต่าง: A = \\int_{{{a}}}^{{{b}}} \\left[{sp.latex(f_expr)} - \\left({sp.latex(g_expr)}\\right)\\right] \\, dx = \\int_{{{a}}}^{{{b}}} \\left({sp.latex(diff_expr)}\\right) \\, dx",
+            f"คำนวณพื้นที่ปิดล้อมสุทธิ: A = {sp.latex(area_val)}",
         ]
         return {
             "ok": True,

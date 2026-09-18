@@ -70,18 +70,57 @@ def render_latex(expr: str, *, label: Optional[str] = None) -> None:
 
 
 def render_steps(steps) -> None:
-    """Display step-by-step solution cleanly like an academic worksheet."""
+    """แสดงวิธีทำทีละขั้นตอนอย่างเป็นระเบียบ สวยงาม ด้วย st.latex และ KaTeX"""
     if not steps:
         return
+
     st.markdown("### วิธีทำทีละขั้นตอน")
     for i, step in enumerate(steps, 1):
-        s = str(step)
-        try:
-            render_latex(s, label=f"ขั้นที่ {i}")
-        except Exception:
-            # สูตรเดียวพังไม่ควรซ่อนขั้นอื่น
-            st.markdown(f"**ขั้นที่ {i}** (แสดงสูตรไม่สำเร็จ)")
-            st.code(s, language=None)
+        if isinstance(step, dict):
+            title = step.get("title", f"ขั้นตอนที่ {i}")
+            latex_expr = step.get("latex", "")
+            desc = step.get("desc", "")
+            st.markdown(f"**ขั้นที่ {i}: {title}**")
+            if desc:
+                st.markdown(desc)
+            if latex_expr:
+                st.latex(strip_math_delimiters(latex_expr))
+            continue
+
+        s = str(step).strip()
+        if not s:
+            continue
+
+        # ตรวจสอบรูปแบบ "คำอธิบายภาษาไทย: สมการ LaTeX"
+        if ":" in s:
+            parts = s.split(":", 1)
+            title = parts[0].strip()
+            math_part = parts[1].strip()
+
+            st.markdown(f"**ขั้นที่ {i}: {title}**")
+            core_math = strip_math_delimiters(math_part)
+
+            # ถ้าในส่วนสมการมีตัวอักษรไทยปนและใช้ $...$
+            if has_thai(core_math) and "$" in math_part:
+                st.markdown(math_part)
+            elif core_math:
+                try:
+                    st.latex(core_math)
+                except Exception:
+                    st.markdown(f"$${core_math}$$")
+        else:
+            # กรณีไม่มีเครื่องหมายโคลอน (:)
+            if "$" in s:
+                st.markdown(f"**ขั้นที่ {i}**")
+                st.markdown(s)
+            elif is_pure_latex(s) or ("\\" in s) or ("=" in s):
+                st.markdown(f"**ขั้นที่ {i}**")
+                try:
+                    st.latex(strip_math_delimiters(s))
+                except Exception:
+                    st.markdown(f"$${s}$$")
+            else:
+                st.markdown(f"**ขั้นที่ {i}:** {s}")
 
 
 def preview_math_expr(expr_str: str, label: str = "สมการที่ระบบเข้าใจ") -> bool:
