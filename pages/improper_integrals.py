@@ -7,7 +7,7 @@ TODO: ใส่ logic กราฟจริง (plot_improper) ให้สม�
 import streamlit as st
 
 from utils.improper_solver import compute_improper
-from utils.math_render import render_latex, render_steps
+from utils.math_render import preview_math_expr, render_latex, render_syntax_guide, render_steps
 from utils.plotter import plot_improper
 from utils.riemann_solver import X
 from utils.theme import render_hero
@@ -36,12 +36,33 @@ with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
 st.divider()
 st.markdown("### ลองคำนวณ")
 
+st.markdown("**ตัวอย่างโจทย์ยอดนิยม:**")
+p_cols = st.columns(3)
+if p_cols[0].button("กำลังสอง $\\frac{1}{x^2}$ บน $[1, \\infty)$", key="pre_imp_1"):
+    st.session_state["improper_expr"] = "1/x**2"
+    st.session_state["improper_a"] = 1.0
+    st.session_state["improper_upper_type"] = "อนันต์ (inf)"
+    st.rerun()
+if p_cols[1].button("ฮาร์มอนิก $\\frac{1}{x}$ บน $[1, \\infty)$", key="pre_imp_2"):
+    st.session_state["improper_expr"] = "1/x"
+    st.session_state["improper_a"] = 1.0
+    st.session_state["improper_upper_type"] = "อนันต์ (inf)"
+    st.rerun()
+if p_cols[2].button("เอกซ์โพเนนเชียล $e^{-x}$ บน $[0, \\infty)$", key="pre_imp_3"):
+    st.session_state["improper_expr"] = "exp(-x)"
+    st.session_state["improper_a"] = 0.0
+    st.session_state["improper_upper_type"] = "อนันต์ (inf)"
+    st.rerun()
+
 expr_input = st.text_input(
     "ฟังก์ชัน f(x)",
     value="1/x**2",
     placeholder="เช่น 1/x**2, 1/x, 1/sqrt(x)",
     key="improper_expr",
 )
+preview_math_expr(expr_input)
+render_syntax_guide()
+
 col_a, col_b = st.columns(2)
 with col_a:
     a_val = st.number_input("ขอบล่าง a", value=1.0, key="improper_a")
@@ -62,7 +83,14 @@ if st.button("คำนวณ", type="primary", key="btn_improper_calc"):
             st.markdown("### ผลลัพธ์")
             render_latex(res["latex"])
             st.divider()
-            # TODO: เรียก plot_improper(res["expr"], a_val, b_val) แล้ว st.pyplot(fig)
+
+            st.markdown("### กราฟการลู่เข้าและพื้นที่ใต้กราฟ (Improper Integral Visualization)")
+            try:
+                fig, ax = plot_improper(res["expr"], a_val, b_val)
+                st.pyplot(fig)
+            except Exception as e:
+                st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+
             render_steps(res["steps"])
         else:
             st.error(res["error"])

@@ -44,7 +44,7 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         area_val = sp.integrate(diff_expr, (X, a, b))
 
         steps = [
-            f"ฟังก์ชันบน: f(x) = {sp.latex(f_expr)}, ฟังก์ชันล่าง: g(x) = {sp.latex(g_expr)}",
+            f"กำหนดฟังก์ชัน: f(x) = {sp.latex(f_expr)}, \\; g(x) = {sp.latex(g_expr)}",
             f"ตั้งอินทิกรัลพื้นที่: A = \\int_{{{a}}}^{{{b}}} [{sp.latex(f_expr)} - ({sp.latex(g_expr)})] \\, dx",
             f"ผลต่างฟังก์ชัน: \\int_{{{a}}}^{{{b}}} ({sp.latex(diff_expr)}) \\, dx",
             f"คำนวณพื้นที่ปิดล้อม: A = {sp.latex(area_val)}",
@@ -55,6 +55,8 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             "latex": f"A = \\int_{{{a}}}^{{{b}}} [{sp.latex(diff_expr)}] \\, dx = {sp.latex(area_val)}",
             "steps": steps,
             "expr": diff_expr,
+            "f_expr": f_expr,
+            "g_expr": g_expr,
             "error": None,
         }
     except Exception as e:

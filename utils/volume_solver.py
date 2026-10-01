@@ -42,7 +42,7 @@ def compute_volume(expr_str: str, a: float, b: float, method: str = 'disk') -> d
         vol_val = sp.pi * sp.integrate(expr**2, (X, a, b))
 
         steps = [
-            f"ฟังก์ชันรัศมี: r(x) = {sp.latex(expr)} บนช่วง [{a}, {b}]",
+            f"ฟังก์ชันรัศมีบนช่วง [{a}, {b}]: r(x) = {sp.latex(expr)}",
             f"สูตรวิธีจาน (Disk Method): V = \\pi \\int_{{{a}}}^{{{b}}} [{sp.latex(expr)}]^2 \\, dx",
             f"คำนวณปริมาตรทรงตัน: V = {sp.latex(vol_val)}",
         ]

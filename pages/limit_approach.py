@@ -7,7 +7,7 @@ TODO: ใส่ logic กราฟจริง (plot_limit_near) ให้สม
 import streamlit as st
 
 from utils.limit_solver import compute_limit_near
-from utils.math_render import render_latex, render_steps
+from utils.math_render import preview_math_expr, render_latex, render_syntax_guide, render_steps
 from utils.plotter import plot_limit_near
 from utils.riemann_solver import X
 from utils.theme import render_hero
@@ -36,12 +36,30 @@ with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
 st.divider()
 st.markdown("### ลองคำนวณ")
 
+st.markdown("**ตัวอย่างโจทย์คลาสสิก:**")
+p_cols = st.columns(3)
+if p_cols[0].button("มีรูโหว่ $\\frac{x^2-4}{x-2}$ ที่ $a=2$", key="pre_lim_1"):
+    st.session_state["limit_expr"] = "(x**2 - 4)/(x - 2)"
+    st.session_state["limit_a"] = 2.0
+    st.rerun()
+if p_cols[1].button("ตรีโกณมิติ $\\frac{\\sin(x)}{x}$ ที่ $a=0$", key="pre_lim_2"):
+    st.session_state["limit_expr"] = "sin(x)/x"
+    st.session_state["limit_a"] = 0.0
+    st.rerun()
+if p_cols[2].button("ส่วนกลับ $\\frac{1}{x}$ ที่ $a=0$", key="pre_lim_3"):
+    st.session_state["limit_expr"] = "1/x"
+    st.session_state["limit_a"] = 0.0
+    st.rerun()
+
 expr_input = st.text_input(
     "ฟังก์ชัน f(x)",
     value="(x**2 - 4)/(x - 2)",
     placeholder="เช่น (x**2-4)/(x-2), sin(x)/x",
     key="limit_expr",
 )
+preview_math_expr(expr_input)
+render_syntax_guide()
+
 a_val = st.number_input("จุดที่ x เข้าใกล้ a", value=2.0, key="limit_a")
 
 if st.button("คำนวณ", type="primary", key="btn_limit_calc"):

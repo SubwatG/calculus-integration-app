@@ -6,7 +6,7 @@ TODO: ใส่ logic กราฟจริง (plot_volume) ให้สมบ�
 
 import streamlit as st
 
-from utils.math_render import render_latex, render_steps
+from utils.math_render import preview_math_expr, render_latex, render_syntax_guide, render_steps
 from utils.plotter import plot_volume
 from utils.riemann_solver import X
 from utils.theme import render_hero
@@ -36,12 +36,33 @@ with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
 st.divider()
 st.markdown("### ลองคำนวณ")
 
+st.markdown("**ตัวอย่างโจทย์ยอดนิยม:**")
+p_cols = st.columns(3)
+if p_cols[0].button("ทรงกรวย $R(x) = x$ บน $[0, 2]$", key="pre_vol_1"):
+    st.session_state["volume_expr"] = "x"
+    st.session_state["volume_a"] = 0.0
+    st.session_state["volume_b"] = 2.0
+    st.rerun()
+if p_cols[1].button("พาราโบลอยด์ $R(x) = \\sqrt{x}$ บน $[0, 4]$", key="pre_vol_2"):
+    st.session_state["volume_expr"] = "sqrt(x)"
+    st.session_state["volume_a"] = 0.0
+    st.session_state["volume_b"] = 4.0
+    st.rerun()
+if p_cols[2].button("ทรงระฆังคว่ำ $R(x) = 4 - x^2$ บน $[0, 2]$", key="pre_vol_3"):
+    st.session_state["volume_expr"] = "4 - x**2"
+    st.session_state["volume_a"] = 0.0
+    st.session_state["volume_b"] = 2.0
+    st.rerun()
+
 expr_input = st.text_input(
     "ฟังก์ชันรัศมี R(x)",
     value="x",
     placeholder="เช่น x, sqrt(x), x**2",
     key="volume_expr",
 )
+preview_math_expr(expr_input, label="พรีวิว R(x)")
+render_syntax_guide()
+
 col_a, col_b = st.columns(2)
 with col_a:
     a_val = st.number_input("ขอบล่าง a", value=0.0, key="volume_a")
@@ -64,7 +85,14 @@ if st.button("คำนวณ", type="primary", key="btn_volume_calc"):
             st.markdown("### ผลลัพธ์")
             render_latex(res["latex"])
             st.divider()
-            # TODO: เรียก plot_volume(res["expr"], a_val, b_val, method_label) แล้ว st.pyplot(fig)
+
+            st.markdown("### ภาพตัดขวางทรงตันและการหมุนรอบแกน")
+            try:
+                fig, ax = plot_volume(res["expr"], a_val, b_val, method_label)
+                st.pyplot(fig)
+            except Exception as e:
+                st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+
             render_steps(res["steps"])
         else:
             st.error(res["error"])
