@@ -133,13 +133,116 @@ def _stub_figure(title: str) -> tuple:
 
 
 def plot_tangent(expr, a: float) -> tuple:
-    """วาดเส้นโค้ง f(x) + เส้นสัมผัสที่จุด a (TODO)"""
-    return _stub_figure(f"Tangent line at a = {a}")
+    """วาดเส้นโค้ง f(x) + เส้นสัมผัสที่จุด a"""
+    f = sp.lambdify(X, expr, modules=["numpy"])
+    df_expr = sp.diff(expr, X)
+
+    fa_val = None
+    slope_val = None
+    try:
+        sub_fa = expr.subs(X, a)
+        if sub_fa.is_real and sub_fa.is_number:
+            fa_val = float(sub_fa)
+        sub_slope = df_expr.subs(X, a)
+        if sub_slope.is_real and sub_slope.is_number:
+            slope_val = float(sub_slope)
+    except Exception:
+        pass
+
+    x_span = 3.0
+    xs = np.linspace(a - x_span, a + x_span, 400)
+    with np.errstate(all="ignore"):
+        ys = f(xs)
+
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    ax.plot(xs, ys, color=CURVE, lw=2.2, label="y = f(x)")
+
+    if fa_val is not None and slope_val is not None and np.isfinite(fa_val) and np.isfinite(slope_val):
+        y_tangent = slope_val * (xs - a) + fa_val
+        ax.plot(
+            xs,
+            y_tangent,
+            color="#D97706",
+            lw=1.8,
+            linestyle="--",
+            label=f"Tangent at a={a:.2f} (m={slope_val:.2f})",
+        )
+        ax.plot(
+            [a],
+            [fa_val],
+            marker="o",
+            markersize=8,
+            color="#DC2626",
+            zorder=5,
+            label=f"Point ({a:.2f}, {fa_val:.2f})",
+        )
+        ax.set_title(f"Tangent Line to Curve at x = {a:.2f} (Slope m = {slope_val:.4f})")
+    else:
+        ax.set_title(f"Curve at x = {a:.2f} (Tangent Undefined)")
+
+    ax.axhline(0, color="#9ca3af", lw=0.8, linestyle=":")
+    ax.axvline(0, color="#9ca3af", lw=0.8, linestyle=":")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.grid(True, color=GRID, lw=0.5)
+
+    finite_ys = ys[np.isfinite(ys)]
+    if len(finite_ys) > 0 and fa_val is not None and np.isfinite(fa_val):
+        y_min = max(fa_val - 10.0, float(np.percentile(finite_ys, 5)) - 1.0)
+        y_max = min(fa_val + 10.0, float(np.percentile(finite_ys, 95)) + 1.0)
+        if y_min < y_max:
+            ax.set_ylim(y_min, y_max)
+
+    ax.legend(loc="upper left", fontsize=9, framealpha=0.9)
+    fig.tight_layout()
+    return fig, ax
 
 
-def plot_limit_near(expr, a: float) -> tuple:
-    """วาดเส้นโค้ง + จุดวิ่งเข้าใกล้ a (TODO)"""
-    return _stub_figure(f"Limit as x -> {a}")
+def plot_limit_near(expr, a: float, delta: float = 0.35) -> tuple:
+    """วาดเส้นโค้ง + จุดวิ่งเข้าใกล้ a จากซ้ายและขวา"""
+    f = sp.lambdify(X, expr, modules=["numpy"])
+    span = 2.5
+    xs = np.linspace(a - span, a + span, 500)
+    xs = xs[np.abs(xs - a) > 1e-4]
+
+    with np.errstate(all="ignore"):
+        ys = f(xs)
+
+    try:
+        lim_val = float(sp.limit(expr, X, a))
+    except Exception:
+        lim_val = None
+
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    ax.plot(xs, ys, color=CURVE, lw=2.2, label="y = f(x)")
+
+    x_left = a - delta
+    x_right = a + delta
+    try:
+        y_left = float(f(x_left))
+        y_right = float(f(x_right))
+        ax.plot([x_left], [y_left], marker=">", markersize=9, color="#2563EB", label=f"Left: x={x_left:.2f}")
+        ax.plot([x_right], [y_right], marker="<", markersize=9, color="#D97706", label=f"Right: x={x_right:.2f}")
+    except Exception:
+        pass
+
+    if lim_val is not None and np.isfinite(lim_val):
+        ax.plot([a], [lim_val], marker="o", markersize=8, color="#DC2626", mfc="white", mew=2, label=f"Limit L = {lim_val:.4f}")
+        ax.axhline(lim_val, color="#DC2626", linestyle=":", lw=1, alpha=0.7)
+
+    ax.axvline(a, color="#9ca3af", linestyle="--", lw=1.2, label=f"x = {a:.2f}")
+    ax.axhline(0, color="#9ca3af", lw=0.8, linestyle=":")
+
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    title = f"Limit Behavior as x -> {a:.2f}"
+    if lim_val is not None and np.isfinite(lim_val):
+        title += f" (L = {lim_val:.4f})"
+    ax.set_title(title)
+    ax.grid(True, color=GRID, lw=0.5)
+    ax.legend(loc="best", fontsize=8.5, framealpha=0.9)
+    fig.tight_layout()
+    return fig, ax
 
 
 def plot_substitution(expr) -> tuple:

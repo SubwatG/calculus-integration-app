@@ -45,7 +45,7 @@ def compute_tangent(expr_str: str, a: float) -> dict:
         tangent_eq = slope * (X - a) + fa
 
         steps = [
-            f"กำหนดฟังก์ชัน: f(x) = {sp.latex(expr)} ที่จุด a = {a}",
+            f"กำหนดฟังก์ชันที่จุด a = {a}: f(x) = {sp.latex(expr)}",
             f"หาอนุพันธ์: f'(x) = {sp.latex(df)}",
             f"คำนวณความชัน: m = f'({a}) = {sp.latex(slope)}",
             f"สมการเส้นสัมผัส: y = {sp.latex(sp.simplify(tangent_eq))}",

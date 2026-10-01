@@ -53,7 +53,14 @@ if st.button("คำนวณ", type="primary", key="btn_limit_calc"):
             st.markdown("### ผลลัพธ์")
             render_latex(res["latex"])
             st.divider()
-            # TODO: เรียก plot_limit_near(res["expr"], a_val) แล้ว st.pyplot(fig)
+
+            st.markdown("### กราฟการเข้าใกล้ลิมิต (Limit Approach Visualization)")
+            try:
+                fig, ax = plot_limit_near(res["expr"], a_val)
+                st.pyplot(fig)
+            except Exception as e:
+                st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+
             render_steps(res["steps"])
         else:
             st.error(res["error"])

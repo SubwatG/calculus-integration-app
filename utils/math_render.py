@@ -70,17 +70,31 @@ def render_latex(expr: str, *, label: Optional[str] = None) -> None:
 
 
 def render_steps(steps) -> None:
-    """Display step-by-step solution cleanly like an academic worksheet."""
+    """Display step-by-step solution cleanly like an academic worksheet with native st.latex rendering."""
     if not steps:
         return
     st.markdown("### วิธีทำทีละขั้นตอน")
     for i, step in enumerate(steps, 1):
-        s = str(step)
+        s = str(step).strip()
+        if ":" in s:
+            parts = s.split(":", 1)
+            title = parts[0].strip()
+            math_content = parts[1].strip()
+            clean_math = strip_math_delimiters(math_content)
+
+            # ถ้าส่วนหลังเป็นสูตรคณิตศาสตร์ ให้แสดงหัวข้อแล้วเรนเดอร์สมการด้วย st.latex
+            if ("\\" in clean_math or any(ch in clean_math for ch in "=^_{}()[]")) and not has_thai(clean_math):
+                st.markdown(f"**ขั้นที่ {i}: {title}**")
+                try:
+                    st.latex(clean_math)
+                except Exception:
+                    st.markdown(f"$${clean_math}$$")
+                continue
+
         try:
             render_latex(s, label=f"ขั้นที่ {i}")
         except Exception:
-            # สูตรเดียวพังไม่ควรซ่อนขั้นอื่น
-            st.markdown(f"**ขั้นที่ {i}** (แสดงสูตรไม่สำเร็จ)")
+            st.markdown(f"**ขั้นที่ {i}:** (แสดงสูตรไม่สำเร็จ)")
             st.code(s, language=None)
 
 
