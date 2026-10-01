@@ -62,23 +62,22 @@ render_syntax_guide()
 
 a_val = st.slider("จุด a", min_value=-5.0, max_value=5.0, value=1.0, step=0.1, key="tangent_a")
 
-if st.button("คำนวณ", type="primary", key="btn_tangent_calc"):
-    if not expr_input.strip():
-        st.error("กรุณาใส่ฟังก์ชันก่อน")
+if not expr_input.strip():
+    st.info("กรุณาระบุฟังก์ชัน f(x) หรือคลิกเลือกตัวอย่างด้านบน")
+else:
+    res = compute_tangent(expr_input, a_val)
+    if res["ok"]:
+        st.markdown("### ผลลัพธ์")
+        render_latex(res["latex"])
+        st.divider()
+
+        st.markdown("### กราฟเส้นสัมผัสและจุดสัมผัส")
+        try:
+            fig, ax = plot_tangent(res["expr"], a_val)
+            st.pyplot(fig)
+        except Exception as e:
+            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+
+        render_steps(res["steps"])
     else:
-        res = compute_tangent(expr_input, a_val)
-        if res["ok"]:
-            st.markdown("### ผลลัพธ์")
-            render_latex(res["latex"])
-            st.divider()
-
-            st.markdown("### กราฟเส้นสัมผัสและจุดสัมผัส")
-            try:
-                fig, ax = plot_tangent(res["expr"], a_val)
-                st.pyplot(fig)
-            except Exception as e:
-                st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
-
-            render_steps(res["steps"])
-        else:
-            st.error(res["error"])
+        st.error(res["error"])

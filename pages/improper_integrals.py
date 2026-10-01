@@ -74,23 +74,22 @@ with col_b:
 
 st.caption("TODO: เพิ่มกรณีฟังก์ชันไม่ต่อเนื่องภายในช่วง (แยกอินทิกรัล)")
 
-if st.button("คำนวณ", type="primary", key="btn_improper_calc"):
-    if not expr_input.strip():
-        st.error("กรุณาใส่ฟังก์ชันก่อน")
+if not expr_input.strip():
+    st.info("กรุณาระบุฟังก์ชัน f(x) หรือคลิกเลือกตัวอย่างด้านบน")
+else:
+    res = compute_improper(expr_input, a_val, b_val)
+    if res["ok"]:
+        st.markdown("### ผลลัพธ์")
+        render_latex(res["latex"])
+        st.divider()
+
+        st.markdown("### กราฟการลู่เข้าและพื้นที่ใต้กราฟ (Improper Integral Visualization)")
+        try:
+            fig, ax = plot_improper(res["expr"], a_val, b_val)
+            st.pyplot(fig)
+        except Exception as e:
+            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+
+        render_steps(res["steps"])
     else:
-        res = compute_improper(expr_input, a_val, b_val)
-        if res["ok"]:
-            st.markdown("### ผลลัพธ์")
-            render_latex(res["latex"])
-            st.divider()
-
-            st.markdown("### กราฟการลู่เข้าและพื้นที่ใต้กราฟ (Improper Integral Visualization)")
-            try:
-                fig, ax = plot_improper(res["expr"], a_val, b_val)
-                st.pyplot(fig)
-            except Exception as e:
-                st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
-
-            render_steps(res["steps"])
-        else:
-            st.error(res["error"])
+        st.error(res["error"])

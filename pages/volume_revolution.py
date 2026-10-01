@@ -76,23 +76,22 @@ method_label = st.selectbox(
 
 st.caption("TODO: ถ้าเลือก washer ให้เพิ่มช่องฟังก์ชันรัศมีใน r(x)")
 
-if st.button("คำนวณ", type="primary", key="btn_volume_calc"):
-    if not expr_input.strip():
-        st.error("กรุณาใส่ฟังก์ชันก่อน")
+if not expr_input.strip():
+    st.info("กรุณาระบุฟังก์ชัน R(x) หรือคลิกเลือกตัวอย่างด้านบน")
+else:
+    res = compute_volume(expr_input, a_val, b_val, method_label)
+    if res["ok"]:
+        st.markdown("### ผลลัพธ์")
+        render_latex(res["latex"])
+        st.divider()
+
+        st.markdown("### ภาพตัดขวางทรงตันและการหมุนรอบแกน")
+        try:
+            fig, ax = plot_volume(res["expr"], a_val, b_val, method_label)
+            st.pyplot(fig)
+        except Exception as e:
+            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+
+        render_steps(res["steps"])
     else:
-        res = compute_volume(expr_input, a_val, b_val, method_label)
-        if res["ok"]:
-            st.markdown("### ผลลัพธ์")
-            render_latex(res["latex"])
-            st.divider()
-
-            st.markdown("### ภาพตัดขวางทรงตันและการหมุนรอบแกน")
-            try:
-                fig, ax = plot_volume(res["expr"], a_val, b_val, method_label)
-                st.pyplot(fig)
-            except Exception as e:
-                st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
-
-            render_steps(res["steps"])
-        else:
-            st.error(res["error"])
+        st.error(res["error"])

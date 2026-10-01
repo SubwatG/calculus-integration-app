@@ -62,23 +62,22 @@ render_syntax_guide()
 
 a_val = st.number_input("จุดที่ x เข้าใกล้ a", value=2.0, key="limit_a")
 
-if st.button("คำนวณ", type="primary", key="btn_limit_calc"):
-    if not expr_input.strip():
-        st.error("กรุณาใส่ฟังก์ชันก่อน")
+if not expr_input.strip():
+    st.info("กรุณาระบุฟังก์ชัน f(x) หรือคลิกเลือกตัวอย่างด้านบน")
+else:
+    res = compute_limit_near(expr_input, a_val)
+    if res["ok"]:
+        st.markdown("### ผลลัพธ์")
+        render_latex(res["latex"])
+        st.divider()
+
+        st.markdown("### กราฟการเข้าใกล้ลิมิต (Limit Approach Visualization)")
+        try:
+            fig, ax = plot_limit_near(res["expr"], a_val)
+            st.pyplot(fig)
+        except Exception as e:
+            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+
+        render_steps(res["steps"])
     else:
-        res = compute_limit_near(expr_input, a_val)
-        if res["ok"]:
-            st.markdown("### ผลลัพธ์")
-            render_latex(res["latex"])
-            st.divider()
-
-            st.markdown("### กราฟการเข้าใกล้ลิมิต (Limit Approach Visualization)")
-            try:
-                fig, ax = plot_limit_near(res["expr"], a_val)
-                st.pyplot(fig)
-            except Exception as e:
-                st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
-
-            render_steps(res["steps"])
-        else:
-            st.error(res["error"])
+        st.error(res["error"])

@@ -82,23 +82,22 @@ with col_a:
 with col_b:
     b_val = st.number_input("ขอบบน b", value=1.0, key="area_b")
 
-if st.button("คำนวณ", type="primary", key="btn_area_calc"):
-    if not f_input.strip() or not g_input.strip():
-        st.error("กรุณาใส่ฟังก์ชันทั้งสองเส้นก่อน")
+if not f_input.strip() or not g_input.strip():
+    st.info("กรุณาระบุฟังก์ชัน f(x) และ g(x) หรือคลิกเลือกตัวอย่างด้านบน")
+else:
+    res = compute_area_between(f_input, g_input, a_val, b_val)
+    if res["ok"]:
+        st.markdown("### ผลลัพธ์")
+        render_latex(res["latex"])
+        st.divider()
+
+        st.markdown("### กราฟพื้นที่ระหว่างเส้นโค้ง")
+        try:
+            fig, ax = plot_area_between(res["f_expr"], res["g_expr"], a_val, b_val)
+            st.pyplot(fig)
+        except Exception as e:
+            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+
+        render_steps(res["steps"])
     else:
-        res = compute_area_between(f_input, g_input, a_val, b_val)
-        if res["ok"]:
-            st.markdown("### ผลลัพธ์")
-            render_latex(res["latex"])
-            st.divider()
-
-            st.markdown("### กราฟพื้นที่ระหว่างเส้นโค้ง")
-            try:
-                fig, ax = plot_area_between(res["f_expr"], res["g_expr"], a_val, b_val)
-                st.pyplot(fig)
-            except Exception as e:
-                st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
-
-            render_steps(res["steps"])
-        else:
-            st.error(res["error"])
+        st.error(res["error"])
