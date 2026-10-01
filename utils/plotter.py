@@ -119,11 +119,11 @@ def plot_riemann(
 # ---------------------------------------------------------------------------
 
 def _stub_figure(title: str) -> tuple:
-    """สร้าง fig เปล่าที่มี title ระบุ TODO (กันหน้าเว็บพังก่อน implement)"""
+    """สร้าง fig เปล่าที่มี title ระบุ placeholder (กันหน้าเว็บพังก่อน implement)"""
     fig, ax = plt.subplots(figsize=(8, 4.5))
     ax.text(
         0.5, 0.5,
-        f"{title}\n(TODO: ยังไม่ implement กราฟนี้)",
+        f"{title}\n(In development / Coming soon)",
         ha="center", va="center", fontsize=12, color="#9ca3af",
         transform=ax.transAxes,
     )

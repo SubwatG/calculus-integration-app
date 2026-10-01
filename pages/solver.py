@@ -39,13 +39,14 @@ tokens_data = [
     ("x^n", "x**2"),
 ]
 
+def _append_token(tok: str) -> None:
+    if tok:
+        curr = st.session_state.get("solver_expr", "")
+        st.session_state["solver_expr"] = curr + tok if curr else tok
+
 for idx, (label, token) in enumerate(tokens_data):
     with btn_cols[idx]:
-        if st.button(label, key=f"token_btn_{idx}"):
-            if token:
-                curr = st.session_state.get("solver_expr", "")
-                st.session_state["solver_expr"] = curr + token if curr else token
-                st.rerun()
+        st.button(label, key=f"token_btn_{idx}", on_click=_append_token, args=(token,))
 
 point_val = 0.0
 if operation == "ลิมิต":
