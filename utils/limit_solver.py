@@ -16,6 +16,7 @@ TODO: ใส่ logic จริงให้ test ใน tests/ ผ่าน
 """
 import sympy as sp
 from sympy.parsing.sympy_parser import (
+    convert_xor,
     implicit_multiplication_application,
     parse_expr,
     standard_transformations,
@@ -23,7 +24,15 @@ from sympy.parsing.sympy_parser import (
 
 TRANSFORMATIONS = standard_transformations + (
     implicit_multiplication_application,
+    convert_xor,
 )
+
+LOCAL_MATH_DICT = {
+    "e": sp.E,
+    "E": sp.E,
+    "pi": sp.pi,
+    "ln": sp.log,
+}
 
 X = sp.Symbol("x")
 
@@ -32,7 +41,7 @@ def _parse_input(expr_str: str) -> sp.Expr:
     clean = (expr_str or "").strip()
     if not clean:
         raise ValueError("Empty input string")
-    return parse_expr(clean, transformations=TRANSFORMATIONS)
+    return parse_expr(clean, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
 
 
 def compute_limit_near(expr_str: str, a: float) -> dict:
