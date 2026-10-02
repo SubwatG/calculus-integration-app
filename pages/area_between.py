@@ -1,7 +1,6 @@
-"""pages/area_between.py — พื้นที่ระหว่างเส้นโค้ง (skeleton)
+"""pages/area_between.py — บทเรียน interactive: พื้นที่ระหว่างเส้นโค้ง (Area Between Curves)
 
-TODO: ใส่ logic กราฟจริง (plot_area_between) ให้สมบูรณ์
-อ้างอิง blueprint: pages/riemann.py
+คำนวณพื้นที่ปิดล้อมระหว่างสองฟังก์ชัน f(x) และ g(x) พร้อมแรเงากราฟและแสดงขั้นตอนวิธีทำ
 """
 
 import streamlit as st
@@ -31,6 +30,8 @@ with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
     st.markdown("**การประยุกต์ใช้**")
     for item in theory["applications"]:
         st.markdown(f"- {item}")
+    st.markdown("**แนวทางการตัดสินใจ**")
+    st.info(theory["decision_guide"])
 
 st.divider()
 st.markdown("### ลองคำนวณ")

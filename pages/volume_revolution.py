@@ -1,7 +1,6 @@
-"""pages/volume_revolution.py — ปริมาตรของทรงตัน (skeleton)
+"""pages/volume_revolution.py — บทเรียน interactive: ปริมาตรของทรงตันที่เกิดจากการหมุน (Volume of Solids)
 
-TODO: ใส่ logic กราฟจริง (plot_volume) ให้สมบูรณ์
-อ้างอิง blueprint: pages/riemann.py
+คำนวณปริมาตรแบบ Disk Method พร้อมพล็อตภาพตัดขวางและการหมุนรอบแกน
 """
 
 import streamlit as st
@@ -32,6 +31,8 @@ with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
     st.markdown("**การประยุกต์ใช้**")
     for item in theory["applications"]:
         st.markdown(f"- {item}")
+    st.markdown("**แนวทางการตัดสินใจ**")
+    st.info(theory["decision_guide"])
 
 st.divider()
 st.markdown("### ลองคำนวณ")
@@ -74,7 +75,7 @@ method_label = st.selectbox(
     key="volume_method",
 )
 
-st.caption("TODO: ถ้าเลือก washer ให้เพิ่มช่องฟังก์ชันรัศมีใน r(x)")
+st.caption("[คำแนะนำ] ปัจจุบันรองรับการคำนวณแบบ Disk Method รอบแกน x (y = 0)")
 
 if not expr_input.strip():
     st.info("กรุณาระบุฟังก์ชัน R(x) หรือคลิกเลือกตัวอย่างด้านบน")

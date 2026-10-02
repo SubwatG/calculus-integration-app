@@ -1,7 +1,6 @@
-"""pages/improper_integrals.py — อินทิกรัลไม่แท้ (skeleton)
+"""pages/improper_integrals.py — บทเรียน interactive: ปริพันธ์ไม่ตรงแบบ (Improper Integrals)
 
-TODO: ใส่ logic กราฟจริง (plot_improper) ให้สมบูรณ์
-อ้างอิง blueprint: pages/riemann.py
+สำรวจการลู่เข้าหรือลู่ออกของปริพันธ์บนช่วงอนันต์ พร้อมกราฟแรเงาและขั้นตอนการคำนวณลิมิต
 """
 
 import streamlit as st
@@ -32,6 +31,8 @@ with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
     st.markdown("**การประยุกต์ใช้**")
     for item in theory["applications"]:
         st.markdown(f"- {item}")
+    st.markdown("**แนวทางการตัดสินใจ**")
+    st.info(theory["decision_guide"])
 
 st.divider()
 st.markdown("### ลองคำนวณ")
@@ -72,7 +73,7 @@ with col_b:
     if upper_type.startswith("จำนวน"):
         b_val = st.number_input("ขอบบน b", value=2.0, key="improper_b")
 
-st.caption("TODO: เพิ่มกรณีฟังก์ชันไม่ต่อเนื่องภายในช่วง (แยกอินทิกรัล)")
+st.caption("[คำแนะนำ] ปัจจุบันระบบรองรับการคำนวณอินทิกรัลบนช่วงอนันต์ [a, ∞) และช่วงจำกัด [a, b]")
 
 if not expr_input.strip():
     st.info("กรุณาระบุฟังก์ชัน f(x) หรือคลิกเลือกตัวอย่างด้านบน")
