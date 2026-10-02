@@ -26,3 +26,11 @@ class TestComputeImproper:
         res = compute_improper('1/x**2', 1, None)
         assert res["ok"] is True
         assert res["latex"]
+
+    def test_plot_improper_figure(self):
+        import sympy as sp
+        from utils.plotter import plot_improper
+        expr = sp.sympify("1/x**2")
+        fig, ax = plot_improper(expr, 1.0, None)
+        assert fig is not None
+        assert ax is not None

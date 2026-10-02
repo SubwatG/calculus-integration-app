@@ -3,11 +3,33 @@ from utils.quiz_engine import load_quiz
 from utils.theme import render_hero
 
 
-QUIZ_TOPIC = "basic_rules"
+QUIZ_OPTIONS = {
+    "[ทั้งหมด] ทำโจทย์ทั้งหมด (15 ข้อ)": "all",
+    "[รีมันน์] ผลบวกรีมันน์และข้อผิดพลาด (5 ข้อ)": "riemann",
+    "[เทคนิค] เทคนิค u-sub & By Parts (5 ข้อ)": "techniques",
+    "[กฎพื้นฐาน] กฎพื้นฐาน Basic Rules (5 ข้อ)": "basic_rules",
+}
 
 render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำใบ้และสะสมคะแนน")
 
-questions = load_quiz(QUIZ_TOPIC)
+st.markdown("### เลือกชุดข้อสอบมโนทัศน์")
+selected_topic_name = st.radio(
+    "คลิกเลือกชุดข้อสอบที่ต้องการทำ:",
+    list(QUIZ_OPTIONS.keys()),
+    index=0,
+    horizontal=True,
+    key="quiz_topic_selector_main",
+)
+QUIZ_TOPIC = QUIZ_OPTIONS[selected_topic_name]
+
+
+def get_quiz_questions(topic: str):
+    if topic == "all":
+        return load_quiz("basic_rules") + load_quiz("riemann") + load_quiz("techniques")
+    return load_quiz(topic)
+
+
+questions = get_quiz_questions(QUIZ_TOPIC)
 
 if "quiz_q_index" not in st.session_state:
     st.session_state.quiz_q_index = 0
@@ -41,6 +63,11 @@ def reset_quiz() -> None:
     st.session_state.quiz_show_hint = False
     st.session_state.quiz_done = False
     st.session_state.quiz_current_choice = None
+
+
+if st.session_state.get("quiz_active_topic") != QUIZ_TOPIC:
+    st.session_state.quiz_active_topic = QUIZ_TOPIC
+    reset_quiz()
 
 
 if st.session_state.quiz_done:

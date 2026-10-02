@@ -7,7 +7,7 @@ TODO: ใส่ logic กราฟจริง (plot_area_between) ให้ส�
 import streamlit as st
 
 from utils.area_solver import compute_area_between
-from utils.math_render import render_latex, render_steps
+from utils.math_render import preview_math_expr, render_latex, render_syntax_guide, render_steps
 from utils.plotter import plot_area_between
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
@@ -35,6 +35,27 @@ with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
 st.divider()
 st.markdown("### ลองคำนวณ")
 
+st.markdown("**ตัวอย่างโจทย์ยอดนิยม:**")
+p_cols = st.columns(3)
+if p_cols[0].button("เส้นตรงกับพาราโบลา ($x$ และ $x^2$)", key="pre_area_1"):
+    st.session_state["area_f"] = "x"
+    st.session_state["area_g"] = "x**2"
+    st.session_state["area_a"] = 0.0
+    st.session_state["area_b"] = 1.0
+    st.rerun()
+if p_cols[1].button("พาราโบลาคว่ำ-หงาย ($2-x^2$ และ $x^2$)", key="pre_area_2"):
+    st.session_state["area_f"] = "2 - x**2"
+    st.session_state["area_g"] = "x**2"
+    st.session_state["area_a"] = -1.0
+    st.session_state["area_b"] = 1.0
+    st.rerun()
+if p_cols[2].button("คลื่นตรีโกณมิติ ($\\cos(x)$ และ $\\sin(x)$)", key="pre_area_3"):
+    st.session_state["area_f"] = "cos(x)"
+    st.session_state["area_g"] = "sin(x)"
+    st.session_state["area_a"] = 0.0
+    st.session_state["area_b"] = 0.785
+    st.rerun()
+
 col_f, col_g = st.columns(2)
 with col_f:
     f_input = st.text_input(
@@ -43,6 +64,7 @@ with col_f:
         placeholder="เช่น x, x**2, sin(x)",
         key="area_f",
     )
+    preview_math_expr(f_input, label="พรีวิว f(x)")
 with col_g:
     g_input = st.text_input(
         "เส้นโค้งล่าง g(x)",
@@ -50,22 +72,32 @@ with col_g:
         placeholder="เช่น x**2, x - 1",
         key="area_g",
     )
+    preview_math_expr(g_input, label="พรีวิว g(x)")
+
+render_syntax_guide()
+
 col_a, col_b = st.columns(2)
 with col_a:
     a_val = st.number_input("ขอบล่าง a", value=0.0, key="area_a")
 with col_b:
     b_val = st.number_input("ขอบบน b", value=1.0, key="area_b")
 
-if st.button("คำนวณ", type="primary", key="btn_area_calc"):
-    if not f_input.strip() or not g_input.strip():
-        st.error("กรุณาใส่ฟังก์ชันทั้งสองเส้นก่อน")
+if not f_input.strip() or not g_input.strip():
+    st.info("กรุณาระบุฟังก์ชัน f(x) และ g(x) หรือคลิกเลือกตัวอย่างด้านบน")
+else:
+    res = compute_area_between(f_input, g_input, a_val, b_val)
+    if res["ok"]:
+        st.markdown("### ผลลัพธ์")
+        render_latex(res["latex"])
+        st.divider()
+
+        st.markdown("### กราฟพื้นที่ระหว่างเส้นโค้ง")
+        try:
+            fig, ax = plot_area_between(res["f_expr"], res["g_expr"], a_val, b_val)
+            st.pyplot(fig)
+        except Exception as e:
+            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+
+        render_steps(res["steps"])
     else:
-        res = compute_area_between(f_input, g_input, a_val, b_val)
-        if res["ok"]:
-            st.markdown("### ผลลัพธ์")
-            render_latex(res["latex"])
-            st.divider()
-            # TODO: เรียก plot_area_between(f_expr, g_expr, a_val, b_val) แล้ว st.pyplot(fig)
-            render_steps(res["steps"])
-        else:
-            st.error(res["error"])
+        st.error(res["error"])

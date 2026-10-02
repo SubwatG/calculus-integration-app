@@ -55,6 +55,15 @@ pytest tests/ -v            # รัน test
 แก้ `utils/content_loader.py` หรือเพิ่มหน้า interactive lesson ใหม่ใน `pages/`
 โดยทำตามกฎด้านบน และเพิ่ม test ใน `tests/` ให้ครอบ logic ที่เขียน
 
+## Autonomous Agent Workflows (Matt Pocock Flow + Subagent Dispatch)
+
+สำหรับงานพัฒนาฟีเจอร์ใหม่ ปรับปรุง UI หรือซ่อมบั๊กใน calculus-integration-app ให้ดำเนินตามกระบวนการของ Matt Pocock:
+
+1. **Scoping & Grilling:** รัน `/grill-with-docs` สัมภาษณ์ทีละ 1 ข้อเพื่อล็อก Requirement ให้ชัดเจน
+2. **Specification & Plan:** ร่าง Spec สั้นๆ ระบุ Input/Output และฟังก์ชันที่ต้องเพิ่ม
+3. **Implementation & TDD:** มอบหมายให้ `OpenCode Go` (DeepSeek V4.1 Flash) หรือ Hermes Subagents เขียน test ก่อนแล้วเขียนโค้ดจน `pytest tests/ -v` ผ่านเขียว 100%
+4. **Code Review:** ตรวจสอบตาม Definition of Done (Zero emoji ใน UI, แยก logic เข้า `utils/`, SymPy parsing ถูกต้อง)
+
 ## ข้อควรระวัง
 
 - อย่า commit ไฟล์ `.venv/`, `__pycache__/`, ไฟล์ PDF/HTML ที่เกิดจากการ render

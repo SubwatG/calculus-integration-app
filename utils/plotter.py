@@ -310,16 +310,200 @@ def plot_substitution(expr) -> tuple:
 
 
 def plot_volume(expr, a: float, b: float, method: str = "disk") -> tuple:
-    """วาดหน้าตัด/ทรงตันแบบ disk หรือ washer (TODO)"""
-    return _stub_figure(f"Volume of Solids ({method}, [{a}, {b}])")
+    """วาดภาพตัดขวางและการหมุนรอบแกน x แบบ Disk/Washer Method"""
+    from matplotlib.patches import Ellipse
+
+    f = sp.lambdify(X, expr, modules=["numpy"])
+    x_start = min(a, b)
+    x_end = max(a, b)
+    span = max(x_end - x_start, 1.0)
+    x_min = x_start - 0.2 * span
+    x_max = x_end + 0.2 * span
+
+    xs_solid = np.linspace(x_start, x_end, 300)
+    xs_ext = np.linspace(x_min, x_max, 400)
+
+    with np.errstate(all="ignore"):
+        ys_solid = f(xs_solid)
+        ys_ext = f(xs_ext)
+
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+
+    # เส้นขอบบนและเส้นสะท้อนขอบล่างรอบแกน x
+    ax.plot(xs_solid, ys_solid, color=CURVE, lw=2.2, label="Radius R(x)")
+    ax.plot(xs_solid, -ys_solid, color=CURVE, lw=1.8, linestyle="--", label="Reflection -R(x)")
+
+    # แรเงาเนื้อทรงตันหมุน
+    ax.fill_between(xs_solid, ys_solid, -ys_solid, color=CURVE, alpha=0.25, label="Solid of Revolution")
+
+    # วาดตัวแทนแผ่นดิสก์ (Disk cross-section slices)
+    n_slices = 5
+    sample_xs = np.linspace(x_start + 0.1 * span, x_end - 0.1 * span, n_slices)
+    for sx in sample_xs:
+        with np.errstate(all="ignore"):
+            sy = float(f(sx))
+        if np.isfinite(sy) and abs(sy) > 1e-4:
+            ax.plot([sx, sx], [-sy, sy], color="#D97706", lw=2, alpha=0.8)
+            width = 0.08 * span
+            height = 2 * abs(sy)
+            ellipse = Ellipse((sx, 0), width, height, edgecolor="#D97706", facecolor="#FDE68A", alpha=0.35, lw=1.2)
+            ax.add_patch(ellipse)
+
+    # แกนหมุน x-axis
+    ax.axhline(0, color="#DC2626", lw=1.2, linestyle="-.", label="Axis of Revolution (y = 0)")
+    ax.axvline(a, color="#9ca3af", lw=1, linestyle=":")
+    ax.axvline(b, color="#9ca3af", lw=1, linestyle=":")
+
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    method_title = "Disk Method" if method.lower() == "disk" else "Washer Method"
+    ax.set_title(f"Volume of Solid of Revolution ({method_title} on [{a}, {b}])")
+    ax.grid(True, color=GRID, lw=0.5)
+
+    finite_ys = ys_solid[np.isfinite(ys_solid)]
+    if len(finite_ys) > 0:
+        max_r = float(np.max(np.abs(finite_ys))) * 1.35
+        ax.set_ylim(-max_r, max_r)
+
+    ax.legend(loc="upper right", fontsize=8.5, framealpha=0.9)
+    fig.tight_layout()
+    return fig, ax
 
 
 def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
-    """วาดเส้นโค้ง 2 เส้น + แรเงาช่องว่างระหว่าง (TODO)"""
-    return _stub_figure(f"Area Between Curves on [{a}, {b}]")
+    """วาดเส้นโค้ง 2 เส้น f(x) และ g(x) พร้อมแรเงาพื้นที่ระหว่างเส้นโค้งบนช่วง [a, b]"""
+    f = sp.lambdify(X, f_expr, modules=["numpy"])
+    g = sp.lambdify(X, g_expr, modules=["numpy"])
+
+    x_start = min(a, b)
+    x_end = max(a, b)
+    span = max(x_end - x_start, 1.0)
+    x_min = x_start - 0.25 * span
+    x_max = x_end + 0.25 * span
+
+    xs_full = np.linspace(x_min, x_max, 400)
+    xs_area = np.linspace(x_start, x_end, 300)
+
+    with np.errstate(all="ignore"):
+        ys_f_full = f(xs_full)
+        ys_g_full = g(xs_full)
+        ys_f_area = f(xs_area)
+        ys_g_area = g(xs_area)
+
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    ax.plot(xs_full, ys_f_full, color=CURVE, lw=2.2, label="y = f(x) (top)")
+    ax.plot(xs_full, ys_g_full, color="#2563EB", lw=2.2, linestyle="--", label="y = g(x) (bottom)")
+
+    # แรเงาพื้นที่ระหว่าง f และ g
+    ax.fill_between(
+        xs_area,
+        ys_f_area,
+        ys_g_area,
+        where=(ys_f_area >= ys_g_area),
+        interpolate=True,
+        color=CURVE,
+        alpha=0.35,
+        label="Enclosed Area (f >= g)",
+    )
+    ax.fill_between(
+        xs_area,
+        ys_f_area,
+        ys_g_area,
+        where=(ys_f_area < ys_g_area),
+        interpolate=True,
+        color="#DC2626",
+        alpha=0.25,
+        label="Inverted Area (g > f)",
+    )
+
+    ax.axvline(a, color="#9ca3af", linestyle=":", lw=1.2, label=f"x = {a}")
+    ax.axvline(b, color="#9ca3af", linestyle=":", lw=1.2, label=f"x = {b}")
+    ax.axhline(0, color="#9ca3af", lw=0.8, linestyle=":")
+
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_title(f"Area Between Curves on [{a}, {b}]")
+    ax.grid(True, color=GRID, lw=0.5)
+
+    all_ys = np.concatenate([ys_f_area, ys_g_area])
+    finite_ys = all_ys[np.isfinite(all_ys)]
+    if len(finite_ys) > 0:
+        ymin = float(np.percentile(finite_ys, 2)) - 0.5
+        ymax = float(np.percentile(finite_ys, 98)) + 0.5
+        if ymin < ymax:
+            ax.set_ylim(ymin, ymax)
+
+    ax.legend(loc="upper right", fontsize=8.5, framealpha=0.9)
+    fig.tight_layout()
+    return fig, ax
 
 
-def plot_improper(expr, a: float, b: float | None) -> tuple:
-    """วาดเส้นโค้ง + ขอบเขตวิ่งเข้าหาจุดไม่ต่อเนื่อง/อนันต์ (TODO)"""
-    bound = "inf" if b is None else b
-    return _stub_figure(f"Improper Integral on [{a}, {bound}]")
+def plot_improper(expr, a: float, b: float | None = None) -> tuple:
+    """วาดเส้นโค้งและพื้นที่ใต้กราฟของอินทิกรัลไม่ตรงแบบ (Improper Integral)"""
+    f = sp.lambdify(X, expr, modules=["numpy"])
+
+    is_infinite_upper = (b is None)
+    if is_infinite_upper:
+        x_start = a
+        x_end = a + 8.0
+        t_bound = a + 5.0
+    else:
+        x_start = min(a, b)
+        x_end = max(a, b) + 1.0
+        t_bound = b
+
+    xs = np.linspace(x_start, x_end, 500)
+    xs = xs[np.abs(xs) > 1e-4]
+
+    with np.errstate(all="ignore"):
+        ys = f(xs)
+
+    fig, ax = plt.subplots(figsize=(8, 4.5))
+    ax.plot(xs, ys, color=CURVE, lw=2.2, label="y = f(x)")
+
+    xs_shade = np.linspace(x_start, t_bound, 300)
+    xs_shade = xs_shade[np.abs(xs_shade) > 1e-4]
+    with np.errstate(all="ignore"):
+        ys_shade = f(xs_shade)
+
+    ax.fill_between(
+        xs_shade,
+        ys_shade,
+        0,
+        color=CURVE,
+        alpha=0.35,
+        label=f"Area over [{a}, t] as t -> ∞" if is_infinite_upper else f"Area over [{a}, {b}]",
+    )
+
+    ax.axvline(a, color="#9ca3af", lw=1.2, linestyle="--", label=f"Lower Bound a = {a}")
+    if is_infinite_upper:
+        ax.axvline(t_bound, color="#D97706", lw=1.2, linestyle=":", label=f"Sample Bound t = {t_bound:.1f}")
+        ax.annotate(
+            "t → ∞",
+            xy=(t_bound, 0.2),
+            xytext=(t_bound + 1.2, 0.4),
+            arrowprops=dict(facecolor="#D97706", edgecolor="#D97706", arrowstyle="->", lw=1.5),
+            fontsize=10,
+            color="#D97706",
+            fontweight="bold",
+        )
+    else:
+        ax.axvline(b, color="#DC2626", lw=1.2, linestyle="--", label=f"Upper Bound b = {b}")
+
+    ax.axhline(0, color="#9ca3af", lw=0.8, linestyle=":")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    title = f"Improper Integral on [{a}, ∞)" if is_infinite_upper else f"Improper Integral on [{a}, {b}]"
+    ax.set_title(title)
+    ax.grid(True, color=GRID, lw=0.5)
+
+    finite_ys = ys_shade[np.isfinite(ys_shade)]
+    if len(finite_ys) > 0:
+        ymin = max(-1.0, float(np.percentile(finite_ys, 1)) - 0.5)
+        ymax = min(15.0, float(np.percentile(finite_ys, 98)) + 1.0)
+        if ymin < ymax:
+            ax.set_ylim(ymin, ymax)
+
+    ax.legend(loc="upper right", fontsize=8.5, framealpha=0.9)
+    fig.tight_layout()
+    return fig, ax

@@ -26,3 +26,12 @@ class TestComputeAreaBetween:
         res = compute_area_between('x', 'x**2', 0, 1)
         assert res["ok"] is True
         assert res["latex"]
+
+    def test_plot_area_between_figure(self):
+        import sympy as sp
+        from utils.plotter import plot_area_between
+        f = sp.sympify("x")
+        g = sp.sympify("x**2")
+        fig, ax = plot_area_between(f, g, 0.0, 1.0)
+        assert fig is not None
+        assert ax is not None

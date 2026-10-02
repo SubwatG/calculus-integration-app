@@ -26,3 +26,11 @@ class TestComputeVolume:
         res = compute_volume('x', 0, 2, 'disk')
         assert res["ok"] is True
         assert res["latex"]
+
+    def test_plot_volume_figure(self):
+        import sympy as sp
+        from utils.plotter import plot_volume
+        expr = sp.sympify("x")
+        fig, ax = plot_volume(expr, 0.0, 2.0, "disk")
+        assert fig is not None
+        assert ax is not None
