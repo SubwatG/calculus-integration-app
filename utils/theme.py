@@ -5,6 +5,7 @@ def inject_css() -> None:
     css = """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Mali:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
     /* Global Typography & Pink Bauhaus Pop Canvas */
     html, body, [data-testid="stAppViewContainer"], .stApp {
@@ -23,10 +24,117 @@ def inject_css() -> None:
         letter-spacing: -0.01em !important;
     }
 
-    p, span, label, li {
+    p, label, li, span:not([class*="material"]):not([data-testid*="Icon"]) {
         font-family: "Mali", "Outfit", sans-serif !important;
         color: #18181B !important;
         font-weight: 500 !important;
+    }
+
+    /* Material Symbols / Icon Font Protection */
+    [data-testid="stIconMaterial"],
+    .material-symbols-rounded,
+    .material-symbols-outlined,
+    .material-icons,
+    [data-testid="stExpanderToggleIcon"] span,
+    [data-testid="stExpandSidebarButton"] span {
+        font-family: "Material Symbols Rounded", "Material Icons" !important;
+        font-weight: normal !important;
+        font-style: normal !important;
+        font-size: 20px !important;
+        line-height: 1 !important;
+        letter-spacing: normal !important;
+        text-transform: none !important;
+        display: inline-block !important;
+        white-space: nowrap !important;
+        word-wrap: normal !important;
+        direction: ltr !important;
+        -webkit-font-smoothing: antialiased !important;
+    }
+
+    /* Cute Bauhaus Sidebar Collapse / Expand Button */
+    [data-testid="stExpandSidebarButton"],
+    [data-testid="stSidebarCollapseButton"] {
+        background-color: #FEF08A !important;
+        border: 2.5px solid #18181B !important;
+        border-radius: 12px !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        color: #18181B !important;
+        transition: all 0.12s ease-out !important;
+        padding: 6px 12px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+    }
+
+    [data-testid="stExpandSidebarButton"]:hover,
+    [data-testid="stSidebarCollapseButton"]:hover {
+        background-color: #FDE047 !important;
+        transform: translate(-1px, -1px) !important;
+        box-shadow: 4px 4px 0px #18181B !important;
+    }
+
+    [data-testid="stExpandSidebarButton"]:active,
+    [data-testid="stSidebarCollapseButton"]:active {
+        transform: translate(2px, 2px) !important;
+        box-shadow: 1px 1px 0px #18181B !important;
+    }
+
+    [data-testid="stExpandSidebarButton"] span {
+        font-size: 0 !important;
+        line-height: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+    }
+
+    [data-testid="stExpandSidebarButton"] span::after {
+        content: "✦ เมนู" !important;
+        font-family: "Fredoka", "Mali", sans-serif !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        color: #18181B !important;
+        line-height: 1 !important;
+    }
+
+    [data-testid="stSidebarCollapseButton"] span {
+        font-size: 0 !important;
+        line-height: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+    }
+
+    [data-testid="stSidebarCollapseButton"] span::after {
+        content: "◀ ย่อเมนู" !important;
+        font-family: "Fredoka", "Mali", sans-serif !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        color: #18181B !important;
+        line-height: 1 !important;
+    }
+
+    /* Cute Expander Toggle Button */
+    [data-testid="stExpanderToggleIcon"] {
+        background-color: #BAE6FD !important;
+        border: 1.5px solid #18181B !important;
+        border-radius: 6px !important;
+        box-shadow: 1.5px 1.5px 0px #18181B !important;
+        padding: 3px 6px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    [data-testid="stExpanderToggleIcon"] span {
+        font-size: 0 !important;
+        line-height: 0 !important;
+    }
+
+    [data-testid="stExpanderToggleIcon"] span::after {
+        content: "▼" !important;
+        font-size: 11px !important;
+        font-weight: 900 !important;
+        color: #18181B !important;
+        line-height: 1 !important;
     }
 
     /* KaTeX Math Clarity on High-Contrast Cards */
