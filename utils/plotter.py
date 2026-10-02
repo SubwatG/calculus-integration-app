@@ -16,13 +16,13 @@ import sympy as sp
 
 from utils.riemann_solver import X
 
-# KU-inspired palette (เหมือน stat-distribution-solver)
-CURVE = "#105D38"      # เขียวเข้ม
-FILL = "#B9D4C4"       # เขียวอ่อน
-RECT = "#3D7A56"       # เขียวกลางสำหรับสี่เหลี่ยม
-RECT_EDGE = "#105D38"
-GRID = "#D8DEE8"
-TEXT = "#232a4d"
+# Playful Bauhaus Pop Palette (Geometric, Vibrant & Crisp)
+CURVE = "#E11D48"      # Bauhaus Vibrant Rose / Magenta
+FILL = "#FCE7F3"       # Soft Pastel Pink Shading
+RECT = "#FDE047"       # Bauhaus Sunny Yellow for Riemann blocks
+RECT_EDGE = "#18181B"  # Crisp Black Geometric Edge
+GRID = "#E2E8F0"       # Subtle structural grid
+TEXT = "#18181B"       # Stark Charcoal Black
 
 
 def plot_riemann(

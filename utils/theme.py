@@ -4,135 +4,226 @@ import streamlit as st
 def inject_css() -> None:
     css = """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai+Looped:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Mali:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
-    /* Global Typography & Palette */
+    /* Global Typography & Pink Bauhaus Pop Canvas */
     html, body, [data-testid="stAppViewContainer"], .stApp {
-        font-family: "IBM Plex Sans Thai Looped", "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
-        background-color: #FFFFFF !important;
-        color: #0F172A !important;
+        font-family: "Mali", "Outfit", -apple-system, BlinkMacSystemFont, sans-serif !important;
+        background-color: #FFF0F5 !important;
+        background-image: radial-gradient(#FBCFE8 1.5px, transparent 1.5px) !important;
+        background-size: 22px 22px !important;
+        color: #18181B !important;
     }
 
+    /* Cheerful Rounded Headlines */
     h1, h2, h3, h4, h5, h6 {
-        font-family: "Chakra Petch", "Inter", sans-serif !important;
-        color: #0A2540 !important;
+        font-family: "Fredoka", "Mali", "Outfit", sans-serif !important;
+        color: #18181B !important;
         font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
     }
 
     p, span, label, li {
-        color: #1E293B !important;
+        font-family: "Mali", "Outfit", sans-serif !important;
+        color: #18181B !important;
+        font-weight: 500 !important;
     }
 
-    /* KaTeX Math Clarity */
+    /* KaTeX Math Clarity on High-Contrast Cards */
     .katex, .katex-display, .katex * {
-        color: #0F172A !important;
+        color: #18181B !important;
+        font-weight: 600 !important;
     }
 
-    /* Container Spacing */
+    /* Main Container Padding */
     .block-container {
-        padding-top: 3.5rem !important;
+        padding-top: 2.5rem !important;
         padding-bottom: 3rem !important;
-        max-width: 1040px !important;
+        max-width: 1060px !important;
     }
 
-    /* Cards & Containers */
+    /* Bauhaus Geometric Cards & Containers */
     [data-testid="stVerticalBlockBorderWrapper"] {
         background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
-        border-radius: 12px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        border: 2.5px solid #18181B !important;
+        border-radius: 14px !important;
+        box-shadow: 4px 4px 0px #18181B !important;
+        padding: 1.25rem !important;
     }
 
-    /* Primary Buttons */
+    /* Expanders with Bauhaus Shadow */
+    [data-testid="stExpander"] {
+        background-color: #FFFFFF !important;
+        border: 2.5px solid #18181B !important;
+        border-radius: 12px !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    [data-testid="stExpander"] summary {
+        font-family: "Fredoka", "Mali", sans-serif !important;
+        font-weight: 600 !important;
+        color: #18181B !important;
+    }
+
+    /* Primary Buttons (Coral-Rose Bauhaus Pop with Mechanical Press) */
     .stButton > button[kind="primary"],
     .stButton > button[data-testid="baseButton-primary"] {
-        background-color: #1D4ED8 !important;
-        color: #FFFFFF !important;
-        border-radius: 8px !important;
-        border: 1px solid #1E40AF !important;
-        font-weight: 600 !important;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+        background-color: #FB7185 !important;
+        color: #18181B !important;
+        border-radius: 12px !important;
+        border: 2.5px solid #18181B !important;
+        font-family: "Fredoka", "Mali", sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        transition: all 0.12s ease-out !important;
     }
 
     .stButton > button[kind="primary"] *,
     .stButton > button[data-testid="baseButton-primary"] * {
-        color: #FFFFFF !important;
+        color: #18181B !important;
     }
 
     .stButton > button[kind="primary"]:hover,
     .stButton > button[data-testid="baseButton-primary"]:hover {
-        background-color: #1E40AF !important;
-        border-color: #1E3A8A !important;
-        color: #FFFFFF !important;
+        background-color: #F43F5E !important;
+        transform: translate(-1px, -1px) !important;
+        box-shadow: 4px 4px 0px #18181B !important;
     }
 
-    /* Secondary Buttons */
+    .stButton > button[kind="primary"]:active,
+    .stButton > button[data-testid="baseButton-primary"]:active {
+        transform: translate(2px, 2px) !important;
+        box-shadow: 1px 1px 0px #18181B !important;
+    }
+
+    /* Secondary / Preset Buttons (White with Yellow Pop on Hover) */
     .stButton > button[kind="secondary"],
     .stButton > button[data-testid="baseButton-secondary"] {
-        background-color: #F8FAFC !important;
-        color: #1E293B !important;
-        border-radius: 8px !important;
-        border: 1px solid #CBD5E1 !important;
-        font-weight: 500 !important;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        background-color: #FFFFFF !important;
+        color: #18181B !important;
+        border-radius: 12px !important;
+        border: 2px solid #18181B !important;
+        font-family: "Fredoka", "Mali", sans-serif !important;
+        font-weight: 600 !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        transition: all 0.12s ease-out !important;
     }
 
     .stButton > button[kind="secondary"] *,
     .stButton > button[data-testid="baseButton-secondary"] * {
-        color: #1E293B !important;
+        color: #18181B !important;
     }
 
     .stButton > button[kind="secondary"]:hover,
     .stButton > button[data-testid="baseButton-secondary"]:hover {
-        background-color: #F1F5F9 !important;
-        border-color: #94A3B8 !important;
-        color: #0F172A !important;
+        background-color: #FEF08A !important;
+        transform: translate(-1px, -1px) !important;
+        box-shadow: 4px 4px 0px #18181B !important;
+        color: #18181B !important;
     }
 
-    /* Inputs & Selectboxes */
+    .stButton > button[kind="secondary"]:active,
+    .stButton > button[data-testid="baseButton-secondary"]:active {
+        transform: translate(2px, 2px) !important;
+        box-shadow: 1px 1px 0px #18181B !important;
+    }
+
+    /* Inputs, Number Inputs, Sliders */
     input, textarea, select {
-        color: #0F172A !important;
+        color: #18181B !important;
         background-color: #FFFFFF !important;
-        border-color: #CBD5E1 !important;
+        border: 2.5px solid #18181B !important;
+        border-radius: 10px !important;
+        box-shadow: 2px 2px 0px #18181B !important;
+        font-family: "Mali", "Outfit", sans-serif !important;
+        font-weight: 500 !important;
     }
 
-    /* Sidebar Navigation */
+    input:focus, textarea:focus, select:focus {
+        border-color: #F43F5E !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        outline: none !important;
+    }
+
+    /* Metrics with Bauhaus Badge Look */
+    [data-testid="stMetric"] {
+        background-color: #FFFFFF !important;
+        border: 2.5px solid #18181B !important;
+        border-radius: 12px !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        padding: 12px 16px !important;
+    }
+
+    [data-testid="stMetricLabel"] p {
+        font-family: "Fredoka", "Mali", sans-serif !important;
+        font-weight: 600 !important;
+        color: #4B5563 !important;
+    }
+
+    [data-testid="stMetricValue"] {
+        font-family: "Outfit", "Fredoka", sans-serif !important;
+        font-weight: 800 !important;
+        color: #18181B !important;
+    }
+
+    /* Bauhaus Sidebar (Warm Peach/Pink Canvas) */
     [data-testid="stSidebar"] {
-        background-color: #F8FAFC !important;
-        border-right: 1px solid #E2E8F0 !important;
+        background-color: #FFE4E6 !important;
+        border-right: 3px solid #18181B !important;
     }
 
     [data-testid="stSidebar"] h1,
     [data-testid="stSidebar"] h2,
     [data-testid="stSidebar"] h3 {
-        color: #0A2540 !important;
+        font-family: "Fredoka", "Mali", sans-serif !important;
+        color: #18181B !important;
     }
 
     [data-testid="stSidebar"] [data-testid="stSidebarNavItems"] a,
     [data-testid="stSidebar"] [data-testid="stSidebarNavItems"] button {
-        border-radius: 6px !important;
-        margin: 2px 0 !important;
+        border-radius: 10px !important;
+        margin: 3px 0 !important;
+        border: 1.5px solid transparent !important;
+        font-family: "Mali", sans-serif !important;
+        font-weight: 600 !important;
+        color: #18181B !important;
+        transition: all 0.12s ease !important;
+    }
+
+    [data-testid="stSidebarNavItems"] a:hover,
+    [data-testid="stSidebarNavItems"] button:hover {
+        background-color: #FED7AA !important;
+        border: 1.5px solid #18181B !important;
+        box-shadow: 2px 2px 0px #18181B !important;
     }
 
     [data-testid="stSidebarNavItems"] a[aria-current="page"],
     [data-testid="stSidebarNavItems"] button[aria-current="page"] {
-        background-color: #EFF6FF !important;
-        color: #1D4ED8 !important;
-        font-weight: 600 !important;
-        border-left: 3px solid #1D4ED8 !important;
+        background-color: #FEF08A !important;
+        color: #18181B !important;
+        font-weight: 700 !important;
+        border: 2px solid #18181B !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+    }
+
+    /* Bauhaus Color-Blocked Alerts */
+    [data-testid="stAlert"] {
+        border: 2.5px solid #18181B !important;
+        border-radius: 12px !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        font-family: "Mali", sans-serif !important;
+        font-weight: 500 !important;
+        color: #18181B !important;
     }
 
     /* Radio buttons & Checkboxes */
     [data-testid="stRadio"] label,
     [data-testid="stCheckbox"] label {
-        color: #1E293B !important;
-        font-size: 0.95rem !important;
-    }
-
-    /* Alert callouts */
-    [data-testid="stAlert"] {
-        border-radius: 8px !important;
-        font-size: 0.92rem !important;
+        font-family: "Mali", sans-serif !important;
+        font-weight: 600 !important;
+        color: #18181B !important;
     }
     </style>
     """
@@ -142,16 +233,49 @@ def inject_css() -> None:
 def render_hero(title: str, subtitle: str) -> None:
     html = f"""
     <div style="
-        background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
-        border: 1px solid #DBEAFE;
-        border-left: 5px solid #1D4ED8;
-        border-radius: 12px;
+        background-color: #FFFFFF;
+        border: 3px solid #18181B;
+        border-radius: 16px;
         padding: 20px 24px;
-        margin-bottom: 22px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        margin-bottom: 24px;
+        box-shadow: 5px 5px 0px #18181B;
+        position: relative;
     ">
-        <h1 style="font-family: 'Chakra Petch', sans-serif; font-size: 23px; font-weight: 700; color: #0A2540; margin: 0 0 6px 0; padding: 0; border: none;">{title}</h1>
-        <p style="font-family: 'IBM Plex Sans Thai Looped', sans-serif; font-size: 14.5px; color: #475569; margin: 0; padding: 0;">{subtitle}</p>
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <span style="display: inline-block; width: 13px; height: 13px; border-radius: 50%; background-color: #F43F5E; border: 1.5px solid #18181B;"></span>
+            <span style="display: inline-block; width: 13px; height: 13px; background-color: #FBBF24; border: 1.5px solid #18181B;"></span>
+            <span style="display: inline-block; width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 13px solid #38BDF8; margin-right: 4px;"></span>
+            <span style="
+                background-color: #FEF08A;
+                border: 1.5px solid #18181B;
+                border-radius: 9999px;
+                padding: 2px 10px;
+                font-family: 'Fredoka', 'Outfit', sans-serif;
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                color: #18181B;
+                box-shadow: 1.5px 1.5px 0px #18181B;
+            ">BAUHAUS CALCULUS LAB</span>
+        </div>
+        <h1 style="
+            font-family: 'Fredoka', 'Mali', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: #18181B;
+            margin: 0 0 6px 0;
+            padding: 0;
+            border: none;
+            line-height: 1.25;
+        ">{title}</h1>
+        <p style="
+            font-family: 'Mali', sans-serif;
+            font-size: 15px;
+            color: #4B5563;
+            margin: 0;
+            padding: 0;
+            font-weight: 500;
+        ">{subtitle}</p>
     </div>
     """
     st.markdown(html, unsafe_allow_html=True)
