@@ -451,8 +451,9 @@ def plot_volume(
 
 def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
     """วาดเส้นโค้ง 2 เส้น f(x) และ g(x) พร้อมแรเงาพื้นที่ระหว่างเส้นโค้งบนช่วง [a, b]"""
-    f = sp.lambdify(X, f_expr, modules=["numpy"])
-    g = sp.lambdify(X, g_expr, modules=["numpy"])
+    MODULE_MAP = [{"real_root": lambda b, n: np.sign(b) * (np.abs(b) ** (1.0 / n))}, "numpy"]
+    f = sp.lambdify(X, f_expr, modules=MODULE_MAP)
+    g = sp.lambdify(X, g_expr, modules=MODULE_MAP)
 
     x_start = min(a, b)
     x_end = max(a, b)
