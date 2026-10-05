@@ -22,6 +22,16 @@ class TestComputeVolume:
         assert res["ok"] is False
         assert res["error"]
 
+    def test_compute_volume_invalid_bounds(self):
+        res = compute_volume('x', 2, 0, 'disk')
+        assert res["ok"] is False
+        assert res["error"]
+
+    def test_compute_volume_unsupported_method(self):
+        res = compute_volume('x', 0, 2, 'washer')
+        assert res["ok"] is False
+        assert res["error"]
+
     def test_compute_volume_has_latex_result(self):
         res = compute_volume('x', 0, 2, 'disk')
         assert res["ok"] is True

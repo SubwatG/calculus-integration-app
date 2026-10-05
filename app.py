@@ -33,12 +33,14 @@ riemann_page = st.Page("pages/riemann.py", title="3. ผลรวมรีมั
 substitution_page = st.Page("pages/substitution.py", title="4. เทคนิคการอินทิเกรต (u-Sub และ By Parts)")
 area_between_page = st.Page("pages/area_between.py", title="5. พื้นที่ระหว่างเส้นโค้ง")
 improper_page = st.Page("pages/improper_integrals.py", title="6. ปริพันธ์ไม่ตรงแบบ")
+volume_page = st.Page("pages/volume_revolution.py", title="7. ปริมาตรของรูปทรงตัน")
 
 # -----------------------------------------------------------------------------
 # 3. เครื่องมือและการประเมิน (Tools & Assessment)
 # -----------------------------------------------------------------------------
 solver_page = st.Page("pages/solver.py", title="เครื่องคิดเลขสัญลักษณ์ SymPy")
 quiz_page = st.Page("pages/quiz.py", title="แบบทดสอบมโนทัศน์ (มีคำใบ้)")
+survey_page = st.Page("pages/survey.py", title="แบบประเมินความพึงพอใจ (SUS)")
 
 # -----------------------------------------------------------------------------
 # 4. ข้อมูลระบบ (System Info)
@@ -49,15 +51,16 @@ help_page = st.Page("pages/help.py", title="คู่มือการใช้
 pg = st.navigation(
     {
         "ภาพรวม": [home_page, lessons_page],
-        "โมดูลการเรียนรู้ (6 หัวข้อหลัก)": [
+        "โมดูลการเรียนรู้": [
             tangent_page,
             limit_page,
             riemann_page,
             substitution_page,
             area_between_page,
             improper_page,
+            volume_page,
         ],
-        "เครื่องมือและการประเมิน": [solver_page, quiz_page],
+        "เครื่องมือและการประเมิน": [solver_page, quiz_page, survey_page],
         "ข้อมูลระบบ": [history_page, help_page],
     },
     position="sidebar",

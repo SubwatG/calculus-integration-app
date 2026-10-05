@@ -54,6 +54,13 @@ cards_data = [
         "key": "btn_card_improper",
     },
     {
+        "title": "7. ปริมาตรของรูปทรงตัน",
+        "subtitle": "คำนวณปริมาตรทรงตันที่เกิดจากการหมุน (Disk Method)",
+        "btn_label": "เข้าสู่บทเรียนที่ 7",
+        "target": "pages/volume_revolution.py",
+        "key": "btn_card_volume",
+    },
+    {
         "title": "เครื่องคิดเลขสัญลักษณ์ SymPy",
         "subtitle": "แก้โจทย์แคลคูลัสแบบแจกแจงวิธีทำทีละขั้นตอน",
         "btn_label": "เปิดเครื่องคิดเลข",

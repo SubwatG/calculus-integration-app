@@ -45,13 +45,20 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def compute_volume(expr_str: str, a: float, b: float, method: str = 'disk') -> dict:
-    """คำนวณปริมาตรแบบ disk หรือ washer: V = pi*∫(R²-r²)dx"""
+    """คำนวณปริมาตรแบบ disk: V = pi*∫(R²)dx"""
     try:
+        a_f, b_f = float(a), float(b)
+        if b_f <= a_f:
+            raise ValueError("ขอบล่าง a ต้องน้อยกว่าขอบบน b")
+        if method.lower() != 'disk':
+            raise ValueError(f"วิธี '{method}' ยังไม่รองรับในเวอร์ชันปัจจุบัน (รองรับเฉพาะ 'disk')")
         expr = _parse_input(expr_str)
-        vol_val = sp.pi * sp.integrate(expr**2, (X, a, b))
+        vol_val = sp.pi * sp.integrate(expr**2, (X, a_f, b_f))
+        if vol_val.has(sp.Integral) or not (getattr(vol_val, "is_real", False) and getattr(vol_val, "is_finite", False)):
+            raise ValueError("ไม่สามารถคำนวณปริมาตรจำกัดได้บนช่วงที่กำหนด")
 
         steps = [
-            f"ฟังก์ชันรัศมี: r(x) = {sp.latex(expr)} บนช่วง [{a}, {b}]",
+            f"ฟังก์ชันรัศมี: R(x) = {sp.latex(expr)} บนช่วง [{a}, {b}]",
             f"สูตรวิธีจาน (Disk Method): V = \\pi \\int_{{{a}}}^{{{b}}} [{sp.latex(expr)}]^2 \\, dx",
             f"คำนวณปริมาตรทรงตัน: V = {sp.latex(vol_val)}",
         ]

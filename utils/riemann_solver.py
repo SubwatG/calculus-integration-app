@@ -67,7 +67,7 @@ def compute_riemann(
     expr_str: str,
     a: float,
     b: float,
-    n: int,
+    n: int | float,
     method: str = "left",
 ) -> dict[str, Any]:
     """คำนวณผลรวมรีมันน์และคืน steps เป็น LaTeX
@@ -77,9 +77,13 @@ def compute_riemann(
     try:
         expr = _parse_input(expr_str)
         a_f, b_f = float(a), float(b)
-        n_i = int(n)
-        if n_i < 1:
-            raise ValueError("n must be >= 1")
+        try:
+            n_f = float(n)
+            if not n_f.is_integer() or n_f < 1:
+                raise ValueError("n must be an integer >= 1")
+            n_i = int(n_f)
+        except (TypeError, ValueError):
+            raise ValueError("n must be an integer >= 1")
         if b_f <= a_f:
             raise ValueError("b must be > a")
         if method not in METHODS:

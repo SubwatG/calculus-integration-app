@@ -1,9 +1,9 @@
 {
   "total": 86,
-  "passed": 84,
-  "failed": 2,
+  "passed": 86,
+  "failed": 0,
   "mathematical_failures": 0,
-  "proposed_validation_failures": 2,
+  "proposed_validation_failures": 0,
   "results": [
     {
       "id": "MATH-001",
@@ -17,7 +17,7 @@
         "latex": "0 + C",
         "error": "None"
       },
-      "seconds": 0.000691
+      "seconds": 0.000589
     },
     {
       "id": "MATH-002",
@@ -31,7 +31,7 @@
         "latex": "7 x + C",
         "error": "None"
       },
-      "seconds": 0.032917
+      "seconds": 0.030041
     },
     {
       "id": "MATH-003",
@@ -45,7 +45,7 @@
         "latex": "\\frac{x^{2}}{2} + C",
         "error": "None"
       },
-      "seconds": 0.001408
+      "seconds": 0.001427
     },
     {
       "id": "MATH-004",
@@ -59,7 +59,7 @@
         "latex": "\\frac{x^{5}}{5} + C",
         "error": "None"
       },
-      "seconds": 0.001583
+      "seconds": 0.001368
     },
     {
       "id": "MATH-005",
@@ -73,7 +73,7 @@
         "latex": "x^{3} - x^{2} + x + C",
         "error": "None"
       },
-      "seconds": 0.002907
+      "seconds": 0.002447
     },
     {
       "id": "MATH-006",
@@ -87,7 +87,7 @@
         "latex": "\\log{\\left(x \\right)} + C",
         "error": "None"
       },
-      "seconds": 0.001685
+      "seconds": 0.001569
     },
     {
       "id": "MATH-007",
@@ -101,7 +101,7 @@
         "latex": "- \\frac{1}{x} + C",
         "error": "None"
       },
-      "seconds": 0.001504
+      "seconds": 0.001446
     },
     {
       "id": "MATH-008",
@@ -115,7 +115,7 @@
         "latex": "\\frac{2 x^{\\frac{3}{2}}}{3} + C",
         "error": "None"
       },
-      "seconds": 0.002178
+      "seconds": 0.002034
     },
     {
       "id": "MATH-009",
@@ -129,7 +129,7 @@
         "latex": "e^{x} + C",
         "error": "None"
       },
-      "seconds": 0.006801
+      "seconds": 0.006183
     },
     {
       "id": "MATH-010",
@@ -143,7 +143,7 @@
         "latex": "- \\cos{\\left(x \\right)} + C",
         "error": "None"
       },
-      "seconds": 0.001703
+      "seconds": 0.001641
     },
     {
       "id": "MATH-011",
@@ -157,7 +157,7 @@
         "latex": "\\sin{\\left(x \\right)} + C",
         "error": "None"
       },
-      "seconds": 0.000941
+      "seconds": 0.000948
     },
     {
       "id": "MATH-012",
@@ -171,7 +171,7 @@
         "latex": "\\operatorname{atan}{\\left(x \\right)} + C",
         "error": "None"
       },
-      "seconds": 0.011122
+      "seconds": 0.010626
     },
     {
       "id": "MATH-013",
@@ -185,7 +185,7 @@
         "latex": "\\operatorname{asin}{\\left(x \\right)} + C",
         "error": "None"
       },
-      "seconds": 0.020255
+      "seconds": 0.018834
     },
     {
       "id": "MATH-014",
@@ -199,7 +199,7 @@
         "latex": "\\left(x - 1\\right) e^{x} + C",
         "error": "None"
       },
-      "seconds": 0.008142
+      "seconds": 0.00779
     },
     {
       "id": "MATH-015",
@@ -213,7 +213,7 @@
         "latex": "x \\log{\\left(x \\right)} - x + C",
         "error": "None"
       },
-      "seconds": 0.008722
+      "seconds": 0.008049
     },
     {
       "id": "MATH-016",
@@ -227,7 +227,7 @@
         "latex": "\\frac{\\log{\\left(x - 1 \\right)}}{2} - \\frac{\\log{\\left(x + 1 \\right)}}{2} + C",
         "error": "None"
       },
-      "seconds": 0.011307
+      "seconds": 0.010165
     },
     {
       "id": "MATH-017",
@@ -241,7 +241,7 @@
         "latex": "\\int 2 x \\cos{\\left(x^{2} \\right)} \\, dx = \\sin{\\left(x^{2} \\right)} + C",
         "error": "None"
       },
-      "seconds": 0.020165
+      "seconds": 0.018412
     },
     {
       "id": "MATH-018",
@@ -255,7 +255,7 @@
         "latex": "\\int \\frac{2 x}{x^{2} + 1} \\, dx = \\log{\\left(x^{2} + 1 \\right)} + C",
         "error": "None"
       },
-      "seconds": 0.006823
+      "seconds": 0.006255
     },
     {
       "id": "MATH-019",
@@ -269,7 +269,7 @@
         "latex": "\\int 3 x^{2} e^{x^{3}} \\, dx = e^{x^{3}} + C",
         "error": "None"
       },
-      "seconds": 0.009001
+      "seconds": 0.008469
     },
     {
       "id": "MATH-020",
@@ -283,7 +283,7 @@
         "latex": "\\int \\frac{\\cos{\\left(x \\right)}}{\\sin{\\left(x \\right)}} \\, dx = \\log{\\left(\\sin{\\left(x \\right)} \\right)} + C",
         "error": "None"
       },
-      "seconds": 0.00301
+      "seconds": 0.002955
     },
     {
       "id": "MATH-021",
@@ -297,7 +297,7 @@
         "latex": "\\int \\frac{x}{\\sqrt{x^{2} + 1}} \\, dx = \\sqrt{x^{2} + 1} + C",
         "error": "None"
       },
-      "seconds": 0.01033
+      "seconds": 0.007807
     },
     {
       "id": "MATH-022",
@@ -311,7 +311,7 @@
         "latex": "\\int x \\log{\\left(x \\right)} \\, dx = \\frac{x^{2} \\log{\\left(x \\right)}}{2} - \\frac{x^{2}}{4} + C",
         "error": "None"
       },
-      "seconds": 0.01213
+      "seconds": 0.011524
     },
     {
       "id": "MATH-023",
@@ -325,7 +325,7 @@
         "latex": "0",
         "error": "None"
       },
-      "seconds": 0.000414
+      "seconds": 0.000386
     },
     {
       "id": "MATH-024",
@@ -339,7 +339,7 @@
         "latex": "5 x^{4}",
         "error": "None"
       },
-      "seconds": 0.001072
+      "seconds": 0.001006
     },
     {
       "id": "MATH-025",
@@ -353,7 +353,7 @@
         "latex": "2 x \\sin{\\left(x \\right)} + \\left(x^{2} + 1\\right) \\cos{\\left(x \\right)}",
         "error": "None"
       },
-      "seconds": 0.00213
+      "seconds": 0.002008
     },
     {
       "id": "MATH-026",
@@ -367,7 +367,7 @@
         "latex": "2 x \\cos{\\left(x^{2} \\right)}",
         "error": "None"
       },
-      "seconds": 0.000683
+      "seconds": 0.000621
     },
     {
       "id": "MATH-027",
@@ -381,7 +381,7 @@
         "latex": "\\frac{1}{x}",
         "error": "None"
       },
-      "seconds": 0.000468
+      "seconds": 0.000453
     },
     {
       "id": "MATH-028",
@@ -395,7 +395,7 @@
         "latex": "2 e^{2 x}",
         "error": "None"
       },
-      "seconds": 0.001509
+      "seconds": 0.001276
     },
     {
       "id": "MATH-029",
@@ -409,7 +409,7 @@
         "latex": "- \\frac{1}{x^{2}}",
         "error": "None"
       },
-      "seconds": 0.001064
+      "seconds": 0.000992
     },
     {
       "id": "MATH-030",
@@ -423,7 +423,7 @@
         "latex": "4",
         "error": "None"
       },
-      "seconds": 0.001751
+      "seconds": 0.001529
     },
     {
       "id": "MATH-031",
@@ -437,7 +437,7 @@
         "latex": "\\lim_{x \\to 2} x^{2} = 4",
         "error": "None"
       },
-      "seconds": 0.000687
+      "seconds": 0.00067
     },
     {
       "id": "MATH-032",
@@ -451,7 +451,7 @@
         "latex": "4",
         "error": "None"
       },
-      "seconds": 0.008645
+      "seconds": 0.008418
     },
     {
       "id": "MATH-033",
@@ -465,7 +465,7 @@
         "latex": "\\lim_{x \\to 2} \\frac{x^{2} - 4}{x - 2} = 4",
         "error": "None"
       },
-      "seconds": 0.001311
+      "seconds": 0.001247
     },
     {
       "id": "MATH-034",
@@ -479,7 +479,7 @@
         "latex": "1",
         "error": "None"
       },
-      "seconds": 0.000812
+      "seconds": 0.000776
     },
     {
       "id": "MATH-035",
@@ -493,7 +493,7 @@
         "latex": "\\lim_{x \\to 0} \\frac{\\sin{\\left(x \\right)}}{x} = 1",
         "error": "None"
       },
-      "seconds": 0.00082
+      "seconds": 0.000758
     },
     {
       "id": "MATH-036",
@@ -507,7 +507,7 @@
         "latex": "1",
         "error": "None"
       },
-      "seconds": 0.021326
+      "seconds": 0.019653
     },
     {
       "id": "MATH-037",
@@ -521,7 +521,7 @@
         "latex": "\\lim_{x \\to 0} \\frac{e^{x} - 1}{x} = 1",
         "error": "None"
       },
-      "seconds": 0.001136
+      "seconds": 0.001063
     },
     {
       "id": "MATH-038",
@@ -535,7 +535,7 @@
         "latex": "\\frac{1}{2}",
         "error": "None"
       },
-      "seconds": 0.007081
+      "seconds": 0.006696
     },
     {
       "id": "MATH-039",
@@ -549,7 +549,7 @@
         "latex": "\\lim_{x \\to 0} \\frac{\\sqrt{x + 1} - 1}{x} = \\frac{1}{2}",
         "error": "None"
       },
-      "seconds": 0.001279
+      "seconds": 0.00145
     },
     {
       "id": "MATH-040",
@@ -563,7 +563,7 @@
         "latex": "0",
         "error": "None"
       },
-      "seconds": 0.001147
+      "seconds": 0.00109
     },
     {
       "id": "MATH-041",
@@ -577,7 +577,7 @@
         "latex": "\\lim_{x \\to 0} \\left|{x}\\right| = 0",
         "error": "None"
       },
-      "seconds": 0.001032
+      "seconds": 0.00094
     },
     {
       "id": "MATH-042",
@@ -591,7 +591,7 @@
         "latex": "y = 4 x - 4",
         "error": "None"
       },
-      "seconds": 0.046722
+      "seconds": 0.042819
     },
     {
       "id": "MATH-043",
@@ -605,7 +605,7 @@
         "latex": "y = x",
         "error": "None"
       },
-      "seconds": 0.000613
+      "seconds": 0.000599
     },
     {
       "id": "MATH-044",
@@ -619,7 +619,7 @@
         "latex": "y = x + 1",
         "error": "None"
       },
-      "seconds": 0.002969
+      "seconds": 0.002835
     },
     {
       "id": "MATH-045",
@@ -633,7 +633,7 @@
         "latex": "y = 0",
         "error": "None"
       },
-      "seconds": 0.00082
+      "seconds": 0.000733
     },
     {
       "id": "MATH-046",
@@ -647,7 +647,7 @@
         "latex": "L_n \\approx 0.375000",
         "error": "None"
       },
-      "seconds": 0.000509
+      "seconds": 0.000445
     },
     {
       "id": "MATH-047",
@@ -661,7 +661,7 @@
         "latex": "L_n \\approx 0.218750",
         "error": "None"
       },
-      "seconds": 0.000647
+      "seconds": 0.000629
     },
     {
       "id": "MATH-048",
@@ -675,7 +675,7 @@
         "latex": "L_n \\approx -6.000000",
         "error": "None"
       },
-      "seconds": 0.000388
+      "seconds": 0.000369
     },
     {
       "id": "MATH-049",
@@ -689,7 +689,7 @@
         "latex": "L_n \\approx 0.285000",
         "error": "None"
       },
-      "seconds": 0.000886
+      "seconds": 0.000867
     },
     {
       "id": "MATH-050",
@@ -703,7 +703,7 @@
         "latex": "R_n \\approx 0.625000",
         "error": "None"
       },
-      "seconds": 0.000391
+      "seconds": 0.000384
     },
     {
       "id": "MATH-051",
@@ -717,7 +717,7 @@
         "latex": "R_n \\approx 0.468750",
         "error": "None"
       },
-      "seconds": 0.00054
+      "seconds": 0.000502
     },
     {
       "id": "MATH-052",
@@ -731,7 +731,7 @@
         "latex": "R_n \\approx -6.000000",
         "error": "None"
       },
-      "seconds": 0.000345
+      "seconds": 0.000354
     },
     {
       "id": "MATH-053",
@@ -745,7 +745,7 @@
         "latex": "R_n \\approx 0.385000",
         "error": "None"
       },
-      "seconds": 0.000464
+      "seconds": 0.000468
     },
     {
       "id": "MATH-054",
@@ -759,7 +759,7 @@
         "latex": "M_n \\approx 0.500000",
         "error": "None"
       },
-      "seconds": 0.000372
+      "seconds": 0.000363
     },
     {
       "id": "MATH-055",
@@ -773,7 +773,7 @@
         "latex": "M_n \\approx 0.328125",
         "error": "None"
       },
-      "seconds": 0.000591
+      "seconds": 0.000573
     },
     {
       "id": "MATH-056",
@@ -787,7 +787,7 @@
         "latex": "M_n \\approx -6.000000",
         "error": "None"
       },
-      "seconds": 0.000346
+      "seconds": 0.000341
     },
     {
       "id": "MATH-057",
@@ -801,7 +801,7 @@
         "latex": "M_n \\approx 0.332500",
         "error": "None"
       },
-      "seconds": 0.000919
+      "seconds": 0.000842
     },
     {
       "id": "MATH-058",
@@ -815,7 +815,7 @@
         "latex": "A = \\int_{0}^{1} |x \\left(1 - x\\right)| \\, dx = \\frac{1}{6}",
         "error": "None"
       },
-      "seconds": 0.015486
+      "seconds": 0.014829
     },
     {
       "id": "MATH-059",
@@ -829,7 +829,7 @@
         "latex": "A = \\int_{-1}^{1} |2| \\, dx = 4",
         "error": "None"
       },
-      "seconds": 0.001616
+      "seconds": 0.001556
     },
     {
       "id": "MATH-060",
@@ -843,7 +843,7 @@
         "latex": "A = \\int_{0}^{2} |x^{2}| \\, dx = \\frac{8}{3}",
         "error": "None"
       },
-      "seconds": 0.003223
+      "seconds": 0.002781
     },
     {
       "id": "MATH-061",
@@ -853,11 +853,11 @@
       "expected": "pi/3",
       "actual": {
         "ok": "True",
-        "result": "1.0471975511965979",
-        "latex": "V = \\pi \\int_{0}^{1} [x]^2 \\, dx = \\frac{\\pi}{3}",
+        "result": "1.0471975511965976",
+        "latex": "V = \\pi \\int_{0}^{1} [x]^2 \\, dx = 0.333333333333333 \\pi",
         "error": "None"
       },
-      "seconds": 0.002068
+      "seconds": 0.003077
     },
     {
       "id": "MATH-062",
@@ -868,10 +868,10 @@
       "actual": {
         "ok": "True",
         "result": "25.132741228718345",
-        "latex": "V = \\pi \\int_{0}^{4} [\\sqrt{x}]^2 \\, dx = 8 \\pi",
+        "latex": "V = \\pi \\int_{0}^{4} [\\sqrt{x}]^2 \\, dx = 8.0 \\pi",
         "error": "None"
       },
-      "seconds": 0.002293
+      "seconds": 0.002634
     },
     {
       "id": "MATH-063",
@@ -882,10 +882,10 @@
       "actual": {
         "ok": "True",
         "result": "37.69911184307752",
-        "latex": "V = \\pi \\int_{0}^{3} [2]^2 \\, dx = 12 \\pi",
+        "latex": "V = \\pi \\int_{0}^{3} [2]^2 \\, dx = 12.0 \\pi",
         "error": "None"
       },
-      "seconds": 0.002075
+      "seconds": 0.002615
     },
     {
       "id": "MATH-064",
@@ -899,7 +899,7 @@
         "latex": "\\int_{1}^{\\infty} \\frac{1}{x^{2}} \\, dx = 1",
         "error": "None"
       },
-      "seconds": 0.04368
+      "seconds": 0.0374
     },
     {
       "id": "MATH-065",
@@ -913,7 +913,7 @@
         "latex": "\\int_{0}^{\\infty} e^{- x} \\, dx = 1",
         "error": "None"
       },
-      "seconds": 0.015988
+      "seconds": 0.015838
     },
     {
       "id": "MATH-066",
@@ -927,7 +927,7 @@
         "latex": "\\int_{0}^{1} \\frac{1}{\\sqrt{x}} \\, dx = 2",
         "error": "None"
       },
-      "seconds": 0.002814
+      "seconds": 0.002641
     },
     {
       "id": "MATH-067",
@@ -941,7 +941,7 @@
         "latex": "\\int_{1}^{2} \\frac{1}{x^{2}} \\, dx = \\frac{1}{2}",
         "error": "None"
       },
-      "seconds": 0.00334
+      "seconds": 0.002706
     },
     {
       "id": "MATH-068",
@@ -955,7 +955,7 @@
         "latex": "\\lim_{x \\to 0} \\frac{1}{x} \\quad \\text{(does not exist)}",
         "error": "None"
       },
-      "seconds": 0.000497
+      "seconds": 0.000459
     },
     {
       "id": "MATH-069",
@@ -969,7 +969,7 @@
         "latex": "\\lim_{x \\to 0} \\frac{1}{x} \\quad \\text{(does not exist)}",
         "error": "None"
       },
-      "seconds": 0.00046
+      "seconds": 0.000391
     },
     {
       "id": "MATH-070",
@@ -983,7 +983,7 @@
         "latex": "A = \\int_{-1}^{1} |x| \\, dx = 1",
         "error": "None"
       },
-      "seconds": 0.003411
+      "seconds": 0.003345
     },
     {
       "id": "MATH-071",
@@ -997,7 +997,7 @@
         "latex": "A = \\int_{0}^{1} |x \\left(x - 1\\right)| \\, dx = \\frac{1}{6}",
         "error": "None"
       },
-      "seconds": 0.010916
+      "seconds": 0.010529
     },
     {
       "id": "MATH-072",
@@ -1011,7 +1011,7 @@
         "latex": "\\int_{1}^{\\infty} \\frac{1}{x} \\, dx = \\text{diverges}",
         "error": "None"
       },
-      "seconds": 0.010864
+      "seconds": 0.009943
     },
     {
       "id": "MATH-073",
@@ -1053,7 +1053,7 @@
         "latex": "",
         "error": "ไม่สามารถอ่านนิพจน์ได้ กรุณาตรวจสอบรูปแบบ เช่น x**2, sin(x), (x**2-4)/(x-2)"
       },
-      "seconds": 4e-06
+      "seconds": 5e-06
     },
     {
       "id": "MATH-076",
@@ -1067,7 +1067,7 @@
         "latex": "",
         "error": "ไม่สามารถอ่านนิพจน์ได้ กรุณาตรวจสอบรูปแบบ เช่น x**2, sin(x), (x**2-4)/(x-2)"
       },
-      "seconds": 0.000177
+      "seconds": 0.000184
     },
     {
       "id": "MATH-077",
@@ -1095,7 +1095,7 @@
         "latex": "",
         "error": "ไม่สามารถคำนวณได้: Empty input string"
       },
-      "seconds": 5e-06
+      "seconds": 4e-06
     },
     {
       "id": "MATH-079",
@@ -1109,7 +1109,7 @@
         "latex": "",
         "error": "ไม่สามารถคำนวณได้: Empty input string"
       },
-      "seconds": 9e-06
+      "seconds": 8e-06
     },
     {
       "id": "MATH-080",
@@ -1149,9 +1149,9 @@
         "ok": "False",
         "result": "None",
         "latex": "",
-        "error": "ไม่สามารถคำนวณได้: n must be >= 1"
+        "error": "ไม่สามารถคำนวณได้: n must be an integer >= 1"
       },
-      "seconds": 0.000161
+      "seconds": 0.000163
     },
     {
       "id": "MATH-083",
@@ -1165,7 +1165,7 @@
         "latex": "",
         "error": "ไม่สามารถคำนวณได้: b must be > a"
       },
-      "seconds": 0.000148
+      "seconds": 0.000149
     },
     {
       "id": "MATH-084",
@@ -1179,35 +1179,35 @@
         "latex": "",
         "error": "ไม่สามารถคำนวณได้: Unknown method: invalid"
       },
-      "seconds": 0.000147
+      "seconds": 0.000143
     },
     {
       "id": "MATH-085",
       "topic": "validation",
       "contract": "proposed-validation",
-      "status": "FAIL",
+      "status": "PASS",
       "expected": "error",
       "actual": {
-        "ok": "True",
-        "result": "0.25",
-        "latex": "L_n \\approx 0.250000",
-        "error": "None"
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถคำนวณได้: n must be an integer >= 1"
       },
-      "seconds": 0.000227
+      "seconds": 0.000139
     },
     {
       "id": "MATH-086",
       "topic": "validation",
       "contract": "proposed-validation",
-      "status": "FAIL",
+      "status": "PASS",
       "expected": "error",
       "actual": {
-        "ok": "True",
-        "result": "1.0471975511965979",
-        "latex": "V = \\pi \\int_{0}^{1} [x]^2 \\, dx = \\frac{\\pi}{3}",
-        "error": "None"
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถคำนวณได้: วิธี 'washer' ยังไม่รองรับในเวอร์ชันปัจจุบัน (รองรับเฉพาะ 'disk')"
       },
-      "seconds": 0.001592
+      "seconds": 3e-06
     }
   ]
 }

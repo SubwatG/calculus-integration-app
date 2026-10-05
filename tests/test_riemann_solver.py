@@ -65,6 +65,10 @@ class TestRiemannErrors:
         res = compute_riemann("x", 0, 1, 0, "left")
         assert res["ok"] is False
 
+    def test_n_non_integer(self):
+        res = compute_riemann("x", 0, 1, 2.5, "left")
+        assert res["ok"] is False
+
 
 class TestMethodsCatalog:
     def test_has_three_methods(self):
