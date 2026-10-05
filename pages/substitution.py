@@ -4,6 +4,7 @@
 """
 
 import streamlit as st
+import sympy as sp
 
 from utils.math_render import preview_math_expr, render_latex, render_steps, render_syntax_guide
 from utils.substitution_solver import solve_substitution
@@ -212,6 +213,14 @@ with tab3:
             if res["ok"]:
                 st.markdown("#### ผลลัพธ์การคำนวณ")
                 render_latex(res["latex"])
+
+                if res.get("status") == "non_elementary":
+                    st.warning("ข้อสังเกตเชิงมโนทัศน์: ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน (Non-Elementary Function) คำตอบที่ได้อยู่ในรูปฟังก์ชันพิเศษระดับสูง เช่น erf, Si, li")
+                elif res.get("u_candidate") is not None:
+                    u_c = res["u_candidate"]
+                    du_c = res["du_candidate"]
+                    st.info(f"💡 คำแนะนำเทคนิคการเปลี่ยนตัวแปร: สามารถกำหนดให้ $u = {sp.latex(u_c)}$ ซึ่งจะได้ $du = {sp.latex(du_c)} \\, dx$")
+
                 st.divider()
                 st.markdown("#### ขั้นตอนการพิจารณา")
                 render_steps(res["steps"])
