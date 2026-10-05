@@ -88,15 +88,28 @@ else:
         st.markdown("### ผลลัพธ์สมการเส้นสัมผัส")
         col_m1, col_m2 = st.columns([1, 2])
         with col_m1:
-            m_val = res["result"]
-            m_str = f"{m_val:.4f}" if m_val is not None else "-"
+            status = res.get("status")
+            if status == "finite" and res["result"] is not None:
+                m_str = f"{res['result']:.4f}"
+            elif status == "vertical":
+                m_str = "∞ (แนวดิ่ง)"
+            elif status == "non_differentiable":
+                m_str = "ไม่มีค่า (DNE)"
+            else:
+                m_val = res["result"]
+                m_str = f"{m_val:.4f}" if m_val is not None else "-"
             st.metric(label="ความชันเส้นสัมผัส m = f'(a)", value=m_str)
         with col_m2:
             render_latex(res["latex"])
 
         st.divider()
         try:
-            fig, _ = plot_tangent(res["expr"], a_val)
+            fig, _ = plot_tangent(
+                res["expr"],
+                a_val,
+                slope=res.get("result"),
+                status=res.get("status", "finite"),
+            )
             st.pyplot(fig)
         except Exception:
             st.warning("ไม่สามารถวาดกราฟได้ ตรวจสอบฟังก์ชันอีกครั้ง")

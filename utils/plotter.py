@@ -145,28 +145,36 @@ def _stub_figure(title: str) -> tuple:
     return fig, ax
 
 
-def plot_tangent(expr: sp.Expr, a: float, span: float = 3.0) -> tuple:
-    """วาดเส้นโค้ง f(x) + เส้นสัมผัสที่จุด a
+def plot_tangent(
+    expr: sp.Expr,
+    a: float,
+    span: float = 3.0,
+    slope: float | None = None,
+    status: str = "finite",
+) -> tuple:
+    """วาดกราฟ f(x) และเส้นสัมผัสที่จุด x = a
 
     expr: sympy expression
     a: จุดที่ต้องการสัมผัส
     span: ความกว้างช่วงรอบจุด a
+    slope: ความชันของเส้นสัมผัส (ถ้ามี)
+    status: สถานะเส้นสัมผัส (finite, vertical, non_differentiable, undefined_point)
     """
-    df = sp.diff(expr, X)
     f = sp.lambdify(X, expr, modules=["numpy"])
 
     fa_sym = expr.subs(X, a)
-    slope_sym = df.subs(X, a)
-
     try:
         fa = float(fa_sym)
     except (TypeError, ValueError):
         fa = 0.0
 
-    try:
-        slope = float(slope_sym)
-    except (TypeError, ValueError):
-        slope = 0.0
+    if slope is None and status == "finite":
+        df = sp.diff(expr, X)
+        slope_sym = df.subs(X, a)
+        try:
+            slope = float(slope_sym)
+        except (TypeError, ValueError):
+            slope = 0.0
 
     x_min = a - span
     x_max = a + span
@@ -176,25 +184,44 @@ def plot_tangent(expr: sp.Expr, a: float, span: float = 3.0) -> tuple:
         ys = _as_curve(f(xs), xs)
         ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
 
-    ys_tangent = slope * (xs - a) + fa
-
     fig, ax = plt.subplots(figsize=(8, 4.5))
     ax.plot(xs, ys, color=CURVE, lw=2.5, label="y = f(x)")
-    ax.plot(
-        xs,
-        ys_tangent,
-        color="#D96B27",
-        lw=2,
-        linestyle="--",
-        label=f"Tangent at x={a:.2f} (m={slope:.2f})",
-    )
+
+    if status == "vertical":
+        ax.axvline(
+            a,
+            color="#D96B27",
+            lw=2,
+            linestyle="--",
+            label=f"Vertical Tangent at x={a:.2f}",
+        )
+        title_str = f"Vertical Tangent at x = {a:.2f}  |  Slope m = ∞"
+    elif status == "non_differentiable":
+        title_str = f"Non-Differentiable at x = {a:.2f} (Corner Point)"
+    elif status == "finite" and slope is not None:
+        ys_tangent = slope * (xs - a) + fa
+        ax.plot(
+            xs,
+            ys_tangent,
+            color="#D96B27",
+            lw=2,
+            linestyle="--",
+            label=f"Tangent at x={a:.2f} (m={slope:.2f})",
+        )
+        title_str = f"Tangent Line at x = {a:.2f}  |  Slope m = {slope:.4f}"
+    else:
+        title_str = f"Point at x = {a:.2f}"
+
+    point_label = f"Point ({a:.2f}, {fa:.2f})"
+    if status == "non_differentiable":
+        point_label += " (Corner)"
     ax.scatter(
         [a],
         [fa],
         color="#C0392B",
         s=65,
         zorder=5,
-        label=f"Point ({a:.2f}, {fa:.2f})",
+        label=point_label,
     )
 
     ax.axhline(0, color="#999", lw=0.8, linestyle=":")
@@ -209,7 +236,7 @@ def plot_tangent(expr: sp.Expr, a: float, span: float = 3.0) -> tuple:
 
     ax.set_xlabel("x")
     ax.set_ylabel("y")
-    ax.set_title(f"Tangent Line at x = {a:.2f}  |  Slope m = {slope:.4f}")
+    ax.set_title(title_str)
     ax.grid(True, color=GRID, lw=0.5)
     ax.legend(loc="best", fontsize=9)
     fig.tight_layout()
