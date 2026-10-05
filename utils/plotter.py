@@ -25,6 +25,19 @@ GRID = "#E2E8F0"       # Subtle structural grid
 TEXT = "#18181B"       # Stark Charcoal Black
 
 
+def _as_curve(values, xs: np.ndarray) -> np.ndarray:
+    """Broadcast scalar or array output to xs shape; keep nonfinite as nan for masked fills."""
+    arr = np.asarray(values)
+    if np.iscomplexobj(arr):
+        arr = np.where(np.imag(arr) == 0, np.real(arr), np.nan)
+    arr = np.asarray(arr, dtype=float)
+    if arr.ndim == 0:
+        arr = np.full(xs.shape, float(arr), dtype=float)
+    elif arr.shape != xs.shape:
+        arr = np.full(xs.shape, float(arr.flat[0]) if arr.size == 1 else np.nan, dtype=float)
+    return np.where(np.isfinite(arr), arr, np.nan)
+
+
 def plot_riemann(
     expr: sp.Expr,
     a: float,
@@ -49,7 +62,7 @@ def plot_riemann(
 
     xs_smooth = np.linspace(a - pad, b + pad, 400)
     with np.errstate(all="ignore"):
-        ys_smooth = f(xs_smooth)
+        ys_smooth = _as_curve(f(xs_smooth), xs_smooth)
 
     # sample points ตามวิธี
     if method == "left":
@@ -60,7 +73,7 @@ def plot_riemann(
         xs_rect = np.array([a + (i + 0.5) * dx for i in range(n)])
 
     with np.errstate(all="ignore"):
-        ys_rect = f(xs_rect)
+        ys_rect = _as_curve(f(xs_rect), xs_rect)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
     ax.plot(xs_smooth, ys_smooth, color=CURVE, lw=2, label="y = f(x)")
@@ -89,7 +102,7 @@ def plot_riemann(
     # แรเงาพื้นที่ใต้กราฟจริง (สำหรับเทียบกับ exact)
     xs_area = np.linspace(a, b, 300)
     with np.errstate(all="ignore"):
-        ys_area = f(xs_area)
+        ys_area = _as_curve(f(xs_area), xs_area)
     ax.fill_between(
         xs_area,
         ys_area,
@@ -160,11 +173,8 @@ def plot_tangent(expr: sp.Expr, a: float, span: float = 3.0) -> tuple:
     xs = np.linspace(x_min, x_max, 400)
 
     with np.errstate(all="ignore"):
-        ys = f(xs)
-        if isinstance(ys, (int, float)):
-            ys = np.full_like(xs, ys)
-        else:
-            ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
+        ys = _as_curve(f(xs), xs)
+        ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
 
     ys_tangent = slope * (xs - a) + fa
 
@@ -232,11 +242,8 @@ def plot_limit_near(expr: sp.Expr, a: float, delta: float = 0.5, span: float = 3
     xs = np.concatenate([xs_left, xs_right])
 
     with np.errstate(all="ignore"):
-        ys = f(xs)
-        if isinstance(ys, (int, float)):
-            ys = np.full_like(xs, ys)
-        else:
-            ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
+        ys = _as_curve(f(xs), xs)
+        ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
     ax.plot(xs, ys, color=CURVE, lw=2.5, label="y = f(x)")
@@ -324,8 +331,8 @@ def plot_volume(expr, a: float, b: float, method: str = "disk") -> tuple:
     xs_ext = np.linspace(x_min, x_max, 400)
 
     with np.errstate(all="ignore"):
-        ys_solid = f(xs_solid)
-        ys_ext = f(xs_ext)
+        ys_solid = _as_curve(f(xs_solid), xs_solid)
+        ys_ext = _as_curve(f(xs_ext), xs_ext)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
 
@@ -385,14 +392,14 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
     xs_area = np.linspace(x_start, x_end, 300)
 
     with np.errstate(all="ignore"):
-        ys_f_full = f(xs_full)
-        ys_g_full = g(xs_full)
-        ys_f_area = f(xs_area)
-        ys_g_area = g(xs_area)
+        ys_f_full = _as_curve(f(xs_full), xs_full)
+        ys_g_full = _as_curve(g(xs_full), xs_full)
+        ys_f_area = _as_curve(f(xs_area), xs_area)
+        ys_g_area = _as_curve(g(xs_area), xs_area)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
-    ax.plot(xs_full, ys_f_full, color=CURVE, lw=2.2, label="y = f(x) (top)")
-    ax.plot(xs_full, ys_g_full, color="#2563EB", lw=2.2, linestyle="--", label="y = g(x) (bottom)")
+    ax.plot(xs_full, ys_f_full, color=CURVE, lw=2.2, label="y = f(x)")
+    ax.plot(xs_full, ys_g_full, color="#2563EB", lw=2.2, linestyle="--", label="y = g(x)")
 
     # แรเงาพื้นที่ระหว่าง f และ g
     ax.fill_between(
@@ -403,7 +410,7 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
         interpolate=True,
         color=CURVE,
         alpha=0.35,
-        label="Enclosed Area (f >= g)",
+        label="Area (f >= g)",
     )
     ax.fill_between(
         xs_area,
@@ -413,7 +420,7 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
         interpolate=True,
         color="#DC2626",
         alpha=0.25,
-        label="Inverted Area (g > f)",
+        label="Area (g > f)",
     )
 
     ax.axvline(a, color="#9ca3af", linestyle=":", lw=1.2, label=f"x = {a}")
@@ -456,7 +463,7 @@ def plot_improper(expr, a: float, b: float | None = None) -> tuple:
     xs = xs[np.abs(xs) > 1e-4]
 
     with np.errstate(all="ignore"):
-        ys = f(xs)
+        ys = _as_curve(f(xs), xs)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
     ax.plot(xs, ys, color=CURVE, lw=2.2, label="y = f(x)")
@@ -464,7 +471,7 @@ def plot_improper(expr, a: float, b: float | None = None) -> tuple:
     xs_shade = np.linspace(x_start, t_bound, 300)
     xs_shade = xs_shade[np.abs(xs_shade) > 1e-4]
     with np.errstate(all="ignore"):
-        ys_shade = f(xs_shade)
+        ys_shade = _as_curve(f(xs_shade), xs_shade)
 
     ax.fill_between(
         xs_shade,

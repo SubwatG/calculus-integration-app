@@ -13,9 +13,40 @@ class TestComputeAreaBetween:
     def test_compute_area_between_basic(self):
         res = compute_area_between('x', 'x**2', 0, 1)
         assert res["ok"] is True
-        # TODO: ตรวจค่า result ตามหัวข้อ
-        assert res["result"] is not None
+        assert res["result"] == pytest.approx(1.0 / 6.0)
         assert len(res["steps"]) >= 3
+
+    def test_compute_area_between_swapped_is_positive(self):
+        res = compute_area_between('x**2', 'x', 0, 1)
+        assert res["ok"] is True
+        assert res["result"] == pytest.approx(1.0 / 6.0)
+
+    def test_compute_area_between_signed_region_geometric_positive(self):
+        res = compute_area_between('x', '0', -1, 1)
+        assert res["ok"] is True
+        assert res["result"] == pytest.approx(1.0)
+
+    def test_compute_area_between_constants(self):
+        res = compute_area_between('3', '1', 0, 2)
+        assert res["ok"] is True
+        assert res["result"] == pytest.approx(4.0)
+
+    def test_compute_area_between_equal_functions(self):
+        res = compute_area_between('x', 'x', -1, 1)
+        assert res["ok"] is True
+        assert res["result"] == pytest.approx(0.0)
+
+    def test_compute_area_between_invalid_bounds(self):
+        res = compute_area_between('x', '0', 1, 0)
+        assert res["ok"] is False
+        assert res["result"] is None
+        assert res["error"]
+
+    def test_compute_area_between_invalid_domain_singular(self):
+        res = compute_area_between('1/x', '0', -1, 1)
+        assert res["ok"] is False
+        assert res["result"] is None
+        assert res["error"]
 
     def test_compute_area_between_invalid_input(self):
         res = compute_area_between('', '', 0, 1)

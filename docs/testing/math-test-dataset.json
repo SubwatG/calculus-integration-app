@@ -1,0 +1,1426 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "MATH-001",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "0"
+      ],
+      "expected": "0",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-002",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "7"
+      ],
+      "expected": "7*x",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-003",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "x"
+      ],
+      "expected": "x**2/2",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-004",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "x^4"
+      ],
+      "expected": "x**5/5",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-005",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "3x^2 - 2x + 1"
+      ],
+      "expected": "x**3-x**2+x",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-006",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "1/x"
+      ],
+      "expected": "log(x)",
+      "check": "antiderivative",
+      "domain": "x>0; use ln|x| on each real component",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-007",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "x^(-2)"
+      ],
+      "expected": "-1/x",
+      "check": "antiderivative",
+      "domain": "x!=0",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-008",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "sqrt(x)"
+      ],
+      "expected": "2*x**(3/2)/3",
+      "check": "antiderivative",
+      "domain": "x>0",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-009",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "e^x"
+      ],
+      "expected": "exp(x)",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-010",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "sin(x)"
+      ],
+      "expected": "-cos(x)",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-011",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "cos(x)"
+      ],
+      "expected": "sin(x)",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-012",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "1/(1+x^2)"
+      ],
+      "expected": "atan(x)",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-013",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "1/sqrt(1-x^2)"
+      ],
+      "expected": "asin(x)",
+      "check": "antiderivative",
+      "domain": "-1<x<1",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-014",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "x*e^x"
+      ],
+      "expected": "(x-1)*exp(x)",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-015",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "ln(x)"
+      ],
+      "expected": "x*log(x)-x",
+      "check": "antiderivative",
+      "domain": "x>0",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-016",
+      "topic": "basic-and-techniques",
+      "operation": "integrate",
+      "args": [
+        "1/(x^2-1)"
+      ],
+      "expected": "log(x-1)/2-log(x+1)/2",
+      "check": "antiderivative",
+      "domain": "x>1; real branches separately",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-017",
+      "topic": "substitution-and-parts",
+      "operation": "substitution",
+      "args": [
+        "2x*cos(x^2)"
+      ],
+      "expected": "sin(x**2)",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-018",
+      "topic": "substitution-and-parts",
+      "operation": "substitution",
+      "args": [
+        "2*x/(1+x^2)"
+      ],
+      "expected": "log(1+x**2)",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-019",
+      "topic": "substitution-and-parts",
+      "operation": "substitution",
+      "args": [
+        "3*x^2*e^(x^3)"
+      ],
+      "expected": "exp(x**3)",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-020",
+      "topic": "substitution-and-parts",
+      "operation": "substitution",
+      "args": [
+        "cos(x)/sin(x)"
+      ],
+      "expected": "log(sin(x))",
+      "check": "antiderivative",
+      "domain": "0<x<pi",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-021",
+      "topic": "substitution-and-parts",
+      "operation": "substitution",
+      "args": [
+        "x/sqrt(1+x^2)"
+      ],
+      "expected": "sqrt(1+x**2)",
+      "check": "antiderivative",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-022",
+      "topic": "substitution-and-parts",
+      "operation": "substitution",
+      "args": [
+        "x*ln(x)"
+      ],
+      "expected": "x**2*log(x)/2-x**2/4",
+      "check": "antiderivative",
+      "domain": "x>0",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-023",
+      "topic": "derivative",
+      "operation": "differentiate",
+      "args": [
+        "5"
+      ],
+      "expected": "0",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-024",
+      "topic": "derivative",
+      "operation": "differentiate",
+      "args": [
+        "x^5"
+      ],
+      "expected": "5*x**4",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-025",
+      "topic": "derivative",
+      "operation": "differentiate",
+      "args": [
+        "(x^2+1)*sin(x)"
+      ],
+      "expected": "2*x*sin(x)+(x**2+1)*cos(x)",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-026",
+      "topic": "derivative",
+      "operation": "differentiate",
+      "args": [
+        "sin(x^2)"
+      ],
+      "expected": "2*x*cos(x**2)",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-027",
+      "topic": "derivative",
+      "operation": "differentiate",
+      "args": [
+        "ln(x)"
+      ],
+      "expected": "1/x",
+      "check": "value",
+      "domain": "x>0",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-028",
+      "topic": "derivative",
+      "operation": "differentiate",
+      "args": [
+        "e^(2x)"
+      ],
+      "expected": "2*exp(2*x)",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-029",
+      "topic": "derivative",
+      "operation": "differentiate",
+      "args": [
+        "1/x"
+      ],
+      "expected": "-1/x**2",
+      "check": "value",
+      "domain": "x!=0",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-030",
+      "topic": "limit",
+      "operation": "limit",
+      "args": [
+        "x^2",
+        2
+      ],
+      "expected": "4",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-031",
+      "topic": "limit",
+      "operation": "limit_near",
+      "args": [
+        "x^2",
+        2
+      ],
+      "expected": "4",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-032",
+      "topic": "limit",
+      "operation": "limit",
+      "args": [
+        "(x^2-4)/(x-2)",
+        2
+      ],
+      "expected": "4",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-033",
+      "topic": "limit",
+      "operation": "limit_near",
+      "args": [
+        "(x^2-4)/(x-2)",
+        2
+      ],
+      "expected": "4",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-034",
+      "topic": "limit",
+      "operation": "limit",
+      "args": [
+        "sin(x)/x",
+        0
+      ],
+      "expected": "1",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-035",
+      "topic": "limit",
+      "operation": "limit_near",
+      "args": [
+        "sin(x)/x",
+        0
+      ],
+      "expected": "1",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-036",
+      "topic": "limit",
+      "operation": "limit",
+      "args": [
+        "(e^x-1)/x",
+        0
+      ],
+      "expected": "1",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-037",
+      "topic": "limit",
+      "operation": "limit_near",
+      "args": [
+        "(e^x-1)/x",
+        0
+      ],
+      "expected": "1",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-038",
+      "topic": "limit",
+      "operation": "limit",
+      "args": [
+        "(sqrt(1+x)-1)/x",
+        0
+      ],
+      "expected": "1/2",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-039",
+      "topic": "limit",
+      "operation": "limit_near",
+      "args": [
+        "(sqrt(1+x)-1)/x",
+        0
+      ],
+      "expected": "1/2",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-040",
+      "topic": "limit",
+      "operation": "limit",
+      "args": [
+        "abs(x)",
+        0
+      ],
+      "expected": "0",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-041",
+      "topic": "limit",
+      "operation": "limit_near",
+      "args": [
+        "abs(x)",
+        0
+      ],
+      "expected": "0",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-042",
+      "topic": "tangent",
+      "operation": "tangent",
+      "args": [
+        "x^2",
+        2
+      ],
+      "expected": "4",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-043",
+      "topic": "tangent",
+      "operation": "tangent",
+      "args": [
+        "sin(x)",
+        0
+      ],
+      "expected": "1",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-044",
+      "topic": "tangent",
+      "operation": "tangent",
+      "args": [
+        "e^x",
+        0
+      ],
+      "expected": "1",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-045",
+      "topic": "tangent",
+      "operation": "tangent",
+      "args": [
+        "x^3",
+        0
+      ],
+      "expected": "0",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-046",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "x",
+        0,
+        1,
+        4,
+        "left"
+      ],
+      "expected": "3/8",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-047",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "x^2",
+        0,
+        1,
+        4,
+        "left"
+      ],
+      "expected": "7/32",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-048",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "-2",
+        -1,
+        2,
+        3,
+        "left"
+      ],
+      "expected": "-6",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-049",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "x^2",
+        0,
+        1,
+        10,
+        "left"
+      ],
+      "expected": "57/200",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-050",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "x",
+        0,
+        1,
+        4,
+        "right"
+      ],
+      "expected": "5/8",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-051",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "x^2",
+        0,
+        1,
+        4,
+        "right"
+      ],
+      "expected": "15/32",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-052",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "-2",
+        -1,
+        2,
+        3,
+        "right"
+      ],
+      "expected": "-6",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-053",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "x^2",
+        0,
+        1,
+        10,
+        "right"
+      ],
+      "expected": "77/200",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-054",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "x",
+        0,
+        1,
+        4,
+        "midpoint"
+      ],
+      "expected": "1/2",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-055",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "x^2",
+        0,
+        1,
+        4,
+        "midpoint"
+      ],
+      "expected": "21/64",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-056",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "-2",
+        -1,
+        2,
+        3,
+        "midpoint"
+      ],
+      "expected": "-6",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-057",
+      "topic": "riemann",
+      "operation": "riemann",
+      "args": [
+        "x^2",
+        0,
+        1,
+        10,
+        "midpoint"
+      ],
+      "expected": "133/400",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-058",
+      "topic": "area",
+      "operation": "area",
+      "args": [
+        "x",
+        "x^2",
+        0,
+        1
+      ],
+      "expected": "1/6",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-059",
+      "topic": "area",
+      "operation": "area",
+      "args": [
+        "2",
+        "0",
+        -1,
+        1
+      ],
+      "expected": "4",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-060",
+      "topic": "area",
+      "operation": "area",
+      "args": [
+        "x^2",
+        "0",
+        0,
+        2
+      ],
+      "expected": "8/3",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-061",
+      "topic": "volume-disk",
+      "operation": "volume",
+      "args": [
+        "x",
+        0,
+        1,
+        "disk"
+      ],
+      "expected": "pi/3",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-062",
+      "topic": "volume-disk",
+      "operation": "volume",
+      "args": [
+        "sqrt(x)",
+        0,
+        4,
+        "disk"
+      ],
+      "expected": "8*pi",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-063",
+      "topic": "volume-disk",
+      "operation": "volume",
+      "args": [
+        "2",
+        0,
+        3,
+        "disk"
+      ],
+      "expected": "12*pi",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-064",
+      "topic": "improper",
+      "operation": "improper",
+      "args": [
+        "1/x^2",
+        1,
+        null
+      ],
+      "expected": "1",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-065",
+      "topic": "improper",
+      "operation": "improper",
+      "args": [
+        "e^(-x)",
+        0,
+        null
+      ],
+      "expected": "1",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-066",
+      "topic": "improper",
+      "operation": "improper",
+      "args": [
+        "1/sqrt(x)",
+        0,
+        1
+      ],
+      "expected": "2",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-067",
+      "topic": "improper",
+      "operation": "improper",
+      "args": [
+        "1/x^2",
+        1,
+        2
+      ],
+      "expected": "1/2",
+      "check": "value",
+      "domain": "R",
+      "kind": "normal",
+      "contract": "mathematical",
+      "priority": "P1",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-068",
+      "topic": "limit",
+      "operation": "limit_near",
+      "args": [
+        "1/x",
+        0
+      ],
+      "expected": "no_two_sided_limit",
+      "check": "reject_nonexistent",
+      "domain": "R",
+      "kind": "boundary",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-069",
+      "topic": "limit",
+      "operation": "limit",
+      "args": [
+        "1/x",
+        0
+      ],
+      "expected": "no_two_sided_limit",
+      "check": "reject_nonexistent",
+      "domain": "R",
+      "kind": "boundary",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-070",
+      "topic": "area",
+      "operation": "area",
+      "args": [
+        "x",
+        "0",
+        -1,
+        1
+      ],
+      "expected": "1",
+      "check": "value",
+      "domain": "R",
+      "kind": "boundary",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-071",
+      "topic": "area",
+      "operation": "area",
+      "args": [
+        "x^2",
+        "x",
+        0,
+        1
+      ],
+      "expected": "1/6",
+      "check": "value",
+      "domain": "R",
+      "kind": "boundary",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-072",
+      "topic": "improper",
+      "operation": "improper",
+      "args": [
+        "1/x",
+        1,
+        null
+      ],
+      "expected": "diverges",
+      "check": "divergence",
+      "domain": "R",
+      "kind": "boundary",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-073",
+      "topic": "improper",
+      "operation": "improper",
+      "args": [
+        "1/x^2",
+        0,
+        1
+      ],
+      "expected": "diverges",
+      "check": "divergence",
+      "domain": "R",
+      "kind": "boundary",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-074",
+      "topic": "validation",
+      "operation": "integrate",
+      "args": [
+        ""
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-075",
+      "topic": "validation",
+      "operation": "differentiate",
+      "args": [
+        "  "
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-076",
+      "topic": "validation",
+      "operation": "limit",
+      "args": [
+        "sin(",
+        0
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-077",
+      "topic": "validation",
+      "operation": "substitution",
+      "args": [
+        "x+"
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-078",
+      "topic": "validation",
+      "operation": "tangent",
+      "args": [
+        "",
+        0
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-079",
+      "topic": "validation",
+      "operation": "area",
+      "args": [
+        "",
+        "x",
+        0,
+        1
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-080",
+      "topic": "validation",
+      "operation": "volume",
+      "args": [
+        "",
+        0,
+        1,
+        "disk"
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-081",
+      "topic": "validation",
+      "operation": "improper",
+      "args": [
+        "",
+        1,
+        null
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-082",
+      "topic": "validation",
+      "operation": "riemann",
+      "args": [
+        "x",
+        0,
+        1,
+        0,
+        "left"
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-083",
+      "topic": "validation",
+      "operation": "riemann",
+      "args": [
+        "x",
+        1,
+        0,
+        4,
+        "left"
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-084",
+      "topic": "validation",
+      "operation": "riemann",
+      "args": [
+        "x",
+        0,
+        1,
+        4,
+        "invalid"
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "mathematical",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-085",
+      "topic": "validation",
+      "operation": "riemann",
+      "args": [
+        "x",
+        0,
+        1,
+        2.5,
+        "left"
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "proposed-validation",
+      "priority": "P0",
+      "tolerance": 1e-09
+    },
+    {
+      "id": "MATH-086",
+      "topic": "validation",
+      "operation": "volume",
+      "args": [
+        "x",
+        0,
+        1,
+        "washer"
+      ],
+      "expected": "error",
+      "check": "error",
+      "domain": "R",
+      "kind": "invalid",
+      "contract": "proposed-validation",
+      "priority": "P0",
+      "tolerance": 1e-09
+    }
+  ]
+}

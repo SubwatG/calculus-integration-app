@@ -63,13 +63,23 @@ class TestComputeLimit:
         res = compute_limit("x**2", 3)
         assert res["ok"] is True
         assert expr_eq(res["result"], "9")
+        assert res["status"] == "finite"
 
-    def test_limit_to_zero(self):
+    def test_limit_to_zero_dne(self):
         res = compute_limit("1/x", 0)
         assert res["ok"] is True
-        # SymPy ให้ zoo (complex infinity) หรือ oo แล้วแต่รุ่น
-        assert str(res["result"]) in ("zoo", "oo", "-oo")
+        assert res["status"] == "dne"
+        assert res["result"] is None
+        assert res["left_limit"] == -sp.oo
+        assert res["right_limit"] == sp.oo
+
+    def test_limit_equal_infinite(self):
+        res = compute_limit("1/x**2", 0)
+        assert res["ok"] is True
+        assert res["status"] == "infinite"
+        assert res["left_limit"] == res["right_limit"] == sp.oo
 
     def test_invalid_input(self):
         res = compute_limit("", 0)
         assert res["ok"] is False
+        assert res["status"] == "error"

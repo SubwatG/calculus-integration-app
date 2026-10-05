@@ -1,0 +1,445 @@
+{
+  "scope": "Loading and configured-key scoring only; not rendered UI or answer-key mathematical audit",
+  "lessons": 59,
+  "quiz_files": 3,
+  "questions": 15,
+  "total": 75,
+  "passed": 75,
+  "failed": 0,
+  "lesson_files": [
+    "cal2/00-overview.md",
+    "cal2/01-basic-rules-guided.md",
+    "cal2/01-basic-rules.md",
+    "cal2/ch01/00-intro.md",
+    "cal2/ch01/01-antiderivative-indefinite.md",
+    "cal2/ch01/02-exercises-12.md",
+    "cal2/ch01/03-exercises-14.md",
+    "cal2/ch02/00-intro.md",
+    "cal2/ch02/01-integration-by-substitution.md",
+    "cal2/ch02/02-integration-by-parts.md",
+    "cal2/ch02/03-partial-fractions.md",
+    "cal2/ch02/04-integrals-with-quadratic.md",
+    "cal2/ch02/05-exercises-24.md",
+    "cal2/ch03/00-intro.md",
+    "cal2/ch03/01-area-under-curve.md",
+    "cal2/ch03/02-volume-of-solids.md",
+    "cal2/ch03/03-arc-length.md",
+    "cal2/ch03/04-volume-of-revolution.md",
+    "cal2/ch04/00-intro.md",
+    "cal2/ch04/01-improper-type1-discontinuous.md",
+    "cal2/ch04/02-exercises-41.md",
+    "cal2/ch04/03-improper-type2-unbounded.md",
+    "cal2/ch04/04-exercises-42.md",
+    "cal2/ch05/00-intro.md",
+    "cal2/ch05/01-rectangular-coordinates.md",
+    "cal2/ch05/02-quadric-surfaces.md",
+    "cal2/ch05/03-exercises-52.md",
+    "cal2/ch06/00-intro.md",
+    "cal2/ch06/01-functions-of-two-variables.md",
+    "cal2/ch06/02-functions-of-many-variables.md",
+    "cal2/ch06/03-surface-integrals.md",
+    "cal2/ch07/00-intro.md",
+    "cal2/ch07/01-parametric-equations.md",
+    "cal2/ch07/02-line-integrals.md",
+    "cal2/ch07/03-exercises-73.md",
+    "cal2/ch07/04-exercises-75.md",
+    "cal2/ch08/00-intro.md",
+    "cal2/ch08/01-differential-equations.md",
+    "cal2/ch08/02-exercises-85.md",
+    "cal2/solutions/00-intro.md",
+    "cal2/solutions/01-solutions-13.md",
+    "cal2/solutions/02-solutions-32.md",
+    "cal1/ch01/00-intro.md",
+    "cal1/ch01/01-exercises-14.md",
+    "cal1/ch01/02-exercises-15.md",
+    "cal1/ch02/00-intro.md",
+    "cal1/ch02/01-geometric-problems.md",
+    "cal1/ch02/02-exercises-23.md",
+    "cal1/ch02/03-exercises-25.md",
+    "cal1/ch03/00-intro.md",
+    "cal1/ch03/01-max-min.md",
+    "cal1/ch03/02-applications-of-max-min.md",
+    "cal1/ch03/03-exercises-35.md",
+    "cal1/ch04/00-intro.md",
+    "cal1/ch04/01-indeterminate-forms.md",
+    "cal1/ch04/02-exercises-42.md",
+    "cal1/ch05/00-intro.md",
+    "cal1/ch05/01-exercises-52.md",
+    "cal1/solutions/00-intro.md"
+  ],
+  "quizzes": [
+    {
+      "file": "data/quizzes/basic_rules.json",
+      "questions": 5
+    },
+    {
+      "file": "data/quizzes/riemann.json",
+      "questions": 5
+    },
+    {
+      "file": "data/quizzes/techniques.json",
+      "questions": 5
+    }
+  ],
+  "checks": [
+    {
+      "id": "LIB-INVENTORY",
+      "passed": true
+    },
+    {
+      "id": "LIB-001",
+      "filename": "cal2/00-overview.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-002",
+      "filename": "cal2/01-basic-rules-guided.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-003",
+      "filename": "cal2/01-basic-rules.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-004",
+      "filename": "cal2/ch01/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-005",
+      "filename": "cal2/ch01/01-antiderivative-indefinite.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-006",
+      "filename": "cal2/ch01/02-exercises-12.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-007",
+      "filename": "cal2/ch01/03-exercises-14.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-008",
+      "filename": "cal2/ch02/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-009",
+      "filename": "cal2/ch02/01-integration-by-substitution.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-010",
+      "filename": "cal2/ch02/02-integration-by-parts.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-011",
+      "filename": "cal2/ch02/03-partial-fractions.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-012",
+      "filename": "cal2/ch02/04-integrals-with-quadratic.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-013",
+      "filename": "cal2/ch02/05-exercises-24.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-014",
+      "filename": "cal2/ch03/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-015",
+      "filename": "cal2/ch03/01-area-under-curve.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-016",
+      "filename": "cal2/ch03/02-volume-of-solids.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-017",
+      "filename": "cal2/ch03/03-arc-length.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-018",
+      "filename": "cal2/ch03/04-volume-of-revolution.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-019",
+      "filename": "cal2/ch04/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-020",
+      "filename": "cal2/ch04/01-improper-type1-discontinuous.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-021",
+      "filename": "cal2/ch04/02-exercises-41.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-022",
+      "filename": "cal2/ch04/03-improper-type2-unbounded.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-023",
+      "filename": "cal2/ch04/04-exercises-42.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-024",
+      "filename": "cal2/ch05/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-025",
+      "filename": "cal2/ch05/01-rectangular-coordinates.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-026",
+      "filename": "cal2/ch05/02-quadric-surfaces.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-027",
+      "filename": "cal2/ch05/03-exercises-52.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-028",
+      "filename": "cal2/ch06/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-029",
+      "filename": "cal2/ch06/01-functions-of-two-variables.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-030",
+      "filename": "cal2/ch06/02-functions-of-many-variables.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-031",
+      "filename": "cal2/ch06/03-surface-integrals.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-032",
+      "filename": "cal2/ch07/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-033",
+      "filename": "cal2/ch07/01-parametric-equations.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-034",
+      "filename": "cal2/ch07/02-line-integrals.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-035",
+      "filename": "cal2/ch07/03-exercises-73.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-036",
+      "filename": "cal2/ch07/04-exercises-75.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-037",
+      "filename": "cal2/ch08/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-038",
+      "filename": "cal2/ch08/01-differential-equations.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-039",
+      "filename": "cal2/ch08/02-exercises-85.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-040",
+      "filename": "cal2/solutions/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-041",
+      "filename": "cal2/solutions/01-solutions-13.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-042",
+      "filename": "cal2/solutions/02-solutions-32.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-043",
+      "filename": "cal1/ch01/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-044",
+      "filename": "cal1/ch01/01-exercises-14.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-045",
+      "filename": "cal1/ch01/02-exercises-15.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-046",
+      "filename": "cal1/ch02/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-047",
+      "filename": "cal1/ch02/01-geometric-problems.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-048",
+      "filename": "cal1/ch02/02-exercises-23.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-049",
+      "filename": "cal1/ch02/03-exercises-25.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-050",
+      "filename": "cal1/ch03/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-051",
+      "filename": "cal1/ch03/01-max-min.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-052",
+      "filename": "cal1/ch03/02-applications-of-max-min.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-053",
+      "filename": "cal1/ch03/03-exercises-35.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-054",
+      "filename": "cal1/ch04/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-055",
+      "filename": "cal1/ch04/01-indeterminate-forms.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-056",
+      "filename": "cal1/ch04/02-exercises-42.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-057",
+      "filename": "cal1/ch05/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-058",
+      "filename": "cal1/ch05/01-exercises-52.md",
+      "passed": true
+    },
+    {
+      "id": "LIB-059",
+      "filename": "cal1/solutions/00-intro.md",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-001-schema",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-001-all-correct",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-001-all-wrong",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-001-blank",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-001-partial",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-002-schema",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-002-all-correct",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-002-all-wrong",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-002-blank",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-002-partial",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-003-schema",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-003-all-correct",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-003-all-wrong",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-003-blank",
+      "passed": true
+    },
+    {
+      "id": "QUIZ-003-partial",
+      "passed": true
+    }
+  ]
+}

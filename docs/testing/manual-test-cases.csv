@@ -1,0 +1,82 @@
+id,area,page,title,preconditions,steps,test_data,expected,severity,status,notes
+UI-NAV-001,Navigation,Sidebar,แสดงกลุ่มเมนู 4 กลุ่มครบ,เปิดแอปที่หน้าหลัก,เปิด sidebar แล้วนับกลุ่มเมนู,ไม่มีข้อมูล,เห็นกลุ่ม ภาพรวม / โมดูลการเรียนรู้ (6 หัวข้อหลัก) / เครื่องมือและการประเมิน / ข้อมูลระบบ ตามลำดับ,High,planned,เทียบกับ st.navigation ใน app.py
+UI-NAV-002,Navigation,ทุกหน้า,โหลด 13 หน้าที่ลงทะเบียนโดยไม่ error,เปิดแอป,คลิกเมนูทีละหน้าจนครบ 13 หน้า,ไม่มีข้อมูล,ทุกหน้าเรนเดอร์ได้ ไม่มี traceback และไม่มีหน้าเปล่า,High,planned,ครอบ DoD รันแอปไม่มี error
+UI-NAV-003,Navigation,home.py,ปุ่มการ์ดนำทางไปหน้าที่ถูกต้อง,อยู่หน้าหลัก,กดปุ่มในการ์ดแต่ละใบ (8 ใบ),ไม่มีข้อมูล,ไปยังไฟล์ target ที่ระบุใน cards_data,High,planned,
+UI-NAV-004,Navigation,home.py,ค้นหาเมนูกรองการ์ดและข้อความไม่พบ,อยู่หน้าหลัก,พิมพ์คำค้นในช่องค้นหา,"ทดสอบ x, การ์ตูน, พื้นที่, ไม่มีในระบบ",พิมพ์แล้วเหลือเฉพาะการ์ดที่ title/subtitle ตรง; คำที่ไม่ตรงขึ้น ไม่พบเมนูที่ค้นหา,Medium,planned,case-insensitive ตาม source
+UI-NAV-005,Navigation,lessons.py,ปุ่มไปลองเล่นแบบ interactive นำทางถูกหน้า,อยู่แท็บบทเรียน interactive,เลือกบทเรียนแล้วกดปุ่มไปลองเล่น,เลือก 6 หัวข้อที่มี key,ไปยังหน้า interactive ที่ map ไว้ (tangent/limit/riemann/substitution/area_between/improper),High,planned,
+UI-NAV-006,Navigation,lessons.py,ปุ่ม volume นำทางไปหน้าที่ยังไม่ลงทะเบียน,อยู่แท็บบทเรียน interactive,เลือกหัวข้อ volume แล้วกดไปลองเล่น,หัวข้อ volume,พบว่า volume_revolution.py ไม่อยู่ใน st.Page ของ app.py คาดว่าจะ error หรือไปไม่ได้,High,planned,KNOWN GAP - ต้องยืนยันพฤติกรรมจริง
+UI-NAV-007,Navigation,survey.py,ปุ่มลิงก์แบบสอบถามชี้ไป Google Forms,อยู่หน้า survey,ตรวจ href ของปุ่มโดยไม่กดส่ง,ไม่มีข้อมูล,href = ลิงก์ Google Forms ที่ระบุ; คลิกเปิดแท็บใหม่ ห้ามส่งข้อมูล,High,planned,DO NOT SUBMIT
+UI-NAV-008,Navigation,quiz.py,ปุ่มกลับหน้าหลักบนหน้า done,ทำ quiz จนจบ,กดปุ่มกลับหน้าหลัก,ทำ 1 ชุดให้จบ,กลับไปหน้า home.py,Low,planned,
+UI-NAV-009,Navigation,orphaned,หน้า topics.py และ volume_revolution.py ไม่ถูกนำทาง,เปิดแอป,ลองหาลิงก์ไปสองหน้านี้จากเมนูหรือปุ่มใด ๆ,ไม่มีข้อมูล,ไม่มีเส้นทางในแอป (dead page) - บันทึกเป็นช่องโหว่,Medium,planned,KNOWN GAP
+UI-WID-001,Widget,home.py,ช่องค้นหากรองแบบทันที,อยู่หน้าหลัก,พิมพ์และลบข้อความในช่องค้นหา,abc,การ์ดกรองตามทุกคีย์ที่พิมพ์และคืนค่าครบเมื่อลบข้อความ,Low,planned,
+UI-WID-002,Widget,tangent.py,ปุ่ม preset ตั้งค่า expr และ a,อยู่หน้า tangent,กด preset ทั้ง 4 ปุ่ม,x^2 / x^3-3x / sin(x) / sqrt(x+5),ช่องฟังก์ชันและ slider a เปลี่ยนตาม preset,Medium,planned,
+UI-WID-003,Widget,tangent.py,slider จุดสัมผัส a ขอบเขตและ step,อยู่หน้า tangent,ลาก slider ไปขอบซ้าย/ขวาสุด,-5.0 ถึง 5.0 step 0.1,ค่า a อยู่ช่วง -5..5 และเพิ่มทีละ 0.1,Low,planned,
+UI-WID-004,Widget,limit_approach.py,ช่องตัวเลขจุด a รับทศนิยม,อยู่หน้า limit,แก้ช่องจุดที่ x เข้าใกล้ a,2.5,รับค่าและอัปเดตผลลัพธ์,Low,planned,
+UI-WID-005,Widget,limit_approach.py,slider delta ขอบเขต,อยู่หน้า limit,ลาก slider delta ไปขอบสุด,0.01 ถึง 2.0,ตารางเชิงตัวเลขใช้ค่า delta ที่เลือก,Low,planned,
+UI-WID-006,Widget,riemann.py,selectbox วิธีคำนวณ 3 ตัวเลือก,อยู่หน้า riemann,เปิด selectbox,ซ้าย/ขวา/จุดกึ่งกลาง,เลือกได้ทั้ง 3 และผลรวมเปลี่ยนตามวิธี,Medium,planned,
+UI-WID-007,Widget,riemann.py,slider n ขอบเขต 1 ถึง 50,อยู่หน้า riemann,ลาก n ไป 1 และ 50,1 และ 50,ยอมรับ n=1 (ขอบเขต) และ n=50 (ขอบเขตบน) ไม่ error,Medium,planned,ขอบเขตโดเมน
+UI-WID-008,Widget,riemann.py,ช่องขอบล่าง/บน a b,อยู่หน้า riemann,แก้ค่า a และ b,0 และ 2,อัปเดตค่าประมาณและกราฟ,Low,planned,
+UI-WID-009,Widget,substitution.py,สลับแท็บ 3 แท็บ,อยู่หน้า substitution,กดแท็บที่ 1 2 3,u-Sub / By Parts / SymPy CAS,เนื้อหาแต่ละแท็บแสดงถูกต้อง,Low,planned,
+UI-WID-010,Widget,substitution.py,radio เลือก u ไม่มีค่าเริ่มต้น,อยู่หน้า substitution แท็บ 1,ตรวจสถานะเริ่มต้นแล้วเลือกตัวเลือก,แนวทาง A/B/C/D,เริ่มต้นไม่เลือกและขึ้นข้อความการตัดสินใจก่อนเลือกถูก,Medium,planned,index=None
+UI-WID-011,Widget,substitution.py,radio By Parts 3 ตัวเลือกและ feedback,อยู่หน้า substitution แท็บ 2,เลือกแนวทาง 1 2 3,แนวทางที่ 1/2/3,แนวทาง 1 = ถูก แสดงวิธีทำครบ; 2 และ 3 = เตือนตามที่กำหนด,Medium,planned,
+UI-WID-012,Widget,substitution.py,ปุ่มคำนวณแท็บ 3 ต้องกดเอง,อยู่หน้า substitution แท็บ 3,แก้ข้อความแล้วสังเกตว่ายังไม่คำนวณจนกดปุ่ม,2x*e^(x^2),ผลลัพธ์ขึ้นเฉพาะหลังกดปุ่มคำนวณ,Low,planned,
+UI-WID-013,Widget,area_between.py,ช่อง f g และขอบ a b,อยู่หน้า area_between,แก้ f และ g กด preset ทั้ง 3,ตัวเลือกในหน้า,ค่าและกราฟอัปเดตถูกต้อง,Low,planned,
+UI-WID-014,Widget,improper_integrals.py,selectbox ขอบบนเปิด/ปิดช่อง b,อยู่หน้า improper,สลับขอบบนเป็น อนันต์ และ จำนวนจำกัด,ตัวเลือกทั้งสอง,ช่องขอบบน b ปรากฏเฉพาะเมื่อเลือกจำนวนจำกัด,Medium,planned,conditional widget
+UI-WID-015,Widget,solver.py,segmented_control 3 การดำเนินการ,อยู่หน้า solver,สลับประเภทการคำนวณ,อินทิเกรต/อนุพันธ์/ลิมิต,ช่องจุดลิมิตโผล่เฉพาะเลือก ลิมิต,Medium,planned,มี fallback selectbox
+UI-WID-016,Widget,solver.py,ปุ่ม token ต่อท้ายนิพจน์,อยู่หน้า solver,กดปุ่ม token หลายครั้ง,sqrt(x) pi exp(x) x**2,ข้อความต่อท้ายช่องโจทย์ถูกต้องและไม่ค้าง,Medium,planned,
+UI-WID-017,Widget,solver.py,ช่องจุดลิมิตแสดงตามโหมด,อยู่หน้า solver,เลือก ลิมิต แล้วแก้ค่า,0.0,ช่องจุดที่ x เข้าใกล้ปรากฏและใช้งานได้,Low,planned,
+UI-PLT-001,Plot,tangent.py,วาดเส้นโค้งและเส้นสัมผัส,อยู่หน้า tangent,ป้อนฟังก์ชันที่หาอนุพันธ์ได้,x^2 ที่ a=1,กราฟแสดงเส้นโค้งและเส้นสัมผัสตรงจุด พร้อมความชัน m,Medium,planned,
+UI-PLT-002,Plot,limit_approach.py,วาดการลู่เข้าใกล้จุด,อยู่หน้า limit,ป้อน (x^2-4)/(x-2) ที่ a=2,(x**2-4)/(x-2) delta 0.4,กราฟแสดงการเข้าใกล้จุด a ตาม delta,Medium,planned,
+UI-PLT-003,Plot,riemann.py,วาดสี่เหลี่ยมรีมันน์ 3 วิธี,อยู่หน้า riemann,เลือกวิธีและคลิก preset,x^2 a=0 b=2 n=8,กราฟสี่เหลี่ยมเปลี่ยนตามวิธี left/right/midpoint,Medium,planned,
+UI-PLT-004,Plot,area_between.py,วาดกราฟแรเงาพื้นที่ระหว่างโค้ง,อยู่หน้า area_between,กด preset,x กับ x**2 [0 1],กราฟแสดงสองเส้นและแรเงาช่องว่าง,Medium,planned,
+UI-PLT-005,Plot,improper_integrals.py,วาดการลู่เข้าของ improper,อยู่หน้า improper,กด preset 1/x^2,1/x**2 [1 inf],กราฟแสดงเส้นและขอบเขตการลู่เข้า,Medium,planned,
+UI-PLT-006,Plot,ทุกหน้าที่มีกราฟ,fallback เมื่อวาดกราฟไม่ได้,อยู่หน้าที่มีกราฟ,ป้อนฟังก์ชันที่ทำให้ plot ผิดพลาด,เช่น 1/x ที่มีจุดเอกฐานในโดเมน,ขึ้น st.warning ภาษาไทย ไม่ crash,High,planned,ตรวจว่า except ทำงาน
+UI-QUZ-001,Quiz,quiz.py,สลับชุดข้อสอบรีเซ็ต state,อยู่หน้า quiz ทำบางข้อแล้ว,สลับ radio ชุดข้อสอบ,จากชุดหนึ่งไปอีกชุด,index กลับเป็น 0 คะแนนรีเซ็ตเป็น 0 และเริ่มข้อ 1,High,planned,
+UI-QUZ-002,Quiz,quiz.py,ตอบถูกเพิ่มคะแนนและเฉลยทันที,อยู่หน้า quiz ข้อแรก,กดตัวเลือกที่เป็นคำตอบถูก,ตัวเลือกที่ตรง answer,คะแนน +1 และเปิดเฉลยคำอธิบายทันที,High,planned,
+UI-QUZ-003,Quiz,quiz.py,ตอบผิดครั้งแรกได้คำใบ้ยังไม่เฉลย,อยู่หน้า quiz ข้อแรก,กดตัวเลือกที่ผิดครั้งแรก,ตัวเลือกที่ผิด,ขึ้นกล่องคำใบ้ ไม่เพิ่มคะแนน และยังไม่เปิดเฉลย,High,planned,
+UI-QUZ-004,Quiz,quiz.py,ตอบผิดครั้งที่สองเปิดเฉลย,ต่อจาก UI-QUZ-003,กดตัวเลือกผิดอีกครั้ง,ตัวเลือกผิดใดก็ได้,เปิดเฉลยและข้อความยังไม่ถูกต้อง,High,planned,
+UI-QUZ-005,Quiz,quiz.py,ปุ่มขอดูเฉลยและวิธีทำ,อยู่สถานะมีคำใบ้,กดปุ่มขอดูเฉลยและวิธีทำ,ไม่มีข้อมูล,เปิดเฉลยทันทีและซ่อนคำใบ้,Medium,planned,
+UI-QUZ-006,Quiz,quiz.py,ปุ่มข้อถัดไปและจบชุด,อยู่ข้อสุดท้าย,กดข้อถัดไปจนถึงข้อสุดท้าย,ชุด 5 ข้อ,เลื่อน index ทุกครั้ง และข้อสุดท้ายเปลี่ยนเป็นหน้าจบ,High,planned,
+UI-QUZ-007,Quiz,quiz.py,หน้าจบสรุปคะแนนและรายข้อ,ทำ quiz จบชุด,ตรวจ metric และ expander แต่ละข้อ,ชุด 5 ข้อ,แสดงคะแนน/เต็ม และสรุปถูก/ผิดพร้อมคำตอบและคำอธิบายครบทุกข้อ,High,planned,
+UI-QUZ-008,Quiz,quiz.py,ปุ่มเล่นใหม่รีเซ็ตทั้งหมด,อยู่หน้า done,กดเล่นใหม่,ไม่มีข้อมูล,กลับข้อ 1 คะแนน 0 และล้างคำตอบ,High,planned,
+UI-QUZ-009,Quiz,quiz.py,ชุดทั้งหมดรวม 15 ข้อ,อยู่หน้า quiz,เลือกชุดทั้งหมด,15 ข้อ,จำนวนข้อรวม = 5+5+5 = 15 และหัวข้อแสดง 15 ข้อ,High,planned,
+UI-QUZ-010,Quiz,quiz.py,คะแนนไม่เกินจำนวนข้อ,ทำ quiz จบ,ตอบถูกทุกข้อในชุดเดียว,ชุด 5 ข้อ,คะแนนสูงสุด = 5/5 ไม่เกิน total,High,planned,ตรวจการบวกซ้ำ
+UI-HIS-001,History,history.py,ข้อความยังไม่มีประวัติ,เปิดแอปใหม่ยังไม่ทำ quiz,เปิดหน้า history (ผ่านแบรนด์ข้อมูลระบบ),ไม่มีข้อมูล,ขึ้นข้อความ ยังไม่มีประวัติ,Low,planned,
+UI-HIS-002,History,history.py,ตารางประวัติหลังทำ quiz,ทำ quiz จบ 1 ชุด,เปิดหน้า history,ชุด basic_rules,ตารางมีหัวข้อ คะแนน คะแนนเต็ม และ % ถูกต้อง,High,planned,
+UI-HIS-003,History,history.py,ประวัติหลายหัวข้อและ key ดิบ,ทำ quiz จบ 2 หัวข้อขึ้นไป,เปิดหน้า history,พื้นฐาน+รีมันน์,หัวข้อที่ไม่มีใน topic_titles แสดง key ดิบ (เช่น riemann),Medium,planned,KNOWN GAP
+UI-HIS-004,History,history.py,ประวัติหายเมื่อรีโหลด,ทำ quiz จบ,รีเฟรชเบราว์เซอร์แล้วเปิด history,ไม่มีข้อมูล,ประวัติและคะแนนหายหมด (session-only),Medium,planned,
+UI-HIS-005,History,home.py,การ์ดคะแนนล่าสุดบนหน้าหลัก,ทำ quiz basic_rules จบ,กลับหน้าหลัก,ชุดพื้นฐาน,metric แสดงคะแนน basic_rules และ progress bar,Medium,planned,อ่านเฉพาะ basic_rules
+UI-SRV-001,Survey,survey.py,เรนเดอร์หน้าแบบประเมินครบ,เปิดหน้า survey,ตรวจ QR ปุ่มลิงก์ และข้อความโครงสร้าง,ไม่มีข้อมูล,"เห็นหัวข้อ SUS, QR, ปุ่มลิงก์ และคำอธิบาย 4 ตอน ไม่มี error",Medium,planned,
+UI-SRV-002,Survey,survey.py,QR แสดงเมื่อมีไฟล์เท่านั้น,เปิดหน้า survey,ตรวจการมี/ไม่มีไฟล์ QR,docs/calculus-survey-qr.png,ถ้ามีไฟล์แสดงรูป ถ้าไม่มีให้ข้ามไม่ crash,Medium,planned,เงื่อนไข path.exists
+UI-SRV-003,Survey,survey.py,ไม่มีการส่งข้อมูลอัตโนมัติตอนโหลด,เปิดหน้า survey,เปิด DevTools Network แล้วโหลดหน้าใหม่,ไม่มีข้อมูล,ไม่มีการยิง request ส่งข้อมูลผู้ใช้ไปภายนอกในตอนโหลด,High,planned,DO NOT SUBMIT ห้ามกดส่ง
+UI-SRV-004,Survey,survey.py,ไม่มีช่องกรอกข้อมูลในแอป,เปิดหน้า survey,ตรวจว่ามีฟอร์มให้กรอกหรือไม่,ไม่มีข้อมูล,ไม่มี input ฟอร์มในแอป มีเพียงลิงก์ออก Thai text,Medium,planned,ยืนยันไม่เก็บข้อมูลในแอป
+UI-INP-001,Input,ทุกหน้าเรียน,อินพุตว่างแสดงข้อความแนะนำ,เปิดหน้าเรียนใด ๆ,ลบข้อความในช่องฟังก์ชันจนว่าง,(ว่าง),ขึ้น st.info ภาษาไทยให้ระบุฟังก์ชัน ไม่ crash,High,planned,
+UI-INP-002,Input,solver.py,ไวยากรณ์ผิดคืนข้อความไทย,อยู่หน้า solver,ป้อนนิพจน์ผิดแล้วกดคำนวณ,x^^2 และ sin(,ขึ้น error ภาษาไทย ไม่มี traceback,High,planned,ตรวจ parser
+UI-INP-003,Input,solver.py,สัญลักษณ์ไม่รู้จัก,อยู่หน้า solver,ป้อนฟังก์ชันที่ไม่มีในระบบ,foo(x),ขึ้นข้อความไม่สามารถอ่านนิพจน์ได้,Medium,planned,
+UI-INP-004,Input,riemann.py,รองรับ 2x และ x^2,อยู่หน้า riemann,ป้อนรูปแบบต่างกัน,2x และ x^2 และ x**2,ทั้งสองรูปแบบ parse ได้และผลเท่ากัน,High,planned,implicit mult + convert_xor
+UI-INP-005,Input,riemann.py,ขอบเขต b ต้องมากกว่า a,อยู่หน้า riemann,ตั้ง b น้อยกว่าหรือเท่ากับ a,a=2 b=1,ขึ้น error b must be > a (ห่อเป็นข้อความไทย),Medium,planned,domain boundary
+UI-INP-006,Input,riemann.py,ขอบเขต n,อยู่หน้า riemann,ทดสอบ n ที่ขอบ,1 และ 50,ทำงานได้ทั้งสองค่าโดยไม่ error,Medium,planned,widget จำกัดค่าแล้ว
+UI-INP-007,Input,area_between.py,ฟังก์ชันเหมือนกันได้พื้นที่ 0,อยู่หน้า area_between,ตั้ง f เท่ากับ g,x กับ x [0 1],พื้นที่ = 0,Medium,planned,
+UI-INP-008,Input,area_between.py,สลับบนล่างได้ค่าติดลบ,อยู่หน้า area_between,ตั้ง f ต่ำกว่า g,x กับ x**2 [0 1] สลับ,ได้พื้นที่ค่าติดลบ (net) ตาม caution,Medium,planned,KNOWN GAP ไม่ใส่ abs
+UI-INP-009,Input,area_between.py,เส้นโค้งตัดกันในช่วง,อยู่หน้า area_between,ตั้ง f/g ที่ตัดกันใน [a b],sin(x) กับ 0 [0 6.28],ค่าเป็นผลรวมสุทธิ signed ไม่ใช่พื้นที่จริงรวม,Medium,planned,KNOWN GAP ต้องแยกช่วงเอง
+UI-INP-010,Input,improper_integrals.py,อินทิกรัลลู่ออก,อยู่หน้า improper,ป้อน 1/x บนช่วงอนันต์,1/x [1 inf],แสดงลู่ออก (∞) และค่าตัวเลขเป็น None ไม่ crash,High,planned,ตรวจ p-test
+UI-INP-011,Input,improper_integrals.py,อินทิกรัลลู่เข้า,อยู่หน้า improper,ป้อน 1/x^2 บนช่วงอนันต์,1/x**2 [1 inf],ลู่เข้าและแสดงค่า 1,High,planned,
+UI-INP-012,Input,improper_integrals.py,latex ขอบเขตจำกัดยังแสดงอนันต์,อยู่หน้า improper,เลือกขอบบน จำนวนจำกัด,1/x**2 [1 b=2],KNOWN GAP: latex ยังฮาร์ดโค้ด infinity แม้ขอบจำกัด,Low,planned,บั๊กจากการอ่าน source
+UI-INP-013,Input,solver.py,อินทิเกรต 1/x ได้ ln|x|,อยู่หน้า solver,เลือกอินทิเกรต,1/x,แสดง ln|x| + C พร้อม step กฎลอการิทึม,Medium,planned,
+UI-INP-014,Input,tangent.py,จุดที่หาอนุพันธ์ไม่ได้,อยู่หน้า tangent,ป้อนค่าสัมบูรณ์ที่ 0,abs(x) ที่ a=0,ระบุว่าไม่มีอนุพันธ์ที่จุด 0 และไม่แสดงเส้นสัมผัสที่มีความชันจำกัด,Medium,planned,corner case
+UI-INP-015,Input,limit_approach.py,ลิมิต 0/0,อยู่หน้า limit,ป้อนรูปแบบไม่กำหนด,sin(x)/x ที่ a=0,ลิมิตสองด้าน = 1 และตารางเชิงตัวเลขเข้าใกล้ 1,High,planned,
+UI-INP-016,Input,solver.py,อินพุตขนาดใหญ่ผิดขอบเขต,อยู่หน้า solver,ป้อนเลขชี้กำลังสูงแล้วกดคำนวณ,x**1000,แอปไม่ค้างถาวร มี timeout/จัดการได้หรือคืนผลช้า,Low,planned,ดู performance
+UI-INP-017,Input,riemann.py,ค่าตัวเลขสุดขั้ว,อยู่หน้า riemann,ตั้ง a b ค่ามาก,a=-1000 b=1000,ไม่ crash และค่าประมาณสมเหตุสมผล,Low,planned,
+UI-ACC-001,A11Y,ทุกหน้า,ฟอนต์ไทยอ่านได้เมื่อ CDN ล่ม,เปิดแอป,บล็อก Google Fonts แล้วเรนเดอร์,ไม่มีข้อมูล,ข้อความไทยยังอ่านได้ด้วย fallback ไม่หาย,Medium,planned,theme โหลดฟอนต์ภายนอก
+UI-ACC-002,A11Y,ทุกหน้าที่มีสมการ,KaTeX เรนเดอร์สมการถูกต้อง,เปิดหน้าเรียน,ตรวจสมการ inline/display,เช่น x^2 sin(x),สมการแสดงเป็นคณิตศาสตร์ไม่ออกมาเป็นข้อความดิบ,Medium,planned,ตรวจ MathML/alt สำหรับ screen reader
+UI-ACC-003,A11Y,ทุกหน้า,นำทางด้วยคีย์บอร์ด,เปิดแอป,กด Tab ผ่านวิดเจ็ตและกด Enter,ไม่มีข้อมูล,โฟกัสมองเห็นได้และใช้งานวิดเจ็ตหลักได้ด้วยคีย์บอร์ด,Medium,planned,
+UI-ACC-004,A11Y,ทุกหน้า,contrast ข้อความกับพื้นหลัง,เปิดแอป,ตรวจสีข้อความกับพื้นหลังปุ่ม/การ์ด,ไม่มีข้อมูล,contrast เพียงพอต่อการอ่าน (โดยเฉพาะปุ่ม coral),Medium,planned,ต้องวัดค่าจริง
+UI-ACC-005,A11Y,survey/theme,ไม่มี emoji/อักขระต้องห้ามใน UI,เปิดหน้า survey และทุกหน้า,ตรวจหา emoji และสัญลักษณ์ต้องห้าม,ไม่มีข้อมูล,KNOWN GAP: พบ emoji และสัญลักษณ์ตกแต่ง ขัด DoD ของ AGENTS.md,Medium,planned,ขัดกฎ zero-emoji
+UI-ACC-006,A11Y,ทุกหน้า,widget label เป็นข้อความไทย,เปิดหน้าเรียน,ตรวจ label ของวิดเจ็ต,ไม่มีข้อมูล,label เป็นไทยและไม่ยัดสมการ LaTeX ในตัวเลือก selectbox/radio,Low,planned,
+UI-ACC-007,A11Y,ทุกหน้า,zoom 200%,เปิดแอป,ซูมเบราว์เซอร์เป็น 200%,ไม่มีข้อมูล,เนื้อหาไม่ทับกันและยังใช้งานได้,Low,planned,
+UI-PRF-001,Perf,home.py,เวลาโหลดหน้าแรก (provisional),ปิด cache,เปิดแอปครั้งแรกและวัดเวลา,ไม่มีข้อมูล,PROVISIONAL ≤ 5.0 วินาที,Medium,planned,ตัวเลขต้องวัดจริงก่อนยืนยัน
+UI-PRF-002,Perf,riemann/tangent,เวลา live recompute (provisional),อยู่หน้าเรียน,พิมพ์ในช่องฟังก์ชันและวัดการ rerun,ทดสอบ x^2,PROVISIONAL ≤ 1.0 วินาทีต่อการพิมพ์,Medium,planned, recompute ทุกคีย์
+UI-PRF-003,Perf,ทุกหน้าที่มีกราฟ,เวลาเรนเดอร์กราฟ (provisional),อยู่หน้าเรียน,วัดเวลาจากกดคำนวณถึงกราฟขึ้น,ทดสอบ x^2,PROVISIONAL ≤ 2.0 วินาที,Medium,planned,
+UI-PRF-004,Perf,riemann.py,เวลา n=50 (provisional),อยู่หน้า riemann,ตั้ง n=50 แล้ววัด,x^2 n=50,PROVISIONAL ≤ 2.5 วินาที,Medium,planned,
+UI-PRF-005,Perf,quiz.py,เวลาตอบ 1 ข้อ (provisional),อยู่หน้า quiz,วัดจากคลิกตัวเลือกถึงผล,ข้อใดก็ได้,PROVISIONAL ≤ 0.8 วินาที,Low,planned,
+UI-PRF-006,Perf,ทุกหน้า,พฤติกรรมออฟไลน์,ตัดการเชื่อมต่อเครือข่าย,เปิดแอปและใช้งานหลัก,ไม่มีข้อมูล,ยังใช้งานได้ มีฟอนต์ fallback แม้ CDN โหลดไม่ได้,Medium,planned,Google Fonts dependency

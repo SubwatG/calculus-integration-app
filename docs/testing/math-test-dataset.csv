@@ -1,0 +1,87 @@
+﻿id,topic,operation,args,expected,check,domain,kind,contract,priority,tolerance
+MATH-001,basic-and-techniques,integrate,"[""0""]",0,antiderivative,R,normal,mathematical,P1,1e-09
+MATH-002,basic-and-techniques,integrate,"[""7""]",7*x,antiderivative,R,normal,mathematical,P1,1e-09
+MATH-003,basic-and-techniques,integrate,"[""x""]",x**2/2,antiderivative,R,normal,mathematical,P1,1e-09
+MATH-004,basic-and-techniques,integrate,"[""x^4""]",x**5/5,antiderivative,R,normal,mathematical,P1,1e-09
+MATH-005,basic-and-techniques,integrate,"[""3x^2 - 2x + 1""]",x**3-x**2+x,antiderivative,R,normal,mathematical,P1,1e-09
+MATH-006,basic-and-techniques,integrate,"[""1/x""]",log(x),antiderivative,x>0; use ln|x| on each real component,normal,mathematical,P1,1e-09
+MATH-007,basic-and-techniques,integrate,"[""x^(-2)""]",-1/x,antiderivative,x!=0,normal,mathematical,P1,1e-09
+MATH-008,basic-and-techniques,integrate,"[""sqrt(x)""]",2*x**(3/2)/3,antiderivative,x>0,normal,mathematical,P1,1e-09
+MATH-009,basic-and-techniques,integrate,"[""e^x""]",exp(x),antiderivative,R,normal,mathematical,P1,1e-09
+MATH-010,basic-and-techniques,integrate,"[""sin(x)""]",-cos(x),antiderivative,R,normal,mathematical,P1,1e-09
+MATH-011,basic-and-techniques,integrate,"[""cos(x)""]",sin(x),antiderivative,R,normal,mathematical,P1,1e-09
+MATH-012,basic-and-techniques,integrate,"[""1/(1+x^2)""]",atan(x),antiderivative,R,normal,mathematical,P1,1e-09
+MATH-013,basic-and-techniques,integrate,"[""1/sqrt(1-x^2)""]",asin(x),antiderivative,-1<x<1,normal,mathematical,P1,1e-09
+MATH-014,basic-and-techniques,integrate,"[""x*e^x""]",(x-1)*exp(x),antiderivative,R,normal,mathematical,P1,1e-09
+MATH-015,basic-and-techniques,integrate,"[""ln(x)""]",x*log(x)-x,antiderivative,x>0,normal,mathematical,P1,1e-09
+MATH-016,basic-and-techniques,integrate,"[""1/(x^2-1)""]",log(x-1)/2-log(x+1)/2,antiderivative,x>1; real branches separately,normal,mathematical,P1,1e-09
+MATH-017,substitution-and-parts,substitution,"[""2x*cos(x^2)""]",sin(x**2),antiderivative,R,normal,mathematical,P1,1e-09
+MATH-018,substitution-and-parts,substitution,"[""2*x/(1+x^2)""]",log(1+x**2),antiderivative,R,normal,mathematical,P1,1e-09
+MATH-019,substitution-and-parts,substitution,"[""3*x^2*e^(x^3)""]",exp(x**3),antiderivative,R,normal,mathematical,P1,1e-09
+MATH-020,substitution-and-parts,substitution,"[""cos(x)/sin(x)""]",log(sin(x)),antiderivative,0<x<pi,normal,mathematical,P1,1e-09
+MATH-021,substitution-and-parts,substitution,"[""x/sqrt(1+x^2)""]",sqrt(1+x**2),antiderivative,R,normal,mathematical,P1,1e-09
+MATH-022,substitution-and-parts,substitution,"[""x*ln(x)""]",x**2*log(x)/2-x**2/4,antiderivative,x>0,normal,mathematical,P1,1e-09
+MATH-023,derivative,differentiate,"[""5""]",0,value,R,normal,mathematical,P1,1e-09
+MATH-024,derivative,differentiate,"[""x^5""]",5*x**4,value,R,normal,mathematical,P1,1e-09
+MATH-025,derivative,differentiate,"[""(x^2+1)*sin(x)""]",2*x*sin(x)+(x**2+1)*cos(x),value,R,normal,mathematical,P1,1e-09
+MATH-026,derivative,differentiate,"[""sin(x^2)""]",2*x*cos(x**2),value,R,normal,mathematical,P1,1e-09
+MATH-027,derivative,differentiate,"[""ln(x)""]",1/x,value,x>0,normal,mathematical,P1,1e-09
+MATH-028,derivative,differentiate,"[""e^(2x)""]",2*exp(2*x),value,R,normal,mathematical,P1,1e-09
+MATH-029,derivative,differentiate,"[""1/x""]",-1/x**2,value,x!=0,normal,mathematical,P1,1e-09
+MATH-030,limit,limit,"[""x^2"", 2]",4,value,R,normal,mathematical,P1,1e-09
+MATH-031,limit,limit_near,"[""x^2"", 2]",4,value,R,normal,mathematical,P1,1e-09
+MATH-032,limit,limit,"[""(x^2-4)/(x-2)"", 2]",4,value,R,normal,mathematical,P1,1e-09
+MATH-033,limit,limit_near,"[""(x^2-4)/(x-2)"", 2]",4,value,R,normal,mathematical,P1,1e-09
+MATH-034,limit,limit,"[""sin(x)/x"", 0]",1,value,R,normal,mathematical,P1,1e-09
+MATH-035,limit,limit_near,"[""sin(x)/x"", 0]",1,value,R,normal,mathematical,P1,1e-09
+MATH-036,limit,limit,"[""(e^x-1)/x"", 0]",1,value,R,normal,mathematical,P1,1e-09
+MATH-037,limit,limit_near,"[""(e^x-1)/x"", 0]",1,value,R,normal,mathematical,P1,1e-09
+MATH-038,limit,limit,"[""(sqrt(1+x)-1)/x"", 0]",1/2,value,R,normal,mathematical,P1,1e-09
+MATH-039,limit,limit_near,"[""(sqrt(1+x)-1)/x"", 0]",1/2,value,R,normal,mathematical,P1,1e-09
+MATH-040,limit,limit,"[""abs(x)"", 0]",0,value,R,normal,mathematical,P1,1e-09
+MATH-041,limit,limit_near,"[""abs(x)"", 0]",0,value,R,normal,mathematical,P1,1e-09
+MATH-042,tangent,tangent,"[""x^2"", 2]",4,value,R,normal,mathematical,P1,1e-09
+MATH-043,tangent,tangent,"[""sin(x)"", 0]",1,value,R,normal,mathematical,P1,1e-09
+MATH-044,tangent,tangent,"[""e^x"", 0]",1,value,R,normal,mathematical,P1,1e-09
+MATH-045,tangent,tangent,"[""x^3"", 0]",0,value,R,normal,mathematical,P1,1e-09
+MATH-046,riemann,riemann,"[""x"", 0, 1, 4, ""left""]",3/8,value,R,normal,mathematical,P1,1e-09
+MATH-047,riemann,riemann,"[""x^2"", 0, 1, 4, ""left""]",7/32,value,R,normal,mathematical,P1,1e-09
+MATH-048,riemann,riemann,"[""-2"", -1, 2, 3, ""left""]",-6,value,R,normal,mathematical,P1,1e-09
+MATH-049,riemann,riemann,"[""x^2"", 0, 1, 10, ""left""]",57/200,value,R,normal,mathematical,P1,1e-09
+MATH-050,riemann,riemann,"[""x"", 0, 1, 4, ""right""]",5/8,value,R,normal,mathematical,P1,1e-09
+MATH-051,riemann,riemann,"[""x^2"", 0, 1, 4, ""right""]",15/32,value,R,normal,mathematical,P1,1e-09
+MATH-052,riemann,riemann,"[""-2"", -1, 2, 3, ""right""]",-6,value,R,normal,mathematical,P1,1e-09
+MATH-053,riemann,riemann,"[""x^2"", 0, 1, 10, ""right""]",77/200,value,R,normal,mathematical,P1,1e-09
+MATH-054,riemann,riemann,"[""x"", 0, 1, 4, ""midpoint""]",1/2,value,R,normal,mathematical,P1,1e-09
+MATH-055,riemann,riemann,"[""x^2"", 0, 1, 4, ""midpoint""]",21/64,value,R,normal,mathematical,P1,1e-09
+MATH-056,riemann,riemann,"[""-2"", -1, 2, 3, ""midpoint""]",-6,value,R,normal,mathematical,P1,1e-09
+MATH-057,riemann,riemann,"[""x^2"", 0, 1, 10, ""midpoint""]",133/400,value,R,normal,mathematical,P1,1e-09
+MATH-058,area,area,"[""x"", ""x^2"", 0, 1]",1/6,value,R,normal,mathematical,P1,1e-09
+MATH-059,area,area,"[""2"", ""0"", -1, 1]",4,value,R,normal,mathematical,P1,1e-09
+MATH-060,area,area,"[""x^2"", ""0"", 0, 2]",8/3,value,R,normal,mathematical,P1,1e-09
+MATH-061,volume-disk,volume,"[""x"", 0, 1, ""disk""]",pi/3,value,R,normal,mathematical,P1,1e-09
+MATH-062,volume-disk,volume,"[""sqrt(x)"", 0, 4, ""disk""]",8*pi,value,R,normal,mathematical,P1,1e-09
+MATH-063,volume-disk,volume,"[""2"", 0, 3, ""disk""]",12*pi,value,R,normal,mathematical,P1,1e-09
+MATH-064,improper,improper,"[""1/x^2"", 1, null]",1,value,R,normal,mathematical,P1,1e-09
+MATH-065,improper,improper,"[""e^(-x)"", 0, null]",1,value,R,normal,mathematical,P1,1e-09
+MATH-066,improper,improper,"[""1/sqrt(x)"", 0, 1]",2,value,R,normal,mathematical,P1,1e-09
+MATH-067,improper,improper,"[""1/x^2"", 1, 2]",1/2,value,R,normal,mathematical,P1,1e-09
+MATH-068,limit,limit_near,"[""1/x"", 0]",no_two_sided_limit,reject_nonexistent,R,boundary,mathematical,P0,1e-09
+MATH-069,limit,limit,"[""1/x"", 0]",no_two_sided_limit,reject_nonexistent,R,boundary,mathematical,P0,1e-09
+MATH-070,area,area,"[""x"", ""0"", -1, 1]",1,value,R,boundary,mathematical,P0,1e-09
+MATH-071,area,area,"[""x^2"", ""x"", 0, 1]",1/6,value,R,boundary,mathematical,P0,1e-09
+MATH-072,improper,improper,"[""1/x"", 1, null]",diverges,divergence,R,boundary,mathematical,P0,1e-09
+MATH-073,improper,improper,"[""1/x^2"", 0, 1]",diverges,divergence,R,boundary,mathematical,P0,1e-09
+MATH-074,validation,integrate,"[""""]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-075,validation,differentiate,"[""  ""]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-076,validation,limit,"[""sin("", 0]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-077,validation,substitution,"[""x+""]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-078,validation,tangent,"["""", 0]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-079,validation,area,"["""", ""x"", 0, 1]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-080,validation,volume,"["""", 0, 1, ""disk""]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-081,validation,improper,"["""", 1, null]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-082,validation,riemann,"[""x"", 0, 1, 0, ""left""]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-083,validation,riemann,"[""x"", 1, 0, 4, ""left""]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-084,validation,riemann,"[""x"", 0, 1, 4, ""invalid""]",error,error,R,invalid,mathematical,P0,1e-09
+MATH-085,validation,riemann,"[""x"", 0, 1, 2.5, ""left""]",error,error,R,invalid,proposed-validation,P0,1e-09
+MATH-086,validation,volume,"[""x"", 0, 1, ""washer""]",error,error,R,invalid,proposed-validation,P0,1e-09

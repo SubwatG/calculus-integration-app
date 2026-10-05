@@ -100,8 +100,18 @@ else:
         st.markdown("### ผลลัพธ์ลิมิต")
         col_m1, col_m2 = st.columns([1, 2])
         with col_m1:
-            lim_val = res["result"]
-            l_str = f"{lim_val:.4f}" if lim_val is not None else "หาค่าไม่ได้ / อนันต์"
+            status = res.get("status")
+            if status == "finite" and res["result"] is not None:
+                l_str = f"{res['result']:.4f}"
+            elif status == "infinite":
+                l_str = "∞ (อนันต์)"
+            elif status == "dne":
+                l_str = "ไม่มีลิมิต (DNE)"
+            elif status == "unsupported":
+                l_str = "ยังตัดสินไม่ได้"
+            else:
+                lim_val = res["result"]
+                l_str = f"{lim_val:.4f}" if lim_val is not None else "หาค่าไม่ได้"
             st.metric(label="ค่าลิมิตสองด้าน L", value=l_str)
         with col_m2:
             render_latex(res["latex"])

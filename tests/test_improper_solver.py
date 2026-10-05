@@ -13,13 +13,50 @@ class TestComputeImproper:
     def test_compute_improper_basic(self):
         res = compute_improper('1/x**2', 1, None)
         assert res["ok"] is True
-        # TODO: ตรวจค่า result ตามหัวข้อ
-        assert res["result"] is not None
+        assert res["result"] == pytest.approx(1.0)
+        assert res["status"] == "finite"
         assert len(res["steps"]) >= 3
+
+    def test_finite_bounds_use_actual_upper_latex(self):
+        res = compute_improper('1/x**2', 1, 2)
+        assert res["ok"] is True
+        assert res["status"] == "finite"
+        assert res["result"] == pytest.approx(0.5)
+        assert "\\infty" not in res["latex"]
+        assert "2" in res["latex"]
+
+    def test_infinite_upper_convergent(self):
+        res = compute_improper('1/x**2', 1, None)
+        assert res["status"] == "finite"
+        assert res["result"] == pytest.approx(1.0)
+        assert "\\infty" in res["latex"]
+
+    def test_harmonic_on_infinite_interval_diverges(self):
+        res = compute_improper('1/x', 1, None)
+        assert res["ok"] is True
+        assert res["status"] == "divergent"
+        assert res["result"] is None
+
+    def test_singular_endpoint_finite_range_diverges(self):
+        res = compute_improper('1/x**2', 0, 1)
+        assert res["ok"] is True
+        assert res["status"] == "divergent"
+        assert res["result"] is None
+
+    def test_singular_endpoint_convergent(self):
+        res = compute_improper('1/sqrt(x)', 0, 1)
+        assert res["status"] == "finite"
+        assert res["result"] == pytest.approx(2.0)
+
+    def test_interior_singularity_is_not_finite_principal_value(self):
+        res = compute_improper('1/x', -1, 1)
+        assert res["status"] in ('divergent', 'unsupported')
+        assert res["result"] is None
 
     def test_compute_improper_invalid_input(self):
         res = compute_improper('', 1, None)
         assert res["ok"] is False
+        assert res["status"] == "error"
         assert res["error"]
 
     def test_compute_improper_has_latex_result(self):

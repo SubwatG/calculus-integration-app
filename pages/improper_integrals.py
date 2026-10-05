@@ -82,6 +82,13 @@ else:
     if res["ok"]:
         st.markdown("### ผลลัพธ์")
         render_latex(res["latex"])
+
+        status = res.get("status")
+        if status == "divergent":
+            st.warning("ปริพันธ์นี้ลู่ออก (Divergent) ไม่ลู่เข้าสู่ค่าจำกัด")
+        elif status == "unsupported":
+            st.info("ยังไม่สามารถหาค่าปริพันธ์นี้ในรูปแบบปิดได้")
+
         st.divider()
 
         st.markdown("### กราฟการลู่เข้าและพื้นที่ใต้กราฟ (Improper Integral Visualization)")

@@ -60,7 +60,7 @@ if p_cols[2].button("คลื่นตรีโกณมิติ ($\\cos(x)$ �
 col_f, col_g = st.columns(2)
 with col_f:
     f_input = st.text_input(
-        "เส้นโค้งบน f(x)",
+        "เส้นโค้ง f(x)",
         value="x",
         placeholder="เช่น x, x**2, sin(x)",
         key="area_f",
@@ -68,7 +68,7 @@ with col_f:
     preview_math_expr(f_input, label="พรีวิว f(x)")
 with col_g:
     g_input = st.text_input(
-        "เส้นโค้งล่าง g(x)",
+        "เส้นโค้ง g(x)",
         value="x**2",
         placeholder="เช่น x**2, x - 1",
         key="area_g",

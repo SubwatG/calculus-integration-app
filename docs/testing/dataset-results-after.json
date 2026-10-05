@@ -1,0 +1,1213 @@
+{
+  "total": 86,
+  "passed": 84,
+  "failed": 2,
+  "mathematical_failures": 0,
+  "proposed_validation_failures": 2,
+  "results": [
+    {
+      "id": "MATH-001",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "0",
+      "actual": {
+        "ok": "True",
+        "result": "0",
+        "latex": "0 + C",
+        "error": "None"
+      },
+      "seconds": 0.000691
+    },
+    {
+      "id": "MATH-002",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "7*x",
+      "actual": {
+        "ok": "True",
+        "result": "7*x",
+        "latex": "7 x + C",
+        "error": "None"
+      },
+      "seconds": 0.032917
+    },
+    {
+      "id": "MATH-003",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "x**2/2",
+      "actual": {
+        "ok": "True",
+        "result": "x**2/2",
+        "latex": "\\frac{x^{2}}{2} + C",
+        "error": "None"
+      },
+      "seconds": 0.001408
+    },
+    {
+      "id": "MATH-004",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "x**5/5",
+      "actual": {
+        "ok": "True",
+        "result": "x**5/5",
+        "latex": "\\frac{x^{5}}{5} + C",
+        "error": "None"
+      },
+      "seconds": 0.001583
+    },
+    {
+      "id": "MATH-005",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "x**3-x**2+x",
+      "actual": {
+        "ok": "True",
+        "result": "x**3 - x**2 + x",
+        "latex": "x^{3} - x^{2} + x + C",
+        "error": "None"
+      },
+      "seconds": 0.002907
+    },
+    {
+      "id": "MATH-006",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "log(x)",
+      "actual": {
+        "ok": "True",
+        "result": "log(x)",
+        "latex": "\\log{\\left(x \\right)} + C",
+        "error": "None"
+      },
+      "seconds": 0.001685
+    },
+    {
+      "id": "MATH-007",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "-1/x",
+      "actual": {
+        "ok": "True",
+        "result": "-1/x",
+        "latex": "- \\frac{1}{x} + C",
+        "error": "None"
+      },
+      "seconds": 0.001504
+    },
+    {
+      "id": "MATH-008",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "2*x**(3/2)/3",
+      "actual": {
+        "ok": "True",
+        "result": "2*x**(3/2)/3",
+        "latex": "\\frac{2 x^{\\frac{3}{2}}}{3} + C",
+        "error": "None"
+      },
+      "seconds": 0.002178
+    },
+    {
+      "id": "MATH-009",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "exp(x)",
+      "actual": {
+        "ok": "True",
+        "result": "exp(x)",
+        "latex": "e^{x} + C",
+        "error": "None"
+      },
+      "seconds": 0.006801
+    },
+    {
+      "id": "MATH-010",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "-cos(x)",
+      "actual": {
+        "ok": "True",
+        "result": "-cos(x)",
+        "latex": "- \\cos{\\left(x \\right)} + C",
+        "error": "None"
+      },
+      "seconds": 0.001703
+    },
+    {
+      "id": "MATH-011",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "sin(x)",
+      "actual": {
+        "ok": "True",
+        "result": "sin(x)",
+        "latex": "\\sin{\\left(x \\right)} + C",
+        "error": "None"
+      },
+      "seconds": 0.000941
+    },
+    {
+      "id": "MATH-012",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "atan(x)",
+      "actual": {
+        "ok": "True",
+        "result": "atan(x)",
+        "latex": "\\operatorname{atan}{\\left(x \\right)} + C",
+        "error": "None"
+      },
+      "seconds": 0.011122
+    },
+    {
+      "id": "MATH-013",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "asin(x)",
+      "actual": {
+        "ok": "True",
+        "result": "asin(x)",
+        "latex": "\\operatorname{asin}{\\left(x \\right)} + C",
+        "error": "None"
+      },
+      "seconds": 0.020255
+    },
+    {
+      "id": "MATH-014",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "(x-1)*exp(x)",
+      "actual": {
+        "ok": "True",
+        "result": "(x - 1)*exp(x)",
+        "latex": "\\left(x - 1\\right) e^{x} + C",
+        "error": "None"
+      },
+      "seconds": 0.008142
+    },
+    {
+      "id": "MATH-015",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "x*log(x)-x",
+      "actual": {
+        "ok": "True",
+        "result": "x*log(x) - x",
+        "latex": "x \\log{\\left(x \\right)} - x + C",
+        "error": "None"
+      },
+      "seconds": 0.008722
+    },
+    {
+      "id": "MATH-016",
+      "topic": "basic-and-techniques",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "log(x-1)/2-log(x+1)/2",
+      "actual": {
+        "ok": "True",
+        "result": "log(x - 1)/2 - log(x + 1)/2",
+        "latex": "\\frac{\\log{\\left(x - 1 \\right)}}{2} - \\frac{\\log{\\left(x + 1 \\right)}}{2} + C",
+        "error": "None"
+      },
+      "seconds": 0.011307
+    },
+    {
+      "id": "MATH-017",
+      "topic": "substitution-and-parts",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "sin(x**2)",
+      "actual": {
+        "ok": "True",
+        "result": "sin(x**2)",
+        "latex": "\\int 2 x \\cos{\\left(x^{2} \\right)} \\, dx = \\sin{\\left(x^{2} \\right)} + C",
+        "error": "None"
+      },
+      "seconds": 0.020165
+    },
+    {
+      "id": "MATH-018",
+      "topic": "substitution-and-parts",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "log(1+x**2)",
+      "actual": {
+        "ok": "True",
+        "result": "log(x**2 + 1)",
+        "latex": "\\int \\frac{2 x}{x^{2} + 1} \\, dx = \\log{\\left(x^{2} + 1 \\right)} + C",
+        "error": "None"
+      },
+      "seconds": 0.006823
+    },
+    {
+      "id": "MATH-019",
+      "topic": "substitution-and-parts",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "exp(x**3)",
+      "actual": {
+        "ok": "True",
+        "result": "exp(x**3)",
+        "latex": "\\int 3 x^{2} e^{x^{3}} \\, dx = e^{x^{3}} + C",
+        "error": "None"
+      },
+      "seconds": 0.009001
+    },
+    {
+      "id": "MATH-020",
+      "topic": "substitution-and-parts",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "log(sin(x))",
+      "actual": {
+        "ok": "True",
+        "result": "log(sin(x))",
+        "latex": "\\int \\frac{\\cos{\\left(x \\right)}}{\\sin{\\left(x \\right)}} \\, dx = \\log{\\left(\\sin{\\left(x \\right)} \\right)} + C",
+        "error": "None"
+      },
+      "seconds": 0.00301
+    },
+    {
+      "id": "MATH-021",
+      "topic": "substitution-and-parts",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "sqrt(1+x**2)",
+      "actual": {
+        "ok": "True",
+        "result": "sqrt(x**2 + 1)",
+        "latex": "\\int \\frac{x}{\\sqrt{x^{2} + 1}} \\, dx = \\sqrt{x^{2} + 1} + C",
+        "error": "None"
+      },
+      "seconds": 0.01033
+    },
+    {
+      "id": "MATH-022",
+      "topic": "substitution-and-parts",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "x**2*log(x)/2-x**2/4",
+      "actual": {
+        "ok": "True",
+        "result": "x**2*log(x)/2 - x**2/4",
+        "latex": "\\int x \\log{\\left(x \\right)} \\, dx = \\frac{x^{2} \\log{\\left(x \\right)}}{2} - \\frac{x^{2}}{4} + C",
+        "error": "None"
+      },
+      "seconds": 0.01213
+    },
+    {
+      "id": "MATH-023",
+      "topic": "derivative",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "0",
+      "actual": {
+        "ok": "True",
+        "result": "0",
+        "latex": "0",
+        "error": "None"
+      },
+      "seconds": 0.000414
+    },
+    {
+      "id": "MATH-024",
+      "topic": "derivative",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "5*x**4",
+      "actual": {
+        "ok": "True",
+        "result": "5*x**4",
+        "latex": "5 x^{4}",
+        "error": "None"
+      },
+      "seconds": 0.001072
+    },
+    {
+      "id": "MATH-025",
+      "topic": "derivative",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "2*x*sin(x)+(x**2+1)*cos(x)",
+      "actual": {
+        "ok": "True",
+        "result": "2*x*sin(x) + (x**2 + 1)*cos(x)",
+        "latex": "2 x \\sin{\\left(x \\right)} + \\left(x^{2} + 1\\right) \\cos{\\left(x \\right)}",
+        "error": "None"
+      },
+      "seconds": 0.00213
+    },
+    {
+      "id": "MATH-026",
+      "topic": "derivative",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "2*x*cos(x**2)",
+      "actual": {
+        "ok": "True",
+        "result": "2*x*cos(x**2)",
+        "latex": "2 x \\cos{\\left(x^{2} \\right)}",
+        "error": "None"
+      },
+      "seconds": 0.000683
+    },
+    {
+      "id": "MATH-027",
+      "topic": "derivative",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1/x",
+      "actual": {
+        "ok": "True",
+        "result": "1/x",
+        "latex": "\\frac{1}{x}",
+        "error": "None"
+      },
+      "seconds": 0.000468
+    },
+    {
+      "id": "MATH-028",
+      "topic": "derivative",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "2*exp(2*x)",
+      "actual": {
+        "ok": "True",
+        "result": "2*exp(2*x)",
+        "latex": "2 e^{2 x}",
+        "error": "None"
+      },
+      "seconds": 0.001509
+    },
+    {
+      "id": "MATH-029",
+      "topic": "derivative",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "-1/x**2",
+      "actual": {
+        "ok": "True",
+        "result": "-1/x**2",
+        "latex": "- \\frac{1}{x^{2}}",
+        "error": "None"
+      },
+      "seconds": 0.001064
+    },
+    {
+      "id": "MATH-030",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "4",
+      "actual": {
+        "ok": "True",
+        "result": "4",
+        "latex": "4",
+        "error": "None"
+      },
+      "seconds": 0.001751
+    },
+    {
+      "id": "MATH-031",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "4",
+      "actual": {
+        "ok": "True",
+        "result": "4.0",
+        "latex": "\\lim_{x \\to 2} x^{2} = 4",
+        "error": "None"
+      },
+      "seconds": 0.000687
+    },
+    {
+      "id": "MATH-032",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "4",
+      "actual": {
+        "ok": "True",
+        "result": "4",
+        "latex": "4",
+        "error": "None"
+      },
+      "seconds": 0.008645
+    },
+    {
+      "id": "MATH-033",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "4",
+      "actual": {
+        "ok": "True",
+        "result": "4.0",
+        "latex": "\\lim_{x \\to 2} \\frac{x^{2} - 4}{x - 2} = 4",
+        "error": "None"
+      },
+      "seconds": 0.001311
+    },
+    {
+      "id": "MATH-034",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1",
+      "actual": {
+        "ok": "True",
+        "result": "1",
+        "latex": "1",
+        "error": "None"
+      },
+      "seconds": 0.000812
+    },
+    {
+      "id": "MATH-035",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1",
+      "actual": {
+        "ok": "True",
+        "result": "1.0",
+        "latex": "\\lim_{x \\to 0} \\frac{\\sin{\\left(x \\right)}}{x} = 1",
+        "error": "None"
+      },
+      "seconds": 0.00082
+    },
+    {
+      "id": "MATH-036",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1",
+      "actual": {
+        "ok": "True",
+        "result": "1",
+        "latex": "1",
+        "error": "None"
+      },
+      "seconds": 0.021326
+    },
+    {
+      "id": "MATH-037",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1",
+      "actual": {
+        "ok": "True",
+        "result": "1.0",
+        "latex": "\\lim_{x \\to 0} \\frac{e^{x} - 1}{x} = 1",
+        "error": "None"
+      },
+      "seconds": 0.001136
+    },
+    {
+      "id": "MATH-038",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1/2",
+      "actual": {
+        "ok": "True",
+        "result": "1/2",
+        "latex": "\\frac{1}{2}",
+        "error": "None"
+      },
+      "seconds": 0.007081
+    },
+    {
+      "id": "MATH-039",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1/2",
+      "actual": {
+        "ok": "True",
+        "result": "0.5",
+        "latex": "\\lim_{x \\to 0} \\frac{\\sqrt{x + 1} - 1}{x} = \\frac{1}{2}",
+        "error": "None"
+      },
+      "seconds": 0.001279
+    },
+    {
+      "id": "MATH-040",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "0",
+      "actual": {
+        "ok": "True",
+        "result": "0",
+        "latex": "0",
+        "error": "None"
+      },
+      "seconds": 0.001147
+    },
+    {
+      "id": "MATH-041",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "0",
+      "actual": {
+        "ok": "True",
+        "result": "0.0",
+        "latex": "\\lim_{x \\to 0} \\left|{x}\\right| = 0",
+        "error": "None"
+      },
+      "seconds": 0.001032
+    },
+    {
+      "id": "MATH-042",
+      "topic": "tangent",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "4",
+      "actual": {
+        "ok": "True",
+        "result": "4.0",
+        "latex": "y = 4 x - 4",
+        "error": "None"
+      },
+      "seconds": 0.046722
+    },
+    {
+      "id": "MATH-043",
+      "topic": "tangent",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1",
+      "actual": {
+        "ok": "True",
+        "result": "1.0",
+        "latex": "y = x",
+        "error": "None"
+      },
+      "seconds": 0.000613
+    },
+    {
+      "id": "MATH-044",
+      "topic": "tangent",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1",
+      "actual": {
+        "ok": "True",
+        "result": "1.0",
+        "latex": "y = x + 1",
+        "error": "None"
+      },
+      "seconds": 0.002969
+    },
+    {
+      "id": "MATH-045",
+      "topic": "tangent",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "0",
+      "actual": {
+        "ok": "True",
+        "result": "0.0",
+        "latex": "y = 0",
+        "error": "None"
+      },
+      "seconds": 0.00082
+    },
+    {
+      "id": "MATH-046",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "3/8",
+      "actual": {
+        "ok": "True",
+        "result": "0.375",
+        "latex": "L_n \\approx 0.375000",
+        "error": "None"
+      },
+      "seconds": 0.000509
+    },
+    {
+      "id": "MATH-047",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "7/32",
+      "actual": {
+        "ok": "True",
+        "result": "0.21875",
+        "latex": "L_n \\approx 0.218750",
+        "error": "None"
+      },
+      "seconds": 0.000647
+    },
+    {
+      "id": "MATH-048",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "-6",
+      "actual": {
+        "ok": "True",
+        "result": "-6.0",
+        "latex": "L_n \\approx -6.000000",
+        "error": "None"
+      },
+      "seconds": 0.000388
+    },
+    {
+      "id": "MATH-049",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "57/200",
+      "actual": {
+        "ok": "True",
+        "result": "0.2850000000000001",
+        "latex": "L_n \\approx 0.285000",
+        "error": "None"
+      },
+      "seconds": 0.000886
+    },
+    {
+      "id": "MATH-050",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "5/8",
+      "actual": {
+        "ok": "True",
+        "result": "0.625",
+        "latex": "R_n \\approx 0.625000",
+        "error": "None"
+      },
+      "seconds": 0.000391
+    },
+    {
+      "id": "MATH-051",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "15/32",
+      "actual": {
+        "ok": "True",
+        "result": "0.46875",
+        "latex": "R_n \\approx 0.468750",
+        "error": "None"
+      },
+      "seconds": 0.00054
+    },
+    {
+      "id": "MATH-052",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "-6",
+      "actual": {
+        "ok": "True",
+        "result": "-6.0",
+        "latex": "R_n \\approx -6.000000",
+        "error": "None"
+      },
+      "seconds": 0.000345
+    },
+    {
+      "id": "MATH-053",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "77/200",
+      "actual": {
+        "ok": "True",
+        "result": "0.38500000000000006",
+        "latex": "R_n \\approx 0.385000",
+        "error": "None"
+      },
+      "seconds": 0.000464
+    },
+    {
+      "id": "MATH-054",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1/2",
+      "actual": {
+        "ok": "True",
+        "result": "0.5",
+        "latex": "M_n \\approx 0.500000",
+        "error": "None"
+      },
+      "seconds": 0.000372
+    },
+    {
+      "id": "MATH-055",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "21/64",
+      "actual": {
+        "ok": "True",
+        "result": "0.328125",
+        "latex": "M_n \\approx 0.328125",
+        "error": "None"
+      },
+      "seconds": 0.000591
+    },
+    {
+      "id": "MATH-056",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "-6",
+      "actual": {
+        "ok": "True",
+        "result": "-6.0",
+        "latex": "M_n \\approx -6.000000",
+        "error": "None"
+      },
+      "seconds": 0.000346
+    },
+    {
+      "id": "MATH-057",
+      "topic": "riemann",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "133/400",
+      "actual": {
+        "ok": "True",
+        "result": "0.3325",
+        "latex": "M_n \\approx 0.332500",
+        "error": "None"
+      },
+      "seconds": 0.000919
+    },
+    {
+      "id": "MATH-058",
+      "topic": "area",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1/6",
+      "actual": {
+        "ok": "True",
+        "result": "0.16666666666666666",
+        "latex": "A = \\int_{0}^{1} |x \\left(1 - x\\right)| \\, dx = \\frac{1}{6}",
+        "error": "None"
+      },
+      "seconds": 0.015486
+    },
+    {
+      "id": "MATH-059",
+      "topic": "area",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "4",
+      "actual": {
+        "ok": "True",
+        "result": "4.0",
+        "latex": "A = \\int_{-1}^{1} |2| \\, dx = 4",
+        "error": "None"
+      },
+      "seconds": 0.001616
+    },
+    {
+      "id": "MATH-060",
+      "topic": "area",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "8/3",
+      "actual": {
+        "ok": "True",
+        "result": "2.6666666666666665",
+        "latex": "A = \\int_{0}^{2} |x^{2}| \\, dx = \\frac{8}{3}",
+        "error": "None"
+      },
+      "seconds": 0.003223
+    },
+    {
+      "id": "MATH-061",
+      "topic": "volume-disk",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "pi/3",
+      "actual": {
+        "ok": "True",
+        "result": "1.0471975511965979",
+        "latex": "V = \\pi \\int_{0}^{1} [x]^2 \\, dx = \\frac{\\pi}{3}",
+        "error": "None"
+      },
+      "seconds": 0.002068
+    },
+    {
+      "id": "MATH-062",
+      "topic": "volume-disk",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "8*pi",
+      "actual": {
+        "ok": "True",
+        "result": "25.132741228718345",
+        "latex": "V = \\pi \\int_{0}^{4} [\\sqrt{x}]^2 \\, dx = 8 \\pi",
+        "error": "None"
+      },
+      "seconds": 0.002293
+    },
+    {
+      "id": "MATH-063",
+      "topic": "volume-disk",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "12*pi",
+      "actual": {
+        "ok": "True",
+        "result": "37.69911184307752",
+        "latex": "V = \\pi \\int_{0}^{3} [2]^2 \\, dx = 12 \\pi",
+        "error": "None"
+      },
+      "seconds": 0.002075
+    },
+    {
+      "id": "MATH-064",
+      "topic": "improper",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1",
+      "actual": {
+        "ok": "True",
+        "result": "1.0",
+        "latex": "\\int_{1}^{\\infty} \\frac{1}{x^{2}} \\, dx = 1",
+        "error": "None"
+      },
+      "seconds": 0.04368
+    },
+    {
+      "id": "MATH-065",
+      "topic": "improper",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1",
+      "actual": {
+        "ok": "True",
+        "result": "1.0",
+        "latex": "\\int_{0}^{\\infty} e^{- x} \\, dx = 1",
+        "error": "None"
+      },
+      "seconds": 0.015988
+    },
+    {
+      "id": "MATH-066",
+      "topic": "improper",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "2",
+      "actual": {
+        "ok": "True",
+        "result": "2.0",
+        "latex": "\\int_{0}^{1} \\frac{1}{\\sqrt{x}} \\, dx = 2",
+        "error": "None"
+      },
+      "seconds": 0.002814
+    },
+    {
+      "id": "MATH-067",
+      "topic": "improper",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1/2",
+      "actual": {
+        "ok": "True",
+        "result": "0.5",
+        "latex": "\\int_{1}^{2} \\frac{1}{x^{2}} \\, dx = \\frac{1}{2}",
+        "error": "None"
+      },
+      "seconds": 0.00334
+    },
+    {
+      "id": "MATH-068",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "no_two_sided_limit",
+      "actual": {
+        "ok": "True",
+        "result": "None",
+        "latex": "\\lim_{x \\to 0} \\frac{1}{x} \\quad \\text{(does not exist)}",
+        "error": "None"
+      },
+      "seconds": 0.000497
+    },
+    {
+      "id": "MATH-069",
+      "topic": "limit",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "no_two_sided_limit",
+      "actual": {
+        "ok": "True",
+        "result": "None",
+        "latex": "\\lim_{x \\to 0} \\frac{1}{x} \\quad \\text{(does not exist)}",
+        "error": "None"
+      },
+      "seconds": 0.00046
+    },
+    {
+      "id": "MATH-070",
+      "topic": "area",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1",
+      "actual": {
+        "ok": "True",
+        "result": "1.0",
+        "latex": "A = \\int_{-1}^{1} |x| \\, dx = 1",
+        "error": "None"
+      },
+      "seconds": 0.003411
+    },
+    {
+      "id": "MATH-071",
+      "topic": "area",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "1/6",
+      "actual": {
+        "ok": "True",
+        "result": "0.16666666666666666",
+        "latex": "A = \\int_{0}^{1} |x \\left(x - 1\\right)| \\, dx = \\frac{1}{6}",
+        "error": "None"
+      },
+      "seconds": 0.010916
+    },
+    {
+      "id": "MATH-072",
+      "topic": "improper",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "diverges",
+      "actual": {
+        "ok": "True",
+        "result": "None",
+        "latex": "\\int_{1}^{\\infty} \\frac{1}{x} \\, dx = \\text{diverges}",
+        "error": "None"
+      },
+      "seconds": 0.010864
+    },
+    {
+      "id": "MATH-073",
+      "topic": "improper",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "diverges",
+      "actual": {
+        "ok": "True",
+        "result": "None",
+        "latex": "\\int_{0}^{1} \\frac{1}{x^{2}} \\, dx = \\text{diverges}",
+        "error": "None"
+      },
+      "seconds": 0.003207
+    },
+    {
+      "id": "MATH-074",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถอ่านนิพจน์ได้ กรุณาตรวจสอบรูปแบบ เช่น x**2, sin(x), (x**2-4)/(x-2)"
+      },
+      "seconds": 8e-06
+    },
+    {
+      "id": "MATH-075",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถอ่านนิพจน์ได้ กรุณาตรวจสอบรูปแบบ เช่น x**2, sin(x), (x**2-4)/(x-2)"
+      },
+      "seconds": 4e-06
+    },
+    {
+      "id": "MATH-076",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถอ่านนิพจน์ได้ กรุณาตรวจสอบรูปแบบ เช่น x**2, sin(x), (x**2-4)/(x-2)"
+      },
+      "seconds": 0.000177
+    },
+    {
+      "id": "MATH-077",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถคำนวณได้: invalid syntax (<string>, line 1)"
+      },
+      "seconds": 0.000179
+    },
+    {
+      "id": "MATH-078",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถคำนวณได้: Empty input string"
+      },
+      "seconds": 5e-06
+    },
+    {
+      "id": "MATH-079",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถคำนวณได้: Empty input string"
+      },
+      "seconds": 9e-06
+    },
+    {
+      "id": "MATH-080",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถคำนวณได้: Empty input string"
+      },
+      "seconds": 3e-06
+    },
+    {
+      "id": "MATH-081",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถคำนวณได้: Empty input string"
+      },
+      "seconds": 2e-06
+    },
+    {
+      "id": "MATH-082",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถคำนวณได้: n must be >= 1"
+      },
+      "seconds": 0.000161
+    },
+    {
+      "id": "MATH-083",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถคำนวณได้: b must be > a"
+      },
+      "seconds": 0.000148
+    },
+    {
+      "id": "MATH-084",
+      "topic": "validation",
+      "contract": "mathematical",
+      "status": "PASS",
+      "expected": "error",
+      "actual": {
+        "ok": "False",
+        "result": "None",
+        "latex": "",
+        "error": "ไม่สามารถคำนวณได้: Unknown method: invalid"
+      },
+      "seconds": 0.000147
+    },
+    {
+      "id": "MATH-085",
+      "topic": "validation",
+      "contract": "proposed-validation",
+      "status": "FAIL",
+      "expected": "error",
+      "actual": {
+        "ok": "True",
+        "result": "0.25",
+        "latex": "L_n \\approx 0.250000",
+        "error": "None"
+      },
+      "seconds": 0.000227
+    },
+    {
+      "id": "MATH-086",
+      "topic": "validation",
+      "contract": "proposed-validation",
+      "status": "FAIL",
+      "expected": "error",
+      "actual": {
+        "ok": "True",
+        "result": "1.0471975511965979",
+        "latex": "V = \\pi \\int_{0}^{1} [x]^2 \\, dx = \\frac{\\pi}{3}",
+        "error": "None"
+      },
+      "seconds": 0.001592
+    }
+  ]
+}
