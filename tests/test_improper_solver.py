@@ -50,8 +50,16 @@ class TestComputeImproper:
 
     def test_interior_singularity_is_not_finite_principal_value(self):
         res = compute_improper('1/x', -1, 1)
-        assert res["status"] in ('divergent', 'unsupported')
+        assert res["status"] == "divergent"
         assert res["result"] is None
+        assert len(res["interior_singularities"]) >= 1
+        assert any("Interior Singularity" in step for step in res["steps"])
+
+    def test_interior_singularity_shifted(self):
+        res = compute_improper('1/(x-1)**2', 0, 2)
+        assert res["status"] == "divergent"
+        assert res["result"] is None
+        assert len(res["interior_singularities"]) >= 1
 
     def test_compute_improper_invalid_input(self):
         res = compute_improper('', 1, None)

@@ -61,8 +61,25 @@ def _classify_improper(res_val: sp.Expr) -> str:
     return "unsupported"
 
 
+def _find_interior_singularities(expr: sp.Expr, a_val: float, b_val: float) -> list[float]:
+    """ค้นหาจุดเอกฐานภายในช่วงเปิด (a, b) จากรากของตัวส่วน"""
+    sings = []
+    denom = sp.denom(expr)
+    if denom != 1:
+        try:
+            sol = sp.solve(denom, X)
+            for s in sol:
+                if getattr(s, "is_real", False) and a_val < float(s) < b_val:
+                    s_f = float(s)
+                    if not any(abs(s_f - ex) < 1e-4 for ex in sings):
+                        sings.append(s_f)
+        except Exception:
+            pass
+    return sorted(sings)
+
+
 def compute_improper(expr_str: str, a: float, b: float | None = None) -> dict:
-    """คำนวณอินทิกรัลไม่ตรงแบบผ่านลิมิต ตรวจลู่เข้า/ลู่ออก"""
+    """คำนวณอินทิกรัลไม่ตรงแบบผ่านลิมิต ตรวจลู่เข้า/ลู่ออก และแจกแจงจุดเอกฐานภายในช่วง"""
     try:
         expr = _parse_input(expr_str)
 
@@ -74,6 +91,7 @@ def compute_improper(expr_str: str, a: float, b: float | None = None) -> dict:
         if b is None:
             upper = sp.oo
             bound_latex = "\\infty"
+            f_b = float("inf")
         else:
             f_b = float(b)
             if not math.isfinite(f_b):
@@ -84,35 +102,86 @@ def compute_improper(expr_str: str, a: float, b: float | None = None) -> dict:
             bound_latex = sp.latex(upper)
 
         lower_latex = sp.latex(a_sp)
-        res_val = sp.integrate(expr, (X, a_sp, upper))
-        status = _classify_improper(res_val)
 
-        if status == "finite":
-            result = float(res_val) if res_val.is_real else None
-            value_latex = sp.latex(res_val)
-        elif status == "divergent":
-            result = None
-            value_latex = "\\text{diverges}"
-        else:
-            result = None
-            value_latex = "\\text{unsupported}"
+        # ตรวจสอบจุดเอกฐานภายในช่วง (Interior Singularities)
+        interior_sings = []
+        if math.isfinite(f_b):
+            interior_sings = _find_interior_singularities(expr, f_a, f_b)
 
         steps = [
             f"กำหนดอินทิกรัลไม่ตรงแบบ: \\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx",
-            f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขต: \\lim_{{t \\to {bound_latex}}} \\int_{{{lower_latex}}}^{{t}} \\left({sp.latex(expr)}\\right) \\, dx",
         ]
-        if status == "finite":
+
+        if interior_sings:
+            c_val = interior_sings[0]
+            c_sp = sp.nsimplify(c_val)
+            c_latex = sp.latex(c_sp)
             steps.append(
-                f"คำนวณผลลัพธ์ลิมิต (ลู่เข้าสู่ค่าจริงจำกัด): \\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx = {value_latex}"
+                f"พบจุดเอกฐานภายในช่วงอินทิเกรต (Interior Singularity) ที่ $x = {c_latex}$ ซึ่งฟังก์ชันไม่ต่อเนื่องและไม่มีขอบเขต"
             )
-        elif status == "divergent":
             steps.append(
-                f"คำนวณผลลัพธ์ลิมิต (ปริพันธ์ลู่ออก / ไม่ลู่เข้าสู่ค่าจำกัด): \\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx = {value_latex}"
+                f"แยกช่วงการอินทิเกรตออกเป็นสองตอนตามนิยาม: \\int_{{{lower_latex}}}^{{{bound_latex}}} f(x)\\,dx = \\lim_{{t \\to {c_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f(x)\\,dx + \\lim_{{s \\to {c_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f(x)\\,dx"
             )
+
+            # คำนวณแต่ละฝั่ง
+            left_part = sp.integrate(expr, (X, a_sp, c_sp))
+            right_part = sp.integrate(expr, (X, c_sp, upper))
+            left_status = _classify_improper(left_part)
+            right_status = _classify_improper(right_part)
+
+            if left_status == "divergent" or right_status == "divergent":
+                status = "divergent"
+                result = None
+                value_latex = "\\text{diverges}"
+                steps.append(
+                    f"พิจารณาแต่ละฝั่ง: ฝั่งซ้ายสถานะเป็น {left_status} และฝั่งขวาเป็น {right_status}"
+                )
+                steps.append(
+                    "ตามนิยามทางคณิตศาสตร์ หากมีส่วนย่อยอย่างน้อย 1 ฝั่งลู่ออก อินทิกรัลไม่ตรงแบบทั้งหมดจะถือว่า **ลู่ออก (Diverges)** (ไม่สามารถนำ $\\pm\\infty$ มาหักล้างกันได้)"
+                )
+            elif left_status == "finite" and right_status == "finite":
+                res_val = left_part + right_part
+                status = "finite"
+                result = float(res_val) if res_val.is_real else None
+                value_latex = sp.latex(res_val)
+                steps.append(
+                    f"ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด: \\int_{{{lower_latex}}}^{{{bound_latex}}} f(x)\\,dx = {value_latex}"
+                )
+            else:
+                status = "unsupported"
+                result = None
+                value_latex = "\\text{unsupported}"
         else:
-            steps.append(
-                f"คำนวณผลลัพธ์ลิมิต: \\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx = {value_latex}"
-            )
+            if math.isfinite(f_b):
+                steps.append(
+                    f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขต: \\lim_{{t \\to {bound_latex}}} \\int_{{{lower_latex}}}^{{t}} \\left({sp.latex(expr)}\\right) \\, dx"
+                )
+            else:
+                steps.append(
+                    f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตบนช่วงอนันต์: \\lim_{{t \\to \\infty}} \\int_{{{lower_latex}}}^{{t}} \\left({sp.latex(expr)}\\right) \\, dx"
+                )
+
+            res_val = sp.integrate(expr, (X, a_sp, upper))
+            status = _classify_improper(res_val)
+
+            if status == "finite":
+                result = float(res_val) if res_val.is_real else None
+                value_latex = sp.latex(res_val)
+                steps.append(
+                    f"คำนวณผลลัพธ์ลิมิต (ลู่เข้าสู่ค่าจริงจำกัด): \\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx = {value_latex}"
+                )
+            elif status == "divergent":
+                result = None
+                value_latex = "\\text{diverges}"
+                steps.append(
+                    f"คำนวณผลลัพธ์ลิมิต (ปริพันธ์ลู่ออก / ไม่ลู่เข้าสู่ค่าจำกัด): \\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx = {value_latex}"
+                )
+            else:
+                result = None
+                value_latex = "\\text{unsupported}"
+                steps.append(
+                    f"คำนวณผลลัพธ์ลิมิต: \\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx = {value_latex}"
+                )
 
         return {
             "ok": True,
@@ -122,6 +191,7 @@ def compute_improper(expr_str: str, a: float, b: float | None = None) -> dict:
             "expr": expr,
             "error": None,
             "status": status,
+            "interior_singularities": interior_sings,
         }
     except Exception as e:
         return {
