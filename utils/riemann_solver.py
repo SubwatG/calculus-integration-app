@@ -11,6 +11,7 @@ utils/riemann_solver.py — คำนวณผลรวมรีมันน์ 
 """
 
 from typing import Any
+import math
 
 import sympy as sp
 from sympy.parsing.sympy_parser import (
@@ -100,7 +101,19 @@ def compute_riemann(
         else:  # midpoint
             xs = [a_f + (i + 0.5) * dx for i in range(n_i)]
 
-        terms = [float(expr.subs(X, xv)) for xv in xs]
+        terms = []
+        for xv in xs:
+            val_sub = expr.subs(X, xv)
+            if val_sub in (sp.zoo, sp.oo, -sp.oo) or getattr(val_sub, "is_infinite", False):
+                raise ValueError(f"ฟังก์ชันมีจุดเอกฐาน (หารด้วยศูนย์) ที่จุดสุ่มตัวอย่าง x = {_fmt_num(xv)}")
+            try:
+                f_val = float(val_sub.evalf())
+                if not math.isfinite(f_val):
+                    raise ValueError(f"ฟังก์ชันไม่จำกัดเขตที่จุด x = {_fmt_num(xv)}")
+                terms.append(f_val)
+            except Exception:
+                raise ValueError(f"ไม่สามารถคำนวณค่าฟังก์ชันบนจุดสุ่มตัวอย่าง x = {_fmt_num(xv)} ได้")
+
         total = sum(terms) * dx
 
         # สร้าง LaTeX ของผลรวม

@@ -69,6 +69,12 @@ class TestRiemannErrors:
         res = compute_riemann("x", 0, 1, 2.5, "left")
         assert res["ok"] is False
 
+    def test_singular_sample_point_detected(self):
+        # 1/x with left Riemann sum starting at 0 hits x=0
+        res = compute_riemann("1/x", 0, 2, 4, "left")
+        assert res["ok"] is False
+        assert "จุดเอกฐาน" in res["error"] or "หารด้วยศูนย์" in res["error"]
+
 
 class TestMethodsCatalog:
     def test_has_three_methods(self):
