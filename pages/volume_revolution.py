@@ -14,6 +14,17 @@ from utils.volume_solver import compute_volume
 
 render_hero("ปริมาตรของทรงตัน", "คำนวณปริมาตรแบบ disk และ washer")
 
+if "volume_expr" not in st.session_state:
+    st.session_state["volume_expr"] = "x"
+if "volume_a" not in st.session_state:
+    st.session_state["volume_a"] = 0.0
+if "volume_b" not in st.session_state:
+    st.session_state["volume_b"] = 2.0
+if "volume_method" not in st.session_state:
+    st.session_state["volume_method"] = "disk"
+if "volume_inner" not in st.session_state:
+    st.session_state["volume_inner"] = "x**2"
+
 theory = THEORY_CONTENT["volume"]
 
 with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
@@ -38,26 +49,35 @@ st.divider()
 st.markdown("### ลองคำนวณ")
 
 st.markdown("**ตัวอย่างโจทย์ยอดนิยม:**")
-p_cols = st.columns(3)
+p_cols = st.columns(4)
 if p_cols[0].button("ทรงกรวย $R(x) = x$ บน $[0, 2]$", key="pre_vol_1"):
     st.session_state["volume_expr"] = "x"
     st.session_state["volume_a"] = 0.0
     st.session_state["volume_b"] = 2.0
+    st.session_state["volume_method"] = "disk"
     st.rerun()
 if p_cols[1].button("พาราโบลอยด์ $R(x) = \\sqrt{x}$ บน $[0, 4]$", key="pre_vol_2"):
     st.session_state["volume_expr"] = "sqrt(x)"
     st.session_state["volume_a"] = 0.0
     st.session_state["volume_b"] = 4.0
+    st.session_state["volume_method"] = "disk"
     st.rerun()
 if p_cols[2].button("ทรงระฆังคว่ำ $R(x) = 4 - x^2$ บน $[0, 2]$", key="pre_vol_3"):
     st.session_state["volume_expr"] = "4 - x**2"
     st.session_state["volume_a"] = 0.0
     st.session_state["volume_b"] = 2.0
+    st.session_state["volume_method"] = "disk"
+    st.rerun()
+if p_cols[3].button("วงแหวน $R=\\sqrt{x}, r=x^2$ บน $[0, 1]$", key="pre_vol_4"):
+    st.session_state["volume_expr"] = "sqrt(x)"
+    st.session_state["volume_inner"] = "x**2"
+    st.session_state["volume_a"] = 0.0
+    st.session_state["volume_b"] = 1.0
+    st.session_state["volume_method"] = "washer"
     st.rerun()
 
 expr_input = st.text_input(
-    "ฟังก์ชันรัศมี R(x)",
-    value="x",
+    "ฟังก์ชันรัศมี R(x) (หรือรัศมีนอกสำหรับ Washer)",
     placeholder="เช่น x, sqrt(x), x**2",
     key="volume_expr",
 )
@@ -66,21 +86,31 @@ render_syntax_guide()
 
 col_a, col_b = st.columns(2)
 with col_a:
-    a_val = st.number_input("ขอบล่าง a", value=0.0, key="volume_a")
+    a_val = st.number_input("ขอบล่าง a", key="volume_a")
 with col_b:
-    b_val = st.number_input("ขอบบน b", value=2.0, key="volume_b")
+    b_val = st.number_input("ขอบบน b", key="volume_b")
+
 method_label = st.selectbox(
     "วิธีคำนวณ",
     ["disk", "washer"],
     key="volume_method",
 )
 
-st.caption("[คำแนะนำ] ปัจจุบันรองรับการคำนวณแบบ Disk Method รอบแกน x (y = 0)")
+inner_input = None
+if method_label == "washer":
+    inner_input = st.text_input(
+        "ฟังก์ชันรัศมีวงใน r(x)",
+        placeholder="เช่น x**2, 1, x",
+        key="volume_inner",
+    )
+    preview_math_expr(inner_input, label="พรีวิว r(x)")
+
+st.caption("[คำแนะนำ] รองรับการคำนวณทั้งแบบ Disk Method และ Washer Method รอบแกน x (y = 0)")
 
 if not expr_input.strip():
     st.info("กรุณาระบุฟังก์ชัน R(x) หรือคลิกเลือกตัวอย่างด้านบน")
 else:
-    res = compute_volume(expr_input, a_val, b_val, method_label)
+    res = compute_volume(expr_input, a_val, b_val, method_label, inner_expr_str=inner_input)
     if res["ok"]:
         st.markdown("### ผลลัพธ์")
         render_latex(res["latex"])
@@ -88,7 +118,7 @@ else:
 
         st.markdown("### ภาพตัดขวางทรงตันและการหมุนรอบแกน")
         try:
-            fig, ax = plot_volume(res["expr"], a_val, b_val, method_label)
+            fig, ax = plot_volume(res["expr"], a_val, b_val, method_label, inner_expr=res.get("inner_expr"))
             st.pyplot(fig)
         except Exception as e:
             st.warning(f"ไม่สามารถวาดกราฟได้: {e}")

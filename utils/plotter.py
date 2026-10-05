@@ -343,11 +343,23 @@ def plot_substitution(expr) -> tuple:
     return _stub_figure("Integration by Substitution")
 
 
-def plot_volume(expr, a: float, b: float, method: str = "disk") -> tuple:
+def plot_volume(
+    expr,
+    a: float,
+    b: float,
+    method: str = "disk",
+    inner_expr=None,
+) -> tuple:
     """วาดภาพตัดขวางและการหมุนรอบแกน x แบบ Disk/Washer Method"""
     from matplotlib.patches import Ellipse
 
+    is_washer = (method or "disk").lower() == "washer" and inner_expr is not None
+
     f = sp.lambdify(X, expr, modules=["numpy"])
+    f_in = None
+    if is_washer:
+        f_in = sp.lambdify(X, inner_expr, modules=["numpy"])
+
     x_start = min(a, b)
     x_end = max(a, b)
     span = max(x_end - x_start, 1.0)
@@ -357,31 +369,60 @@ def plot_volume(expr, a: float, b: float, method: str = "disk") -> tuple:
     xs_solid = np.linspace(x_start, x_end, 300)
     xs_ext = np.linspace(x_min, x_max, 400)
 
+    ys_inner = np.zeros_like(xs_solid)
     with np.errstate(all="ignore"):
         ys_solid = _as_curve(f(xs_solid), xs_solid)
         ys_ext = _as_curve(f(xs_ext), xs_ext)
+        if is_washer and f_in is not None:
+            ys_inner = _as_curve(f_in(xs_solid), xs_solid)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
 
-    # เส้นขอบบนและเส้นสะท้อนขอบล่างรอบแกน x
-    ax.plot(xs_solid, ys_solid, color=CURVE, lw=2.2, label="Radius R(x)")
-    ax.plot(xs_solid, -ys_solid, color=CURVE, lw=1.8, linestyle="--", label="Reflection -R(x)")
+    if is_washer:
+        # เส้นขอบนอกและเส้นขอบใน
+        ax.plot(xs_solid, ys_solid, color=CURVE, lw=2.2, label="Outer Radius R(x)")
+        ax.plot(xs_solid, -ys_solid, color=CURVE, lw=1.8, linestyle="--", label="Reflection -R(x)")
+        ax.plot(xs_solid, ys_inner, color="#2563EB", lw=2.0, label="Inner Radius r(x)")
+        ax.plot(xs_solid, -ys_inner, color="#2563EB", lw=1.6, linestyle=":", label="Reflection -r(x)")
 
-    # แรเงาเนื้อทรงตันหมุน
-    ax.fill_between(xs_solid, ys_solid, -ys_solid, color=CURVE, alpha=0.25, label="Solid of Revolution")
+        # แรเงาเนื้อทรงตันวงแหวน
+        ax.fill_between(xs_solid, ys_solid, ys_inner, where=(ys_solid >= ys_inner), color=CURVE, alpha=0.3, label="Solid Washer")
+        ax.fill_between(xs_solid, -ys_inner, -ys_solid, where=(ys_solid >= ys_inner), color=CURVE, alpha=0.3)
 
-    # วาดตัวแทนแผ่นดิสก์ (Disk cross-section slices)
-    n_slices = 5
-    sample_xs = np.linspace(x_start + 0.1 * span, x_end - 0.1 * span, n_slices)
-    for sx in sample_xs:
-        with np.errstate(all="ignore"):
-            sy = float(f(sx))
-        if np.isfinite(sy) and abs(sy) > 1e-4:
-            ax.plot([sx, sx], [-sy, sy], color="#D97706", lw=2, alpha=0.8)
-            width = 0.08 * span
-            height = 2 * abs(sy)
-            ellipse = Ellipse((sx, 0), width, height, edgecolor="#D97706", facecolor="#FDE68A", alpha=0.35, lw=1.2)
-            ax.add_patch(ellipse)
+        # วาดตัวแทนแผ่นวงแหวน (Washer cross-section slice)
+        n_slices = 5
+        sample_xs = np.linspace(x_start + 0.1 * span, x_end - 0.1 * span, n_slices)
+        for sx in sample_xs:
+            with np.errstate(all="ignore"):
+                sy_out = float(f(sx))
+                sy_in = float(f_in(sx)) if f_in is not None else 0.0
+            if np.isfinite(sy_out) and abs(sy_out) > 1e-4:
+                width = 0.08 * span
+                outer_el = Ellipse((sx, 0), width, 2 * abs(sy_out), edgecolor="#D97706", facecolor="#FDE68A", alpha=0.35, lw=1.2)
+                ax.add_patch(outer_el)
+                if np.isfinite(sy_in) and abs(sy_in) > 1e-4:
+                    inner_el = Ellipse((sx, 0), width, 2 * abs(sy_in), edgecolor="#2563EB", facecolor="white", alpha=0.9, lw=1.0)
+                    ax.add_patch(inner_el)
+    else:
+        # เส้นขอบบนและเส้นสะท้อนขอบล่างรอบแกน x (Disk)
+        ax.plot(xs_solid, ys_solid, color=CURVE, lw=2.2, label="Radius R(x)")
+        ax.plot(xs_solid, -ys_solid, color=CURVE, lw=1.8, linestyle="--", label="Reflection -R(x)")
+
+        # แรเงาเนื้อทรงตันหมุน
+        ax.fill_between(xs_solid, ys_solid, -ys_solid, color=CURVE, alpha=0.25, label="Solid of Revolution")
+
+        # วาดตัวแทนแผ่นดิสก์ (Disk cross-section slices)
+        n_slices = 5
+        sample_xs = np.linspace(x_start + 0.1 * span, x_end - 0.1 * span, n_slices)
+        for sx in sample_xs:
+            with np.errstate(all="ignore"):
+                sy = float(f(sx))
+            if np.isfinite(sy) and abs(sy) > 1e-4:
+                ax.plot([sx, sx], [-sy, sy], color="#D97706", lw=2, alpha=0.8)
+                width = 0.08 * span
+                height = 2 * abs(sy)
+                ellipse = Ellipse((sx, 0), width, height, edgecolor="#D97706", facecolor="#FDE68A", alpha=0.35, lw=1.2)
+                ax.add_patch(ellipse)
 
     # แกนหมุน x-axis
     ax.axhline(0, color="#DC2626", lw=1.2, linestyle="-.", label="Axis of Revolution (y = 0)")
@@ -390,13 +431,17 @@ def plot_volume(expr, a: float, b: float, method: str = "disk") -> tuple:
 
     ax.set_xlabel("x")
     ax.set_ylabel("y")
-    method_title = "Disk Method" if method.lower() == "disk" else "Washer Method"
+    method_title = "Washer Method" if is_washer else "Disk Method"
     ax.set_title(f"Volume of Solid of Revolution ({method_title} on [{a}, {b}])")
     ax.grid(True, color=GRID, lw=0.5)
 
-    finite_ys = ys_solid[np.isfinite(ys_solid)]
-    if len(finite_ys) > 0:
-        max_r = float(np.max(np.abs(finite_ys))) * 1.35
+    if is_washer:
+        all_ys = np.concatenate([ys_solid[np.isfinite(ys_solid)], ys_inner[np.isfinite(ys_inner)]])
+    else:
+        all_ys = ys_solid[np.isfinite(ys_solid)]
+
+    if len(all_ys) > 0:
+        max_r = float(np.max(np.abs(all_ys))) * 1.35
         ax.set_ylim(-max_r, max_r)
 
     ax.legend(loc="upper right", fontsize=8.5, framealpha=0.9)

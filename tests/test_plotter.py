@@ -43,3 +43,18 @@ def test_plot_volume_constant():
         assert fig is not None and ax is not None
     finally:
         plt.close(fig)
+
+
+def test_plot_volume_washer():
+    fig, ax = plot_volume(
+        sp.sympify("sqrt(x)"),
+        0.0,
+        1.0,
+        method="washer",
+        inner_expr=sp.sympify("x**2"),
+    )
+    try:
+        assert fig is not None and ax is not None
+        assert len(ax.lines) >= 4
+    finally:
+        plt.close(fig)
