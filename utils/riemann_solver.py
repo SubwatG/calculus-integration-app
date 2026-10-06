@@ -127,15 +127,22 @@ def compute_riemann(
             first = _point_latex(expr, xs[0])
             last = _point_latex(expr, xs[-1])
             if method == "midpoint":
-                index_note = r"\bar{x}_i = a + \left(i+\tfrac12\right)\Delta x"
+                index_note = r"\bar{x}_i = a + \left(i-\tfrac12\right)\Delta x"
+                terms_latex = f"f(\\bar{{x}}_1)+\\cdots+f(\\bar{{x}}_{{{n_i}}})"
+            elif method == "right":
+                index_note = f"x_i = a + i\\,\\Delta x"
+                terms_latex = f"f(x_1)+\\cdots+f(x_{{{n_i}}})"
             else:
                 index_note = f"x_i = a + i\\,\\Delta x"
-            terms_latex = f"f(x_0)+\\cdots+f(x_{{{n_i-1}}})"
+                terms_latex = f"f(x_0)+\\cdots+f(x_{{{n_i-1}}})"
+
+        sample_symbol = r"\bar{x}_i" if method == "midpoint" else "x_i"
+        sample_label = "จุดกึ่งกลางช่วง" if method == "midpoint" else "จุดแบ่งช่วง"
 
         steps = [
             f"หาความกว้างของแต่ละช่วง: $\\Delta x = \\frac{{b-a}}{{n}} = \\frac{{{_fmt_num(b_f)}-{_fmt_num(a_f)}}}{{{n_i}}} = {_fmt_num(dx)}$",
-            f"จุดแบ่งช่วง $x_i$: ${', '.join(_fmt_num(xv) for xv in xs)}$",
-            f"คำนวณ $f(x_i)$ แต่ละจุด แล้วรวมกัน: ${terms_latex}$",
+            f"{sample_label} ${sample_symbol}$: ${', '.join(_fmt_num(xv) for xv in xs)}$",
+            f"คำนวณ $f({sample_symbol})$ แต่ละจุด แล้วรวมกัน: ${terms_latex}$",
             f"คูณด้วย $\\Delta x$: ${method_latex} = \\left({terms_latex}\\right)\\cdot {_fmt_num(dx)}$",
             f"ค่าประมาณ: ${method_latex} \\approx {total:.6f}$",
         ]

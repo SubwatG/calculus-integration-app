@@ -93,10 +93,10 @@ def compute_tangent(expr_str: str, a: float) -> dict:
             latex_str = f"y = {sp.latex(sp.simplify(tangent_eq))}"
             steps = [
                 f"กำหนดฟังก์ชันและจุดที่พิจารณา: f(x) = {sp.latex(expr)}, \\quad a = {a_f}",
-                f"คำนวณพิกัด y ของจุดสัมผัส: f({a_f}) = {sp.latex(fa_sym)} \\implies (x_0, y_0) = ({a_f}, {sp.latex(fa_sym)})",
+                f"คำนวณพิกัด y ของจุดสัมผัส: f({a_f}) = {sp.latex(fa_sym)} \\implies (a, f(a)) = ({a_f}, {sp.latex(fa_sym)})",
                 f"หาอนุพันธ์เพื่อหาความชันของฟังก์ชัน: f'(x) = \\frac{{d}}{{dx}}\\left[{sp.latex(expr)}\\right] = {sp.latex(df)}",
                 f"แทนค่าจุด a เพื่อหาความชันเส้นสัมผัส m: m = f'({a_f}) = {sp.latex(slope_sym)}",
-                f"แทนค่าในสูตรสมการเส้นสัมผัส y - y_0 = m(x - x_0): y - ({sp.latex(fa_sym)}) = {sp.latex(slope_sym)}(x - {a_f})",
+                f"แทนค่าในสูตรสมการเส้นสัมผัส y - f(a) = m(x - a): y - ({sp.latex(fa_sym)}) = {sp.latex(slope_sym)}(x - {a_f})",
                 f"จัดรูปสมการเส้นสัมผัสในรูปชัดแจ้ง: y = {sp.latex(sp.simplify(tangent_eq))}",
             ]
         else:
@@ -114,7 +114,7 @@ def compute_tangent(expr_str: str, a: float) -> dict:
                     latex_str = f"x = {a_f}"
                     steps = [
                         f"กำหนดฟังก์ชันและจุดที่พิจารณา: f(x) = {sp.latex(expr)}, \\quad a = {a_f}",
-                        f"คำนวณพิกัดจุดสัมผัส: (x_0, y_0) = ({a_f}, {sp.latex(fa_sym)})",
+                        f"คำนวณพิกัดจุดสัมผัส: (a, f(a)) = ({a_f}, {sp.latex(fa_sym)})",
                         f"พิจารณาลิมิตของอัตราการเปลี่ยนแปลงเฉลี่ย: \\lim_{{h \\to 0}} \\frac{{f({a_f}+h) - f({a_f})}}{{h}} = {sp.latex(left_m)}",
                         "ความชันลู่ไปสู่อนันต์ แสดงว่าเป็นเส้นสัมผัสแนวดิ่ง (Vertical Tangent Line)",
                         f"สมการเส้นสัมผัสแนวดิ่ง: x = {a_f}",
@@ -126,9 +126,9 @@ def compute_tangent(expr_str: str, a: float) -> dict:
                     latex_str = f"y = {sp.latex(sp.simplify(tangent_eq))}"
                     steps = [
                         f"กำหนดฟังก์ชันและจุดที่พิจารณา: f(x) = {sp.latex(expr)}, \\quad a = {a_f}",
-                        f"คำนวณพิกัดจุดสัมผัส: (x_0, y_0) = ({a_f}, {sp.latex(fa_sym)})",
+                        f"คำนวณพิกัดจุดสัมผัส: (a, f(a)) = ({a_f}, {sp.latex(fa_sym)})",
                         f"คำนวณความชันผ่านนิยามลิมิตของอัตราการเปลี่ยนแปลงเฉลี่ย: m = \\lim_{{h \\to 0}} \\frac{{f({a_f}+h) - f({a_f})}}{{h}} = {sp.latex(left_m)}",
-                        f"แทนค่าในสูตรสมการเส้นสัมผัส y - y_0 = m(x - x_0): y - ({sp.latex(fa_sym)}) = {sp.latex(left_m)}(x - {a_f})",
+                        f"แทนค่าในสูตรสมการเส้นสัมผัส y - f(a) = m(x - a): y - ({sp.latex(fa_sym)}) = {sp.latex(left_m)}(x - {a_f})",
                         f"จัดรูปสมการเส้นสัมผัส: y = {sp.latex(sp.simplify(tangent_eq))}",
                     ]
                 else:
@@ -142,7 +142,7 @@ def compute_tangent(expr_str: str, a: float) -> dict:
                 latex_str = r"\text{(does not exist)}"
                 steps = [
                     f"กำหนดฟังก์ชันและจุดที่พิจารณา: f(x) = {sp.latex(expr)}, \\quad a = {a_f}",
-                    f"คำนวณพิกัดจุดบนกราฟ: (x_0, y_0) = ({a_f}, {sp.latex(fa_sym)})",
+                    f"คำนวณพิกัดจุดบนกราฟ: (a, f(a)) = ({a_f}, {sp.latex(fa_sym)})",
                     f"พิจารณาอนุพันธ์ทางซ้าย: f'_-({a_f}) = \\lim_{{h \\to 0^-}} \\frac{{f({a_f}+h) - f({a_f})}}{{h}} = {sp.latex(left_m)}",
                     f"พิจารณาอนุพันธ์ทางขวา: f'_+({a_f}) = \\lim_{{h \\to 0^+}} \\frac{{f({a_f}+h) - f({a_f})}}{{h}} = {sp.latex(right_m)}",
                     f"เนื่องจากอนุพันธ์ทางซ้าย ({sp.latex(left_m)}) \\neq อนุพันธ์ทางขวา ({sp.latex(right_m)}) ฟังก์ชันจึงไม่สามารถหาอนุพันธ์ได้ที่จุดนี้ (จุดมุมแหลม / Corner Point) และไม่มีเส้นสัมผัส",
