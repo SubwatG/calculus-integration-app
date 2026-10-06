@@ -525,7 +525,7 @@ $$p(x) = -\frac{x}{x^2+1} \quad \text{และ} \quad q(x) = -\frac{x}{\sqrt{x^
 ดังนั้น เราให้
 $$ \mu(x)=e^{\int_{P(V)}dx}=-\int_{V}\frac{d}{dx}dx=e^{-\frac{1}{2}|x|^2+|y|}=e^{-(x^2+1)^{\frac{3}{2}}}=e^{\frac{1}{\sqrt{x^2+1}}} $$
 เป็นตัวประกอบการอินทิเกรต และคูณสมการที่กำหนดทั้งสองข้างด้วย $\mu$ จะได้
-$$ \frac{1}{\sqrt{x^2+1}}\frac{d}{dx}-\frac{x}{(x^2+1)^{\frac{3}{2}}y=\frac{x}{x^2+1} $$
+$$ \frac{1}{\sqrt{x^2+1}}\frac{dy}{dx}-\frac{x}{(x^2+1)^{\frac{3}{2}}}y=\frac{x}{x^2+1} $$
 ซึ่งสมมูลกับ
 $$ \frac{d}{dx}\left(\frac{1}{\sqrt{x^2+1}}y\right)=\frac{x}{x^2+1} $$
 จากนั้น เราอินทิเกรตทั้งสองข้างของสมการ จะได้

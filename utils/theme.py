@@ -24,7 +24,7 @@ def inject_css() -> None:
         letter-spacing: -0.01em !important;
     }
 
-    p, label, li, span:not([class*="material"]):not([data-testid*="Icon"]) {
+    p, label, li, span:not([class*="material"]):not([data-testid*="Icon"]):not(.katex):not(.katex *) {
         font-family: "Mali", "Outfit", sans-serif !important;
         color: #18181B !important;
         font-weight: 500 !important;
@@ -137,10 +137,33 @@ def inject_css() -> None:
         line-height: 1 !important;
     }
 
-    /* KaTeX Math Clarity on High-Contrast Cards */
+    /* KaTeX Math Typography & Spacing (เว้นช่องไฟหน้าและหลังสมการที่ต่อจากภาษาไทย) */
+    .katex {
+        margin-left: 0.35em !important;
+        margin-right: 0.35em !important;
+        padding-left: 0.05em !important;
+        padding-right: 0.05em !important;
+        line-height: inherit !important;
+    }
+
     .katex, .katex-display, .katex * {
         color: #18181B !important;
         font-weight: 600 !important;
+    }
+
+    /* Reset margins for display math blocks so they stay centered */
+    .katex-display {
+        margin-top: 0.85em !important;
+        margin-bottom: 0.85em !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+    }
+
+    .katex-display > .katex {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 
     /* Main Container Padding */

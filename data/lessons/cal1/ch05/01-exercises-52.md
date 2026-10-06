@@ -567,7 +567,7 @@ $= 2 \cos^2 \theta - 1$
 บทที่ 1 ลิมิตและความต่อเนื่อง
 แบบฝึกหัด 1.1
 
-ข้อ$\lim_{x \to a^+} f(x)$$\lim_{x \to a^-} f(x)$$\lim_{x \to a} f(x)$| ข้อ | $\lim_{x \to a^+} f(x)$ | $\lim_{x \to a^-} f(x)$ | $\lim_{x \to a} f(x)$ | $f(a)$ | $\lim_{x \to -\infty} f(x)$ | $\lim_{x \to +\infty} f(x)$ |
+ข้อ $\lim_{x \to a^+} f(x)$$\lim_{x \to a^-} f(x)$$\lim_{x \to a} f(x)$| ข้อ | $\lim_{x \to a^+} f(x)$ | $\lim_{x \to a^-} f(x)$ | $\lim_{x \to a} f(x)$ | $f(a)$ | $\lim_{x \to -\infty} f(x)$ | $\lim_{x \to +\infty} f(x)$ |
 |---|---|---|---|---|---|---|
 | 1 | $0$ | $2$ | หาไม่ได้ | $2$ | $0$ | $+\infty$ |
 | 2 | $3$ | $3$ | $3$ | $3$ | $+\infty$ | $0$ |
@@ -581,7 +581,7 @@ $= 2 \cos^2 \theta - 1$
 $|4x-5-7|=|4x-12|=4|x-3| < 4\delta=\varepsilon$
 
 2) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \varepsilon^2$ ดังนั้น สำหรับทุกจำนวนจริง $x$ ซึ่งสอดคล้องกับ อสมการ $4 < x < 4+\delta$ แล้ว จะได้
-$\sqrt{x-4}-0}=\sqrt{x-4}<\sqrt{\delta}=\varepsilon$
+$\sqrt{x-4}-0 = \sqrt{x-4}<\sqrt{\delta}=\varepsilon$
 
 3) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \varepsilon^2$
 4) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \varepsilon$
@@ -927,7 +927,7 @@ $= \frac{9(8x-1)^4(48x^3 - 63x^2 + 26x + 1)}{(3x-1)^3+1)^2}$
 
 2.14 $\frac{dy}{dx} = \frac{x}{(x^{2}-1)\sqrt{x^{2}-2}}$
 
-2.15 $\frac{dy}{dx} = -\frac{4}{x^{2}} \left[ \frac{1}{x} - \cos^{-1}\left(\frac{1}{x}\right)\right]^3 \left[ 1 + \frac{1}{\sqrt{1-\left(\frac{1}{x}\right)^{2}}}} \right]$
+2.15 $\frac{dy}{dx} = -\frac{4}{x^{2}} \left[ \frac{1}{x} - \cos^{-1}\left(\frac{1}{x}\right)\right]^3 \left[ 1 + \frac{1}{\sqrt{1-\left(\frac{1}{x}\right)^{2}}} \right]$
 
 2.16 $\frac{dy}{dx} = \frac{1-2x\tan^{-1}x}{(x^{2}+1)^{2}}$
 
@@ -1259,7 +1259,7 @@ $f$ มีค่าสูงสุดสัมพัทธ์คือ $f(0) = 0
 3.2 $\Delta y \approx 11.2$
 3.3 $\Delta y \approx 0.04$
 
-4) ค่าคลาดเคลื่อนสูงสุดในการคำนวณพื้นที่ด้านหนึ่งมีค่าประมาณ 0.96$\pi$ นิ้ว$^2$
+4) ค่าคลาดเคลื่อนสูงสุดในการคำนวณพื้นที่ด้านหนึ่งมีค่าประมาณ 0.96$\pi$ นิ้ว $^2$
 ค่าคลาดเคลื่อนสัมพัทธ์มีค่าประมาณ 0.015
 ค่าคลาดเคลื่อนร้อยละของพื้นที่มีค่าประมาณ 1.5%
 

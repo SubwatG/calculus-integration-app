@@ -48,6 +48,17 @@ def is_pure_latex(expr: str) -> bool:
     return ("\\" in s) or any(ch in s for ch in "=^_{}()[]")
 
 
+def format_math_spacing(text: str) -> str:
+    """เว้นวรรคหน้าและหลังสมการ ($...$ หรือ $$...$$) เมื่ออยู่ติดกับข้อความภาษาไทย"""
+    if not text or not has_thai(text):
+        return text
+    # 1. ภาษาไทยติดกับเครื่องหมาย $ เริ่มต้นสมการ เช่น "และ$x$" -> "และ $x$"
+    s = re.sub(r"([\u0e00-\u0e7f])(\$+)", r"\1 \2", text)
+    # 2. ปิดสมการ $ ติดกับภาษาไทย เช่น "$x$ต่อไป" -> "$x$ ต่อไป"
+    s = re.sub(r"(\$+)([\u0e00-\u0e7f])", r"\1 \2", s)
+    return s
+
+
 def render_latex(expr: str, *, label: Optional[str] = None) -> None:
     """Render pure LaTeX with st.latex; fall back to markdown if mixed."""
     if expr is None:
@@ -59,7 +70,7 @@ def render_latex(expr: str, *, label: Optional[str] = None) -> None:
         st.markdown(f"**{label}**")
 
     if has_thai(s) or "$" in s:
-        st.markdown(s)
+        st.markdown(format_math_spacing(s))
         return
 
     core = strip_math_delimiters(s)
@@ -80,9 +91,9 @@ def render_steps(steps) -> None:
             title = step.get("title", f"ขั้นตอนที่ {i}")
             latex_expr = step.get("latex", "")
             desc = step.get("desc", "")
-            st.markdown(f"**ขั้นที่ {i}: {title}**")
+            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title)}**")
             if desc:
-                st.markdown(desc)
+                st.markdown(format_math_spacing(desc))
             if latex_expr:
                 st.latex(strip_math_delimiters(latex_expr))
             continue
@@ -97,7 +108,7 @@ def render_steps(steps) -> None:
             title = parts[0].strip()
             math_part = parts[1].strip()
 
-            st.markdown(f"**ขั้นที่ {i}: {title}**")
+            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title)}**")
             core_math = strip_math_delimiters(math_part)
 
             # ถ้าในส่วนสมการมีตัวอักษรไทยปนและใช้ $...$
@@ -109,13 +120,13 @@ def render_steps(steps) -> None:
                     suffix = match.group(3).strip()
                     desc = f"{prefix} {suffix}".strip()
                     if desc:
-                        st.markdown(desc)
+                        st.markdown(format_math_spacing(desc))
                     try:
                         st.latex(inner_math)
                     except Exception:
                         st.markdown(f"$${inner_math}$$")
                 else:
-                    st.markdown(math_part)
+                    st.markdown(format_math_spacing(math_part))
             elif core_math:
                 try:
                     st.latex(core_math)
@@ -125,7 +136,7 @@ def render_steps(steps) -> None:
             # กรณีไม่มีเครื่องหมายโคลอน (:)
             if "$" in s:
                 st.markdown(f"**ขั้นที่ {i}**")
-                st.markdown(s)
+                st.markdown(format_math_spacing(s))
             elif is_pure_latex(s) or ("\\" in s) or ("=" in s):
                 st.markdown(f"**ขั้นที่ {i}**")
                 try:
@@ -133,7 +144,7 @@ def render_steps(steps) -> None:
                 except Exception:
                     st.markdown(f"$${s}$$")
             else:
-                st.markdown(f"**ขั้นที่ {i}:** {s}")
+                st.markdown(f"**ขั้นที่ {i}:** {format_math_spacing(s)}")
 
 
 def preview_math_expr(expr_str: str, label: str = "สมการที่ระบบเข้าใจ") -> bool:

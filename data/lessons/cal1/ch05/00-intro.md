@@ -269,7 +269,7 @@ $$
 \end{align*}
 $$
 กำหนดให้ $\{x_n\}=\{1-\frac{1}{n}\}$ และ $\{y_n\}=\{1+\frac{1}{n}-\frac{1}{n^2}+1\}$
-เนื่องจาก $\lim_{n\to\infty}x_n=1$ และ $\lim_{n\to\infty}y_n=\lim_{n\to\infty}\sqrt{1+\frac{1}{n}-\frac{1}{n^2}+\lim_1=2\ne0$ ดังนั้นโดยทฤษฎีบท 5.1.16 (6) จะได้ว่า
+เนื่องจาก $\lim_{n\to\infty}x_n=1$ และ $\lim_{n\to\infty}y_n=\lim_{n\to\infty}\sqrt{1+\frac{1}{n}-\frac{1}{n^2}}+1=2\ne0$ ดังนั้นโดยทฤษฎีบท 5.1.16 (6) จะได้ว่า
 ภาคผนวก คณิตศาสตร์ ประมวลรายวิชาพื้นฐาน (คณิตศาสตร์) ระดับชั้นมัธยมศึกษาปีที่ ๕
 230
 $$ \begin{align*}\lim_{n\to\infty}\sqrt{n^2+n-1}-n&=\lim_{n\to\infty}\frac{1-\frac{1}{n}}{\sqrt{1+\frac{1}{n}-\frac{1}{n^2}+1}}\\&=\lim_{n\to\infty}\frac{\lim(1-\frac{1}{n})}{\lim\sqrt{1+\frac{1}{n}-\frac{1}{n^2}+1}}\\&=\frac{1}{2}\\3.\,\,\textnormal{เนื่องจาก } \sin x \textnormal{ เป็นฟังก์ชันต่อเนื่องที่ } 0 \textnormal{ และ } \lim_{n\to\infty}\frac{1}{n}=0 \textnormal{ โดยทฤษฎีบท 5.1.16 (9)} \textnormal{ เราจึงได้ว่า}\\\lim_{n\to\infty}\frac{1}{n}&=\sin(\lim_{n\to\infty}\frac{1}{n})=\sin 0=0 \quad\circ\end{align*} $$

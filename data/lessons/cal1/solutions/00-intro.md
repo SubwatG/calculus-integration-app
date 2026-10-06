@@ -24,7 +24,7 @@ status: transformed
 1) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \frac{\varepsilon}{4}$ ดังนั้น สำหรับทุกจำนวนจริง $x$ ซึ่งสอดคล้องกับ อสมการ $0 < |x-3| < \delta$ แล้ว จะได้
 $|4x-5-7|=|4x-12|=4|x-3| < 4\delta=\varepsilon$
 2) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \varepsilon^2$ ดังนั้น สำหรับทุกจำนวนจริง $x$ ซึ่งสอดคล้องกับ อสมการ $4 < x < 4+\delta$ แล้ว จะได้
-$\sqrt{x-4}-0}=\sqrt{x-4}<\sqrt{\delta}=\varepsilon$
+$\sqrt{x-4}-0 = \sqrt{x-4}<\sqrt{\delta}=\varepsilon$
 3) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \varepsilon^2$
 4) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \varepsilon$
 3) 3.1 กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $M = \frac{1}{\varepsilon}$ ดังนั้น สำหรับทุกจำนวนจริง $x$ ซึ่ง $x > M$ แล้ว จะได้
@@ -283,7 +283,7 @@ $= \frac{9(8x-1)^4(48x^3 - 63x^2 + 26x + 1)}{(3x-1)^3+1)^2}$
 2.12 $\frac{dy}{dx} = \frac{1}{x\sqrt{1-(\ln x)^{2}}}$
 2.13 $\frac{dy}{dx} = \frac{1}{1+x^{2}}$
 2.14 $\frac{dy}{dx} = \frac{x}{(x^{2}-1)\sqrt{x^{2}-2}}$
-2.15 $\frac{dy}{dx} = -\frac{4}{x^{2}} \left[ \frac{1}{x} - \cos^{-1}\left(\frac{1}{x}\right)\right]^3 \left[ 1 + \frac{1}{\sqrt{1-\left(\frac{1}{x}\right)^{2}}}} \right]$
+2.15 $\frac{dy}{dx} = -\frac{4}{x^{2}} \left[ \frac{1}{x} - \cos^{-1}\left(\frac{1}{x}\right)\right]^3 \left[ 1 + \frac{1}{\sqrt{1-\left(\frac{1}{x}\right)^{2}}} \right]$
 2.16 $\frac{dy}{dx} = \frac{1-2x\tan^{-1}x}{(x^{2}+1)^{2}}$
 2.17 $\frac{dy}{dx} = \frac{-e^{x}\cos(e^{x})}{\sqrt{1-\sin^{2}(e^{x})}}$
 2.18 $\frac{dy}{dx} = e^{2x} \left[ 2\csc^{-1}(3x) - \frac{1}{x\sqrt{9x^{2}-1}} \right]$
@@ -487,7 +487,7 @@ $f$ มีค่าสูงสุดสัมพัทธ์คือ $f(0) = 0
 3) 3.1 $\Delta y \approx 0.06$
 3.2 $\Delta y \approx 11.2$
 3.3 $\Delta y \approx 0.04$
-4) ค่าคลาดเคลื่อนสูงสุดในการคำนวณพื้นที่ด้านหนึ่งมีค่าประมาณ 0.96$\pi$ นิ้ว$^2$
+4) ค่าคลาดเคลื่อนสูงสุดในการคำนวณพื้นที่ด้านหนึ่งมีค่าประมาณ 0.96$\pi$ นิ้ว $^2$
 ค่าคลาดเคลื่อนสัมพัทธ์มีค่าประมาณ 0.015
 ค่าคลาดเคลื่อนร้อยละของพื้นที่มีค่าประมาณ 1.5%
 5) ค่าประมาณของปริมาตรที่เพิ่มขึ้นคือ 30 ลูกบาศก์นิ้ว
@@ -862,7 +862,14 @@ $\cot \theta = \frac{\cos \theta}{\sin \theta}$ เมื่อ $\sin \theta \ne
 รูป 0.7 กราฟของ $y = \sec x$
 รูป 0.8 กราฟของ $y = \csc x$
 ตาราง 0.1 แสดงโดเมนและเรนจ์ของฟังก์ชันตรีโกณมิติทั้ง 6 ฟังก์ชัน
-ฟังก์ชันโดเมนเรนจ์$y = \sin x$$\mathbb{R}$[-1,1]$y = \cos x$$\mathbb{R}$[-1,1]$y = \tan x$$\mathbb{R} - \left\{\frac{(2n+1)\pi}{2} : n \in \mathbb{Z}\right\}$$\mathbb{R}$$y = \csc x$$\mathbb{R} - \{nn\pi : n \in \mathbb{Z}\}$($-\infty,-1] \cup [1,\infty)$$y = \sec x$$\mathbb{R} - \left\{\frac{(2n+1)\pi}{2} : n \in \mathbb{Z}\right\}$($-\infty,-1] \cup [1,\infty)$$y = \cot x$$\mathbb{R} - \{nn\pi : n \in \mathbb{Z}\}$$\mathbb{R}$
+| ฟังก์ชัน | โดเมน | เรนจ์ |
+| :--- | :--- | :--- |
+| $y = \sin x$ | $\mathbb{R}$ | $[-1, 1]$ |
+| $y = \cos x$ | $\mathbb{R}$ | $[-1, 1]$ |
+| $y = \tan x$ | $\mathbb{R} - \left\{\frac{(2n+1)\pi}{2} : n \in \mathbb{Z}\right\}$ | $\mathbb{R}$ |
+| $y = \csc x$ | $\mathbb{R} - \{n\pi : n \in \mathbb{Z}\}$ | $(-\infty, -1] \cup [1, \infty)$ |
+| $y = \sec x$ | $\mathbb{R} - \left\{\frac{(2n+1)\pi}{2} : n \in \mathbb{Z}\right\}$ | $(-\infty, -1] \cup [1, \infty)$ |
+| $y = \cot x$ | $\mathbb{R} - \{n\pi : n \in \mathbb{Z}\}$ | $\mathbb{R}$ |
 ตาราง 0.1
 ต่อไปนี้เป็นเอกลักษณ์ของฟังก์ชันตรีโกณมิติที่นำไปใช้บ่อย ๆ สำหรับจำนวนจริง $\theta$ และ $\beta$ ใด ๆ
 1.  $\sin(-\theta) = -\sin \theta$, $\cos(-\theta) = \cos \theta$
@@ -908,7 +915,7 @@ $= 2 \cos^2 \theta - 1$
 1) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \frac{\varepsilon}{4}$ ดังนั้น สำหรับทุกจำนวนจริง $x$ ซึ่งสอดคล้องกับ อสมการ $0 < |x-3| < \delta$ แล้ว จะได้
 $|4x-5-7|=|4x-12|=4|x-3| < 4\delta=\varepsilon$
 2) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \varepsilon^2$ ดังนั้น สำหรับทุกจำนวนจริง $x$ ซึ่งสอดคล้องกับ อสมการ $4 < x < 4+\delta$ แล้ว จะได้
-$\sqrt{x-4}-0}=\sqrt{x-4}<\sqrt{\delta}=\varepsilon$
+$\sqrt{x-4}-0 = \sqrt{x-4}<\sqrt{\delta}=\varepsilon$
 3) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \varepsilon^2$
 4) กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $\delta = \varepsilon$
 3) 3.1 กำหนดให้ $\varepsilon$ เป็นจำนวนจริงบวก เลือก $M = \frac{1}{\varepsilon}$ ดังนั้น สำหรับทุกจำนวนจริง $x$ ซึ่ง $x > M$ แล้ว จะได้
@@ -1158,7 +1165,7 @@ $= \frac{9(8x-1)^4(48x^3 - 63x^2 + 26x + 1)}{(3x-1)^3+1)^2}$
 2.12 $\frac{dy}{dx} = \frac{1}{x\sqrt{1-(\ln x)^{2}}}$
 2.13 $\frac{dy}{dx} = \frac{1}{1+x^{2}}$
 2.14 $\frac{dy}{dx} = \frac{x}{(x^{2}-1)\sqrt{x^{2}-2}}$
-2.15 $\frac{dy}{dx} = -\frac{4}{x^{2}} \left[ \frac{1}{x} - \cos^{-1}\left(\frac{1}{x}\right)\right]^3 \left[ 1 + \frac{1}{\sqrt{1-\left(\frac{1}{x}\right)^{2}}}} \right]$
+2.15 $\frac{dy}{dx} = -\frac{4}{x^{2}} \left[ \frac{1}{x} - \cos^{-1}\left(\frac{1}{x}\right)\right]^3 \left[ 1 + \frac{1}{\sqrt{1-\left(\frac{1}{x}\right)^{2}}} \right]$
 2.16 $\frac{dy}{dx} = \frac{1-2x\tan^{-1}x}{(x^{2}+1)^{2}}$
 2.17 $\frac{dy}{dx} = \frac{-e^{x}\cos(e^{x})}{\sqrt{1-\sin^{2}(e^{x})}}$
 2.18 $\frac{dy}{dx} = e^{2x} \left[ 2\csc^{-1}(3x) - \frac{1}{x\sqrt{9x^{2}-1}} \right]$
@@ -1365,7 +1372,7 @@ $f$ มีค่าสูงสุดสัมพัทธ์คือ $f(0) = 0
 3) 3.1 $\Delta y \approx 0.06$
 3.2 $\Delta y \approx 11.2$
 3.3 $\Delta y \approx 0.04$
-4) ค่าคลาดเคลื่อนสูงสุดในการคำนวณพื้นที่ด้านหนึ่งมีค่าประมาณ 0.96$\pi$ นิ้ว$^2$
+4) ค่าคลาดเคลื่อนสูงสุดในการคำนวณพื้นที่ด้านหนึ่งมีค่าประมาณ 0.96$\pi$ นิ้ว $^2$
 ค่าคลาดเคลื่อนสัมพัทธ์มีค่าประมาณ 0.015
 ค่าคลาดเคลื่อนร้อยละของพื้นที่มีค่าประมาณ 1.5%
 5) ค่าประมาณของปริมาตรที่เพิ่มขึ้นคือ 30 ลูกบาศก์นิ้ว

@@ -98,7 +98,10 @@ def list_lessons() -> list[dict]:
     return lessons
 
 
+from utils.math_render import format_math_spacing
+
+
 @st.cache_data
 def load_lesson(filename: str) -> str:
     path = LESSON_DIR / filename
-    return path.read_text(encoding="utf-8")
+    return format_math_spacing(path.read_text(encoding="utf-8"))

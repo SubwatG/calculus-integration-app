@@ -312,7 +312,7 @@ $$
 สำหรับ $i=1,2,...,m$
 
 **ตัวอย่าง 6.4.15** กำหนดให้ $u=x^2+y^2-z^2$ และ $x=\rho\sin\phi\cos\theta$, $y=\rho\sin\phi\sin\theta$,
-$z=\rho\cos\phi$ จงหา $\frac{\partial u}{\partial\rho}$, $\frac{\partial u}{\partial\theta}$ และ$\frac{\partial u}{\partial\phi}$
+$z=\rho\cos\phi$ จงหา $\frac{\partial u}{\partial\rho}$, $\frac{\partial u}{\partial\theta}$ และ $\frac{\partial u}{\partial\phi}$
 
 **วิธีทำ**
 

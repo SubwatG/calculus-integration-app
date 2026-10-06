@@ -1,4 +1,5 @@
 import streamlit as st
+from utils.math_render import format_math_spacing
 from utils.quiz_engine import load_quiz
 from utils.theme import render_hero
 
@@ -88,9 +89,9 @@ if st.session_state.quiz_done:
         status_symbol = "✓ ถูกต้อง" if is_correct else "✗ ยังไม่ถูก"
 
         with st.expander(f"ข้อ {idx + 1}: {status_symbol}", expanded=True):
-            st.markdown(f"**คำตอบของคุณ:** {user_ans}")
-            st.markdown(f"**คำตอบที่ถูกต้อง:** {q['answer']}")
-            st.markdown(f"**คำอธิบาย:** {q['explanation']}")
+            st.markdown(f"**คำตอบของคุณ:** {format_math_spacing(user_ans)}")
+            st.markdown(f"**คำตอบที่ถูกต้อง:** {format_math_spacing(q['answer'])}")
+            st.markdown(f"**คำอธิบาย:** {format_math_spacing(q['explanation'])}")
 
     col_btn1, col_btn2 = st.columns(2)
     with col_btn1:
@@ -119,7 +120,7 @@ else:
         with col_h2:
             st.markdown(f"**คะแนนสะสม:** {st.session_state.quiz_score}")
 
-        st.markdown(f"**คำถาม:** {q['question']}")
+        st.markdown(f"**คำถาม:** {format_math_spacing(q['question'])}")
 
         choice_prefixes = ["A", "B", "C", "D"]
         revealed = st.session_state.quiz_revealed
@@ -130,7 +131,7 @@ else:
         if show_hint and not revealed:
             st.warning(
                 f"**[คำแนะนำ] ยังไม่ถูกต้องครับ ลองอ่านคำใบ้นี้แล้วตอบใหม่อีกครั้ง:**\n\n"
-                f"{q.get('hint', 'ลองพิจารณาสูตรและนิยามอีกครั้ง')}"
+                f"{format_math_spacing(q.get('hint', 'ลองพิจารณาสูตรและนิยามอีกครั้ง'))}"
             )
 
         col_a1, col_a2 = st.columns(2)
@@ -142,14 +143,14 @@ else:
             with target_col:
                 if revealed:
                     if choice_text == q["answer"]:
-                        st.markdown(f"**{btn_label}** — ✓ คำตอบที่ถูก")
+                        st.markdown(f"**{format_math_spacing(btn_label)}** — ✓ คำตอบที่ถูก")
                     elif choice_text == current_choice:
                         st.markdown(
-                            f"<span style='color:#e0414d;'>**{btn_label}** — ✗ คำตอบของคุณ</span>",
+                            f"<span style='color:#e0414d;'>**{format_math_spacing(btn_label)}** — ✗ คำตอบของคุณ</span>",
                             unsafe_allow_html=True,
                         )
                     else:
-                        st.markdown(btn_label)
+                        st.markdown(format_math_spacing(btn_label))
                 else:
                     if st.button(
                         btn_label,

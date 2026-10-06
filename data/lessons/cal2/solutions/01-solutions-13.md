@@ -145,7 +145,7 @@ status: transformed
 
 
 3)
-$$ \frac { \sin t \cos ^ { 7 } t } { 8 } + \frac { 7 } { 8 } \left[ \frac { \sin t \cos ^ { 5 } t } { 6 } + \frac { 5 } { 6 } \left[ \frac { \sin t \cos ^ { 3 } t } { 4 } + \frac { 3 } { 8 } \left( t + \frac { 1 } { 2 } \sin 2 t \right) \right] ] + C $$
+$$ \frac { \sin t \cos ^ { 7 } t } { 8 } + \frac { 7 } { 8 } \left[ \frac { \sin t \cos ^ { 5 } t } { 6 } + \frac { 5 } { 6 } \left[ \frac { \sin t \cos ^ { 3 } t } { 4 } + \frac { 3 } { 8 } \left( t + \frac { 1 } { 2 } \sin 2 t \right) \right] \right] + C $$
 
 4)
 $$ \frac { \sin ^ { 6 } x } { 6 } + C $$
