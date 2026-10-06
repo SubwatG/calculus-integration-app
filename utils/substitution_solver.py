@@ -133,7 +133,7 @@ def solve_substitution(expr_str: str) -> dict:
             warning = None
             if u_cand is not None:
                 steps.append(
-                    f"พิจารณาเลือกตัวแปรข้างใน: กำหนด $u = {sp.latex(u_cand)} \\implies du = {sp.latex(du_cand)} \\, dx$"
+                    f"กำหนดตัวแปร u: u = {sp.latex(u_cand)} \\implies du = {sp.latex(du_cand)} \\, dx"
                 )
             else:
                 steps.append("พิจารณาเลือกเทคนิคการอินทิเกรตที่เหมาะสม (การเปลี่ยนตัวแปร หรือ By Parts)")
