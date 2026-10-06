@@ -48,6 +48,27 @@ class TestComputeLimitNear:
         assert "\\neq" in res["steps"][-1]
         assert "ไม่มีลิมิต" in res["steps"][-1]
 
+    def test_one_sided_domain_boundary_sqrt(self):
+        res = compute_limit_near("sqrt(x)", 0)
+        assert res["ok"] is True
+        assert res["status"] == "right_only"
+        assert res["result"] == 0.0
+        assert "ลิมิตทางขวา" in res["steps"][1]
+
+    def test_one_sided_domain_boundary_log(self):
+        res = compute_limit_near("log(x)", 0)
+        assert res["ok"] is True
+        assert res["status"] == "right_only"
+        assert res["result"] is None
+        assert res["right_limit"] == -sp.oo
+
+    def test_oscillating_singularity_sin_one_over_x(self):
+        res = compute_limit_near("sin(1/x)", 0)
+        assert res["ok"] is True
+        assert res["status"] == "dne"
+        assert res["is_oscillating"] is True
+        assert any("แกว่งกวัด" in step for step in res["steps"])
+
     def test_equal_infinite_sides(self):
         res = compute_limit_near("1/x**2", 0)
         assert res["ok"] is True
