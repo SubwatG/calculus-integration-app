@@ -349,22 +349,10 @@ def render_hero(title: str, subtitle: str) -> None:
         box-shadow: 5px 5px 0px #18181B;
         position: relative;
     ">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
             <span style="display: inline-block; width: 13px; height: 13px; border-radius: 50%; background-color: #F43F5E; border: 1.5px solid #18181B;"></span>
             <span style="display: inline-block; width: 13px; height: 13px; background-color: #FBBF24; border: 1.5px solid #18181B;"></span>
-            <span style="display: inline-block; width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 13px solid #38BDF8; margin-right: 4px;"></span>
-            <span style="
-                background-color: #FEF08A;
-                border: 1.5px solid #18181B;
-                border-radius: 9999px;
-                padding: 2px 10px;
-                font-family: 'Fredoka', 'Outfit', sans-serif;
-                font-size: 11px;
-                font-weight: 700;
-                letter-spacing: 0.05em;
-                color: #18181B;
-                box-shadow: 1.5px 1.5px 0px #18181B;
-            ">BAUHAUS CALCULUS LAB</span>
+            <span style="display: inline-block; width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 13px solid #38BDF8;"></span>
         </div>
         <h1 style="
             font-family: 'Fredoka', 'Mali', sans-serif;
