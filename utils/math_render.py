@@ -147,7 +147,7 @@ def render_steps(steps) -> None:
                 st.markdown(f"**ขั้นที่ {i}:** {format_math_spacing(s)}")
 
 
-def preview_math_expr(expr_str: str, label: str = "สมการที่ระบบเข้าใจ") -> bool:
+def preview_math_expr(expr_str: str, label: str = "สมการที่ระบบเข้าใจ", var_name: Optional[str] = None) -> bool:
     """พรีวิวสมการ LaTeX แบบสด และแจ้งเตือนไวยากรณ์ที่เป็นมิตร"""
     clean = (expr_str or "").strip()
     if not clean:
@@ -168,8 +168,20 @@ def preview_math_expr(expr_str: str, label: str = "สมการที่ร�
         local_dict = {"e": sp.E, "E": sp.E, "pi": sp.pi, "ln": sp.log}
         parsed = parse_expr(clean, transformations=transformations, local_dict=local_dict)
         latex_str = sp.latex(parsed)
+
+        # กำหนดชื่อฟังก์ชัน เช่น f(x), g(x), R(x), r(x)
+        if var_name is None:
+            if "g(x)" in label:
+                var_name = "g"
+            elif "R(x)" in label:
+                var_name = "R"
+            elif "r(x)" in label:
+                var_name = "r"
+            else:
+                var_name = "f"
+
         st.caption(f"{label}:")
-        st.latex(f"f(x) = {latex_str}")
+        st.latex(f"{var_name}(x) = {latex_str}")
         return True
     except Exception:
         st.caption("[คำแนะนำ] ตรวจสอบวงเล็บและรูปแบบฟังก์ชัน เช่น x^2, 2x, sin(x), e^x, sqrt(x)")

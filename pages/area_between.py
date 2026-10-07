@@ -8,9 +8,10 @@ import streamlit as st
 from utils.area_solver import compute_area_between
 from utils.math_render import preview_math_expr, render_latex, render_syntax_guide, render_steps
 from utils.plotter import plot_area_between
-from utils.theme import render_hero
+from utils.theme import inject_css, render_hero
 from utils.theory import THEORY_CONTENT
 
+inject_css()
 render_hero("พื้นที่ระหว่างเส้นโค้ง", "คำนวณพื้นที่ระหว่างเส้นโค้งสองเส้น")
 
 if "area_f" not in st.session_state:

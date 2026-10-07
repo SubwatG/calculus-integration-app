@@ -59,6 +59,17 @@ def _to_rational_bound(val: float | int | str) -> sp.Rational:
     return sp.Rational(str(val))
 
 
+def _format_bound_latex(val: float | int | sp.Rational) -> str:
+    """จัดรูปแบบขอบเขตบน/ล่างเป็น LaTeX ที่กระชับและคมชัด (เช่น 0, 1 แทน 0.0, 1.0 และ 1.02 แทน 51/50)"""
+    try:
+        f = float(val)
+        if f.is_integer():
+            return str(int(f))
+        return f"{f:g}"
+    except Exception:
+        return sp.latex(val)
+
+
 def _polynomial_area(diff: sp.Expr, x: sp.Symbol, lower: sp.Rational, upper: sp.Rational) -> sp.Expr:
     try:
         poly = sp.Poly(diff, x)
@@ -149,6 +160,9 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         if a_sp >= b_sp:
             raise ValueError("ขอบล่าง a ต้องน้อยกว่าขอบบน b")
 
+        a_disp = _format_bound_latex(a_sp)
+        b_disp = _format_bound_latex(b_sp)
+
         f_raw = _parse_input(f_str)
         g_raw = _parse_input(g_str)
 
@@ -165,7 +179,7 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             return {
                 "ok": True,
                 "result": 0.0,
-                "latex": f"A = \\int_{{{a}}}^{{{b}}} |{sp.latex(diff_expr)}| \\, dx = 0",
+                "latex": f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |{sp.latex(diff_expr)}| \\, dx = 0",
                 "steps": [
                     f"กำหนดฟังก์ชัน: f(x) = {sp.latex(f_raw)}, \\quad g(x) = {sp.latex(g_raw)}",
                     "เส้นโค้งทั้งสองทับกันพอดีทั่วทั้งช่วง: f(x) - g(x) = 0",
@@ -242,7 +256,7 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
 
         steps = [
             f"กำหนดฟังก์ชัน: f(x) = {sp.latex(f_raw)}, \\quad g(x) = {sp.latex(g_raw)}",
-            f"ตั้งสูตรอินทิกรัลพื้นที่เรขาคณิต: A = \\int_{{{a}}}^{{{b}}} |f(x) - g(x)| \\, dx",
+            f"ตั้งสูตรอินทิกรัลพื้นที่เรขาคณิต: A = \\int_{{{a_disp}}}^{{{b_disp}}} |f(x) - g(x)| \\, dx",
             f"หาผลต่างของฟังก์ชัน: f(x) - g(x) = {sp.latex(diff_expr)}",
         ]
 
@@ -258,7 +272,7 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         return {
             "ok": True,
             "result": res_float,
-            "latex": f"A = \\int_{{{a}}}^{{{b}}} |{sp.latex(diff_expr)}| \\, dx = {sp.latex(area_val)}",
+            "latex": f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |{sp.latex(diff_expr)}| \\, dx = {sp.latex(area_val)}",
             "steps": steps,
             "expr": diff_expr,
             "f_expr": f_expr,

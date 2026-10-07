@@ -9,9 +9,10 @@ from utils.improper_solver import compute_improper
 from utils.math_render import preview_math_expr, render_latex, render_syntax_guide, render_steps
 from utils.plotter import plot_improper
 from utils.riemann_solver import X
-from utils.theme import render_hero
+from utils.theme import inject_css, render_hero
 from utils.theory import THEORY_CONTENT
 
+inject_css()
 render_hero("ปริพันธ์ไม่ตรงแบบ", "สำรวจการลู่เข้าหรือลู่ออกของปริพันธ์บนช่วงอนันต์และจุดเอกฐาน")
 
 theory = THEORY_CONTENT["improper"]

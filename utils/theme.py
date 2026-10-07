@@ -137,33 +137,89 @@ def inject_css() -> None:
         line-height: 1 !important;
     }
 
-    /* KaTeX Math Typography & Spacing (เว้นช่องไฟหน้าและหลังสมการที่ต่อจากภาษาไทย) */
+    /* KaTeX Math Typography & Headroom Protection (แก้ปัญหาสมการหัวขาดและขอบเขตบนไม่ชัดเจน) */
     .katex {
-        margin-left: 0.35em !important;
-        margin-right: 0.35em !important;
+        margin-left: 0.25em !important;
+        margin-right: 0.25em !important;
         padding-left: 0.05em !important;
         padding-right: 0.05em !important;
-        line-height: inherit !important;
+        line-height: normal !important;
+        text-rendering: auto !important;
     }
 
-    .katex, .katex-display, .katex * {
+    .katex, .katex-display {
         color: #18181B !important;
-        font-weight: 600 !important;
     }
 
-    /* Reset margins for display math blocks so they stay centered */
-    .katex-display {
-        margin-top: 0.85em !important;
-        margin-bottom: 0.85em !important;
+    .katex .katex-html {
+        color: #18181B !important;
+        overflow: visible !important;
+    }
+
+    /* Streamlit LaTeX Block Container: ensure vertical overflow is never clipped */
+    [data-testid="stLatex"],
+    .stLatex {
+        width: 100% !important;
         overflow-x: auto !important;
-        overflow-y: hidden !important;
+        overflow-y: visible !important;
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    /* Display Math Blocks: Generous headroom so upper limits (\int_a^b), superscripts, and fractions are never cut off */
+    .katex-display {
+        margin-top: 1rem !important;
+        margin-bottom: 1rem !important;
+        padding-top: 1.25rem !important;
+        padding-bottom: 0.75rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
     }
 
     .katex-display > .katex {
+        display: block !important;
+        text-align: center !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
+        padding-top: 0.25rem !important;
+        padding-bottom: 0.15rem !important;
         padding-left: 0 !important;
         padding-right: 0 !important;
+        line-height: normal !important;
+        overflow: visible !important;
+    }
+
+    /* Ensure KaTeX vertical layout components (limits, fractions, roots) have full headroom */
+    .katex .vlist-t,
+    .katex .vlist-r,
+    .katex .vlist,
+    .katex .msupsub,
+    .katex .mop {
+        overflow: visible !important;
+    }
+
+    /* Buttons containing math: ensure vertical clearance so exponents/fractions never clip */
+    .stButton > button {
+        min-height: 2.85rem !important;
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .stButton > button .katex {
+        line-height: normal !important;
+        overflow: visible !important;
+        vertical-align: middle !important;
+    }
+
+    .stButton > button p {
+        overflow: visible !important;
+        line-height: 1.35 !important;
+        margin: 0 !important;
     }
 
     /* Main Container Padding */

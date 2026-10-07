@@ -78,6 +78,17 @@ def _find_interior_singularities(expr: sp.Expr, a_val: float, b_val: float) -> l
     return sorted(sings)
 
 
+def _format_bound_latex(val: float | int | sp.Expr) -> str:
+    """จัดรูปแบบขอบเขตบน/ล่าง: ถ้าเป็นจำนวนเต็มแสดงจำนวนเต็ม (เช่น 1, 2) ถ้าเป็นทศนิยมแสดงทศนิยม (เช่น 2.03 แทน 203/100)"""
+    try:
+        f = float(val)
+        if f.is_integer():
+            return str(int(f))
+        return f"{f:g}"
+    except Exception:
+        return sp.latex(val)
+
+
 def compute_improper(expr_str: str, a: float, b: float | None = None) -> dict:
     """คำนวณอินทิกรัลไม่ตรงแบบผ่านลิมิต ตรวจลู่เข้า/ลู่ออก และแจกแจงจุดเอกฐานภายในช่วง"""
     try:
@@ -99,9 +110,9 @@ def compute_improper(expr_str: str, a: float, b: float | None = None) -> dict:
             if f_a >= f_b:
                 raise ValueError("ขอบล่าง a ต้องน้อยกว่าขอบบน b")
             upper = sp.nsimplify(b)
-            bound_latex = sp.latex(upper)
+            bound_latex = _format_bound_latex(b)
 
-        lower_latex = sp.latex(a_sp)
+        lower_latex = _format_bound_latex(a)
 
         # ตรวจสอบจุดเอกฐานภายในช่วง (Interior Singularities)
         interior_sings = []
