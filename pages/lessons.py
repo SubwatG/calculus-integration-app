@@ -7,11 +7,8 @@ tab "เอกสารอ้างอิง" ยังเปิดเนื้�
 แต่ไม่ใช่การแสดงหลักอีกต่อไป
 """
 
-import re
-
 import streamlit as st
 
-from utils.content_loader import list_lessons, load_lesson
 from utils.math_render import format_math_spacing
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT

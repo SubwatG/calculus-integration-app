@@ -65,6 +65,19 @@ def inject_css() -> None:
         align-items: center !important;
         justify-content: center !important;
         cursor: pointer !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    [data-testid="stSidebarCollapseButton"] button {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* Hide inner Material icons so they don't leak text or trigger duplicate ::after */
+    [data-testid="stExpandSidebarButton"] [data-testid="stIconMaterial"],
+    [data-testid="stSidebarCollapseButton"] [data-testid="stIconMaterial"] {
+        display: none !important;
     }
 
     [data-testid="stExpandSidebarButton"]:hover,
@@ -80,36 +93,32 @@ def inject_css() -> None:
         box-shadow: 1px 1px 0px #18181B !important;
     }
 
-    [data-testid="stExpandSidebarButton"] span {
+    [data-testid="stExpandSidebarButton"] > span,
+    [data-testid="stSidebarCollapseButton"] button > span {
         font-size: 0 !important;
         line-height: 0 !important;
         display: inline-flex !important;
         align-items: center !important;
     }
 
-    [data-testid="stExpandSidebarButton"] span::after {
+    [data-testid="stExpandSidebarButton"] > span::after {
         content: "✦ เมนู" !important;
         font-family: "Fredoka", "Mali", sans-serif !important;
         font-size: 13px !important;
         font-weight: 700 !important;
         color: #18181B !important;
         line-height: 1 !important;
+        white-space: nowrap !important;
     }
 
-    [data-testid="stSidebarCollapseButton"] span {
-        font-size: 0 !important;
-        line-height: 0 !important;
-        display: inline-flex !important;
-        align-items: center !important;
-    }
-
-    [data-testid="stSidebarCollapseButton"] span::after {
+    [data-testid="stSidebarCollapseButton"] button > span::after {
         content: "◀ ย่อเมนู" !important;
         font-family: "Fredoka", "Mali", sans-serif !important;
         font-size: 13px !important;
         font-weight: 700 !important;
         color: #18181B !important;
         line-height: 1 !important;
+        white-space: nowrap !important;
     }
 
     /* Cute Expander Toggle Button */
@@ -202,12 +211,12 @@ def inject_css() -> None:
 
     /* Buttons containing math: ensure vertical clearance so exponents/fractions never clip */
     .stButton > button {
-        min-height: 2.85rem !important;
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
+        min-height: 2.35rem !important;
+        padding: 0.3rem 0.4rem !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
+        font-weight: 700 !important;
     }
 
     .stButton > button .katex {
@@ -218,8 +227,10 @@ def inject_css() -> None:
 
     .stButton > button p {
         overflow: visible !important;
-        line-height: 1.35 !important;
+        line-height: 1.25 !important;
         margin: 0 !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
     }
 
     /* Main Container Padding */

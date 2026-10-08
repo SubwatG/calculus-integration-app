@@ -100,7 +100,7 @@ with col_pre6:
         args=("abs(x)/x", "0"),
     )
 
-col_f, col_a, col_d = st.columns([2, 1, 1])
+col_f, col_a, col_d = st.columns([2.2, 1.4, 1.0])
 with col_f:
     expr_input = st.text_input(
         "ฟังก์ชัน f(x)",
@@ -119,22 +119,25 @@ with col_a:
         key="limit_a_str",
     )
     st.caption("จุดยอดนิยม:")
-    c_pts = st.columns(8)
-    pt_chips = [
-        ("0", "0"),
-        ("1", "1"),
-        ("2", "2"),
-        ("π", "pi"),
-        ("π/2", "pi/2"),
-        ("e", "e"),
-        ("∞", "inf"),
-        ("-∞", "-inf"),
-    ]
-    for idx, (p_lbl, p_val) in enumerate(pt_chips):
-        with c_pts[idx]:
+    r1_cols = st.columns(4)
+    row1 = [("0", "0"), ("1", "1"), ("2", "2"), ("π", "pi")]
+    for idx, (p_lbl, p_val) in enumerate(row1):
+        with r1_cols[idx]:
             st.button(
                 p_lbl,
-                key=f"chip_a_{idx}",
+                key=f"chip_a1_{idx}",
+                use_container_width=True,
+                on_click=_set_target_point,
+                args=(p_val,),
+            )
+
+    r2_cols = st.columns(4)
+    row2 = [("π/2", "pi/2"), ("e", "e"), ("∞", "inf"), ("-∞", "-inf")]
+    for idx, (p_lbl, p_val) in enumerate(row2):
+        with r2_cols[idx]:
+            st.button(
+                p_lbl,
+                key=f"chip_a2_{idx}",
                 use_container_width=True,
                 on_click=_set_target_point,
                 args=(p_val,),
