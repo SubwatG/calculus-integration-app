@@ -243,29 +243,81 @@ def plot_tangent(
     return fig, ax
 
 
-def plot_limit_near(expr: sp.Expr, a: float, delta: float = 0.5, span: float = 3.0) -> tuple:
-    """วาดเส้นโค้ง + จุดวิ่งเข้าใกล้ a ทั้งสองด้าน (delta -> 0)
+def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: float = 0.5, span: float = 3.0) -> tuple:
+    """วาดเส้นโค้ง + จุดวิ่งเข้าใกล้ a ทั้งสองด้าน (หรือพฤติกรรมระยะไกลเมื่อ x -> +-oo)
 
     expr: sympy expression
-    a: จุดที่ต้องการหาลิมิต
+    a: จุดที่ต้องการหาลิมิต (รองรับตัวเลข, สัญลักษณ์ pi/2, e และอนันต์ inf, -inf)
     delta: ระยะห่างการเข้าใกล้จากซ้ายและขวา
     span: ความกว้างช่วงรอบจุด a
     """
-    f = sp.lambdify(X, expr, modules=["numpy"])
-    lim_sym = sp.limit(expr, X, a)
+    s_a = str(a).lower().replace(" ", "")
+    is_pos_inf = (s_a in ("inf", "+inf", "oo", "+oo") or a == sp.oo)
+    is_neg_inf = (s_a in ("-inf", "-oo", "-infinity") or a == -sp.oo)
 
+    if is_pos_inf or is_neg_inf:
+        f = sp.lambdify(X, expr, modules=["numpy"])
+        target_inf = sp.oo if is_pos_inf else -sp.oo
+        try:
+            lim_sym = sp.limit(expr, X, target_inf)
+            lim_val = float(lim_sym.evalf()) if getattr(lim_sym, "is_finite", False) else None
+        except Exception:
+            lim_sym = None
+            lim_val = None
+
+        xs = np.linspace(0.5, 40.0, 400) if is_pos_inf else np.linspace(-40.0, -0.5, 400)
+        with np.errstate(all="ignore"):
+            ys = _as_curve(f(xs), xs)
+            ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
+
+        fig, ax = plt.subplots(figsize=(8, 4.5))
+        ax.plot(xs, ys, color=CURVE, lw=2.5, label="y = f(x)")
+        ax.axhline(0, color="#999", lw=0.8, linestyle=":")
+
+        title_dir = "+oo" if is_pos_inf else "-oo"
+        if lim_val is not None and np.isfinite(lim_val):
+            ax.axhline(lim_val, color="#E74C3C", lw=1.6, linestyle="--", label=f"Horizontal Asymptote y = {lim_val:.4f}")
+
+        ax.set_xlabel("x")
+        ax.set_ylabel("y")
+        l_str = f"{lim_val:.4f}" if lim_val is not None else str(lim_sym)
+        ax.set_title(f"End Behavior as x -> {title_dir}  |  L = {l_str}")
+        ax.grid(True, color=GRID, lw=0.5)
+        ax.legend(loc="best", fontsize=9)
+        fig.tight_layout()
+        return fig, ax
+
+    # Finite point (number or symbolic expression like pi/2)
     try:
-        lim_val = float(lim_sym)
-        lim_finite = np.isfinite(lim_val)
-    except (TypeError, ValueError):
+        if isinstance(a, (int, float)):
+            a_num = float(a)
+            a_disp = f"{a_num:.2f}"
+            a_target = sp.Rational(str(a))
+        else:
+            from utils.limit_solver import _parse_target_a
+            a_target = _parse_target_a(a)
+            a_num = float(a_target.evalf())
+            a_disp = f"${sp.latex(a_target)}$"
+    except Exception:
+        a_num = 0.0
+        a_disp = "0"
+        a_target = sp.Integer(0)
+
+    f = sp.lambdify(X, expr, modules=["numpy"])
+    try:
+        lim_sym = sp.limit(expr, X, a_target)
+        lim_val = float(lim_sym.evalf()) if getattr(lim_sym, "is_finite", False) else None
+        lim_finite = lim_val is not None and np.isfinite(lim_val)
+    except Exception:
+        lim_sym = None
         lim_val = None
         lim_finite = False
 
-    x_min = a - span
-    x_max = a + span
+    x_min = a_num - span
+    x_max = a_num + span
     # หลีกเลี่ยงจุด a เล็กน้อยเพื่อป้องกัน division by zero ของ numerical evaluation
-    xs_left = np.linspace(x_min, a - 1e-4, 200)
-    xs_right = np.linspace(a + 1e-4, x_max, 200)
+    xs_left = np.linspace(x_min, a_num - 1e-4, 200)
+    xs_right = np.linspace(a_num + 1e-4, x_max, 200)
     xs = np.concatenate([xs_left, xs_right])
 
     with np.errstate(all="ignore"):
@@ -276,13 +328,13 @@ def plot_limit_near(expr: sp.Expr, a: float, delta: float = 0.5, span: float = 3
     ax.plot(xs, ys, color=CURVE, lw=2.5, label="y = f(x)")
 
     # เส้นแนวดิ่งที่ x = a
-    ax.axvline(a, color="#9ca3af", lw=1.2, linestyle="--", label=f"x = {a:.2f}")
+    ax.axvline(a_num, color="#9ca3af", lw=1.2, linestyle="--", label=f"x = {a_disp}")
     ax.axhline(0, color="#999", lw=0.8, linestyle=":")
 
     # จุดเป้าหมายลิมิตที่ x = a
     if lim_finite and lim_val is not None:
         ax.plot(
-            [a],
+            [a_num],
             [lim_val],
             marker="o",
             markersize=8,
@@ -295,8 +347,8 @@ def plot_limit_near(expr: sp.Expr, a: float, delta: float = 0.5, span: float = 3
         ax.axhline(lim_val, color="#E5E7EB", lw=1, linestyle=":")
 
     # จุดเข้าใกล้ทางซ้าย x_L = a - delta และทางขวา x_R = a + delta
-    x_l = a - delta
-    x_r = a + delta
+    x_l = a_num - delta
+    x_r = a_num + delta
 
     try:
         y_l = float(expr.subs(X, x_l))
@@ -313,7 +365,7 @@ def plot_limit_near(expr: sp.Expr, a: float, delta: float = 0.5, span: float = 3
         if lim_finite and lim_val is not None:
             ax.annotate(
                 "",
-                xy=(a - 0.05 * delta, lim_val),
+                xy=(a_num - 0.05 * delta, lim_val),
                 xytext=(x_l, y_l),
                 arrowprops=dict(arrowstyle="->", color="#2980B9", lw=1.5),
             )
@@ -323,7 +375,7 @@ def plot_limit_near(expr: sp.Expr, a: float, delta: float = 0.5, span: float = 3
         if lim_finite and lim_val is not None:
             ax.annotate(
                 "",
-                xy=(a + 0.05 * delta, lim_val),
+                xy=(a_num + 0.05 * delta, lim_val),
                 xytext=(x_r, y_r),
                 arrowprops=dict(arrowstyle="->", color="#E67E22", lw=1.5),
             )
@@ -331,7 +383,7 @@ def plot_limit_near(expr: sp.Expr, a: float, delta: float = 0.5, span: float = 3
     ax.set_xlabel("x")
     ax.set_ylabel("y")
     l_str = f"{lim_val:.4f}" if (lim_finite and lim_val is not None) else str(lim_sym)
-    ax.set_title(f"Limit as x -> {a:.2f}  |  L = {l_str} (delta = {delta:.2f})")
+    ax.set_title(f"Limit as x -> {a_disp}  |  L = {l_str} (delta = {delta:.2f})")
     ax.grid(True, color=GRID, lw=0.5)
     ax.legend(loc="best", fontsize=9)
     fig.tight_layout()

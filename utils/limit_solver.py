@@ -34,6 +34,9 @@ LOCAL_MATH_DICT = {
     "E": sp.E,
     "pi": sp.pi,
     "ln": sp.log,
+    "inf": sp.oo,
+    "infinity": sp.oo,
+    "oo": sp.oo,
 }
 
 X = sp.Symbol("x")
@@ -56,6 +59,23 @@ def _parse_input(expr_str: str) -> sp.Expr:
     if not clean:
         raise ValueError("Empty input string")
     return parse_expr(clean, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
+
+
+def _parse_target_a(a_val: float | int | str | sp.Expr) -> sp.Expr:
+    """แปลงค่าจุด a ที่รับเข้ามาเป็น SymPy Expression (รองรับตัวเลข, สัญลักษณ์ pi, e, และ inf, -inf)"""
+    if isinstance(a_val, (int, float)):
+        return sp.Rational(str(a_val))
+    if isinstance(a_val, sp.Expr):
+        return a_val
+    s = str(a_val).strip()
+    if not s:
+        return sp.Integer(0)
+    s_clean = s.lower().replace(" ", "")
+    if s_clean in ("inf", "+inf", "oo", "+oo", "infinity", "+infinity"):
+        return sp.oo
+    if s_clean in ("-inf", "-oo", "-infinity"):
+        return -sp.oo
+    return parse_expr(s, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
 
 
 def _check_real_domain(expr: sp.Expr, a: float, delta: float = 0.01) -> tuple[bool, bool]:
@@ -82,34 +102,126 @@ def _check_real_domain(expr: sp.Expr, a: float, delta: float = 0.01) -> tuple[bo
     return left_real, right_real
 
 
-def _format_point_str(a: float) -> str:
-    """แปลงจุด a เป็นสตริงที่อ่านง่าย เช่น 2 แทน 2.0"""
-    if abs(a - round(a)) < 1e-6:
-        return str(int(round(a)))
-    return f"{a:g}"
+def _format_point_str(a_sp: sp.Expr) -> str:
+    """แปลงจุด a_sp เป็นสตริงหรือ LaTeX ที่อ่านง่าย เช่น 2, \pi/2, \infty"""
+    if a_sp == sp.oo:
+        return "\\infty"
+    if a_sp == -sp.oo:
+        return "-\\infty"
+    try:
+        f = float(a_sp.evalf())
+        if abs(f - round(f)) < 1e-6:
+            return str(int(round(f)))
+    except Exception:
+        pass
+    return sp.latex(a_sp)
 
 
-def _format_samples(a: float) -> tuple[str, str]:
+def _format_samples(a_sp: sp.Expr) -> tuple[str, str]:
     """สร้างตัวอย่างค่า x ที่เข้าใกล้ a ทางซ้าย (x < a) และทางขวา (x > a) เพื่อให้เห็นภาพชัดเจน"""
-    if abs(a - round(a)) < 1e-6:
-        a_int = int(round(a))
-        s_left = f"{a_int - 0.1:g}, {a_int - 0.01:g}, {a_int - 0.001:g}"
-        s_right = f"{a_int + 0.1:g}, {a_int + 0.01:g}, {a_int + 0.001:g}"
-    else:
-        s_left = f"{a - 0.1:g}, {a - 0.01:g}, {a - 0.001:g}"
-        s_right = f"{a + 0.1:g}, {a + 0.01:g}, {a + 0.001:g}"
-    return s_left, s_right
+    if a_sp == sp.oo:
+        return "10, 50, 100", "N/A"
+    if a_sp == -sp.oo:
+        return "N/A", "-10, -50, -100"
+    try:
+        a_num = float(a_sp.evalf())
+        if abs(a_num - round(a_num)) < 1e-6:
+            a_int = int(round(a_num))
+            s_left = f"{a_int - 0.1:g}, {a_int - 0.01:g}, {a_int - 0.001:g}"
+            s_right = f"{a_int + 0.1:g}, {a_int + 0.01:g}, {a_int + 0.001:g}"
+        else:
+            s_left = f"{a_num - 0.1:.3g}, {a_num - 0.01:.3g}, {a_num - 0.001:.3g}"
+            s_right = f"{a_num + 0.1:.3g}, {a_num + 0.01:.3g}, {a_num + 0.001:.3g}"
+        return s_left, s_right
+    except Exception:
+        return "a - 0.1, a - 0.01", "a + 0.1, a + 0.01"
 
 
-def compute_limit_near(expr_str: str, a: float) -> dict:
-    """คำนวณลิมิตสองด้าน x -> a และแสดงขั้นตอน พร้อมตรวจจับขอบเขตโดเมนด้านเดียวและการแกว่งกวัด"""
+def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> dict:
+    """คำนวณลิมิต x -> a (รองรับจำนวนจริง, สัญลักษณ์ pi, e และอนันต์ inf, -inf)"""
     try:
         expr = _parse_input(expr_str)
-        left_real, right_real = _check_real_domain(expr, a)
+        a_sp = _parse_target_a(a)
+
+        # ---------------------------------------------------------
+        # กรณีลิมิตที่อนันต์ x -> +oo หรือ x -> -oo
+        # ---------------------------------------------------------
+        if a_sp in (sp.oo, -sp.oo):
+            is_pos_inf = (a_sp == sp.oo)
+            dir_tex = "\\infty" if is_pos_inf else "-\\infty"
+            x_desc = (
+                "มีค่าเป็นบวกเพิ่มขึ้นอย่างมหาศาล ($x \\to +\\infty$)"
+                if is_pos_inf
+                else "มีค่าเป็นลบลดลงอย่างมหาศาล ($x \\to -\\infty$)"
+            )
+
+            try:
+                lim_val = sp.limit(expr, X, a_sp)
+            except Exception:
+                lim_val = None
+
+            is_oscillating = isinstance(lim_val, AccumulationBounds)
+            if is_oscillating:
+                status = "dne"
+                result = None
+                latex_str = f"\\lim_{{x \\to {dir_tex}}} {sp.latex(expr)} \\quad \\text{{(does not exist)}}"
+                steps = [
+                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร $x$ {x_desc}\n\\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
+                    f"การวิเคราะห์พฤติกรรม: ฟังก์ชันมีการแกว่งกวัดขึ้นลงไม่สิ้นสุด (Oscillating) เมื่อ $x \\to {dir_tex}$ จึงไม่ลู่เข้าหาค่าคงที่ใด",
+                    f"สรุปผล (ไม่มีลิมิตเนื่องจากการแกว่งกวัด): \\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}",
+                ]
+            elif lim_val in (sp.oo, -sp.oo):
+                status = "infinite"
+                result = None
+                latex_str = f"\\lim_{{x \\to {dir_tex}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
+                steps = [
+                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร $x$ {x_desc}\n\\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
+                    f"การวิเคราะห์พฤติกรรม: ค่าฟังก์ชันเพิ่มขึ้น/ลดลงอย่างไม่มีขอบเขต พุ่งไปสู่ ${sp.latex(lim_val)}$",
+                    f"สรุปผล (ลิมิตลู่ออกสู่อนันต์): \\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_val)}",
+                ]
+            elif lim_val is not None and getattr(lim_val, "is_finite", False) and getattr(lim_val, "is_real", False):
+                status = "finite"
+                result = float(lim_val.evalf())
+                latex_str = f"\\lim_{{x \\to {dir_tex}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
+                steps = [
+                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร $x$ {x_desc}\n\\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
+                    f"การวิเคราะห์พฤติกรรมและการจัดรูป: เมื่อ $x \\to {dir_tex}$ พจน์ที่มีกำลังต่ำกว่าจะถูกครอบงำด้วยพจน์กำลังสูงสุด ส่งผลให้ค่าฟังก์ชันลู่เข้าสู่ค่าคงที่ ${sp.latex(lim_val)}$ เกิดเป็นเส้นกำกับแนวนอน (Horizontal Asymptote) $y = {sp.latex(lim_val)}$",
+                    f"พิจารณาค่าลิมิต: \\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_val)}",
+                    f"สรุปผลค่าลิมิตที่อนันต์ (เส้นกำกับแนวนอน): \\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_val)}",
+                ]
+            else:
+                status = "unsupported"
+                result = None
+                latex_str = f"\\lim_{{x \\to {dir_tex}}} {sp.latex(expr)} \\quad \\text{{(unsupported)}}"
+                steps = [
+                    f"กำหนดโจทย์ลิมิตที่อนันต์: \\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
+                    "ไม่สามารถสรุปค่าลิมิตที่อนันต์ได้จากข้อมูลการคำนวณในระบบ",
+                ]
+
+            return {
+                "ok": True,
+                "result": result,
+                "latex": latex_str,
+                "steps": steps,
+                "expr": expr,
+                "error": None,
+                "status": status,
+                "left_limit": lim_val if not is_pos_inf else None,
+                "right_limit": lim_val if is_pos_inf else None,
+                "is_oscillating": is_oscillating,
+                "a_sp": a_sp,
+                "is_infinite": True,
+            }
+
+        # ---------------------------------------------------------
+        # กรณีลิมิตเข้าใกล้จุดจำกัด x -> a (ตัวเลขหรือสัญลักษณ์จำกัด)
+        # ---------------------------------------------------------
+        a_num = float(a_sp.evalf())
+        left_real, right_real = _check_real_domain(expr, a_num)
 
         try:
-            lim_left = sp.limit(expr, X, a, dir="-")
-            lim_right = sp.limit(expr, X, a, dir="+")
+            lim_left = sp.limit(expr, X, a_sp, dir="-")
+            lim_right = sp.limit(expr, X, a_sp, dir="+")
             status = _classify_limit(lim_left, lim_right)
         except Exception:
             lim_left, lim_right = None, None
@@ -124,8 +236,8 @@ def compute_limit_near(expr_str: str, a: float) -> dict:
         # ตรวจสอบการแกว่งกวัดความถี่สูง (Oscillating) เช่น sin(1/x)
         is_oscillating = isinstance(lim_left, AccumulationBounds) or isinstance(lim_right, AccumulationBounds)
 
-        a_str = _format_point_str(a)
-        s_left_ex, s_right_ex = _format_samples(a)
+        a_str = _format_point_str(a_sp)
+        s_left_ex, s_right_ex = _format_samples(a_sp)
 
         steps = [
             f"กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชัน $f(x)$ เมื่อค่าตัวแปร $x$ ขยับเข้าใกล้จุด $x = {a_str}$ (โดยที่ $x \\neq {a_str}$)\n\\lim_{{x \\to {a_str}}} \\left({sp.latex(expr)}\\right)",
@@ -192,7 +304,7 @@ def compute_limit_near(expr_str: str, a: float) -> dict:
                 result = None
                 latex_str = f"\\lim_{{x \\to {a_str}}} {sp.latex(expr)} \\quad \\text{{(does not exist)}}"
             elif status == "finite":
-                lim_val = sp.limit(expr, X, a)
+                lim_val = sp.limit(expr, X, a_sp)
                 lim_val_latex = sp.latex(lim_val)
                 steps.append(
                     f"เปรียบเทียบและสรุปค่าลิมิตสองด้าน: กฎพื้นฐานคือ ลิมิตสองด้านจะมีค่าได้ก็ต่อเมื่อ ลิมิตซ้ายและขวาต้องมุ่งสู่จำนวนจริงเดียวกัน\nเนื่องจาก $\\lim_{{x \\to {a_str}^-}} f(x) = \\lim_{{x \\to {a_str}^+}} f(x) = {lim_val_latex}$ (เส้นกราฟจากทั้งสองฝั่งวิ่งมาบรรจบกันที่ระดับความสูงเดียวกัน) จึงสรุปได้ว่ามีลิมิตสองด้าน\n\\lim_{{x \\to {a_str}^-}} f(x) = \\lim_{{x \\to {a_str}^+}} f(x) = {lim_val_latex} \\implies \\lim_{{x \\to {a_str}}} \\left({sp.latex(expr)}\\right) = {lim_val_latex}"
@@ -231,6 +343,8 @@ def compute_limit_near(expr_str: str, a: float) -> dict:
             "left_limit": lim_left,
             "right_limit": lim_right,
             "is_oscillating": is_oscillating,
+            "a_sp": a_sp,
+            "is_infinite": False,
         }
     except Exception as e:
         return {

@@ -1,4 +1,5 @@
 import streamlit as st
+from utils.keypad import render_math_keypad
 from utils.math_render import preview_math_expr, render_latex, render_steps, render_syntax_guide
 from utils.sympy_solver import compute_limit, differentiate, integrate
 from utils.theme import render_hero
@@ -14,24 +15,6 @@ if "solver_expr" not in st.session_state:
 
 if "limit_point" not in st.session_state:
     st.session_state["limit_point"] = 0.0
-
-# Callbacks for state updates
-def _append_token(tok: str) -> None:
-    curr = st.session_state.get("solver_expr", "")
-    if tok == "CLEAR":
-        st.session_state["solver_expr"] = ""
-        st.session_state["solver_res"] = None
-    elif tok == "BACKSPACE":
-        st.session_state["solver_expr"] = curr[:-1] if curr else ""
-    elif tok in ("อินทิเกรต", "อนุพันธ์", "ลิมิต"):
-        st.session_state["solver_op"] = tok
-    elif tok == "^2":
-        if curr and curr[-1] in "x0123456789)":
-            st.session_state["solver_expr"] = curr + "^2"
-        else:
-            st.session_state["solver_expr"] = curr + "x^2" if curr else "x^2"
-    else:
-        st.session_state["solver_expr"] = curr + tok if curr else tok
 
 def _clear_input() -> None:
     st.session_state["solver_expr"] = ""
@@ -79,72 +62,8 @@ with col_clear:
 preview_math_expr(st.session_state.get("solver_expr", ""))
 render_syntax_guide()
 
-# Math Keypad
-with st.expander("⌨️ แผงปุ่มลัดสัญลักษณ์คณิตศาสตร์ (Math Keypad)", expanded=True):
-    # Mode switch buttons
-    st.caption("สลับประเภทการคำนวณ:")
-    m_cols = st.columns(3)
-    mode_buttons = [
-        ("∫ อินทิเกรต", "อินทิเกรต"),
-        ("d/dx อนุพันธ์", "อนุพันธ์"),
-        ("lim ลิมิต", "ลิมิต"),
-    ]
-    for idx, (label, mode_tok) in enumerate(mode_buttons):
-        with m_cols[idx]:
-            is_active = (st.session_state.get("solver_op") == mode_tok)
-            btn_type = "primary" if is_active else "secondary"
-            st.button(
-                label,
-                key=f"mode_btn_{idx}",
-                type=btn_type,
-                use_container_width=True,
-                on_click=_append_token,
-                args=(mode_tok,),
-            )
-
-    st.caption("ตัวแปรและตัวดำเนินการ:")
-    r1_cols = st.columns(8)
-    row1_tokens = [
-        ("x", "x"),
-        ("+", " + "),
-        ("-", " - "),
-        ("×", " * "),
-        ("÷", " / "),
-        ("x²", "^2"),
-        ("(", "("),
-        (")", ")"),
-    ]
-    for idx, (lbl, tok) in enumerate(row1_tokens):
-        with r1_cols[idx]:
-            st.button(lbl, key=f"r1_{idx}", use_container_width=True, on_click=_append_token, args=(tok,))
-
-    st.caption("ฟังก์ชันและค่าคงที่:")
-    r2_cols = st.columns(8)
-    row2_tokens = [
-        ("√", "sqrt("),
-        ("π", "pi"),
-        ("e", "e"),
-        ("ln", "ln("),
-        ("sin", "sin("),
-        ("cos", "cos("),
-        ("tan", "tan("),
-        ("exp", "exp("),
-    ]
-    for idx, (lbl, tok) in enumerate(row2_tokens):
-        with r2_cols[idx]:
-            st.button(lbl, key=f"r2_{idx}", use_container_width=True, on_click=_append_token, args=(tok,))
-
-    st.caption("นิพจน์เพิ่มเติมและแก้ไข:")
-    r3_cols = st.columns(4)
-    row3_tokens = [
-        ("1/x", "1/x"),
-        ("|x|", "abs("),
-        ("⌫ ลบตัวสุดท้าย", "BACKSPACE"),
-        ("🗑️ ล้างทั้งหมด", "CLEAR"),
-    ]
-    for idx, (lbl, tok) in enumerate(row3_tokens):
-        with r3_cols[idx]:
-            st.button(lbl, key=f"r3_{idx}", use_container_width=True, on_click=_append_token, args=(tok,))
+# Math Keypad Reusable Component
+render_math_keypad(target_key="solver_expr", key_prefix="solver_kp", expanded=True, include_infinity=True)
 
 # Quick Preset Examples based on operation
 st.caption("🎯 ตัวอย่างโจทย์ยอดนิยม (คลิกเพื่อทดสอบทันที):")
