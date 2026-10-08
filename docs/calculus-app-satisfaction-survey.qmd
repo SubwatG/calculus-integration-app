@@ -5,23 +5,27 @@ format:
   pdf:
     pdf-engine: xelatex
     keep-tex: true
-    fontsize: 14pt
+    papersize: a4
+    fontsize: 11pt
     geometry:
-      - top=2.2cm
-      - left=2.2cm
-      - right=2.2cm
-      - bottom=2.2cm
+      - top=1.5cm
+      - left=1.6cm
+      - right=1.6cm
+      - bottom=1.5cm
     include-in-header:
       - text: |
           \usepackage{fontspec}
           \usepackage{xunicode}
           \usepackage{xltxtra}
+          \usepackage{xcolor}
           \usepackage{amsmath,amssymb}
           \usepackage{array}
           \usepackage{longtable}
           \usepackage{booktabs}
+          \usepackage{enumitem}
           \usepackage{fancyhdr}
           \usepackage{lastpage}
+          \usepackage{multicol}
 
           \XeTeXlinebreaklocale "th"
           \XeTeXlinebreakskip = 0pt plus 2pt minus 1pt
@@ -29,11 +33,11 @@ format:
           \setmainfont{TH SarabunPSK}[
             Script=Thai,
             Scale=MatchLowercase,
-            WordSpace=1.25,
+            WordSpace=1.15,
             Mapping=tex-text
           ]
-          \linespread{1.25}
-          \renewcommand{\arraystretch}{1.35}
+          \linespread{1.12}
+          \renewcommand{\arraystretch}{1.18}
 
           \setkomafont{disposition}{\rmfamily\bfseries}
           \setkomafont{title}{\rmfamily\bfseries}
@@ -42,149 +46,142 @@ format:
 
           \pagestyle{fancy}
           \fancyhf{}
-          \fancyhead[L]{\small แบบประเมินเว็บแอปพลิเคชันช่วยสอนแคลคูลัส (Calculus Tutor: Integration)}
-          \fancyhead[R]{\small ภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล}
+          \fancyhead[L]{\textcolor{gray}{\small แบบประเมินความพึงพอใจการใช้งานเว็บแอปพลิเคชันช่วยสอนแคลคูลัส (Calculus Tutor)}}
+          \fancyhead[R]{\textcolor{gray}{\small คณะศิลปศาสตร์และวิทยาศาสตร์ มก.}}
           \fancyfoot[C]{\small หน้า \thepage\ จาก \pageref{LastPage}}
           \renewcommand{\headrulewidth}{0.4pt}
+          \renewcommand{\headrule}{\hbox to\headwidth{\color{lightgray}\leaders\hrule height \headrulewidth\hfill}}
 
           \makeatletter
           \renewcommand{\maketitle}{%
+            \thispagestyle{plain}
             \begin{center}%
-              {\LARGE\bfseries\@title\par}%
-              \vskip 0.35em%
+              {\Large\bfseries\@title\par}%
+              \vskip 0.15em%
               {\large\@subtitle\par}%
-              \vskip 0.35em%
+              \vskip 0.15em%
               {\normalsize ภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล คณะศิลปศาสตร์และวิทยาศาสตร์ มหาวิทยาลัยเกษตรศาสตร์\par}%
             \end{center}%
-            \vskip 0.8em%
+            \vskip 0.25em%
           }
           \makeatother
 ---
 
 \noindent
-\textbf{คำชี้แจง:} แบบสอบถามฉบับนี้จัดทำขึ้นเพื่อประเมินความพึงพอใจ ประสิทธิภาพการใช้งาน และความสอดคล้องเชิงมโนทัศน์ทางคณิตศาสตร์ของเว็บแอปพลิเคชันช่วยสอนแคลคูลัส เรื่องการอินทิเกรต (Calculus Tutor: Integration Application) ซึ่งพัฒนาขึ้นเพื่อเป็นเครื่องมือส่งเสริมการเรียนรู้แบบมีปฏิสัมพันธ์ (Interactive Learning) ข้อมูลที่ได้จากการตอบแบบสอบถามจะถูกนำไปใช้วิเคราะห์เพื่อปรับปรุงและพัฒนาระบบให้มีประสิทธิภาพสูงสุด รวมถึงใช้ประกอบการศึกษาวิจัยทางวิชาการ โดยคำตอบของท่านจะถูกเก็บรักษาเป็นความลับและประมวลผลในภาพรวมทางสถิติเท่านั้น
+\textbf{คำชี้แจง:} แบบสอบถามฉบับนี้จัดทำขึ้นเพื่อประเมินความพึงพอใจ ประสิทธิภาพการใช้งาน และความสอดคล้องเชิงมโนทัศน์ทางคณิตศาสตร์ของเว็บแอปพลิเคชันช่วยสอนแคลคูลัส เรื่องการอินทิเกรต (Calculus Tutor: Integration Application) เพื่อนำข้อมูลไปใช้วิเคราะห์ ปรับปรุงระบบ และประกอบการศึกษาวิจัยทางวิชาการ โดยคำตอบของท่านจะถูกเก็บรักษาเป็นความลับและประมวลผลในภาพรวมทางสถิติเท่านั้น
+
+\vspace{0.15em}
+\noindent
+แบบสอบถามมีทั้งหมด 4 ตอน ประกอบด้วย: \textbf{ตอนที่ 1} ข้อมูลทั่วไปและภูมิหลังทางการศึกษา, \textbf{ตอนที่ 2} การประเมินความพึงพอใจต่อคุณลักษณะของระบบ (5 ระดับ), \textbf{ตอนที่ 3} แบบประเมินความสะดวกในการใช้งานระบบตามมาตรฐานสากล (System Usability Scale: SUS), และ \textbf{ตอนที่ 4} ข้อเสนอแนะเพื่อการพัฒนาระบบ
 
 \vspace{0.3em}
 \noindent
-แบบสอบถามแบ่งออกเป็น 4 ตอน ดังนี้
-\begin{itemize}
-  \setlength{\itemsep}{0pt}
-  \item \textbf{ตอนที่ 1:} ข้อมูลทั่วไปและภูมิหลังทางการศึกษาของผู้ตอบแบบสอบถาม
-  \item \textbf{ตอนที่ 2:} การประเมินความพึงพอใจต่อคุณลักษณะของเว็บแอปพลิเคชัน (แบบมาตรประมาณค่า 5 ระดับ)
-  \item \textbf{ตอนที่ 3:} แบบประเมินความสะดวกในการใช้งานระบบตามมาตรฐานสากล (System Usability Scale: SUS)
-  \item \textbf{ตอนที่ 4:} ข้อเสนอแนะและความคิดเห็นเพิ่มเติมเพื่อการพัฒนาระบบ
-\end{itemize}
-
-\vspace{0.8em}
-\section*{ตอนที่ 1: ข้อมูลทั่วไปและภูมิหลังทางการศึกษาของผู้ตอบแบบสอบถาม}
-
-\noindent
+\textbf{\large ตอนที่ 1: ข้อมูลทั่วไปและภูมิหลังทางการศึกษาของผู้ตอบแบบสอบถาม} \\
 \textit{คำชี้แจง: โปรดทำเครื่องหมาย $\checkmark$ หรือกรอกข้อความลงในช่องว่างที่ตรงกับความเป็นจริงของท่าน}
 
-\vspace{0.4em}
+\vspace{0.15em}
 \noindent
-\textbf{1. ระดับการศึกษาปัจจุบันของท่าน}
-
-\begin{itemize}
-  \setlength{\itemsep}{1pt}
-  \item[$\square$] ระดับมัธยมศึกษาตอนปลาย (ชั้นมัธยมศึกษาปีที่ 5 หรือ 6)
-  \item[$\square$] ระดับปริญญาตรี ชั้นปีที่ 1 หรือ 2
-  \item[$\square$] ระดับปริญญาตรี ชั้นปีที่ 3 หรือ 4
-  \item[$\square$] ระดับบัณฑิตศึกษา (ปริญญาโท หรือ ปริญญาเอก)
-  \item[$\square$] บุคคลทั่วไป หรือ อื่นๆ (โปรดระบุ): \dotfill
+\textbf{1. ระดับการศึกษาปัจจุบัน:}
+\begin{multicols}{2}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+  \item[$\square$] มัธยมศึกษาตอนปลาย (ม.5 หรือ ม.6)
+  \item[$\square$] ปริญญาตรี ชั้นปีที่ 1 หรือ 2
+  \item[$\square$] ปริญญาตรี ชั้นปีที่ 3 หรือ 4
+  \item[$\square$] ระดับบัณฑิตศึกษา (ป.โท หรือ ป.เอก)
+  \item[$\square$] บุคคลทั่วไป หรือ อื่นๆ: \dotfill
 \end{itemize}
+\end{multicols}
 
-\vspace{0.4em}
+\vspace{-0.65em}
 \noindent
-\textbf{2. สถาบันการศึกษาในปัจจุบัน หรือสถาบันที่สำเร็จการศึกษา}
-
-\begin{itemize}
-  \setlength{\itemsep}{1pt}
-  \item[$\square$] มหาวิทยาลัยเทคโนโลยีสุรนารี (มทส.)
-  \item[$\square$] มหาวิทยาลัยราชภัฏนครราชสีมา
-  \item[$\square$] มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน (นครราชสีมา)
-  \item[$\square$] โรงเรียนมัธยมศึกษาในจังหวัดนครราชสีมา (โปรดระบุชื่อโรงเรียน): \dotfill
-  \item[$\square$] มหาวิทยาลัยเกษตรศาสตร์
-  \item[$\square$] สถาบันการศึกษาอื่นๆ (โปรดระบุ): \dotfill
+\textbf{2. สถาบันการศึกษาในปัจจุบัน หรือสถาบันที่เคยศึกษา (ฟอร์มออนไลน์เป็นรายการเลื่อนลง Dropdown):}
+\begin{multicols}{2}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+  \item[$\square$] ม.เกษตรศาสตร์ (กำแพงแสน / บางเขน / ศรีราชา / สกลนคร)
+  \item[$\square$] ม.เทคโนโลยีสุรนารี / มรภ.นครราชสีมา / มทร.อีสาน
+  \item[$\square$] มหาวิทยาลัยรัฐ หรือ ในกำกับของรัฐ (จุฬาฯ, มธ., มหิดล ฯลฯ)
+  \item[$\square$] กลุ่มมหาวิทยาลัยราชภัฏ หรือ ราชมงคล ทั่วประเทศ
+  \item[$\square$] โรงเรียนมัธยมศึกษา (โปรดระบุ): \dotfill
+  \item[$\square$] สถาบันอื่นๆ (โปรดระบุ): \dotfill
 \end{itemize}
+\end{multicols}
 
-\vspace{0.4em}
+\vspace{-0.65em}
 \noindent
-\textbf{3. กลุ่มสาขาวิชา หรือแผนการเรียนของท่าน}
-
-\begin{itemize}
-  \setlength{\itemsep}{1pt}
+\textbf{3. กลุ่มสาขาวิชา หรือแผนการเรียน:}
+\begin{multicols}{2}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
   \item[$\square$] กลุ่มวิศวกรรมศาสตร์
-  \item[$\square$] กลุ่มวิทยาการคอมพิวเตอร์ หรือ เทคโนโลยีสารสนเทศ หรือ ดิจิทัล
-  \item[$\square$] กลุ่มวิทยาศาสตร์บริสุทธิ์และประยุกต์ หรือ คณิตศาสตร์ หรือ สถิติ
-  \item[$\square$] แผนการเรียนวิทยาศาสตร์และคณิตศาสตร์ (ระดับมัธยมศึกษา)
-  \item[$\square$] กลุ่มครุศาสตร์ หรือ ศึกษาศาสตร์ (สาขาวิชาทางคณิตศาสตร์หรือวิทยาศาสตร์)
-  \item[$\square$] กลุ่มบริหารธุรกิจ หรือ เศรษฐศาสตร์ หรือ บัญชี
-  \item[$\square$] สาขาวิชาอื่นๆ (โปรดระบุ): \dotfill
+  \item[$\square$] วิทยาการคอมพิวเตอร์ หรือ เทคโนโลยีสารสนเทศ
+  \item[$\square$] วิทยาศาสตร์บริสุทธิ์และประยุกต์ หรือ คณิตศาสตร์
+  \item[$\square$] แผนการเรียนวิทย์-คณิต (ระดับมัธยมศึกษา)
+  \item[$\square$] ครุศาสตร์ หรือ ศึกษาศาสตร์ (คณิตศาสตร์/วิทยาศาสตร์)
+  \item[$\square$] บริหารธุรกิจ หรือ เศรษฐศาสตร์ หรือ บัญชี
+  \item[$\square$] สาขาวิชาอื่นๆ: \dotfill
 \end{itemize}
+\end{multicols}
 
-\vspace{0.4em}
+\vspace{-0.65em}
 \noindent
-\textbf{4. ประสบการณ์การเรียนรู้ในวิชาแคลคูลัส (Calculus)}
-
-\begin{itemize}
-  \setlength{\itemsep}{1pt}
-  \item[$\square$] เคยศึกษาในระดับมัธยมศึกษาตอนปลาย (มัธยมศึกษาปีที่ 6)
-  \item[$\square$] กำลังศึกษาในระดับอุดมศึกษา (เช่น Calculus 1 หรือ Calculus 2)
-  \item[$\square$] เคยศึกษาและสอบผ่านมาแล้วในระดับอุดมศึกษา (ต้องการใช้งานเพื่อทบทวนความรู้)
-  \item[$\square$] ยังไม่เคยศึกษาเนื้อหาแคลคูลัสอย่างเป็นทางการมาก่อน
+\textbf{4. ประสบการณ์การเรียนรู้ในวิชาแคลคูลัส (Calculus):}
+\begin{multicols}{2}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+  \item[$\square$] เคยศึกษาในระดับ ม.ปลาย (ม.6)
+  \item[$\square$] กำลังศึกษาในระดับอุดมศึกษา (Cal 1 หรือ Cal 2)
+  \item[$\square$] เคยศึกษาและสอบผ่านมาแล้ว (ต้องการทบทวน)
+  \item[$\square$] ยังไม่เคยศึกษาแคลคูลัสอย่างเป็นทางการ
 \end{itemize}
+\end{multicols}
 
-\vspace{0.4em}
+\vspace{-0.65em}
 \noindent
-\textbf{5. เจตคติหรือความรู้สึกต่อวิชาแคลคูลัส ก่อนได้ทดลองใช้งานเว็บแอปพลิเคชันนี้}
-
-\begin{itemize}
-  \setlength{\itemsep}{1pt}
-  \item[$\square$] รู้สึกว่าเป็นวิชาที่ยากมาก และมีความวิตกกังวลในการทำความเข้าใจ
-  \item[$\square$] รู้สึกว่ายากปานกลาง แต่พอเรียนรู้ได้หากมีตัวอย่างและเครื่องมือช่วยจำลอง
-  \item[$\square$] รู้สึกว่าเป็นวิชาที่น่าสนใจและสนุกกับการแก้โจทย์ปัญหา
-  \item[$\square$] ไม่มีความเห็นเป็นพิเศษ หรือ รู้สึกเฉยๆ
+\textbf{5. เจตคติต่อวิชาแคลคูลัส ก่อนได้ทดลองใช้งานเว็บแอปพลิเคชันนี้:}
+\begin{multicols}{2}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+  \item[$\square$] รู้สึกยากมาก และกังวลในการทำความเข้าใจ
+  \item[$\square$] รู้สึกยากปานกลาง แต่พอเข้าใจได้ถ้ามีตัวช่วย
+  \item[$\square$] รู้สึกน่าสนใจและชอบแก้โจทย์ปัญหา
+  \item[$\square$] รู้สึกเฉยๆ หรือไม่มีความเห็นเป็นพิเศษ
 \end{itemize}
+\end{multicols}
 
-\vspace{0.4em}
+\vspace{-0.65em}
 \noindent
-\textbf{6. อุปกรณ์หลักที่ท่านใช้ในการเข้าใช้งานและทดสอบเว็บแอปพลิเคชัน}
-
-\begin{itemize}
-  \setlength{\itemsep}{1pt}
-  \item[$\square$] เครื่องคอมพิวเตอร์ตั้งโต๊ะ หรือ คอมพิวเตอร์พกพา (PC หรือ Notebook)
-  \item[$\square$] แท็บเล็ต (เช่น iPad หรือ Android Tablet)
+\textbf{6. อุปกรณ์หลักที่ใช้ในการทดสอบเว็บแอปพลิเคชัน:}
+\begin{multicols}{3}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+  \item[$\square$] คอมพิวเตอร์ตั้งโต๊ะ หรือ โน้ตบุ๊ก
+  \item[$\square$] แท็บเล็ต (iPad หรือ Android)
   \item[$\square$] สมาร์ตโฟน (Smartphone)
 \end{itemize}
+\end{multicols}
 
-\vspace{0.4em}
+\vspace{-0.65em}
 \noindent
-\textbf{7. บทเรียนหรือโมดูลในระบบที่ท่านได้ทดลองใช้งาน (เลือกตอบได้มากกว่า 1 ข้อ)}
-
-\begin{itemize}
-  \setlength{\itemsep}{1pt}
-  \item[$\square$] ผลบวกรีมันน์เชิงโต้ตอบ (Interactive Riemann Sum Simulation)
-  \item[$\square$] การหาปริมาตรของรูปทรงตันที่เกิดจากการหมุน (Volume of Solids of Revolution)
+\textbf{7. บทเรียนหรือโมดูลในระบบที่ได้ทดลองใช้งาน (เลือกได้มากกว่า 1 ข้อ):}
+\begin{multicols}{2}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+  \item[$\square$] ผลบวกรีมันน์เชิงโต้ตอบ (Riemann Sum)
+  \item[$\square$] ปริมาตรทรงตันจากการหมุน (Volume of Solids)
   \item[$\square$] การหาพื้นที่ระหว่างเส้นโค้ง (Area Between Curves)
-  \item[$\square$] ระบบตรวจสอบความเท่ากันของนิพจน์คณิตศาสตร์ด้วย SymPy (Symbolic Math Verification)
-  \item[$\square$] ระบบแบบทดสอบประเมินความเข้าใจและเฉลยอธิบายขั้นตอน (Interactive Quiz)
-  \item[$\square$] เอกสารอ้างอิงและทฤษฎีบทประกอบบทเรียน (Reference Documentation)
+  \item[$\square$] ตรวจสอบสมการคณิตศาสตร์ด้วย SymPy
+  \item[$\square$] แบบทดสอบพร้อมเฉลยอธิบาย (Quiz)
+  \item[$\square$] เอกสารอ้างอิงและทฤษฎีบท (Reference)
 \end{itemize}
+\end{multicols}
 
 \newpage
-\section*{ตอนที่ 2: การประเมินความพึงพอใจต่อคุณลักษณะของเว็บแอปพลิเคชัน}
-
 \noindent
-\textit{คำชี้แจง: โปรดทำเครื่องหมาย $\checkmark$ ลงในช่องระดับความพึงพอใจที่ตรงกับความคิดเห็นของท่านมากที่สุด}
-
-\vspace{0.3em}
+\textbf{\large ตอนที่ 2: การประเมินความพึงพอใจต่อคุณลักษณะของเว็บแอปพลิเคชัน} \\
+\textit{คำชี้แจง: โปรดทำเครื่องหมาย $\checkmark$ ลงในช่องระดับความพึงพอใจที่ตรงกับความคิดเห็นของท่านมากที่สุด} \\
 \noindent
-ระดับการประเมิน: 5 = มากที่สุด, 4 = มาก, 3 = ปานกลาง, 2 = น้อย, 1 = น้อยที่สุด
+เกณฑ์การประเมิน: 5 = มากที่สุด, 4 = มาก, 3 = ปานกลาง, 2 = น้อย, 1 = น้อยที่สุด
 
-\vspace{0.6em}
-\subsection*{1. ด้านการออกแบบส่วนประสานงานผู้ใช้และประสบการณ์ผู้ใช้ (User Interface & Usability)}
+\vspace{0.35em}
+\noindent
+\textbf{1. ด้านการออกแบบส่วนประสานงานผู้ใช้และประสบการณ์ผู้ใช้ (User Interface และ Usability)}
 
+\vspace{0.15em}
 | ข้อที่ | รายการประเมิน | 5 | 4 | 3 | 2 | 1 |
 |:---:|:---------------------------------------------------------------------------------|:---:|:---:|:---:|:---:|:---:|
 | 1.1 | การจัดวางองค์ประกอบและโครงสร้างหน้าจอมีความเป็นระเบียบ สวยงาม และสบายตา | | | | | |
@@ -193,9 +190,11 @@ format:
 | 1.4 | การตอบสนองของระบบเมื่อเลื่อนสไลเดอร์หรือคลิกปุ่มโต้ตอบมีความลื่นไหล รวดเร็ว ไม่ติดขัด | | | | | |
 | 1.5 | ความสะดวกในการป้อนสมการและฟังก์ชันคณิตศาสตร์ผ่านช่องรับข้อมูล | | | | | |
 
-\vspace{0.8em}
-\subsection*{2. ด้านฟังก์ชันเชิงโต้ตอบและการประมวลผลทางคณิตศาสตร์ (Interactive Functionality)}
+\vspace{0.7em}
+\noindent
+\textbf{2. ด้านฟังก์ชันเชิงโต้ตอบและการประมวลผลทางคณิตศาสตร์ (Interactive Functionality)}
 
+\vspace{0.15em}
 | ข้อที่ | รายการประเมิน | 5 | 4 | 3 | 2 | 1 |
 |:---:|:---------------------------------------------------------------------------------|:---:|:---:|:---:|:---:|:---:|
 | 2.1 | กราฟจำลองเชิงเรขาคณิตแบบพลวัตช่วยให้เห็นการเปลี่ยนแปลงทางคณิตศาสตร์ได้ทันทีเมื่อปรับค่า | | | | | |
@@ -204,9 +203,11 @@ format:
 | 2.4 | ระบบมีการแจ้งเตือนและชี้แนะจุดที่มักเข้าใจผิด เช่น จุดตัด ขอบเขต หรือการหารด้วยศูนย์ | | | | | |
 | 2.5 | ระบบแบบทดสอบและคำอธิบายเฉลยช่วยตรวจสอบความเข้าใจและทบทวนเนื้อหาได้ตรงจุด | | | | | |
 
-\vspace{0.8em}
-\subsection*{3. ด้านเนื้อหาและการส่งเสริมมโนทัศน์ทางคณิตศาสตร์ (Pedagogical Content & Intuition)}
+\newpage
+\noindent
+\textbf{3. ด้านเนื้อหาและการส่งเสริมมโนทัศน์ทางคณิตศาสตร์ (Pedagogical Content และ Intuition)}
 
+\vspace{0.15em}
 | ข้อที่ | รายการประเมิน | 5 | 4 | 3 | 2 | 1 |
 |:---:|:---------------------------------------------------------------------------------|:---:|:---:|:---:|:---:|:---:|
 | 3.1 | เนื้อหาบทเรียนและตัวอย่างโจทย์มีความถูกต้อง สอดคล้องกับหลักสูตรแคลคูลัส | | | | | |
@@ -215,9 +216,11 @@ format:
 | 3.4 | กิจกรรมในระบบช่วยเชื่อมโยงความสัมพันธ์ระหว่างพีชคณิตและการมองภาพเรขาคณิต | | | | | |
 | 3.5 | เอกสารอ้างอิงและทฤษฎีบทเสริมท้ายบทเรียนมีความสมบูรณ์ เป็นประโยชน์ต่อการค้นคว้า | | | | | |
 
-\vspace{0.8em}
-\subsection*{4. ด้านเจตคติและแรงจูงใจในการเรียนรู้ (Attitude & Learning Motivation)}
+\vspace{0.7em}
+\noindent
+\textbf{4. ด้านเจตคติและแรงจูงใจในการเรียนรู้ (Attitude และ Learning Motivation)}
 
+\vspace{0.15em}
 | ข้อที่ | รายการประเมิน | 5 | 4 | 3 | 2 | 1 |
 |:---:|:---------------------------------------------------------------------------------|:---:|:---:|:---:|:---:|:---:|
 | 4.1 | การเรียนรู้ผ่านเว็บแอปพลิเคชันช่วยลดความกังวลหรือความรู้สึกกลัวต่อวิชาแคลคูลัส | | | | | |
@@ -227,18 +230,15 @@ format:
 | 4.5 | มีความเต็มใจและพร้อมที่จะแนะนำเว็บแอปพลิเคชันนี้ให้แก่เพื่อนหรือรุ่นน้องใช้งาน | | | | | |
 
 \newpage
-\section*{ตอนที่ 3: แบบประเมินความสามารถในการใช้งานระบบตามมาตรฐานสากล (System Usability Scale: SUS)}
-
 \noindent
-\textit{คำชี้แจง: โปรดทำเครื่องหมาย $\checkmark$ ลงในช่องระดับความเห็นด้วยของท่านตามมาตรฐานสากล 10 ข้อ}
-
-\vspace{0.3em}
+\textbf{\large ตอนที่ 3: แบบประเมินความสามารถในการใช้งานระบบตามมาตรฐานสากล (System Usability Scale: SUS)} \\
+\textit{คำชี้แจง: โปรดทำเครื่องหมาย $\checkmark$ ลงในช่องระดับความเห็นด้วยของท่านตามมาตรฐานสากล 10 ข้อ} \\
 \noindent
-ระดับการประเมิน: 1 = ไม่เห็นด้วยอย่างยิ่ง, 2 = ไม่เห็นด้วย, 3 = ปานกลาง, 4 = เห็นด้วย, 5 = เห็นด้วยอย่างยิ่ง
+เกณฑ์การประเมิน: 5 = เห็นด้วยอย่างยิ่ง, 4 = เห็นด้วย, 3 = ปานกลาง, 2 = ไม่เห็นด้วย, 1 = ไม่เห็นด้วยอย่างยิ่ง
 
-\vspace{0.6em}
+\vspace{0.2em}
 
-| ข้อที่ | ข้อความประเมินตามมาตรฐาน SUS | 1 | 2 | 3 | 4 | 5 |
+| ข้อที่ | ข้อความประเมินตามมาตรฐาน SUS | 5 | 4 | 3 | 2 | 1 |
 |:---:|:---------------------------------------------------------------------------------|:---:|:---:|:---:|:---:|:---:|
 | 1 | ข้าพเจ้าคิดว่ามีความต้องการใช้งานเว็บแอปพลิเคชันนี้อย่างสม่ำเสมอในการเรียนรู้ | | | | | |
 | 2 | ข้าพเจ้ารู้สึกว่าเว็บแอปพลิเคชันนี้มีความซับซ้อนโดยไม่จำเป็น | | | | | |
@@ -251,81 +251,69 @@ format:
 | 9 | ข้าพเจ้ารู้สึกมั่นใจและสบายใจในการใช้งานเว็บแอปพลิเคชันนี้ด้วยตนเอง | | | | | |
 | 10 | ข้าพเจ้าจำเป็นต้องเรียนรู้สิ่งต่างๆ เพิ่มเติมเป็นจำนวนมากก่อนเริ่มต้นใช้งานระบบนี้ได้ | | | | | |
 
-\vspace{0.6em}
+\vspace{0.25em}
 \noindent
-\textbf{หมายเหตุทางวิชาการสำหรับการวิเคราะห์คะแนน SUS (SUS Scoring Method):}
-\begin{itemize}
-  \setlength{\itemsep}{0pt}
-  \item ข้อคี่ (ข้อ 1, 3, 5, 7, 9): คะแนนแปลง = คะแนนที่ได้ $- 1$
-  \item ข้อคู่ (ข้อ 2, 4, 6, 8, 10): คะแนนแปลง = $5 -$ คะแนนที่ได้
-  \item คะแนนรวม SUS (เต็ม 100) = (ผลรวมคะแนนแปลงทั้ง 10 ข้อ) $\times 2.5$
-  \item เกณฑ์การแปลผล: คะแนน $> 68$ ถือว่าผ่านเกณฑ์มาตรฐานเฉลี่ย (Above Average) และคะแนน $> 80.3$ ถือว่าอยู่ในเกณฑ์ดีเยี่ยม (Excellent / Grade A)
+\textbf{\small เกณฑ์การวิเคราะห์คะแนน SUS (Scoring Method):}
+\begin{itemize}[noitemsep,topsep=1pt]
+  \item \textbf{การแปลงคะแนนรายข้อ:} ข้อคี่ (1, 3, 5, 7, 9) คะแนนแปลง $= X - 1$ \quad|\quad ข้อคู่ (2, 4, 6, 8, 10) คะแนนแปลง $= 5 - X$
+  \item \textbf{คะแนนรวม SUS (เต็ม 100 คะแนน):} $\text{SUS Score} = \sum (\text{คะแนนแปลงทั้ง 10 ข้อ}) \times 2.5$
+  \item \textbf{เกณฑ์การแปลผล:} คะแนน $> 68$ ถือว่าผ่านเกณฑ์มาตรฐาน (Above Average) และ $> 80.3$ อยู่ในเกณฑ์ดีเยี่ยม (Excellent)
 \end{itemize}
 
-\vspace{1.2em}
-\section*{ตอนที่ 4: ข้อเสนอแนะและความคิดเห็นเพิ่มเติมเพื่อการพัฒนาระบบ}
-
-\noindent
-\textbf{1. คุณลักษณะหรือฟังก์ชันใดในเว็บแอปพลิเคชันที่ท่านรู้สึกประทับใจ หรือช่วยให้เข้าใจบทเรียนได้ดีที่สุด}
-
-\vspace{0.3em}
-\noindent
-\dotfill
-
 \vspace{0.4em}
 \noindent
-\dotfill
+\textbf{\large ตอนที่ 4: ข้อเสนอแนะและความคิดเห็นเพิ่มเติมเพื่อการพัฒนาระบบ}
 
-\vspace{0.4em}
+\vspace{0.15em}
+\noindent
+\textbf{1. คุณลักษณะหรือฟังก์ชันใดในระบบที่ท่านประทับใจ หรือช่วยให้เข้าใจบทเรียนได้ดีที่สุด:}
+
+\vspace{0.1em}
 \noindent
 \dotfill
 
-\vspace{0.8em}
-\noindent
-\textbf{2. ปัญหา อุปสรรค หรือข้อขัดข้องที่ท่านพบระหว่างการทดลองใช้งาน (เช่น ด้านการแสดงผลกราฟ ความเร็ว หรืออุปกรณ์)}
-
-\vspace{0.3em}
+\vspace{0.25em}
 \noindent
 \dotfill
 
-\vspace{0.4em}
+\vspace{0.35em}
+\noindent
+\textbf{2. ปัญหา อุปสรรค หรือข้อขัดข้องที่พบระหว่างการทดลองใช้งาน (เช่น ด้านกราฟ ความเร็ว หรืออุปกรณ์):}
+
+\vspace{0.1em}
 \noindent
 \dotfill
 
-\vspace{0.4em}
+\vspace{0.25em}
 \noindent
 \dotfill
 
-\vspace{0.8em}
+\vspace{0.35em}
 \noindent
-\textbf{3. หัวข้อหรือฟังก์ชันทางคณิตศาสตร์ที่ท่านต้องการให้ทีมพัฒนาเพิ่มเติมในอนาคต (เลือกตอบได้มากกว่า 1 ข้อ)}
-
-\begin{itemize}
-  \setlength{\itemsep}{1pt}
-  \item[$\square$] เทคนิคการอินทิเกรตทีละส่วน (Integration by Parts)
-  \item[$\square$] การอินทิเกรตฟังก์ชันตรรกยะโดยแยกเป็นเศษส่วนย่อย (Partial Fractions)
-  \item[$\square$] การแทนค่าด้วยฟังก์ชันตรีโกณมิติ (Trigonometric Substitution)
-  \item[$\square$] การจำลองรูปทรงเรขาคณิต 3 มิติเชิงโต้ตอบสำหรับปริมาตรการหมุน (Interactive 3D Visualizer)
-  \item[$\square$] อื่นๆ (โปรดระบุ): \dotfill
+\textbf{3. หัวข้อหรือฟังก์ชันทางคณิตศาสตร์ที่ต้องการให้ทีมพัฒนาเพิ่มเติมในอนาคต (เลือกได้มากกว่า 1 ข้อ):}
+\begin{multicols}{2}
+\begin{itemize}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+  \item[$\square$] เทคนิคการอินทิเกรตทีละส่วน (By Parts)
+  \item[$\square$] การแยกเศษส่วนย่อย (Partial Fractions)
+  \item[$\square$] การแทนค่าตรีโกณมิติ (Trig Substitution)
+  \item[$\square$] กราฟิกจำลอง 3 มิติ (Interactive 3D)
+  \item[$\square$] อื่นๆ: \dotfill
 \end{itemize}
+\end{multicols}
 
-\vspace{0.8em}
+\vspace{-0.65em}
 \noindent
-\textbf{4. ข้อเสนอแนะอื่นๆ สำหรับการนำเว็บแอปพลิเคชันนี้ไปประยุกต์ใช้ในการเรียนการสอนจริง}
+\textbf{4. ข้อเสนอแนะอื่นๆ สำหรับการนำเว็บแอปพลิเคชันนี้ไปประยุกต์ใช้ในการจัดการเรียนการสอนจริง:}
 
-\vspace{0.3em}
-\noindent
-\dotfill
-
-\vspace{0.4em}
+\vspace{0.1em}
 \noindent
 \dotfill
 
-\vspace{0.4em}
+\vspace{0.25em}
 \noindent
 \dotfill
 
-\vspace{1.5em}
+\vspace{0.5em}
 \begin{center}
   \textbf{ขอขอบพระคุณทุกท่านที่สละเวลาในการตอบแบบสอบถามเพื่อการพัฒนาการศึกษา}
 \end{center}

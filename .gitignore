@@ -37,6 +37,9 @@ docs/*_files/
 # ยกเว้นเอกสารสำคัญที่ต้องการให้ขึ้น git ด้วย
 !docs/markdown-latex-guide.pdf
 !docs/markdown-latex-guide.html
+!docs/calculus-app-satisfaction-survey.pdf
+!docs/survey-system-architecture-and-workflow.pdf
+!docs/survey-system-architecture-and-workflow.html
 !docs/proposal/**
 !docs/architecture/**
 !docs/mockup/**

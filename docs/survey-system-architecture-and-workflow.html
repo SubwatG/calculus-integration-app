@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="th" xml:lang="th"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="ทีมพัฒนาภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล คณะศิลปศาสตร์และวิทยาศาสตร์ มหาวิทยาลัยเกษตรศาสตร์">
+
+<title>สถาปัตยกรรมและแผนการดำเนินงานระบบแบบสอบถามประเมินความพึงพอใจ</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="survey-system-architecture-and-workflow_files/libs/clipboard/clipboard.min.js"></script>
+<script src="survey-system-architecture-and-workflow_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="survey-system-architecture-and-workflow_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="survey-system-architecture-and-workflow_files/libs/quarto-html/popper.min.js"></script>
+<script src="survey-system-architecture-and-workflow_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="survey-system-architecture-and-workflow_files/libs/quarto-html/anchor.min.js"></script>
+<link href="survey-system-architecture-and-workflow_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="survey-system-architecture-and-workflow_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="survey-system-architecture-and-workflow_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="survey-system-architecture-and-workflow_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="survey-system-architecture-and-workflow_files/libs/bootstrap/bootstrap-7fca231f0f6bfd3bec1af756033c583c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="survey-system-architecture-and-workflow_files/libs/quarto-diagram/mermaid.min.js"></script>
+<script src="survey-system-architecture-and-workflow_files/libs/quarto-diagram/mermaid-init.js"></script>
+<link href="survey-system-architecture-and-workflow_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#บทนำและวตถประสงคของระบบแบบสอบถาม" id="toc-บทนำและวตถประสงคของระบบแบบสอบถาม" class="nav-link active" data-scroll-target="#บทนำและวตถประสงคของระบบแบบสอบถาม">1. บทนำและวัตถุประสงค์ของระบบแบบสอบถาม</a>
+  <ul class="collapse">
+  <li><a href="#วตถประสงคการประเมน" id="toc-วตถประสงคการประเมน" class="nav-link" data-scroll-target="#วตถประสงคการประเมน">1.1 วัตถุประสงค์การประเมิน</a></li>
+  <li><a href="#นโยบายกลมเปาหมายและความเปนสวนตว-target-group-privacy" id="toc-นโยบายกลมเปาหมายและความเปนสวนตว-target-group-privacy" class="nav-link" data-scroll-target="#นโยบายกลมเปาหมายและความเปนสวนตว-target-group-privacy">1.2 นโยบายกลุ่มเป้าหมายและความเป็นส่วนตัว (Target Group &amp; Privacy)</a></li>
+  </ul></li>
+  <li><a href="#แผนการดำเนนงานตามหลกวศวกรรมซอฟตแวร-ask-matt-flow" id="toc-แผนการดำเนนงานตามหลกวศวกรรมซอฟตแวร-ask-matt-flow" class="nav-link" data-scroll-target="#แผนการดำเนนงานตามหลกวศวกรรมซอฟตแวร-ask-matt-flow">2. แผนการดำเนินงานตามหลักวิศวกรรมซอฟต์แวร์ (Ask-Matt Flow)</a></li>
+  <li><a href="#แผนภาพกระบวนการทำงานของระบบแบบสอบถาม-system-workflow" id="toc-แผนภาพกระบวนการทำงานของระบบแบบสอบถาม-system-workflow" class="nav-link" data-scroll-target="#แผนภาพกระบวนการทำงานของระบบแบบสอบถาม-system-workflow">3. แผนภาพกระบวนการทำงานของระบบแบบสอบถาม (System Workflow)</a></li>
+  <li><a href="#โครงสรางรายละเอยดขอคำถามในแบบประเมน" id="toc-โครงสรางรายละเอยดขอคำถามในแบบประเมน" class="nav-link" data-scroll-target="#โครงสรางรายละเอยดขอคำถามในแบบประเมน">4. โครงสร้างรายละเอียดข้อคำถามในแบบประเมิน</a>
+  <ul class="collapse">
+  <li><a href="#ตอนท-1-ขอมลทวไปและภมหลงทางการศกษา-general-demographics" id="toc-ตอนท-1-ขอมลทวไปและภมหลงทางการศกษา-general-demographics" class="nav-link" data-scroll-target="#ตอนท-1-ขอมลทวไปและภมหลงทางการศกษา-general-demographics">ตอนที่ 1: ข้อมูลทั่วไปและภูมิหลังทางการศึกษา (General Demographics)</a></li>
+  <li><a href="#ตอนท-2-การประเมนความพงพอใจตอคณลกษณะของระบบ-5-point-likert-scale-grid" id="toc-ตอนท-2-การประเมนความพงพอใจตอคณลกษณะของระบบ-5-point-likert-scale-grid" class="nav-link" data-scroll-target="#ตอนท-2-การประเมนความพงพอใจตอคณลกษณะของระบบ-5-point-likert-scale-grid">ตอนที่ 2: การประเมินความพึงพอใจต่อคุณลักษณะของระบบ (5-Point Likert Scale Grid)</a></li>
+  <li><a href="#ตอนท-3-แบบประเมนความสะดวกในการใชงานตามมาตรฐานสากล-system-usability-scale-sus" id="toc-ตอนท-3-แบบประเมนความสะดวกในการใชงานตามมาตรฐานสากล-system-usability-scale-sus" class="nav-link" data-scroll-target="#ตอนท-3-แบบประเมนความสะดวกในการใชงานตามมาตรฐานสากล-system-usability-scale-sus">ตอนที่ 3: แบบประเมินความสะดวกในการใช้งานตามมาตรฐานสากล (System Usability Scale: SUS)</a></li>
+  <li><a href="#ตอนท-4-ขอเสนอแนะและความคดเหนเพมเตม-qualitative-feedback" id="toc-ตอนท-4-ขอเสนอแนะและความคดเหนเพมเตม-qualitative-feedback" class="nav-link" data-scroll-target="#ตอนท-4-ขอเสนอแนะและความคดเหนเพมเตม-qualitative-feedback">ตอนที่ 4: ข้อเสนอแนะและความคิดเห็นเพิ่มเติม (Qualitative Feedback)</a></li>
+  </ul></li>
+  <li><a href="#รายละเอยดทางเทคนคและการทำงานรวมกบระบบเวบ" id="toc-รายละเอยดทางเทคนคและการทำงานรวมกบระบบเวบ" class="nav-link" data-scroll-target="#รายละเอยดทางเทคนคและการทำงานรวมกบระบบเวบ">5. รายละเอียดทางเทคนิคและการทำงานร่วมกับระบบเว็บ</a>
+  <ul class="collapse">
+  <li><a href="#การทำงานอตโนมตผาน-browser-in-a-box-และ-google-apps-script" id="toc-การทำงานอตโนมตผาน-browser-in-a-box-และ-google-apps-script" class="nav-link" data-scroll-target="#การทำงานอตโนมตผาน-browser-in-a-box-และ-google-apps-script">5.1 การทำงานอัตโนมัติผ่าน Browser-in-a-Box และ Google Apps Script</a></li>
+  <li><a href="#การผสานเขากบ-streamlit-application" id="toc-การผสานเขากบ-streamlit-application" class="nav-link" data-scroll-target="#การผสานเขากบ-streamlit-application">5.2 การผสานเข้ากับ Streamlit Application</a></li>
+  </ul></li>
+  <li><a href="#สรปทรพยากรระบบและลงกสำหรบการใชงานจรง" id="toc-สรปทรพยากรระบบและลงกสำหรบการใชงานจรง" class="nav-link" data-scroll-target="#สรปทรพยากรระบบและลงกสำหรบการใชงานจรง">6. สรุปทรัพยากรระบบและลิงก์สำหรับการใช้งานจริง</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="survey-system-architecture-and-workflow.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">สถาปัตยกรรมและแผนการดำเนินงานระบบแบบสอบถามประเมินความพึงพอใจ</h1>
+<p class="subtitle lead">โครงการเว็บแอปพลิเคชันช่วยสอนแคลคูลัส เรื่อง การอินทิเกรต (Calculus Tutor: Integration Application)</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>ทีมพัฒนาภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล คณะศิลปศาสตร์และวิทยาศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">2 ตุลาคม 2569</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="บทนำและวตถประสงคของระบบแบบสอบถาม" class="level2">
+<h2 class="anchored" data-anchor-id="บทนำและวตถประสงคของระบบแบบสอบถาม">1. บทนำและวัตถุประสงค์ของระบบแบบสอบถาม</h2>
+<p>เอกสารฉบับนี้จัดทำขึ้นเพื่อบันทึกสถาปัตยกรรม การออกแบบเนื้อหา แผนการดำเนินงาน และกระบวนการทำงานอัตโนมัติในการสร้างระบบแบบสอบถามประเมินความพึงพอใจและประสิทธิภาพการใช้งานสำหรับโครงการ <strong>Calculus Tutor: Integration Application</strong> ซึ่งพัฒนาขึ้นโดยภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล คณะศิลปศาสตร์และวิทยาศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</p>
+<section id="วตถประสงคการประเมน" class="level3">
+<h3 class="anchored" data-anchor-id="วตถประสงคการประเมน">1.1 วัตถุประสงค์การประเมิน</h3>
+<ol type="1">
+<li><strong>ประเมินความพึงพอใจของผู้เรียน (User Satisfaction):</strong> วัดการรับรู้ในด้านความสวยงาม ความเป็นระเบียบ และความสะดวกในการใช้งานส่วนประสานงานผู้ใช้ (User Interface &amp; Usability)</li>
+<li><strong>ประเมินประสิทธิภาพของระบบเชิงโต้ตอบ (Interactive Functionality):</strong> ตรวจสอบความถูกต้องและความน่าเชื่อถือของโมดูลคำนวณสัญลักษณ์ด้วย SymPy และกราฟิกจำลองพลวัต</li>
+<li><strong>ประเมินคุณค่าเชิงการสอนและมโนทัศน์ (Pedagogical Content &amp; Intuition):</strong> ตรวจสอบว่าระบบสามารถแปลงแนวคิดนามธรรมของการอินทิเกรต เช่น ผลบวกรีมันน์ (Riemann Sum) และปริมาตรการหมุน ให้กลายเป็นมโนทัศน์เชิงเรขาคณิตที่เข้าใจง่ายได้จริงหรือไม่</li>
+<li><strong>วัดระดับความสามารถในการใช้งานตามมาตรฐานสากล (System Usability Scale: SUS):</strong> ให้ได้ค่าดัชนีคะแนนมาตรฐาน (คะแนนเต็ม 100) ที่ได้รับการยอมรับในระดับงานวิจัยทางวิชาการ</li>
+</ol>
+</section>
+<section id="นโยบายกลมเปาหมายและความเปนสวนตว-target-group-privacy" class="level3">
+<h3 class="anchored" data-anchor-id="นโยบายกลมเปาหมายและความเปนสวนตว-target-group-privacy">1.2 นโยบายกลุ่มเป้าหมายและความเป็นส่วนตัว (Target Group &amp; Privacy)</h3>
+<ul>
+<li><strong>กลุ่มเป้าหมายหลัก:</strong> นักเรียนระดับมัธยมศึกษาตอนปลายและนิสิตนักศึกษาระดับปริญญาตรี โดยเฉพาะกลุ่มผู้เรียนในพื้นที่จังหวัดนครราชสีมา (มหาวิทยาลัยเทคโนโลยีสุรนารี, มหาวิทยาลัยราชภัฏนครราชสีมา, มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน, โรงเรียนมัธยมศึกษาในจังหวัดนครราชสีมา) ร่วมกับนิสิตมหาวิทยาลัยเกษตรศาสตร์</li>
+<li><strong>การจำแนกประสบการณ์เดิม:</strong> แบ่งกลุ่มผู้ตอบตามประสบการณ์ในวิชาแคลคูลัส ทั้งกลุ่มที่กำลังศึกษา, กลุ่มที่เคยสอบผ่านแล้วต้องการทบทวน, และกลุ่มที่ยังไม่เคยเรียน เพื่อวิเคราะห์ความแตกต่างทางสถิติ</li>
+<li><strong>นโยบายความเป็นนิรนาม (Anonymous Submission):</strong> ระบบตั้งค่าไม่จัดเก็บอีเมลของผู้ตอบ (Not shared) เพื่อลดอคติในการตอบ (Social Desirability Bias) โดยเปิดให้ระบุ “รหัสประจำตัวผู้เข้าร่วม (Participant ID)” แบบไม่บังคับ (Optional) สำหรับกรณีที่ต้องการจับคู่ผลการประเมินกับคะแนนแบบทดสอบก่อนเรียนและหลังเรียน (Pre-test / Post-test)</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="แผนการดำเนนงานตามหลกวศวกรรมซอฟตแวร-ask-matt-flow" class="level2">
+<h2 class="anchored" data-anchor-id="แผนการดำเนนงานตามหลกวศวกรรมซอฟตแวร-ask-matt-flow">2. แผนการดำเนินงานตามหลักวิศวกรรมซอฟต์แวร์ (Ask-Matt Flow)</h2>
+<p>การดำเนินงานยึดตามกระบวนการของ Matt Pocock (Main Flow: Idea <span class="math inline">\(\to\)</span> Ship) โดยวางแผน แบ่งงาน จัดการ ตรวจสอบ และแก้ไขอย่างเป็นระบบ ดังนี้</p>
+<pre><code>[Grilling &amp; Scoping] --&gt; [Phase 1: Content Freeze] --&gt; [Phase 2: Browser Integration]
+                                                                  |
+[Phase 4: Verification &amp; Web Sync] &lt;-- [Phase 3: Form &amp; Sheet Automation]</code></pre>
+<ol type="1">
+<li><strong>การสัมภาษณ์เจาะจงความต้องการ (Grilling &amp; Scoping):</strong> ซักถามประเด็นสำคัญทีละข้อเพื่อล็อกขอบเขต โดยสรุปแนวทางการจัดเก็บข้อมูลแบบ Anonymous ที่มี Optional ID</li>
+<li><strong>Phase 1: ล็อกเนื้อหาและประเภทคำถาม (Content Freeze &amp; Field Typing):</strong> ยกร่างเนื้อหาแบบสอบถาม 4 ตอนในรูปแบบเอกสารวิชาการ Quarto (<code>docs/calculus-app-satisfaction-survey.qmd</code>) และคอมไพล์เป็น PDF 4 หน้า จัดระเบียบข้อคำถามตามโครงสร้างที่ตรวจจับความเข้าใจผิด (Misconceptions)</li>
+<li><strong>Phase 2: การเชื่อมต่อสภาพแวดล้อม Chromium (<code>browser-box</code>):</strong> ตรวจสอบและเชื่อมต่อเข้ากับเบราว์เซอร์ Chromium หลักของผู้ใช้งานผ่านพอร์ต CDP 9222 โดยไม่สร้างหน้าต่างซ้อนทับ เพื่อใช้งานเซสชัน Google Account ที่ล็อกอินค้างไว้</li>
+<li><strong>Phase 3: การสร้าง Form และ Sheet อัตโนมัติ (Full Automation via Apps Script):</strong> ควบคุม Chromium เปิด Google Apps Script ฝังโค้ด JavaScript ลงใน Monaco Editor เพื่อสั่งสร้าง Google Form และ Google Sheet ที่ผูกกันแบบเรียลไทม์ พร้อมดึง Responder URL และสร้างภาพ QR Code ความละเอียดสูง</li>
+<li><strong>Phase 4: การตรวจสอบคุณภาพและการผสานรวมระบบ (Verification &amp; Integration):</strong> ตรวจสอบความถูกต้องของ QR Code ด้วยไลบรารี <code>pyzbar</code> เพิ่มหน้า <code>pages/survey.py</code> และผูกเข้าสู่เมนู <code>st.navigation</code> ใน <code>app.py</code> พร้อมรันชุดทดสอบ PyTest ผ่านครบ 49 ข้อ (100% Green)</li>
+</ol>
+<hr>
+</section>
+<section id="แผนภาพกระบวนการทำงานของระบบแบบสอบถาม-system-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="แผนภาพกระบวนการทำงานของระบบแบบสอบถาม-system-workflow">3. แผนภาพกระบวนการทำงานของระบบแบบสอบถาม (System Workflow)</h2>
+<p>กระบวนการไหลของข้อมูลตั้งแต่ผู้เรียนเข้าใช้งาน จนถึงการประมวลผลทางสถิติแสดงได้ดังแผนภาพต่อไปนี้</p>
+<div class="cell" data-fig-width="5.5" data-fig-height="4.2" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A["ผู้เรียนเข้าใช้งาน Calculus Tutor App"] --&gt; B{"เลือกช่องทาง"}
+    B --&gt;|PC เบราว์เซอร์| C["คลิกเปิด Google Forms ในแอป"]
+    B --&gt;|สมาร์ตโฟน| D["สแกน QR Code บนหน้าจอ"]
+    C --&gt; E["Google Forms: ตอบแบบสอบถาม 4 ตอน"]
+    D --&gt; E
+    E --&gt; F[("Google Sheets: จัดเก็บคำตอบสด Real-time")]
+    F --&gt; G["ประมวลผลดัชนี SUS และสถิติภาพรวม 4 ด้าน"]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="โครงสรางรายละเอยดขอคำถามในแบบประเมน" class="level2">
+<h2 class="anchored" data-anchor-id="โครงสรางรายละเอยดขอคำถามในแบบประเมน">4. โครงสร้างรายละเอียดข้อคำถามในแบบประเมิน</h2>
+<p>แบบประเมินแบ่งออกเป็น 4 ตอน มีรายละเอียดโครงสร้างทางสถิติและประเภทฟิลด์ข้อมูลดังนี้</p>
+<section id="ตอนท-1-ขอมลทวไปและภมหลงทางการศกษา-general-demographics" class="level3">
+<h3 class="anchored" data-anchor-id="ตอนท-1-ขอมลทวไปและภมหลงทางการศกษา-general-demographics">ตอนที่ 1: ข้อมูลทั่วไปและภูมิหลังทางการศึกษา (General Demographics)</h3>
+<ul>
+<li><strong>รหัสประจำตัวผู้เข้าร่วม (Participant ID):</strong> ข้อความสั้น (Short Text - Optional) สำหรับการวิเคราะห์ผลสัมฤทธิ์</li>
+<li><strong>ระดับการศึกษาปัจจุบัน (Education Level):</strong> ปรนัย (Multiple Choice) ครอบคลุม ม.ปลาย, ปริญญาตรี ปี 1-2, ปริญญาตรี ปี 3-4, บัณฑิตศึกษา</li>
+<li><strong>สถาบันการศึกษา (Institution):</strong> รายการเลื่อนลง (Dropdown) ครอบคลุมฐานข้อมูลสถาบันอุดมศึกษามาตรฐาน อว. 95 แห่งทั่วประเทศ โดยตรึงมหาวิทยาลัยเกษตรศาสตร์ (แยกตามวิทยาเขต กำแพงแสน/บางเขน/ศรีราชา/สกลนคร) ไว้บนสุด ตามด้วยมหาวิทยาลัยรัฐในกำกับ, มหาวิทยาลัยราชภัฏ (38 แห่ง), มหาวิทยาลัยเทคโนโลยีราชมงคล (9 แห่ง), สถาบันอุดมศึกษาเอกชนชั้นนำ, และกลุ่มโรงเรียนมัธยมศึกษา เพื่อให้ข้อมูลสะอาด จัดกลุ่มง่าย และรองรับการสืบค้นแบบ Auto-complete</li>
+<li><strong>กลุ่มสาขาวิชา (Academic Field):</strong> ปรนัย ครอบคลุมวิศวกรรมศาสตร์, วิทยาการคอมพิวเตอร์, วิทยาศาสตร์/คณิตศาสตร์, ครุศาสตร์, บริหารธุรกิจ</li>
+<li><strong>ประสบการณ์ในวิชาแคลคูลัส (Calculus Background):</strong> ปรนัย 4 กลุ่ม (ม.ปลาย, กำลังเรียน, เคยสอบผ่านแล้ว, ยังไม่เคยเรียน)</li>
+<li><strong>เจตคติต่อวิชาก่อนใช้งาน (Prior Attitude Baseline):</strong> ปรนัย 4 ระดับ เพื่อใช้วัดการเปลี่ยนแปลงของเจตคติ</li>
+<li><strong>อุปกรณ์หลักในการทดสอบ (Device):</strong> คอมพิวเตอร์, แท็บเล็ต, สมาร์ตโฟน</li>
+<li><strong>โมดูลที่ได้ทดลองใช้งาน (Modules Tested):</strong> กล่องเลือกหลายรายการ (Checkbox) ครอบคลุมทั้ง 6 โมดูลหลัก</li>
+</ul>
+</section>
+<section id="ตอนท-2-การประเมนความพงพอใจตอคณลกษณะของระบบ-5-point-likert-scale-grid" class="level3">
+<h3 class="anchored" data-anchor-id="ตอนท-2-การประเมนความพงพอใจตอคณลกษณะของระบบ-5-point-likert-scale-grid">ตอนที่ 2: การประเมินความพึงพอใจต่อคุณลักษณะของระบบ (5-Point Likert Scale Grid)</h3>
+<p>ใช้ตารางกริดมาตรประมาณค่า 5 ระดับ (5 = มากที่สุด, 4 = มาก, 3 = ปานกลาง, 2 = น้อย, 1 = น้อยที่สุด) รวม 20 ข้อคำถาม:</p>
+<ol type="1">
+<li><strong>ด้านการออกแบบส่วนประสานงานผู้ใช้และประสบการณ์ผู้ใช้ (UI/UX - 5 ข้อ):</strong> การจัดวางองค์ประกอบ, ความสะดวกในการนำทาง, ขนาดฟอนต์และสมการ LaTeX, ความลื่นไหลในการตอบสนอง, ความสะดวกในการป้อนสมการ</li>
+<li><strong>ด้านฟังก์ชันเชิงโต้ตอบและการประมวลผลทางคณิตศาสตร์ (Interactive Functionality - 5 ข้อ):</strong> กราฟจำลองพลวัตเรียลไทม์, ความแม่นยำของ SymPy, การเฉลยแบบมีเงื่อนไข (Scaffolding), การชี้แนะจุดที่มักเข้าใจผิด (Misconceptions), ระบบแบบทดสอบและคำอธิบายเฉลย</li>
+<li><strong>ด้านเนื้อหาและการส่งเสริมมโนทัศน์ทางคณิตศาสตร์ (Pedagogical Content - 5 ข้อ):</strong> ความถูกต้องตามหลักสูตร, การแปลงนามธรรมสู่รูปธรรมเรขาคณิต, ความชัดเจนของภาษาไทย, การเชื่อมโยงพีชคณิตกับภาพ, เอกสารอ้างอิง</li>
+<li><strong>ด้านเจตคติและแรงจูงใจในการเรียนรู้ (Attitude &amp; Motivation - 5 ข้อ):</strong> ลดความกังวลต่อแคลคูลัส, กระตุ้นการเรียนรู้ด้วยตนเอง, ความมั่นใจในการทำโจทย์, ความต้องการทบทวนซ้ำ, ความยินดีที่จะแนะนำต่อ</li>
+</ol>
+</section>
+<section id="ตอนท-3-แบบประเมนความสะดวกในการใชงานตามมาตรฐานสากล-system-usability-scale-sus" class="level3">
+<h3 class="anchored" data-anchor-id="ตอนท-3-แบบประเมนความสะดวกในการใชงานตามมาตรฐานสากล-system-usability-scale-sus">ตอนที่ 3: แบบประเมินความสะดวกในการใช้งานตามมาตรฐานสากล (System Usability Scale: SUS)</h3>
+<p>ข้อคำถามมาตรฐาน 10 ข้อ สลับข้อความเชิงบวก (ข้อคี่) และข้อความเชิงลบ (ข้อคู่) โดยจัดเรียงมาตรวัดคะแนนจากซ้ายไปขวา 5 (เห็นด้วยอย่างยิ่ง) ลงไปถึง 1 (ไม่เห็นด้วยอย่างยิ่ง) ตามแบบประเมินมาตรฐานไทย เพื่อความสะดวกในการอ่านและตอบของผู้เรียน พร้อมสูตรการแปลงคะแนน:</p>
+<p><span class="math display">\[\text{คะแนนแปลงข้อคี่} = X - 1 \quad (\text{สำหรับข้อ } 1, 3, 5, 7, 9)\]</span></p>
+<p><span class="math display">\[\text{คะแนนแปลงข้อคู่} = 5 - X \quad (\text{สำหรับข้อ } 2, 4, 6, 8, 10)\]</span></p>
+<p><span class="math display">\[\text{คะแนนรวม SUS (เต็ม 100 คะแนน)} = \left( \sum_{i=1}^{10} \text{คะแนนแปลง}_i \right) \times 2.5\]</span></p>
+<ul>
+<li><strong>เกณฑ์การแปลผล:</strong> คะแนน <span class="math inline">\(&gt; 68\)</span> ถือว่าผ่านเกณฑ์ค่าเฉลี่ยมาตรฐาน (Above Average) และคะแนน <span class="math inline">\(&gt; 80.3\)</span> ถือว่าอยู่ในเกณฑ์ดีเยี่ยม (Grade A / Excellent)</li>
+</ul>
+</section>
+<section id="ตอนท-4-ขอเสนอแนะและความคดเหนเพมเตม-qualitative-feedback" class="level3">
+<h3 class="anchored" data-anchor-id="ตอนท-4-ขอเสนอแนะและความคดเหนเพมเตม-qualitative-feedback">ตอนที่ 4: ข้อเสนอแนะและความคิดเห็นเพิ่มเติม (Qualitative Feedback)</h3>
+<ul>
+<li>คำถามปลายเปิดเกี่ยวกับฟังก์ชันที่ประทับใจที่สุด</li>
+<li>คำถามปลายเปิดเกี่ยวกับปัญหา อุปสรรค หรือข้อขัดข้องระหว่างใช้งาน</li>
+<li>ตัวเลือก Checkbox หัวข้อคณิตศาสตร์ที่ต้องการให้พัฒนาเพิ่มเติมในอนาคต (Integration by Parts, Partial Fractions, Trig Substitution, 3D Solids)</li>
+<li>ข้อเสนอแนะสำหรับการนำระบบไปประยุกต์ใช้ในการเรียนการสอนจริง</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="รายละเอยดทางเทคนคและการทำงานรวมกบระบบเวบ" class="level2">
+<h2 class="anchored" data-anchor-id="รายละเอยดทางเทคนคและการทำงานรวมกบระบบเวบ">5. รายละเอียดทางเทคนิคและการทำงานร่วมกับระบบเว็บ</h2>
+<section id="การทำงานอตโนมตผาน-browser-in-a-box-และ-google-apps-script" class="level3">
+<h3 class="anchored" data-anchor-id="การทำงานอตโนมตผาน-browser-in-a-box-และ-google-apps-script">5.1 การทำงานอัตโนมัติผ่าน Browser-in-a-Box และ Google Apps Script</h3>
+<p>ระบบใช้ประโยชน์จากเซสชันของ Chromium ที่ผู้ใช้งานล็อกอินไว้แล้ว โดยเชื่อมต่อผ่านโปรโตคอล Chrome DevTools (CDP) บนพอร์ต 9222:</p>
+<ol type="1">
+<li>นำทางเข้าสู่ <code>script.new</code> เพื่อเปิดสภาพแวดล้อม Google Apps Script ในบัญชี Google ของอาจารย์</li>
+<li>ฝังโค้ดสร้าง Form และ Sheet ผ่านการเข้าถึงโมเดลของ Monaco Editor โดยตรง (<code>monaco.editor.getModels()[0].setValue(...)</code>)</li>
+<li>ดักจับและยืนยันสิทธิ์ OAuth Consent ของ Google Apps Script สำหรับการเข้าถึง <code>FormApp</code> และ <code>SpreadsheetApp</code> อัตโนมัติ</li>
+<li>เมื่อสั่งประมวลผล สคริปต์จะสร้าง Google Form ขึ้นพร้อมผูก <code>Destination</code> เข้ากับ Google Sheets ที่สร้างขึ้นใหม่ทันที ทำให้ฐานข้อมูลเชื่อมต่อกันแบบไร้รอยต่อ</li>
+</ol>
+</section>
+<section id="การผสานเขากบ-streamlit-application" class="level3">
+<h3 class="anchored" data-anchor-id="การผสานเขากบ-streamlit-application">5.2 การผสานเข้ากับ Streamlit Application</h3>
+<ol type="1">
+<li><strong>ไฟล์ <code>pages/survey.py</code>:</strong> ออกแบบแบ่งเป็น 2 คอลัมน์ ด้านซ้ายแสดงภาพ QR Code ความละเอียดสูงสำหรับผู้เรียนที่ใช้โทรศัพท์มือถือ ด้านขวาแสดงปุ่มกดเปิดลิงก์สำหรับผู้ใช้งานบนเบราว์เซอร์คอมพิวเตอร์</li>
+<li><strong>ไฟล์ <code>app.py</code>:</strong> เพิ่มการลงทะเบียนหน้า <code>survey_page</code> ภายใต้หมวด <em>“เครื่องมือและการประเมิน”</em> ใน <code>st.navigation</code></li>
+<li><strong>การทดสอบความถูกต้อง (Test Suite):</strong> รันคำสั่ง <code>.venv/bin/pytest</code> พบว่าชุดทดสอบโมดูลคำนวณทั้งหมด 49 ข้อสอบผ่านครบถ้วน</li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="สรปทรพยากรระบบและลงกสำหรบการใชงานจรง" class="level2">
+<h2 class="anchored" data-anchor-id="สรปทรพยากรระบบและลงกสำหรบการใชงานจรง">6. สรุปทรัพยากรระบบและลิงก์สำหรับการใช้งานจริง</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">รายการทรัพยากร</th>
+<th style="text-align: left;">รายละเอียดและตำแหน่งที่จัดเก็บ / ลิงก์เข้าใช้งาน</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Google Forms (สำหรับผู้ตอบ)</strong></td>
+<td style="text-align: left;"><a href="https://docs.google.com/forms/d/e/1FAIpQLSeKgS8Wl1phirB6tJuJMNM4SP8y_4k6v5xSQy_NkkM57Nxvzg/viewform">https://docs.google.com/forms/d/e/1FAIpQLSeKgS8Wl1phirB6tJuJMNM4SP8y_4k6v5xSQy_NkkM57Nxvzg/viewform</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Google Forms (สำหรับแก้ไข)</strong></td>
+<td style="text-align: left;"><a href="https://docs.google.com/forms/d/13bADhtdQR0SPYni30CUR7ULo15YSdFkUB0bjZQK2Jtw/edit">https://docs.google.com/forms/d/13bADhtdQR0SPYni30CUR7ULo15YSdFkUB0bjZQK2Jtw/edit</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Google Sheets (ตารางคำตอบสด)</strong></td>
+<td style="text-align: left;"><a href="https://docs.google.com/spreadsheets/d/1fDt3J0SCNpEPPlcIpR7BifMVurqZ7sLqnwZFrTqv1b4/edit">https://docs.google.com/spreadsheets/d/1fDt3J0SCNpEPPlcIpR7BifMVurqZ7sLqnwZFrTqv1b4/edit</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>ไฟล์ภาพ QR Code (ความละเอียดสูง)</strong></td>
+<td style="text-align: left;"><code>docs/calculus-survey-qr.png</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>ไฟล์แบบสอบถามฉบับทางการ (PDF)</strong></td>
+<td style="text-align: left;"><code>docs/calculus-app-satisfaction-survey.pdf</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>ไฟล์ซอร์สโค้ดแบบสอบถาม (QMD)</strong></td>
+<td style="text-align: left;"><code>docs/calculus-app-satisfaction-survey.qmd</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>หน้าเว็บแบบประเมินในแอป</strong></td>
+<td style="text-align: left;"><code>pages/survey.py</code> (เรียกใช้งานผ่านเมนูนำทางใน <code>app.py</code>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>เอกสารสถาปัตยกรรมและแผนงาน (QMD)</strong></td>
+<td style="text-align: left;"><code>docs/survey-system-architecture-and-workflow.qmd</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>เอกสารสถาปัตยกรรมและแผนงาน (PDF)</strong></td>
+<td style="text-align: left;"><code>docs/survey-system-architecture-and-workflow.pdf</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>เอกสารสถาปัตยกรรมและแผนงาน (HTML)</strong></td>
+<td style="text-align: left;"><code>docs/survey-system-architecture-and-workflow.html</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

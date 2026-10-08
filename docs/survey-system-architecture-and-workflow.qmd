@@ -1,0 +1,190 @@
+---
+title: "สถาปัตยกรรมและแผนการดำเนินงานระบบแบบสอบถามประเมินความพึงพอใจ"
+subtitle: "โครงการเว็บแอปพลิเคชันช่วยสอนแคลคูลัส เรื่อง การอินทิเกรต (Calculus Tutor: Integration Application)"
+author: "ทีมพัฒนาภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล คณะศิลปศาสตร์และวิทยาศาสตร์ มหาวิทยาลัยเกษตรศาสตร์"
+date: "2026-10-02"
+lang: th
+format:
+  pdf:
+    pdf-engine: xelatex
+    keep-tex: true
+    papersize: a4
+    fontsize: 11pt
+    geometry:
+      - top=2.2cm
+      - left=2.2cm
+      - right=2.2cm
+      - bottom=2.2cm
+    include-in-header:
+      - text: |
+          \usepackage{fontspec}
+          \usepackage{xunicode}
+          \usepackage{xltxtra}
+          \usepackage{xcolor}
+          \usepackage{amsmath,amssymb}
+          \usepackage{array}
+          \usepackage{longtable}
+          \usepackage{booktabs}
+          \usepackage{enumitem}
+          \usepackage{fancyhdr}
+          \usepackage{lastpage}
+
+          \XeTeXlinebreaklocale "th"
+          \XeTeXlinebreakskip = 0pt plus 2pt minus 1pt
+
+          \setmainfont{TH SarabunPSK}[
+            Script=Thai,
+            Scale=MatchLowercase,
+            WordSpace=1.18,
+            Mapping=tex-text
+          ]
+          \linespread{1.18}
+          \renewcommand{\arraystretch}{1.2}
+
+          \setkomafont{disposition}{\rmfamily\bfseries}
+          \setkomafont{title}{\rmfamily\bfseries}
+          \setkomafont{subtitle}{\rmfamily}
+          \setkomafont{author}{\rmfamily}
+
+          \pagestyle{fancy}
+          \fancyhf{}
+          \fancyhead[L]{\textcolor{gray}{\small รายงานสถาปัตยกรรมระบบแบบสอบถาม (Calculus Tutor: Integration)}}
+          \fancyhead[R]{\textcolor{gray}{\small มหาวิทยาลัยเกษตรศาสตร์}}
+          \fancyfoot[C]{\small หน้า \thepage\ จาก \pageref{LastPage}}
+          \renewcommand{\headrulewidth}{0.4pt}
+          \renewcommand{\headrule}{\hbox to\headwidth{\color{lightgray}\leaders\hrule height \headrulewidth\hfill}}
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    theme: cosmo
+---
+
+## 1. บทนำและวัตถุประสงค์ของระบบแบบสอบถาม
+
+เอกสารฉบับนี้จัดทำขึ้นเพื่อบันทึกสถาปัตยกรรม การออกแบบเนื้อหา แผนการดำเนินงาน และกระบวนการทำงานอัตโนมัติในการสร้างระบบแบบสอบถามประเมินความพึงพอใจและประสิทธิภาพการใช้งานสำหรับโครงการ **Calculus Tutor: Integration Application** ซึ่งพัฒนาขึ้นโดยภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล คณะศิลปศาสตร์และวิทยาศาสตร์ มหาวิทยาลัยเกษตรศาสตร์
+
+### 1.1 วัตถุประสงค์การประเมิน
+1. **ประเมินความพึงพอใจของผู้เรียน (User Satisfaction):** วัดการรับรู้ในด้านความสวยงาม ความเป็นระเบียบ และความสะดวกในการใช้งานส่วนประสานงานผู้ใช้ (User Interface & Usability)
+2. **ประเมินประสิทธิภาพของระบบเชิงโต้ตอบ (Interactive Functionality):** ตรวจสอบความถูกต้องและความน่าเชื่อถือของโมดูลคำนวณสัญลักษณ์ด้วย SymPy และกราฟิกจำลองพลวัต
+3. **ประเมินคุณค่าเชิงการสอนและมโนทัศน์ (Pedagogical Content & Intuition):** ตรวจสอบว่าระบบสามารถแปลงแนวคิดนามธรรมของการอินทิเกรต เช่น ผลบวกรีมันน์ (Riemann Sum) และปริมาตรการหมุน ให้กลายเป็นมโนทัศน์เชิงเรขาคณิตที่เข้าใจง่ายได้จริงหรือไม่
+4. **วัดระดับความสามารถในการใช้งานตามมาตรฐานสากล (System Usability Scale: SUS):** ให้ได้ค่าดัชนีคะแนนมาตรฐาน (คะแนนเต็ม 100) ที่ได้รับการยอมรับในระดับงานวิจัยทางวิชาการ
+
+### 1.2 นโยบายกลุ่มเป้าหมายและความเป็นส่วนตัว (Target Group & Privacy)
+- **กลุ่มเป้าหมายหลัก:** นักเรียนระดับมัธยมศึกษาตอนปลายและนิสิตนักศึกษาระดับปริญญาตรี โดยเฉพาะกลุ่มผู้เรียนในพื้นที่จังหวัดนครราชสีมา (มหาวิทยาลัยเทคโนโลยีสุรนารี, มหาวิทยาลัยราชภัฏนครราชสีมา, มหาวิทยาลัยเทคโนโลยีราชมงคลอีสาน, โรงเรียนมัธยมศึกษาในจังหวัดนครราชสีมา) ร่วมกับนิสิตมหาวิทยาลัยเกษตรศาสตร์
+- **การจำแนกประสบการณ์เดิม:** แบ่งกลุ่มผู้ตอบตามประสบการณ์ในวิชาแคลคูลัส ทั้งกลุ่มที่กำลังศึกษา, กลุ่มที่เคยสอบผ่านแล้วต้องการทบทวน, และกลุ่มที่ยังไม่เคยเรียน เพื่อวิเคราะห์ความแตกต่างทางสถิติ
+- **นโยบายความเป็นนิรนาม (Anonymous Submission):** ระบบตั้งค่าไม่จัดเก็บอีเมลของผู้ตอบ (Not shared) เพื่อลดอคติในการตอบ (Social Desirability Bias) โดยเปิดให้ระบุ "รหัสประจำตัวผู้เข้าร่วม (Participant ID)" แบบไม่บังคับ (Optional) สำหรับกรณีที่ต้องการจับคู่ผลการประเมินกับคะแนนแบบทดสอบก่อนเรียนและหลังเรียน (Pre-test / Post-test)
+
+---
+
+## 2. แผนการดำเนินงานตามหลักวิศวกรรมซอฟต์แวร์ (Ask-Matt Flow)
+
+การดำเนินงานยึดตามกระบวนการของ Matt Pocock (Main Flow: Idea $\to$ Ship) โดยวางแผน แบ่งงาน จัดการ ตรวจสอบ และแก้ไขอย่างเป็นระบบ ดังนี้
+
+```
+[Grilling & Scoping] --> [Phase 1: Content Freeze] --> [Phase 2: Browser Integration]
+                                                                  |
+[Phase 4: Verification & Web Sync] <-- [Phase 3: Form & Sheet Automation]
+```
+
+1. **การสัมภาษณ์เจาะจงความต้องการ (Grilling & Scoping):** ซักถามประเด็นสำคัญทีละข้อเพื่อล็อกขอบเขต โดยสรุปแนวทางการจัดเก็บข้อมูลแบบ Anonymous ที่มี Optional ID
+2. **Phase 1: ล็อกเนื้อหาและประเภทคำถาม (Content Freeze & Field Typing):** ยกร่างเนื้อหาแบบสอบถาม 4 ตอนในรูปแบบเอกสารวิชาการ Quarto (`docs/calculus-app-satisfaction-survey.qmd`) และคอมไพล์เป็น PDF 4 หน้า จัดระเบียบข้อคำถามตามโครงสร้างที่ตรวจจับความเข้าใจผิด (Misconceptions)
+3. **Phase 2: การเชื่อมต่อสภาพแวดล้อม Chromium (`browser-box`):** ตรวจสอบและเชื่อมต่อเข้ากับเบราว์เซอร์ Chromium หลักของผู้ใช้งานผ่านพอร์ต CDP 9222 โดยไม่สร้างหน้าต่างซ้อนทับ เพื่อใช้งานเซสชัน Google Account ที่ล็อกอินค้างไว้
+4. **Phase 3: การสร้าง Form และ Sheet อัตโนมัติ (Full Automation via Apps Script):** ควบคุม Chromium เปิด Google Apps Script ฝังโค้ด JavaScript ลงใน Monaco Editor เพื่อสั่งสร้าง Google Form และ Google Sheet ที่ผูกกันแบบเรียลไทม์ พร้อมดึง Responder URL และสร้างภาพ QR Code ความละเอียดสูง
+5. **Phase 4: การตรวจสอบคุณภาพและการผสานรวมระบบ (Verification & Integration):** ตรวจสอบความถูกต้องของ QR Code ด้วยไลบรารี `pyzbar` เพิ่มหน้า `pages/survey.py` และผูกเข้าสู่เมนู `st.navigation` ใน `app.py` พร้อมรันชุดทดสอบ PyTest ผ่านครบ 49 ข้อ (100% Green)
+
+---
+
+## 3. แผนภาพกระบวนการทำงานของระบบแบบสอบถาม (System Workflow)
+
+กระบวนการไหลของข้อมูลตั้งแต่ผู้เรียนเข้าใช้งาน จนถึงการประมวลผลทางสถิติแสดงได้ดังแผนภาพต่อไปนี้
+
+```{mermaid}
+%%| fig-width: 5.5
+%%| fig-height: 4.2
+%%| fig-align: center
+flowchart TD
+    A["ผู้เรียนเข้าใช้งาน Calculus Tutor App"] --> B{"เลือกช่องทาง"}
+    B -->|PC เบราว์เซอร์| C["คลิกเปิด Google Forms ในแอป"]
+    B -->|สมาร์ตโฟน| D["สแกน QR Code บนหน้าจอ"]
+    C --> E["Google Forms: ตอบแบบสอบถาม 4 ตอน"]
+    D --> E
+    E --> F[("Google Sheets: จัดเก็บคำตอบสด Real-time")]
+    F --> G["ประมวลผลดัชนี SUS และสถิติภาพรวม 4 ด้าน"]
+```
+
+---
+
+## 4. โครงสร้างรายละเอียดข้อคำถามในแบบประเมิน
+
+แบบประเมินแบ่งออกเป็น 4 ตอน มีรายละเอียดโครงสร้างทางสถิติและประเภทฟิลด์ข้อมูลดังนี้
+
+### ตอนที่ 1: ข้อมูลทั่วไปและภูมิหลังทางการศึกษา (General Demographics)
+- **รหัสประจำตัวผู้เข้าร่วม (Participant ID):** ข้อความสั้น (Short Text - Optional) สำหรับการวิเคราะห์ผลสัมฤทธิ์
+- **ระดับการศึกษาปัจจุบัน (Education Level):** ปรนัย (Multiple Choice) ครอบคลุม ม.ปลาย, ปริญญาตรี ปี 1-2, ปริญญาตรี ปี 3-4, บัณฑิตศึกษา
+- **สถาบันการศึกษา (Institution):** รายการเลื่อนลง (Dropdown) ครอบคลุมฐานข้อมูลสถาบันอุดมศึกษามาตรฐาน อว. 95 แห่งทั่วประเทศ โดยตรึงมหาวิทยาลัยเกษตรศาสตร์ (แยกตามวิทยาเขต กำแพงแสน/บางเขน/ศรีราชา/สกลนคร) ไว้บนสุด ตามด้วยมหาวิทยาลัยรัฐในกำกับ, มหาวิทยาลัยราชภัฏ (38 แห่ง), มหาวิทยาลัยเทคโนโลยีราชมงคล (9 แห่ง), สถาบันอุดมศึกษาเอกชนชั้นนำ, และกลุ่มโรงเรียนมัธยมศึกษา เพื่อให้ข้อมูลสะอาด จัดกลุ่มง่าย และรองรับการสืบค้นแบบ Auto-complete
+- **กลุ่มสาขาวิชา (Academic Field):** ปรนัย ครอบคลุมวิศวกรรมศาสตร์, วิทยาการคอมพิวเตอร์, วิทยาศาสตร์/คณิตศาสตร์, ครุศาสตร์, บริหารธุรกิจ
+- **ประสบการณ์ในวิชาแคลคูลัส (Calculus Background):** ปรนัย 4 กลุ่ม (ม.ปลาย, กำลังเรียน, เคยสอบผ่านแล้ว, ยังไม่เคยเรียน)
+- **เจตคติต่อวิชาก่อนใช้งาน (Prior Attitude Baseline):** ปรนัย 4 ระดับ เพื่อใช้วัดการเปลี่ยนแปลงของเจตคติ
+- **อุปกรณ์หลักในการทดสอบ (Device):** คอมพิวเตอร์, แท็บเล็ต, สมาร์ตโฟน
+- **โมดูลที่ได้ทดลองใช้งาน (Modules Tested):** กล่องเลือกหลายรายการ (Checkbox) ครอบคลุมทั้ง 6 โมดูลหลัก
+
+### ตอนที่ 2: การประเมินความพึงพอใจต่อคุณลักษณะของระบบ (5-Point Likert Scale Grid)
+ใช้ตารางกริดมาตรประมาณค่า 5 ระดับ (5 = มากที่สุด, 4 = มาก, 3 = ปานกลาง, 2 = น้อย, 1 = น้อยที่สุด) รวม 20 ข้อคำถาม:
+
+1. **ด้านการออกแบบส่วนประสานงานผู้ใช้และประสบการณ์ผู้ใช้ (UI/UX - 5 ข้อ):** การจัดวางองค์ประกอบ, ความสะดวกในการนำทาง, ขนาดฟอนต์และสมการ LaTeX, ความลื่นไหลในการตอบสนอง, ความสะดวกในการป้อนสมการ
+2. **ด้านฟังก์ชันเชิงโต้ตอบและการประมวลผลทางคณิตศาสตร์ (Interactive Functionality - 5 ข้อ):** กราฟจำลองพลวัตเรียลไทม์, ความแม่นยำของ SymPy, การเฉลยแบบมีเงื่อนไข (Scaffolding), การชี้แนะจุดที่มักเข้าใจผิด (Misconceptions), ระบบแบบทดสอบและคำอธิบายเฉลย
+3. **ด้านเนื้อหาและการส่งเสริมมโนทัศน์ทางคณิตศาสตร์ (Pedagogical Content - 5 ข้อ):** ความถูกต้องตามหลักสูตร, การแปลงนามธรรมสู่รูปธรรมเรขาคณิต, ความชัดเจนของภาษาไทย, การเชื่อมโยงพีชคณิตกับภาพ, เอกสารอ้างอิง
+4. **ด้านเจตคติและแรงจูงใจในการเรียนรู้ (Attitude & Motivation - 5 ข้อ):** ลดความกังวลต่อแคลคูลัส, กระตุ้นการเรียนรู้ด้วยตนเอง, ความมั่นใจในการทำโจทย์, ความต้องการทบทวนซ้ำ, ความยินดีที่จะแนะนำต่อ
+
+### ตอนที่ 3: แบบประเมินความสะดวกในการใช้งานตามมาตรฐานสากล (System Usability Scale: SUS)
+ข้อคำถามมาตรฐาน 10 ข้อ สลับข้อความเชิงบวก (ข้อคี่) และข้อความเชิงลบ (ข้อคู่) โดยจัดเรียงมาตรวัดคะแนนจากซ้ายไปขวา 5 (เห็นด้วยอย่างยิ่ง) ลงไปถึง 1 (ไม่เห็นด้วยอย่างยิ่ง) ตามแบบประเมินมาตรฐานไทย เพื่อความสะดวกในการอ่านและตอบของผู้เรียน พร้อมสูตรการแปลงคะแนน:
+
+$$\text{คะแนนแปลงข้อคี่} = X - 1 \quad (\text{สำหรับข้อ } 1, 3, 5, 7, 9)$$
+
+$$\text{คะแนนแปลงข้อคู่} = 5 - X \quad (\text{สำหรับข้อ } 2, 4, 6, 8, 10)$$
+
+$$\text{คะแนนรวม SUS (เต็ม 100 คะแนน)} = \left( \sum_{i=1}^{10} \text{คะแนนแปลง}_i \right) \times 2.5$$
+
+- **เกณฑ์การแปลผล:** คะแนน $> 68$ ถือว่าผ่านเกณฑ์ค่าเฉลี่ยมาตรฐาน (Above Average) และคะแนน $> 80.3$ ถือว่าอยู่ในเกณฑ์ดีเยี่ยม (Grade A / Excellent)
+
+### ตอนที่ 4: ข้อเสนอแนะและความคิดเห็นเพิ่มเติม (Qualitative Feedback)
+- คำถามปลายเปิดเกี่ยวกับฟังก์ชันที่ประทับใจที่สุด
+- คำถามปลายเปิดเกี่ยวกับปัญหา อุปสรรค หรือข้อขัดข้องระหว่างใช้งาน
+- ตัวเลือก Checkbox หัวข้อคณิตศาสตร์ที่ต้องการให้พัฒนาเพิ่มเติมในอนาคต (Integration by Parts, Partial Fractions, Trig Substitution, 3D Solids)
+- ข้อเสนอแนะสำหรับการนำระบบไปประยุกต์ใช้ในการเรียนการสอนจริง
+
+---
+
+## 5. รายละเอียดทางเทคนิคและการทำงานร่วมกับระบบเว็บ
+
+### 5.1 การทำงานอัตโนมัติผ่าน Browser-in-a-Box และ Google Apps Script
+ระบบใช้ประโยชน์จากเซสชันของ Chromium ที่ผู้ใช้งานล็อกอินไว้แล้ว โดยเชื่อมต่อผ่านโปรโตคอล Chrome DevTools (CDP) บนพอร์ต 9222:
+
+1. นำทางเข้าสู่ `script.new` เพื่อเปิดสภาพแวดล้อม Google Apps Script ในบัญชี Google ของอาจารย์
+2. ฝังโค้ดสร้าง Form และ Sheet ผ่านการเข้าถึงโมเดลของ Monaco Editor โดยตรง (`monaco.editor.getModels()[0].setValue(...)`)
+3. ดักจับและยืนยันสิทธิ์ OAuth Consent ของ Google Apps Script สำหรับการเข้าถึง `FormApp` และ `SpreadsheetApp` อัตโนมัติ
+4. เมื่อสั่งประมวลผล สคริปต์จะสร้าง Google Form ขึ้นพร้อมผูก `Destination` เข้ากับ Google Sheets ที่สร้างขึ้นใหม่ทันที ทำให้ฐานข้อมูลเชื่อมต่อกันแบบไร้รอยต่อ
+
+### 5.2 การผสานเข้ากับ Streamlit Application
+
+1. **ไฟล์ `pages/survey.py`:** ออกแบบแบ่งเป็น 2 คอลัมน์ ด้านซ้ายแสดงภาพ QR Code ความละเอียดสูงสำหรับผู้เรียนที่ใช้โทรศัพท์มือถือ ด้านขวาแสดงปุ่มกดเปิดลิงก์สำหรับผู้ใช้งานบนเบราว์เซอร์คอมพิวเตอร์
+2. **ไฟล์ `app.py`:** เพิ่มการลงทะเบียนหน้า `survey_page` ภายใต้หมวด *"เครื่องมือและการประเมิน"* ใน `st.navigation`
+3. **การทดสอบความถูกต้อง (Test Suite):** รันคำสั่ง `.venv/bin/pytest` พบว่าชุดทดสอบโมดูลคำนวณทั้งหมด 49 ข้อสอบผ่านครบถ้วน
+
+---
+
+## 6. สรุปทรัพยากรระบบและลิงก์สำหรับการใช้งานจริง
+
+| รายการทรัพยากร | รายละเอียดและตำแหน่งที่จัดเก็บ / ลิงก์เข้าใช้งาน |
+|:---|:---|
+| **Google Forms (สำหรับผู้ตอบ)** | [https://docs.google.com/forms/d/e/1FAIpQLSeKgS8Wl1phirB6tJuJMNM4SP8y_4k6v5xSQy_NkkM57Nxvzg/viewform](https://docs.google.com/forms/d/e/1FAIpQLSeKgS8Wl1phirB6tJuJMNM4SP8y_4k6v5xSQy_NkkM57Nxvzg/viewform) |
+| **Google Forms (สำหรับแก้ไข)** | [https://docs.google.com/forms/d/13bADhtdQR0SPYni30CUR7ULo15YSdFkUB0bjZQK2Jtw/edit](https://docs.google.com/forms/d/13bADhtdQR0SPYni30CUR7ULo15YSdFkUB0bjZQK2Jtw/edit) |
+| **Google Sheets (ตารางคำตอบสด)** | [https://docs.google.com/spreadsheets/d/1fDt3J0SCNpEPPlcIpR7BifMVurqZ7sLqnwZFrTqv1b4/edit](https://docs.google.com/spreadsheets/d/1fDt3J0SCNpEPPlcIpR7BifMVurqZ7sLqnwZFrTqv1b4/edit) |
+| **ไฟล์ภาพ QR Code (ความละเอียดสูง)** | `docs/calculus-survey-qr.png` |
+| **ไฟล์แบบสอบถามฉบับทางการ (PDF)** | `docs/calculus-app-satisfaction-survey.pdf` |
+| **ไฟล์ซอร์สโค้ดแบบสอบถาม (QMD)** | `docs/calculus-app-satisfaction-survey.qmd` |
+| **หน้าเว็บแบบประเมินในแอป** | `pages/survey.py` (เรียกใช้งานผ่านเมนูนำทางใน `app.py`) |
+| **เอกสารสถาปัตยกรรมและแผนงาน (QMD)** | `docs/survey-system-architecture-and-workflow.qmd` |
+| **เอกสารสถาปัตยกรรมและแผนงาน (PDF)** | `docs/survey-system-architecture-and-workflow.pdf` |
+| **เอกสารสถาปัตยกรรมและแผนงาน (HTML)** | `docs/survey-system-architecture-and-workflow.html` |
