@@ -40,38 +40,65 @@ with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
 st.divider()
 st.markdown("### ลองสำรวจการลู่เข้าของลิมิต")
 
+def _set_target_point(val: str) -> None:
+    st.session_state["limit_a_str"] = val
+
+
+def _set_limit_preset(expr_val: str, a_val: str) -> None:
+    st.session_state["limit_expr"] = expr_val
+    st.session_state["limit_a_str"] = a_val
+
+
 st.caption("ตัวอย่างโจทย์ยอดนิยม (ครอบคลุมรูปแบบไม่กำหนด, ตรีโกณมิติ, และลิมิตที่อนันต์):")
 col_pre1, col_pre2, col_pre3, col_pre4, col_pre5, col_pre6 = st.columns(6)
 with col_pre1:
-    if st.button("(x^2 - 4)/(x - 2) → 2", key="btn_lim_1", use_container_width=True):
-        st.session_state["limit_expr"] = "(x**2 - 4)/(x - 2)"
-        st.session_state["limit_a_str"] = "2"
-        st.rerun()
+    st.button(
+        "(x^2 - 4)/(x - 2) → 2",
+        key="btn_lim_1",
+        use_container_width=True,
+        on_click=_set_limit_preset,
+        args=("(x**2 - 4)/(x - 2)", "2"),
+    )
 with col_pre2:
-    if st.button("sin(x)/x → 0", key="btn_lim_2", use_container_width=True):
-        st.session_state["limit_expr"] = "sin(x)/x"
-        st.session_state["limit_a_str"] = "0"
-        st.rerun()
+    st.button(
+        "sin(x)/x → 0",
+        key="btn_lim_2",
+        use_container_width=True,
+        on_click=_set_limit_preset,
+        args=("sin(x)/x", "0"),
+    )
 with col_pre3:
-    if st.button("tan(x) → π/2", key="btn_lim_3", use_container_width=True):
-        st.session_state["limit_expr"] = "tan(x)"
-        st.session_state["limit_a_str"] = "pi/2"
-        st.rerun()
+    st.button(
+        "tan(x) → π/2",
+        key="btn_lim_3",
+        use_container_width=True,
+        on_click=_set_limit_preset,
+        args=("tan(x)", "pi/2"),
+    )
 with col_pre4:
-    if st.button("(1 + 1/x)^x → ∞", key="btn_lim_4", use_container_width=True):
-        st.session_state["limit_expr"] = "(1 + 1/x)**x"
-        st.session_state["limit_a_str"] = "inf"
-        st.rerun()
+    st.button(
+        "(1 + 1/x)^x → ∞",
+        key="btn_lim_4",
+        use_container_width=True,
+        on_click=_set_limit_preset,
+        args=("(1 + 1/x)**x", "inf"),
+    )
 with col_pre5:
-    if st.button("(2x²+1)/(3x²-5) → ∞", key="btn_lim_5", use_container_width=True):
-        st.session_state["limit_expr"] = "(2*x**2 + 1)/(3*x**2 - 5)"
-        st.session_state["limit_a_str"] = "inf"
-        st.rerun()
+    st.button(
+        "(2x²+1)/(3x²-5) → ∞",
+        key="btn_lim_5",
+        use_container_width=True,
+        on_click=_set_limit_preset,
+        args=("(2*x**2 + 1)/(3*x**2 - 5)", "inf"),
+    )
 with col_pre6:
-    if st.button("abs(x)/x → 0", key="btn_lim_6", use_container_width=True):
-        st.session_state["limit_expr"] = "abs(x)/x"
-        st.session_state["limit_a_str"] = "0"
-        st.rerun()
+    st.button(
+        "abs(x)/x → 0",
+        key="btn_lim_6",
+        use_container_width=True,
+        on_click=_set_limit_preset,
+        args=("abs(x)/x", "0"),
+    )
 
 col_f, col_a, col_d = st.columns([2, 1, 1])
 with col_f:
@@ -91,7 +118,7 @@ with col_a:
         placeholder="เช่น 2, 0, pi/2, e, inf, -inf",
         key="limit_a_str",
     )
-    st.caption("ชิปจุดลัด:")
+    st.caption("จุดยอดนิยม:")
     c_pts = st.columns(8)
     pt_chips = [
         ("0", "0"),
@@ -105,9 +132,13 @@ with col_a:
     ]
     for idx, (p_lbl, p_val) in enumerate(pt_chips):
         with c_pts[idx]:
-            if st.button(p_lbl, key=f"chip_a_{idx}", use_container_width=True):
-                st.session_state["limit_a_str"] = p_val
-                st.rerun()
+            st.button(
+                p_lbl,
+                key=f"chip_a_{idx}",
+                use_container_width=True,
+                on_click=_set_target_point,
+                args=(p_val,),
+            )
 
 with col_d:
     s_a_clean = str(a_input).strip().lower().replace(" ", "")
