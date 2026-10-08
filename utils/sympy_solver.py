@@ -242,6 +242,25 @@ def _classify_limit(left: sp.Expr, right: sp.Expr) -> str:
     return "unsupported"
 
 
+def _format_point_str(pt: float | int) -> str:
+    f_pt = float(pt)
+    if abs(f_pt - round(f_pt)) < 1e-6:
+        return str(int(round(f_pt)))
+    return f"{f_pt:g}"
+
+
+def _format_samples(pt: float | int) -> tuple[str, str]:
+    f_pt = float(pt)
+    if abs(f_pt - round(f_pt)) < 1e-6:
+        a_int = int(round(f_pt))
+        s_left = f"{a_int - 0.1:g}, {a_int - 0.01:g}, {a_int - 0.001:g}"
+        s_right = f"{a_int + 0.1:g}, {a_int + 0.01:g}, {a_int + 0.001:g}"
+    else:
+        s_left = f"{f_pt - 0.1:g}, {f_pt - 0.01:g}, {f_pt - 0.001:g}"
+        s_right = f"{f_pt + 0.1:g}, {f_pt + 0.01:g}, {f_pt + 0.001:g}"
+    return s_left, s_right
+
+
 def compute_limit(expr_str: str, point: float | int = 0) -> dict[str, Any]:
     x = sp.Symbol("x")
     try:
@@ -254,63 +273,68 @@ def compute_limit(expr_str: str, point: float | int = 0) -> dict[str, Any]:
             left, right = None, None
             status = "unsupported"
 
+        pt_str = _format_point_str(point)
+        s_left_ex, s_right_ex = _format_samples(point)
+
         steps = [
-            f"กำหนดโจทย์ลิมิตที่ต้องการหา: \\lim_{{x \\to {point}}} \\left({sp.latex(expr)}\\right)"
+            f"กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชันเมื่อตัวแปร $x$ ขยับเข้าใกล้จุด $x = {pt_str}$ (โดยที่ $x \\neq {pt_str}$)\n\\lim_{{x \\to {pt_str}}} \\left({sp.latex(expr)}\\right)"
         ]
 
         if status == "finite":
             result = sp.limit(expr, x, point)
-            latex_str = f"\\lim_{{x \\to {point}}} \\left({sp.latex(expr)}\\right) = {sp.latex(result)}"
+            res_latex = sp.latex(result)
+            latex_str = f"\\lim_{{x \\to {pt_str}}} \\left({sp.latex(expr)}\\right) = {res_latex}"
 
             try:
                 direct_val = expr.subs(x, point)
                 if direct_val.is_number and direct_val.is_finite:
                     steps.append(
-                        f"ทดสอบแทนค่าโดยตรง (Direct Substitution): f({point}) = {sp.latex(direct_val)}"
+                        f"ทดสอบแทนค่าโดยตรง (Direct Substitution): ฟังก์ชันต่อเนื่องที่จุดนี้ สามารถแทนค่าได้ทันที\nf({pt_str}) = {sp.latex(direct_val)}"
                     )
                 else:
                     steps.append(
-                        f"พิจารณาลิมิตทางซ้าย (Left-hand limit): \\lim_{{x \\to {point}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
+                        f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ $x \\to {pt_str}^-$ หมายถึงให้ค่า $x$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้ายของเส้นจำนวน (ค่าน้อยกว่า {pt_str} เสมอ หรือ $x < {pt_str}$ เช่น $x = {s_left_ex} \\dots$)\nเมื่อ $x$ วิ่งเฉียดเข้าหา {pt_str} ทางซ้าย ค่าของฟังก์ชันมีแนวโน้มลู่เข้าหา {sp.latex(left)}\n\\lim_{{x \\to {pt_str}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
                     )
                     steps.append(
-                        f"พิจารณาลิมิตทางขวา (Right-hand limit): \\lim_{{x \\to {point}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
+                        f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ $x \\to {pt_str}^+$ หมายถึงให้ค่า $x$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งขวาบนเส้นจำนวน (ค่ามากกว่า {pt_str} เสมอ หรือ $x > {pt_str}$ เช่น $x = {s_right_ex} \\dots$)\nเมื่อ $x$ วิ่งเฉียดเข้าหา {pt_str} ทางขวา ค่าของฟังก์ชันมีแนวโน้มลู่เข้าหา {sp.latex(right)}\n\\lim_{{x \\to {pt_str}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
                     )
             except Exception:
                 steps.append(
-                    f"พิจารณาลิมิตทางซ้าย (Left-hand limit): \\lim_{{x \\to {point}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
+                    f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ $x \\to {pt_str}^-$ หมายถึงให้ค่า $x$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้ายของเส้นจำนวน (ค่าน้อยกว่า {pt_str} เสมอ หรือ $x < {pt_str}$ เช่น $x = {s_left_ex} \\dots$)\n\\lim_{{x \\to {pt_str}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
                 )
                 steps.append(
-                    f"พิจารณาลิมิตทางขวา (Right-hand limit): \\lim_{{x \\to {point}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
+                    f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ $x \\to {pt_str}^+$ หมายถึงให้ค่า $x$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งขวาบนเส้นจำนวน (ค่ามากกว่า {pt_str} เสมอ หรือ $x > {pt_str}$ เช่น $x = {s_right_ex} \\dots$)\n\\lim_{{x \\to {pt_str}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
                 )
 
             steps.append(
-                f"สรุปค่าลิมิตสองด้าน: \\lim_{{x \\to {point}}} \\left({sp.latex(expr)}\\right) = {sp.latex(result)}"
+                f"สรุปค่าลิมิตสองด้าน: กฎพื้นฐานคือ ลิมิตสองด้านจะมีค่าได้ก็ต่อเมื่อ ลิมิตซ้ายและขวาต้องมุ่งสู่จำนวนจริงเดียวกัน\nเนื่องจากเส้นกราฟจากทั้งสองฝั่งวิ่งมาบรรจบกันที่ระดับความสูงเดียวกัน (${res_latex}$)\n\\lim_{{x \\to {pt_str}^-}} f(x) = \\lim_{{x \\to {pt_str}^+}} f(x) = {res_latex} \\implies \\lim_{{x \\to {pt_str}}} \\left({sp.latex(expr)}\\right) = {res_latex}"
             )
 
         elif status == "infinite":
             result = left
-            latex_str = f"\\lim_{{x \\to {point}}} \\left({sp.latex(expr)}\\right) = {sp.latex(result)}"
+            res_latex = sp.latex(result)
+            latex_str = f"\\lim_{{x \\to {pt_str}}} \\left({sp.latex(expr)}\\right) = {res_latex}"
             steps.append(
-                f"พิจารณาลิมิตทางซ้าย: \\lim_{{x \\to {point}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
+                f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ $x \\to {pt_str}^-$ หมายถึงให้ค่า $x$ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้าย ($x < {pt_str}$ เช่น $x = {s_left_ex} \\dots$)\n\\lim_{{x \\to {pt_str}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
             )
             steps.append(
-                f"พิจารณาลิมิตทางขวา: \\lim_{{x \\to {point}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
+                f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ $x \\to {pt_str}^+$ หมายถึงให้ค่า $x$ ขยับเข้าใกล้ {pt_str} จากฝั่งขวา ($x > {pt_str}$ เช่น $x = {s_right_ex} \\dots$)\n\\lim_{{x \\to {pt_str}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
             )
             steps.append(
-                f"ลิมิตทั้งสองข้างลู่ไปสู่อนันต์เดียวกัน: \\lim_{{x \\to {point}}} \\left({sp.latex(expr)}\\right) = {sp.latex(result)}"
+                f"สรุปผล (ลิมิตทั้งสองข้างลู่ไปสู่อนันต์เดียวกัน): ทั้งสองฝั่งลู่ไปสู่ค่าเดียวกันคือ ${res_latex}$ แต่เนื่องจากอนันต์ไม่ใช่จำนวนจริงจำกัด จึงถือว่าลิมิตลู่ออก\n\\lim_{{x \\to {pt_str}}} \\left({sp.latex(expr)}\\right) = {res_latex}"
             )
 
         elif status == "dne":
             result = None
-            latex_str = f"\\lim_{{x \\to {point}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
+            latex_str = f"\\lim_{{x \\to {pt_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
             steps.append(
-                f"พิจารณาลิมิตทางซ้าย (Left-hand limit): \\lim_{{x \\to {point}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
+                f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ $x \\to {pt_str}^-$ หมายถึงให้ค่า $x$ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้าย ($x < {pt_str}$ เช่น $x = {s_left_ex} \\dots$)\n\\lim_{{x \\to {pt_str}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
             )
             steps.append(
-                f"พิจารณาลิมิตทางขวา (Right-hand limit): \\lim_{{x \\to {point}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
+                f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ $x \\to {pt_str}^+$ หมายถึงให้ค่า $x$ ขยับเข้าใกล้ {pt_str} จากฝั่งขวา ($x > {pt_str}$ เช่น $x = {s_right_ex} \\dots$)\n\\lim_{{x \\to {pt_str}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
             )
             steps.append(
-                f"สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): \\lim_{{x \\to {point}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
+                f"สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): เส้นกราฟจากฝั่งซ้ายและฝั่งขวาแยกออกจากกันและไม่มาบรรจบกันที่จุดเดียวกัน\n\\lim_{{x \\to {pt_str}^-}} f(x) = {sp.latex(left)} \\neq \\lim_{{x \\to {pt_str}^+}} f(x) = {sp.latex(right)}\n\\lim_{{x \\to {pt_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
             )
 
         else:
