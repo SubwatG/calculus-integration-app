@@ -7,6 +7,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from utils.content_loader import list_lessons, load_lesson, NON_LESSONS, ARCHIVE_DIR
+from utils.math_render import format_math_spacing
 from utils.quiz_engine import grade_quiz
 
 lesson_root = ROOT/'data/lessons'
@@ -18,7 +19,7 @@ checks.append(dict(id='LIB-INVENTORY', passed=expected=={item['filename'] for it
 for index, item in enumerate(lessons, 1):
     checks.append(dict(id=f'LIB-{index:03d}', filename=item['filename'],
                        passed=bool(item['title'].strip()) and bool(item['text'].strip())
-                       and load_lesson(item['filename'])==item['text']))
+                       and load_lesson(item['filename'])==format_math_spacing(item['text'])))
 quiz_inventory = []
 for index, path in enumerate(sorted((ROOT/'data/quizzes').glob('*.json')), 1):
     questions = json.loads(path.read_text(encoding='utf-8'))

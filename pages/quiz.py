@@ -1,7 +1,7 @@
 import streamlit as st
 from utils.math_render import format_math_spacing
 from utils.quiz_engine import load_quiz
-from utils.theme import render_hero
+from utils.theme import inject_css, render_hero
 
 QUIZ_OPTIONS = {
     "[ทั้งหมด] ทำโจทย์ทั้งหมด (30 ข้อ)": "all",
@@ -9,6 +9,86 @@ QUIZ_OPTIONS = {
     "[รีมันน์] ผลบวกรีมันน์และการประมาณค่า (10 ข้อ)": "riemann",
     "[เทคนิค] เทคนิคการเปลี่ยนตัวแปร & By Parts (10 ข้อ)": "techniques",
 }
+
+TOPIC_LABELS = {
+    "all": "รวมทุกมโนทัศน์",
+    "basic_rules": "กฎพื้นฐานและทฤษฎีบท",
+    "riemann": "ผลบวกรีมันน์",
+    "techniques": "เทคนิคการเปลี่ยนตัวแปร & By Parts",
+}
+
+inject_css()
+
+# Custom Bauhaus styling for Quiz components
+st.markdown(
+    """
+    <style>
+    /* Radio options styled as tactile Bauhaus cards */
+    div[data-testid="stRadio"] div[role="radiogroup"]:not([aria-orientation="horizontal"]) {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        margin-top: 10px !important;
+        margin-bottom: 16px !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"]:not([aria-orientation="horizontal"]) > label {
+        background-color: #FFFFFF !important;
+        border: 2.5px solid #18181B !important;
+        border-radius: 14px !important;
+        box-shadow: 3.5px 3.5px 0px #18181B !important;
+        padding: 14px 18px !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+        transition: all 0.12s ease-out !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"]:not([aria-orientation="horizontal"]) > label:hover {
+        background-color: #FEF08A !important;
+        transform: translate(-1.5px, -1.5px) !important;
+        box-shadow: 5px 5px 0px #18181B !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"]:not([aria-orientation="horizontal"]) > label:has(input:checked) {
+        background-color: #FEF9C3 !important;
+        border: 2.5px solid #18181B !important;
+        box-shadow: 4px 4px 0px #18181B !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"]:not([aria-orientation="horizontal"]) > label p {
+        font-family: "Mali", "Outfit", sans-serif !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        line-height: 1.5 !important;
+        margin: 0 !important;
+        color: #18181B !important;
+    }
+    /* Horizontal radio badges for Topic Selector */
+    div[data-testid="stRadio"] div[role="radiogroup"][aria-orientation="horizontal"] {
+        gap: 10px !important;
+        flex-wrap: wrap !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"][aria-orientation="horizontal"] > label {
+        background-color: #FFFFFF !important;
+        border: 2px solid #18181B !important;
+        border-radius: 999px !important;
+        padding: 6px 16px !important;
+        box-shadow: 2px 2px 0px #18181B !important;
+        transition: all 0.12s ease-out !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"][aria-orientation="horizontal"] > label:hover {
+        background-color: #FEF08A !important;
+        transform: translate(-1px, -1px) !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"][aria-orientation="horizontal"] > label:has(input:checked) {
+        background-color: #BAE6FD !important;
+        font-weight: 700 !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำแนะนำและสะสมคะแนน")
 
@@ -83,6 +163,7 @@ if st.session_state.quiz_done:
     percentage = (final_score / total_q * 100) if total_q > 0 else 0
 
     st.markdown("### สรุปผลการทดสอบ")
+
     col_sc1, col_sc2 = st.columns(2)
     with col_sc1:
         st.metric("คะแนนสะสมของคุณ", f"{final_score} / {total_q}")
@@ -108,11 +189,12 @@ if st.session_state.quiz_done:
         status_symbol = "✓ ถูกต้อง" if is_correct else "✗ ยังไม่ถูก"
 
         with st.expander(f"ข้อ {idx + 1}: {status_symbol}", expanded=False):
-            st.markdown(f"**คำถาม:** {format_math_spacing(q['question'])}")
+            st.markdown(f"**คำถาม:**\n\n{format_math_spacing(q['question'])}")
             st.markdown(f"**คำตอบของคุณ:** {format_math_spacing(user_ans)}")
             st.markdown(f"**คำตอบที่ถูกต้อง:** {format_math_spacing(q['answer'])}")
-            st.markdown(f"**คำอธิบาย:** {format_math_spacing(q['explanation'])}")
+            st.info(f"**คำอธิบาย:**\n\n{format_math_spacing(q['explanation'])}")
 
+    st.write("")
     col_btn1, col_btn2 = st.columns(2)
     with col_btn1:
         if st.button("ทำแบบทดสอบอีกครั้ง", key="btn_quiz_restart", use_container_width=True):
@@ -138,17 +220,42 @@ else:
         revealed = st.session_state.quiz_revealed
         show_hint = st.session_state.quiz_show_hint
         current_choice = st.session_state.quiz_current_choice
+        topic_name = TOPIC_LABELS.get(QUIZ_TOPIC, "มโนทัศน์")
 
-        col_h1, col_h2 = st.columns([2, 1])
-        with col_h1:
-            st.markdown(f"### ข้อที่ {q_idx + 1} / {len(questions)}")
-        with col_h2:
-            st.markdown(f"**คะแนนสะสม:** {st.session_state.quiz_score}")
+        # Top Bauhaus Status Header
+        st.markdown(
+            f"""
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                <div style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span style="background-color: #FEF08A; border: 2px solid #18181B; border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: 14px; box-shadow: 2px 2px 0px #18181B;">
+                        ข้อที่ {q_idx + 1} / {len(questions)}
+                    </span>
+                    <span style="background-color: #E0E7FF; border: 2px solid #18181B; border-radius: 999px; padding: 4px 14px; font-weight: 600; font-size: 13px; box-shadow: 2px 2px 0px #18181B;">
+                        {topic_name}
+                    </span>
+                </div>
+                <div style="background-color: #BAE6FD; border: 2px solid #18181B; border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: 14px; box-shadow: 2px 2px 0px #18181B;">
+                    คะแนนสะสม: {st.session_state.quiz_score} คะแนน
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
         st.progress((q_idx + 1) / len(questions))
 
-        st.markdown(f"**คำถาม:**\n\n{format_math_spacing(q['question'])}")
-        st.divider()
+        # Question Bauhaus Card
+        with st.container(border=True):
+            st.markdown(
+                """
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                    <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #F43F5E; border: 1.5px solid #18181B;"></span>
+                    <span style="font-size: 13px; font-weight: 700; color: #4B5563;">โจทย์มโนทัศน์</span>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            st.markdown(f"**{format_math_spacing(q['question'])}**")
 
         correct_idx = q["choices"].index(q["answer"]) if q["answer"] in q["choices"] else 0
         correct_prefix = choice_prefixes[correct_idx]
@@ -158,7 +265,7 @@ else:
                 st.warning(
                     f"**[คำแนะนำ / แนวคิดสำหรับทดลอง]:**\n\n"
                     f"{format_math_spacing(q.get('hint', 'ลองพิจารณาสูตรและนิยามอีกครั้ง'))}\n\n"
-                    f"*สามารถสลับไปทดลองในเครื่องคำนวณหรือตัวจำลองกราฟในแอปเพื่อหาคำตอบได้*"
+                    f"*สามารถสลับไปทดลองในเครื่องคิดเลข SymPy หรือตัวจำลองกราฟในแอปเพื่อหาคำตอบได้*"
                 )
 
             selected_idx = st.radio(
@@ -211,7 +318,7 @@ else:
 
         else:
             if current_choice == q["answer"]:
-                st.success("✓ **ถูกต้อง!** ได้รับ 1 คะแนน")
+                st.success("✓ **ถูกต้องยอดเยี่ยม!** ได้รับ 1 คะแนน")
             else:
                 st.error(f"✗ **ยังไม่ถูกต้อง** (คำตอบที่ถูกต้องคือ: ข้อ **{correct_prefix}**)")
 
@@ -220,14 +327,15 @@ else:
                 prefix = choice_prefixes[i]
                 formatted = format_math_spacing(choice_text)
                 if choice_text == q["answer"]:
-                    st.markdown(f"- **[{prefix}]** {formatted} &nbsp; **(✓ คำตอบที่ถูกต้อง)**")
+                    st.success(f"**[{prefix}]** {formatted} &nbsp; *(✓ คำตอบที่ถูกต้อง)*")
                 elif choice_text == current_choice:
-                    st.markdown(f"- **[{prefix}]** {formatted} &nbsp; *(✗ คำตอบที่คุณเลือก)*")
+                    st.error(f"**[{prefix}]** {formatted} &nbsp; *(✗ คำตอบที่คุณเลือก)*")
                 else:
                     st.markdown(f"- **[{prefix}]** {formatted}")
 
             st.info(f"**[คำอธิบายอย่างละเอียด]**\n\n{format_math_spacing(q['explanation'])}")
 
+            st.write("")
             if st.button("ข้อถัดไป →", type="primary", use_container_width=True, key=f"btn_next_q_{q_idx}"):
                 if q_idx + 1 < len(questions):
                     st.session_state.quiz_q_index += 1
