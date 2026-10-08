@@ -68,8 +68,12 @@ def reset_quiz() -> None:
     st.session_state.quiz_attempt_count = 0
 
 
-if st.session_state.get("quiz_active_topic") != QUIZ_TOPIC:
+if (
+    st.session_state.get("quiz_active_topic") != QUIZ_TOPIC
+    or st.session_state.get("quiz_total_count") != len(questions)
+):
     st.session_state.quiz_active_topic = QUIZ_TOPIC
+    st.session_state.quiz_total_count = len(questions)
     reset_quiz()
 
 
