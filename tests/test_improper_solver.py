@@ -79,3 +79,15 @@ class TestComputeImproper:
         fig, ax = plot_improper(expr, 1.0, None)
         assert fig is not None
         assert ax is not None
+
+    def test_improper_both_infinite_convergent(self):
+        res = compute_improper('1/(1+x**2)', '-inf', 'inf')
+        assert res["ok"] is True
+        assert res["status"] == "finite"
+        assert res["result"] == pytest.approx(3.14159265)
+
+    def test_improper_lower_infinite_convergent(self):
+        res = compute_improper('exp(x)', '-inf', 0)
+        assert res["ok"] is True
+        assert res["status"] == "finite"
+        assert res["result"] == pytest.approx(1.0)

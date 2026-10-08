@@ -145,6 +145,7 @@ def compute_riemann(
             f"คำนวณ $f({sample_symbol})$ แต่ละจุด แล้วรวมกัน: ${terms_latex}$",
             f"คูณด้วย $\\Delta x$: ${method_latex} = \\left({terms_latex}\\right)\\cdot {_fmt_num(dx)}$",
             f"ค่าประมาณ: ${method_latex} \\approx {total:.6f}$",
+            f"ข้อสังเกตมโนทัศน์: เมื่อเพิ่มจำนวนช่วง $n \\to \\infty$ ความกว้าง $\\Delta x \\to 0$ ค่าผลรวมรีมันน์ {method_latex} จะลู่เข้าสู่ค่าพื้นที่จริงตามนิยามปริพันธ์จำกัดเขต $\\int_a^b f(x)\\,dx$",
         ]
 
         return {

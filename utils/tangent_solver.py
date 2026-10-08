@@ -98,6 +98,7 @@ def compute_tangent(expr_str: str, a: float) -> dict:
                 f"แทนค่าจุด a เพื่อหาความชันเส้นสัมผัส m: m = f'({a_f}) = {sp.latex(slope_sym)}",
                 f"แทนค่าในสูตรสมการเส้นสัมผัส y - f(a) = m(x - a): y - ({sp.latex(fa_sym)}) = {sp.latex(slope_sym)}(x - {a_f})",
                 f"จัดรูปสมการเส้นสัมผัสในรูปชัดแจ้ง: y = {sp.latex(sp.simplify(tangent_eq))}",
+                f"ความหมายเชิงมโนทัศน์ (Local Linear Approximation): เส้นสัมผัสนี้ทำหน้าที่ประมาณค่าฟังก์ชัน $f(x)$ ได้ดีที่สุดในบริเวณใกล้เคียงจุดสัมผัส $(a, f(a))$",
             ]
         else:
             diff_quot = (expr.subs(X, a_f + H) - fa_sym) / H

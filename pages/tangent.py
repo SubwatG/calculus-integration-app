@@ -5,6 +5,7 @@
 
 import streamlit as st
 
+from utils.keypad import render_math_keypad
 from utils.math_render import preview_math_expr, render_latex, render_steps, render_syntax_guide
 from utils.plotter import plot_tangent
 from utils.tangent_solver import compute_tangent
@@ -15,55 +16,80 @@ render_hero("เส้นสัมผัสและอนุพันธ์", "
 
 theory = THEORY_CONTENT["tangent"]
 
-with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
-    st.markdown("**เงื่อนไขการใช้งาน**")
-    for item in theory["conditions"]:
-        st.markdown(f"- {item}")
-    st.markdown("**สูตรที่ใช้**")
-    for item in theory["formulas"]:
-        st.markdown(f"- {item}")
-    st.markdown("**สมบัติ**")
-    for item in theory["properties"]:
-        st.markdown(f"- {item}")
-    st.markdown("**ข้อควรระวัง**")
-    st.warning(" / ".join(theory["cautions"]))
-    st.markdown("**การประยุกต์ใช้**")
-    for item in theory["applications"]:
-        st.markdown(f"- {item}")
-    st.markdown("**แนวทางการตัดสินใจ**")
-    st.info(theory["decision_guide"])
+# ---------------------------------------------------------------------------
+# Concept Anchor & What to Observe (มโนทัศน์หลักและจุดสังเกต)
+# ---------------------------------------------------------------------------
+with st.container(border=True):
+    col_badge, col_concept = st.columns([1, 4])
+    with col_badge:
+        st.markdown(
+            """<span style="
+                background-color: #FEF08A;
+                border: 1.5px solid #18181B;
+                border-radius: 8px;
+                padding: 4px 10px;
+                font-family: 'Fredoka', 'Mali', sans-serif;
+                font-size: 13px;
+                font-weight: 700;
+                color: #18181B;
+                display: inline-block;
+            ">🎯 มโนทัศน์หลัก</span>""",
+            unsafe_allow_html=True,
+        )
+    with col_concept:
+        st.markdown("**ความชันเส้นสัมผัสและอนุพันธ์ (Secant Line Limit to Tangent Slope)**")
+
+    st.markdown(
+        "ความชันของเส้นสัมผัส ณ จุด $x = a$ คือลิมิตของความชันเส้นตัด (Secant Line) เมื่อจุดทั้งสองเคลื่อนเข้าหากันจนเป็นจุดเดียว ($h \\to 0$):"
+    )
+
+    st.latex(r"m = f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h} \quad \implies \text{สมการเส้นสัมผัส: } y - f(a) = f'(a)(x - a)")
+
+    st.info(
+        """**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
+- **ทิศทางความชัน ($f'(a)$):** เลื่อนจุด $a$ สังเกตหาก $f'(a) > 0$ เส้นชันขึ้น, $f'(a) < 0$ เส้นลาดลง, และ $f'(a) = 0$ เส้นสัมผัสเป็นแนวนอน (จุดวกกลับ/จุดวิกฤต)
+- **การแนบชิดเฉพาะที่ (Local Linearity):** ใกล้จุดสัมผัส เส้นตรงจะแนบสนิทไปกับเส้นโค้ง ซึ่งเป็นรากฐานของการประมาณค่าเชิงเส้น"""
+    )
+
+with st.expander("📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
+    col_t1, col_t2 = st.columns(2)
+    with col_t1:
+        st.markdown("**เงื่อนไขการใช้งาน**")
+        for item in theory["conditions"]:
+            st.markdown(f"- {item}")
+        st.markdown("**สมบัติสำคัญ**")
+        for item in theory["properties"]:
+            st.markdown(f"- {item}")
+    with col_t2:
+        st.markdown("**ข้อควรระวัง**")
+        st.warning(" / ".join(theory["cautions"]))
+        st.markdown("**การประยุกต์ใช้**")
+        for item in theory["applications"]:
+            st.markdown(f"- {item}")
 
 st.divider()
-st.markdown("### ลองสำรวจเส้นสัมผัสและอนุพันธ์")
+st.markdown("### ลองสำรวจเส้นสัมผัส")
+
+def _set_tangent_preset(expr_val: str, a_val: float) -> None:
+    st.session_state["tangent_expr"] = expr_val
+    st.session_state["tangent_a"] = a_val
 
 st.caption("ตัวอย่างโจทย์ยอดนิยม:")
 col_pre1, col_pre2, col_pre3, col_pre4 = st.columns(4)
 with col_pre1:
-    if st.button("x^2", key="btn_tan_1", use_container_width=True):
-        st.session_state["tangent_expr"] = "x^2"
-        st.session_state["tangent_a"] = 1.0
-        st.rerun()
+    st.button("x^2", key="btn_tan_1", use_container_width=True, on_click=_set_tangent_preset, args=("x^2", 1.0))
 with col_pre2:
-    if st.button("x^3 - 3x", key="btn_tan_2", use_container_width=True):
-        st.session_state["tangent_expr"] = "x^3 - 3*x"
-        st.session_state["tangent_a"] = 0.0
-        st.rerun()
+    st.button("x^3 - 3x", key="btn_tan_2", use_container_width=True, on_click=_set_tangent_preset, args=("x^3 - 3*x", 0.0))
 with col_pre3:
-    if st.button("sin(x)", key="btn_tan_3", use_container_width=True):
-        st.session_state["tangent_expr"] = "sin(x)"
-        st.session_state["tangent_a"] = 0.0
-        st.rerun()
+    st.button("sin(x)", key="btn_tan_3", use_container_width=True, on_click=_set_tangent_preset, args=("sin(x)", 0.0))
 with col_pre4:
-    if st.button("sqrt(x+5)", key="btn_tan_4", use_container_width=True):
-        st.session_state["tangent_expr"] = "sqrt(x+5)"
-        st.session_state["tangent_a"] = -1.0
-        st.rerun()
+    st.button("sqrt(x+5)", key="btn_tan_4", use_container_width=True, on_click=_set_tangent_preset, args=("sqrt(x+5)", -1.0))
 
 col_f, col_a = st.columns([2, 1])
 with col_f:
     expr_input = st.text_input(
         "ฟังก์ชัน f(x)",
-        value="x^2",
+        value=st.session_state.get("tangent_expr", "x^2"),
         placeholder="เช่น x^2, sin(x), x^3 - 3*x",
         key="tangent_expr",
     )
@@ -75,10 +101,12 @@ with col_a:
         "จุดสัมผัส a",
         min_value=-5.0,
         max_value=5.0,
-        value=1.0,
+        value=float(st.session_state.get("tangent_a", 1.0)),
         step=0.1,
         key="tangent_a",
     )
+
+render_math_keypad(target_key="tangent_expr", key_prefix="tan_kp", expanded=False)
 
 if not expr_input.strip():
     st.info("กรุณาระบุฟังก์ชัน f(x) หรือคลิกเลือกตัวอย่างด้านบน")

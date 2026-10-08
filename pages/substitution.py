@@ -205,6 +205,9 @@ with tab3:
     preview_math_expr(expr_input)
     render_syntax_guide()
 
+    from utils.keypad import render_math_keypad
+    render_math_keypad(target_key="substitution_expr", key_prefix="sub_kp", expanded=False)
+
     if st.button("คำนวณ", type="primary", key="btn_substitution_calc"):
         if not expr_input.strip():
             st.error("กรุณาใส่นิพจน์ก่อน")

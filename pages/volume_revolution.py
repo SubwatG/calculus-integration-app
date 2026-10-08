@@ -27,62 +27,91 @@ if "volume_inner" not in st.session_state:
 
 theory = THEORY_CONTENT["volume"]
 
-with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
-    st.markdown("**เงื่อนไขการใช้งาน**")
-    for item in theory["conditions"]:
-        st.markdown(f"- {item}")
-    st.markdown("**สูตรที่ใช้**")
-    for item in theory["formulas"]:
-        st.markdown(f"- {item}")
-    st.markdown("**สมบัติ**")
-    for item in theory["properties"]:
-        st.markdown(f"- {item}")
-    st.markdown("**ข้อควรระวัง**")
-    st.warning(" / ".join(theory["cautions"]))
-    st.markdown("**การประยุกต์ใช้**")
-    for item in theory["applications"]:
-        st.markdown(f"- {item}")
-    st.markdown("**แนวทางการตัดสินใจ**")
-    st.info(theory["decision_guide"])
+# ---------------------------------------------------------------------------
+# Concept Anchor & What to Observe (มโนทัศน์หลักและจุดสังเกต)
+# ---------------------------------------------------------------------------
+with st.container(border=True):
+    col_badge, col_concept = st.columns([1, 4])
+    with col_badge:
+        st.markdown(
+            """<span style="
+                background-color: #FEF08A;
+                border: 1.5px solid #18181B;
+                border-radius: 8px;
+                padding: 4px 10px;
+                font-family: 'Fredoka', 'Mali', sans-serif;
+                font-size: 13px;
+                font-weight: 700;
+                color: #18181B;
+                display: inline-block;
+            ">🎯 มโนทัศน์หลัก</span>""",
+            unsafe_allow_html=True,
+        )
+    with col_concept:
+        st.markdown("**ปริมาตรของรูปทรงตันจากการหมุน (Disk & Washer Methods)**")
+
+    st.markdown(
+        "ปริมาตรรูปทรงตันเกิดจากการสะสมพื้นที่หน้าตัดวงกลม $\\pi R^2$ (วิธีจาน) หรือวงแหวน $\\pi(R^2 - r^2)$ (วิธีวงแหวน) หมุนรอบแกน:"
+    )
+
+    st.latex(r"V_{\text{Disk}} = \pi \int_a^b [R(x)]^2\,dx \qquad V_{\text{Washer}} = \pi \int_a^b \left([R(x)]^2 - [r(x)]^2\right)\,dx")
+
+    st.info(
+        """**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
+- **จานตัน vs วงแหวนกลวง:** หากพื้นที่แนบสนิทกับแกนหมุนจะไม่มีรูตรงกลาง (ใช้ Disk) หากมีช่องว่างระหว่างกราฟกับแกนหมุนจะเกิดรูกลวง (ใช้ Washer)
+- **กับดักเลขยกกำลังสอง:** สูตร Washer คือ $\\pi (R^2 - r^2)$ ไม่ใช่ $\\pi (R - r)^2$ (ต้องนำแต่ละรัศมียกกำลังสองแยกกันก่อนลบ)"""
+    )
+
+with st.expander("📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
+    col_t1, col_t2 = st.columns(2)
+    with col_t1:
+        st.markdown("**เงื่อนไขการใช้งาน**")
+        for item in theory["conditions"]:
+            st.markdown(f"- {item}")
+        st.markdown("**สมบัติสำคัญ**")
+        for item in theory["properties"]:
+            st.markdown(f"- {item}")
+    with col_t2:
+        st.markdown("**ข้อควรระวัง**")
+        st.warning(" / ".join(theory["cautions"]))
+        st.markdown("**การประยุกต์ใช้**")
+        for item in theory["applications"]:
+            st.markdown(f"- {item}")
 
 st.divider()
 st.markdown("### ลองคำนวณ")
 
 st.markdown("**ตัวอย่างโจทย์ยอดนิยม:**")
+
+def _set_vol_preset(r_val: str, a_val: float, b_val: float, method: str, inner_val: str | None = None) -> None:
+    st.session_state["volume_expr"] = r_val
+    st.session_state["volume_a"] = a_val
+    st.session_state["volume_b"] = b_val
+    st.session_state["volume_method"] = method
+    if inner_val is not None:
+        st.session_state["volume_inner"] = inner_val
+
 p_cols = st.columns(4)
-if p_cols[0].button("ทรงกรวย $R(x) = x$ บน $[0, 2]$", key="pre_vol_1"):
-    st.session_state["volume_expr"] = "x"
-    st.session_state["volume_a"] = 0.0
-    st.session_state["volume_b"] = 2.0
-    st.session_state["volume_method"] = "disk"
-    st.rerun()
-if p_cols[1].button("พาราโบลอยด์ $R(x) = \\sqrt{x}$ บน $[0, 4]$", key="pre_vol_2"):
-    st.session_state["volume_expr"] = "sqrt(x)"
-    st.session_state["volume_a"] = 0.0
-    st.session_state["volume_b"] = 4.0
-    st.session_state["volume_method"] = "disk"
-    st.rerun()
-if p_cols[2].button("ทรงระฆังคว่ำ $R(x) = 4 - x^2$ บน $[0, 2]$", key="pre_vol_3"):
-    st.session_state["volume_expr"] = "4 - x**2"
-    st.session_state["volume_a"] = 0.0
-    st.session_state["volume_b"] = 2.0
-    st.session_state["volume_method"] = "disk"
-    st.rerun()
-if p_cols[3].button("วงแหวน $R=\\sqrt{x}, r=x^2$ บน $[0, 1]$", key="pre_vol_4"):
-    st.session_state["volume_expr"] = "sqrt(x)"
-    st.session_state["volume_inner"] = "x**2"
-    st.session_state["volume_a"] = 0.0
-    st.session_state["volume_b"] = 1.0
-    st.session_state["volume_method"] = "washer"
-    st.rerun()
+with p_cols[0]:
+    st.button("ทรงกรวย $R(x) = x$ บน $[0, 2]$", key="pre_vol_1", use_container_width=True, on_click=_set_vol_preset, args=("x", 0.0, 2.0, "disk"))
+with p_cols[1]:
+    st.button("พาราโบลอยด์ $R(x) = \\sqrt{x}$ บน $[0, 4]$", key="pre_vol_2", use_container_width=True, on_click=_set_vol_preset, args=("sqrt(x)", 0.0, 4.0, "disk"))
+with p_cols[2]:
+    st.button("ทรงระฆังคว่ำ $R(x) = 4 - x^2$ บน $[0, 2]$", key="pre_vol_3", use_container_width=True, on_click=_set_vol_preset, args=("4 - x**2", 0.0, 2.0, "disk"))
+with p_cols[3]:
+    st.button("วงแหวน $R=\\sqrt{x}, r=x^2$ บน $[0, 1]$", key="pre_vol_4", use_container_width=True, on_click=_set_vol_preset, args=("sqrt(x)", 0.0, 1.0, "washer", "x**2"))
 
 expr_input = st.text_input(
     "ฟังก์ชันรัศมี R(x) (หรือรัศมีนอกสำหรับ Washer)",
+    value=st.session_state.get("volume_expr", "x"),
     placeholder="เช่น x, sqrt(x), x**2",
     key="volume_expr",
 )
 preview_math_expr(expr_input, label="พรีวิว R(x)")
 render_syntax_guide()
+
+from utils.keypad import render_math_keypad
+render_math_keypad(target_key="volume_expr", key_prefix="vol_kp", expanded=False)
 
 col_a, col_b = st.columns(2)
 with col_a:

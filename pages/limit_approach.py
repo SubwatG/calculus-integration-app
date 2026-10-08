@@ -19,23 +19,56 @@ render_hero("ลิมิตเข้าใกล้จุด", "สำรวจ
 
 theory = THEORY_CONTENT["limit"]
 
-with st.expander(f"ทฤษฎี: {theory['title']}", expanded=False):
-    st.markdown("**เงื่อนไขการใช้งาน**")
-    for item in theory["conditions"]:
-        st.markdown(f"- {item}")
-    st.markdown("**สูตรที่ใช้**")
-    for item in theory["formulas"]:
-        st.markdown(f"- {item}")
-    st.markdown("**สมบัติ**")
-    for item in theory["properties"]:
-        st.markdown(f"- {item}")
-    st.markdown("**ข้อควรระวัง**")
-    st.warning(" / ".join(theory["cautions"]))
-    st.markdown("**การประยุกต์ใช้**")
-    for item in theory["applications"]:
-        st.markdown(f"- {item}")
-    st.markdown("**แนวทางการตัดสินใจ**")
-    st.info(theory["decision_guide"])
+# ---------------------------------------------------------------------------
+# Concept Anchor & What to Observe (มโนทัศน์หลักและจุดสังเกต)
+# ---------------------------------------------------------------------------
+with st.container(border=True):
+    col_badge, col_concept = st.columns([1, 4])
+    with col_badge:
+        st.markdown(
+            """<span style="
+                background-color: #FEF08A;
+                border: 1.5px solid #18181B;
+                border-radius: 8px;
+                padding: 4px 10px;
+                font-family: 'Fredoka', 'Mali', sans-serif;
+                font-size: 13px;
+                font-weight: 700;
+                color: #18181B;
+                display: inline-block;
+            ">🎯 มโนทัศน์หลัก</span>""",
+            unsafe_allow_html=True,
+        )
+    with col_concept:
+        st.markdown("**ลิมิตสองด้านและการลู่เข้าสู่จุด (Two-Sided Limits & Convergence)**")
+
+    st.markdown(
+        "ลิมิตของฟังก์ชันจะหาค่าได้เป็น $L$ ก็ต่อเมื่อค่าของฟังก์ชันเข้าใกล้ $L$ เดียวกันทั้งเมื่อเข้าใกล้จากทางซ้ายและทางขวา:"
+    )
+
+    st.latex(r"\lim_{x \to a} f(x) = L \iff \lim_{x \to a^-} f(x) = \lim_{x \to a^+} f(x) = L")
+
+    st.info(
+        """**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
+- **ความสอดคล้องของสองฝั่ง (Left vs Right):** สังเกตค่าลิมิตทางซ้าย ($x \\to a^-$) และทางขวา ($x \\to a^+$) หากได้ค่าต่างกัน ลิมิตจะหาค่าไม่ได้ (DNE)
+- **พฤติกรรมรอบจุด vs ค่า ณ จุดจริง:** ลิมิตสนใจเฉพาะพฤติกรรมเมื่อ $x$ เข้าใกล้ $a$ ไม่จำเป็นต้องหาค่า $f(a)$ ได้ เช่น จุดที่มีรูโหว่หรือรูปแบบ $\\frac{0}{0}$"""
+    )
+
+with st.expander("📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
+    col_t1, col_t2 = st.columns(2)
+    with col_t1:
+        st.markdown("**เงื่อนไขการใช้งาน**")
+        for item in theory["conditions"]:
+            st.markdown(f"- {item}")
+        st.markdown("**สมบัติสำคัญ**")
+        for item in theory["properties"]:
+            st.markdown(f"- {item}")
+    with col_t2:
+        st.markdown("**ข้อควรระวัง**")
+        st.warning(" / ".join(theory["cautions"]))
+        st.markdown("**การประยุกต์ใช้**")
+        for item in theory["applications"]:
+            st.markdown(f"- {item}")
 
 st.divider()
 st.markdown("### ลองสำรวจการลู่เข้าของลิมิต")

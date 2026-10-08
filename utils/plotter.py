@@ -570,19 +570,40 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
     return fig, ax
 
 
-def plot_improper(expr, a: float, b: float | None = None) -> tuple:
-    """วาดเส้นโค้งและพื้นที่ใต้กราฟของอินทิกรัลไม่ตรงแบบ (Improper Integral)"""
+def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | str | sp.Expr | None = None) -> tuple:
+    """วาดเส้นโค้งและพื้นที่ใต้กราฟของอินทิกรัลไม่ตรงแบบ (รองรับช่วงจำกัด, กึ่งอนันต์, และสองทาง (-oo, oo))"""
     f = sp.lambdify(X, expr, modules=["numpy"])
 
-    is_infinite_upper = (b is None)
-    if is_infinite_upper:
-        x_start = a
-        x_end = a + 8.0
-        t_bound = a + 5.0
+    s_a = str(a).lower().replace(" ", "")
+    is_inf_lower = (s_a in ("-inf", "-oo", "-infinity") or a == -sp.oo)
+
+    s_b = str(b).lower().replace(" ", "") if b is not None else "inf"
+    is_inf_upper = (b is None or s_b in ("inf", "+inf", "oo", "+oo", "infinity") or b == sp.oo)
+
+    if is_inf_lower and is_inf_upper:
+        x_start, x_end = -8.0, 8.0
+        t_l, t_r = -5.0, 5.0
+        shade_start, shade_end = t_l, t_r
+        shade_label = "Area over (-∞, ∞)"
+    elif is_inf_lower:
+        b_num = float(sp.sympify(b).evalf()) if b is not None else 0.0
+        x_start, x_end = b_num - 8.0, b_num + 1.0
+        t_l = b_num - 5.0
+        shade_start, shade_end = t_l, b_num
+        shade_label = f"Area over (-∞, {b_num:g}]"
+    elif is_inf_upper:
+        a_num = float(sp.sympify(a).evalf()) if a is not None else 0.0
+        x_start, x_end = a_num - 1.0, a_num + 8.0
+        t_r = a_num + 5.0
+        shade_start, shade_end = a_num, t_r
+        shade_label = f"Area over [{a_num:g}, ∞)"
     else:
-        x_start = min(a, b)
-        x_end = max(a, b) + 1.0
-        t_bound = b
+        a_num = float(sp.sympify(a).evalf())
+        b_num = float(sp.sympify(b).evalf())
+        x_start = min(a_num, b_num) - 1.0
+        x_end = max(a_num, b_num) + 1.0
+        shade_start, shade_end = min(a_num, b_num), max(a_num, b_num)
+        shade_label = f"Area over [{a_num:g}, {b_num:g}]"
 
     xs = np.linspace(x_start, x_end, 500)
     xs = xs[np.abs(xs) > 1e-4]
@@ -593,7 +614,7 @@ def plot_improper(expr, a: float, b: float | None = None) -> tuple:
     fig, ax = plt.subplots(figsize=(8, 4.5))
     ax.plot(xs, ys, color=CURVE, lw=2.2, label="y = f(x)")
 
-    xs_shade = np.linspace(x_start, t_bound, 300)
+    xs_shade = np.linspace(shade_start, shade_end, 300)
     xs_shade = xs_shade[np.abs(xs_shade) > 1e-4]
     with np.errstate(all="ignore"):
         ys_shade = _as_curve(f(xs_shade), xs_shade)
@@ -604,29 +625,21 @@ def plot_improper(expr, a: float, b: float | None = None) -> tuple:
         0,
         color=CURVE,
         alpha=0.35,
-        label=f"Area over [{a}, t] as t -> ∞" if is_infinite_upper else f"Area over [{a}, {b}]",
+        label=shade_label,
     )
 
-    ax.axvline(a, color="#9ca3af", lw=1.2, linestyle="--", label=f"Lower Bound a = {a}")
-    if is_infinite_upper:
-        ax.axvline(t_bound, color="#D97706", lw=1.2, linestyle=":", label=f"Sample Bound t = {t_bound:.1f}")
-        ax.annotate(
-            "t → ∞",
-            xy=(t_bound, 0.2),
-            xytext=(t_bound + 1.2, 0.4),
-            arrowprops=dict(facecolor="#D97706", edgecolor="#D97706", arrowstyle="->", lw=1.5),
-            fontsize=10,
-            color="#D97706",
-            fontweight="bold",
-        )
-    else:
-        ax.axvline(b, color="#DC2626", lw=1.2, linestyle="--", label=f"Upper Bound b = {b}")
+    if not is_inf_lower and not is_inf_upper:
+        ax.axvline(shade_start, color="#9ca3af", lw=1.2, linestyle="--", label=f"a = {shade_start:g}")
+        ax.axvline(shade_end, color="#DC2626", lw=1.2, linestyle="--", label=f"b = {shade_end:g}")
+    elif is_inf_upper and not is_inf_lower:
+        ax.axvline(shade_start, color="#9ca3af", lw=1.2, linestyle="--", label=f"a = {shade_start:g}")
+    elif is_inf_lower and not is_inf_upper:
+        ax.axvline(shade_end, color="#DC2626", lw=1.2, linestyle="--", label=f"b = {shade_end:g}")
 
     ax.axhline(0, color="#9ca3af", lw=0.8, linestyle=":")
     ax.set_xlabel("x")
     ax.set_ylabel("y")
-    title = f"Improper Integral on [{a}, ∞)" if is_infinite_upper else f"Improper Integral on [{a}, {b}]"
-    ax.set_title(title)
+    ax.set_title(f"Improper Integral Visualization ({shade_label})")
     ax.grid(True, color=GRID, lw=0.5)
 
     finite_ys = ys_shade[np.isfinite(ys_shade)]
