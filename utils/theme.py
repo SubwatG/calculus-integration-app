@@ -241,12 +241,14 @@ def inject_css() -> None:
     }
 
     /* Bauhaus Geometric Cards & Containers */
-    [data-testid="stVerticalBlockBorderWrapper"] {
+    [data-testid="stVerticalBlockBorderWrapper"],
+    div[data-testid="stVerticalBlock"].st-emotion-cache-y5eupb {
         background-color: #FFFFFF !important;
         border: 2.5px solid #18181B !important;
         border-radius: 14px !important;
         box-shadow: 4px 4px 0px #18181B !important;
         padding: 1.25rem !important;
+        margin-bottom: 1.25rem !important;
     }
 
     /* Expanders with Bauhaus Shadow */

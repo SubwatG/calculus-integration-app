@@ -3,15 +3,14 @@ from utils.math_render import format_math_spacing
 from utils.quiz_engine import load_quiz
 from utils.theme import render_hero
 
-
 QUIZ_OPTIONS = {
-    "[ทั้งหมด] ทำโจทย์ทั้งหมด (15 ข้อ)": "all",
-    "[รีมันน์] ผลบวกรีมันน์และข้อผิดพลาด (5 ข้อ)": "riemann",
-    "[เทคนิค] เทคนิค u-sub & By Parts (5 ข้อ)": "techniques",
-    "[กฎพื้นฐาน] กฎพื้นฐาน Basic Rules (5 ข้อ)": "basic_rules",
+    "[ทั้งหมด] ทำโจทย์ทั้งหมด (30 ข้อ)": "all",
+    "[กฎพื้นฐาน] กฎพื้นฐานและทฤษฎีบท (10 ข้อ)": "basic_rules",
+    "[รีมันน์] ผลบวกรีมันน์และการประมาณค่า (10 ข้อ)": "riemann",
+    "[เทคนิค] เทคนิคการเปลี่ยนตัวแปร & By Parts (10 ข้อ)": "techniques",
 }
 
-render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำใบ้และสะสมคะแนน")
+render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำแนะนำและสะสมคะแนน")
 
 st.markdown("### เลือกชุดข้อสอบมโนทัศน์")
 selected_topic_name = st.radio(
@@ -46,6 +45,8 @@ if "quiz_done" not in st.session_state:
     st.session_state.quiz_done = False
 if "quiz_current_choice" not in st.session_state:
     st.session_state.quiz_current_choice = None
+if "quiz_attempt_count" not in st.session_state:
+    st.session_state.quiz_attempt_count = 0
 
 # self-contained init
 if "quiz_scores" not in st.session_state:
@@ -64,6 +65,7 @@ def reset_quiz() -> None:
     st.session_state.quiz_show_hint = False
     st.session_state.quiz_done = False
     st.session_state.quiz_current_choice = None
+    st.session_state.quiz_attempt_count = 0
 
 
 if st.session_state.get("quiz_active_topic") != QUIZ_TOPIC:
@@ -74,13 +76,26 @@ if st.session_state.get("quiz_active_topic") != QUIZ_TOPIC:
 if st.session_state.quiz_done:
     final_score = st.session_state.quiz_score
     total_q = len(questions)
+    percentage = (final_score / total_q * 100) if total_q > 0 else 0
 
-    st.markdown("### การทดสอบเสร็จสิ้น")
-    st.metric("คะแนนสะสมของคุณ", f"{final_score}/{total_q}")
+    st.markdown("### สรุปผลการทดสอบ")
+    col_sc1, col_sc2 = st.columns(2)
+    with col_sc1:
+        st.metric("คะแนนสะสมของคุณ", f"{final_score} / {total_q}")
+    with col_sc2:
+        st.metric("คิดเป็นร้อยละ", f"{percentage:.1f}%")
+
     st.progress(final_score / total_q if total_q > 0 else 0)
 
+    if percentage >= 80:
+        st.success("ผลการประเมิน: ระดับดีมาก มีความเข้าใจมโนทัศน์แคลคูลัสอย่างแม่นยำ")
+    elif percentage >= 50:
+        st.info("ผลการประเมิน: ระดับผ่านเกณฑ์ มีความเข้าใจพื้นฐานที่ดี สามารถทบทวนเพิ่มเติมในหัวข้อที่ตอบผิดได้จากหน้าบทเรียน")
+    else:
+        st.warning("ผลการประเมิน: ควรทบทวนเพิ่มเติม แนะนำให้ใช้เครื่องมือจำลองในหน้ารีมันน์และการแทนค่าตัวแปรเพื่อสร้างมโนทัศน์")
+
     st.divider()
-    st.markdown("### สรุปคำตอบและคำอธิบาย")
+    st.markdown("### สรุปคำตอบและคำอธิบายรายข้อ")
 
     saved_answers = st.session_state.quiz_user_answers
     for idx, q in enumerate(questions):
@@ -88,18 +103,19 @@ if st.session_state.quiz_done:
         is_correct = user_ans == q["answer"]
         status_symbol = "✓ ถูกต้อง" if is_correct else "✗ ยังไม่ถูก"
 
-        with st.expander(f"ข้อ {idx + 1}: {status_symbol}", expanded=True):
+        with st.expander(f"ข้อ {idx + 1}: {status_symbol}", expanded=False):
+            st.markdown(f"**คำถาม:** {format_math_spacing(q['question'])}")
             st.markdown(f"**คำตอบของคุณ:** {format_math_spacing(user_ans)}")
             st.markdown(f"**คำตอบที่ถูกต้อง:** {format_math_spacing(q['answer'])}")
             st.markdown(f"**คำอธิบาย:** {format_math_spacing(q['explanation'])}")
 
     col_btn1, col_btn2 = st.columns(2)
     with col_btn1:
-        if st.button("เล่นใหม่", key="btn_quiz_restart", use_container_width=True):
+        if st.button("ทำแบบทดสอบอีกครั้ง", key="btn_quiz_restart", use_container_width=True):
             reset_quiz()
             st.rerun()
     with col_btn2:
-        if st.button("กลับหน้าหลัก", key="btn_quiz_home", use_container_width=True):
+        if st.button("กลับสู่หน้าหลัก", key="btn_quiz_home", use_container_width=True):
             st.switch_page("pages/home.py")
 else:
     q_idx = st.session_state.quiz_q_index
@@ -114,94 +130,107 @@ else:
         st.rerun()
     else:
         q = questions[q_idx]
+        choice_prefixes = ["A", "B", "C", "D"]
+        revealed = st.session_state.quiz_revealed
+        show_hint = st.session_state.quiz_show_hint
+        current_choice = st.session_state.quiz_current_choice
+
         col_h1, col_h2 = st.columns([2, 1])
         with col_h1:
             st.markdown(f"### ข้อที่ {q_idx + 1} / {len(questions)}")
         with col_h2:
             st.markdown(f"**คะแนนสะสม:** {st.session_state.quiz_score}")
 
-        st.markdown(f"**คำถาม:** {format_math_spacing(q['question'])}")
+        st.progress((q_idx + 1) / len(questions))
 
-        choice_prefixes = ["A", "B", "C", "D"]
-        revealed = st.session_state.quiz_revealed
-        show_hint = st.session_state.quiz_show_hint
-        current_choice = st.session_state.quiz_current_choice
+        st.markdown(f"**คำถาม:**\n\n{format_math_spacing(q['question'])}")
+        st.divider()
 
-        # แสดงกล่องคำใบ้หากตอบผิดในรอบแรก
-        if show_hint and not revealed:
-            st.warning(
-                f"**[คำแนะนำ] ยังไม่ถูกต้องครับ ลองอ่านคำใบ้นี้แล้วตอบใหม่อีกครั้ง:**\n\n"
-                f"{format_math_spacing(q.get('hint', 'ลองพิจารณาสูตรและนิยามอีกครั้ง'))}"
+        correct_idx = q["choices"].index(q["answer"]) if q["answer"] in q["choices"] else 0
+        correct_prefix = choice_prefixes[correct_idx]
+
+        if not revealed:
+            if show_hint:
+                st.warning(
+                    f"**[คำแนะนำ / แนวคิดสำหรับทดลอง]:**\n\n"
+                    f"{format_math_spacing(q.get('hint', 'ลองพิจารณาสูตรและนิยามอีกครั้ง'))}\n\n"
+                    f"*สามารถสลับไปทดลองในเครื่องคำนวณหรือตัวจำลองกราฟในแอปเพื่อหาคำตอบได้*"
+                )
+
+            selected_idx = st.radio(
+                "เลือกคำตอบที่ถูกต้อง:",
+                options=list(range(len(q["choices"]))),
+                format_func=lambda i: f"**{choice_prefixes[i]}.** {format_math_spacing(q['choices'][i])}",
+                index=None,
+                key=f"radio_choice_{q_idx}_{st.session_state.quiz_attempt_count}",
             )
 
-        col_a1, col_a2 = st.columns(2)
-        for i, choice_text in enumerate(q["choices"]):
-            prefix = choice_prefixes[i] if i < len(choice_prefixes) else str(i + 1)
-            btn_label = f"{prefix}. {choice_text}"
-            target_col = col_a1 if i % 2 == 0 else col_a2
+            st.write("")
+            col_act1, col_act2 = st.columns([1, 1])
+            with col_act1:
+                can_submit = selected_idx is not None
+                if st.button(
+                    "ตรวจคำตอบ",
+                    type="primary",
+                    disabled=not can_submit,
+                    use_container_width=True,
+                    key=f"btn_submit_{q_idx}",
+                ):
+                    chosen = q["choices"][selected_idx]
+                    st.session_state.quiz_current_choice = chosen
+                    st.session_state.quiz_user_answers[q_idx] = chosen
 
-            with target_col:
-                if revealed:
-                    if choice_text == q["answer"]:
-                        st.markdown(f"**{format_math_spacing(btn_label)}** — ✓ คำตอบที่ถูก")
-                    elif choice_text == current_choice:
-                        st.markdown(
-                            f"<span style='color:#e0414d;'>**{format_math_spacing(btn_label)}** — ✗ คำตอบของคุณ</span>",
-                            unsafe_allow_html=True,
-                        )
+                    if chosen == q["answer"]:
+                        st.session_state.quiz_score += 1
+                        st.session_state.quiz_revealed = True
+                        st.session_state.quiz_show_hint = False
                     else:
-                        st.markdown(format_math_spacing(btn_label))
-                else:
-                    if st.button(
-                        btn_label,
-                        key=f"choice_btn_{q_idx}_{i}",
-                        use_container_width=True,
-                    ):
-                        st.session_state.quiz_current_choice = choice_text
-                        st.session_state.quiz_user_answers[q_idx] = choice_text
-
-                        if choice_text == q["answer"]:
-                            st.session_state.quiz_score += 1
+                        if not show_hint:
+                            st.session_state.quiz_show_hint = True
+                            st.session_state.quiz_revealed = False
+                            st.session_state.quiz_attempt_count += 1
+                        else:
                             st.session_state.quiz_revealed = True
                             st.session_state.quiz_show_hint = False
-                        else:
-                            if not show_hint:
-                                # ตอบผิดครั้งแรก ให้แสดงคำใบ้ก่อน ยังไม่เฉลย
-                                st.session_state.quiz_show_hint = True
-                                st.session_state.quiz_revealed = False
-                            else:
-                                # ตอบผิดซ้ำครั้งที่สอง จึงเปิดเฉลย
-                                st.session_state.quiz_revealed = True
-                                st.session_state.quiz_show_hint = False
-                        st.rerun()
-
-        # ส่วนจัดการการแสดงผลหลังตอบ
-        if show_hint and not revealed:
-            st.markdown("---")
-            col_hint1, col_hint2 = st.columns(2)
-            with col_hint1:
-                st.info("คลิกเลือกตัวเลือกอื่นด้านบนเพื่อลองตอบใหม่อีกครั้ง")
-            with col_hint2:
-                if st.button("ขอดูเฉลยและวิธีทำ", key=f"btn_force_reveal_{q_idx}"):
-                    st.session_state.quiz_revealed = True
-                    st.session_state.quiz_show_hint = False
                     st.rerun()
 
-        if revealed:
-            st.divider()
+            with col_act2:
+                if show_hint:
+                    if st.button(
+                        "ขอดูเฉลยและวิธีทำ",
+                        use_container_width=True,
+                        key=f"btn_force_reveal_{q_idx}",
+                    ):
+                        st.session_state.quiz_revealed = True
+                        st.session_state.quiz_show_hint = False
+                        st.rerun()
+
+        else:
             if current_choice == q["answer"]:
-                st.success("✓ **ถูกต้องยอดเยี่ยม!**")
+                st.success("✓ **ถูกต้อง!** ได้รับ 1 คะแนน")
             else:
-                st.error(f"✗ **ยังไม่ถูกต้อง** (คำตอบที่ถูกคือ: {q['answer']})")
+                st.error(f"✗ **ยังไม่ถูกต้อง** (คำตอบที่ถูกต้องคือ: ข้อ **{correct_prefix}**)")
 
-            st.markdown(f"**คำอธิบายอย่างละเอียด:**\n\n{q['explanation']}")
+            st.markdown("##### ตัวเลือกทั้งหมด:")
+            for i, choice_text in enumerate(q["choices"]):
+                prefix = choice_prefixes[i]
+                formatted = format_math_spacing(choice_text)
+                if choice_text == q["answer"]:
+                    st.markdown(f"- **[{prefix}]** {formatted} &nbsp; **(✓ คำตอบที่ถูกต้อง)**")
+                elif choice_text == current_choice:
+                    st.markdown(f"- **[{prefix}]** {formatted} &nbsp; *(✗ คำตอบที่คุณเลือก)*")
+                else:
+                    st.markdown(f"- **[{prefix}]** {formatted}")
 
-            if st.button("ข้อถัดไป", type="primary", key=f"btn_next_q_{q_idx}"):
+            st.info(f"**[คำอธิบายอย่างละเอียด]**\n\n{format_math_spacing(q['explanation'])}")
+
+            if st.button("ข้อถัดไป →", type="primary", use_container_width=True, key=f"btn_next_q_{q_idx}"):
                 if q_idx + 1 < len(questions):
                     st.session_state.quiz_q_index += 1
                     st.session_state.quiz_revealed = False
                     st.session_state.quiz_show_hint = False
                     st.session_state.quiz_current_choice = None
+                    st.session_state.quiz_attempt_count = 0
                 else:
                     st.session_state.quiz_done = True
                     st.session_state.quiz_scores[QUIZ_TOPIC] = {

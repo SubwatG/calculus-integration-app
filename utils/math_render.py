@@ -21,6 +21,34 @@ _THAI_RE = re.compile(r"[\u0e00-\u0e7f]")
 _WRAPPED_DISPLAY = re.compile(r"^\s*\$\$(.*)\$\$\s*$", re.DOTALL)
 _WRAPPED_INLINE = re.compile(r"^\s*\$(.*)\$\s*$", re.DOTALL)
 
+_MATH_MACROS = [
+    r"\\pi", r"\\infty", r"\\pm", r"\\mp", r"\\alpha", r"\\beta", r"\\gamma", 
+    r"\\theta", r"\\lambda", r"\\mu", r"\\sigma", r"\\tau", r"\\phi", r"\\omega",
+    r"\\Delta"
+]
+_MACROS_PATTERN = "|".join(_MATH_MACROS)
+
+_BARE_LATEX_RE = re.compile(
+    r"(\$\$.*?\$\$|\$.*?\$|"
+    r"\\frac\{[^{}]*\}\{[^{}]*\}(?:\^[\w+-]+)?|"
+    r"\\sqrt\{[^{}]*\}(?:\^[\w+-]+)?|"
+    rf"(?:{_MACROS_PATTERN})(?![a-zA-Z])(?:\^[\w+-]+)?)"
+)
+
+
+def auto_wrap_bare_latex(text: str) -> str:
+    """ห่อหุ้มคำสั่งหรือสัญลักษณ์ LaTeX ลอย ๆ ที่ไม่ได้อยู่ใน $...$ เพื่อให้ KaTeX แสดงผลได้ถูกต้องสมบูรณ์"""
+    if not text or "\\" not in text:
+        return text
+
+    def replace_fn(match):
+        token = match.group(0)
+        if token.startswith("$"):
+            return token
+        return f"${token}$"
+
+    return _BARE_LATEX_RE.sub(replace_fn, text)
+
 
 def has_thai(text: str) -> bool:
     return bool(_THAI_RE.search(text or ""))
@@ -49,8 +77,12 @@ def is_pure_latex(expr: str) -> bool:
 
 
 def format_math_spacing(text: str) -> str:
-    """เว้นวรรคหน้าและหลังสมการ ($...$ หรือ $$...$$) เมื่ออยู่ติดกับข้อความภาษาไทย"""
-    if not text or not has_thai(text):
+    """เว้นวรรคหน้าและหลังสมการ ($...$ หรือ $$...$$) เมื่ออยู่ติดกับข้อความภาษาไทย และห่อสัญลักษณ์ LaTeX ลอย ๆ"""
+    if not text:
+        return text
+    # 0. ห่อสัญลักษณ์ LaTeX ลอย ๆ เช่น \pi, \frac{\pi}{2} ให้เป็น $...$
+    text = auto_wrap_bare_latex(text)
+    if not has_thai(text):
         return text
     # 1. ภาษาไทยติดกับเครื่องหมาย $ เริ่มต้นสมการ เช่น "และ$x$" -> "และ $x$"
     s = re.sub(r"([\u0e00-\u0e7f])(\$+)", r"\1 \2", text)

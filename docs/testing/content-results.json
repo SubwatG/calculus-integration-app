@@ -2,7 +2,7 @@
   "scope": "Loading and configured-key scoring only; not rendered UI or answer-key mathematical audit",
   "lessons": 59,
   "quiz_files": 3,
-  "questions": 15,
+  "questions": 30,
   "total": 75,
   "passed": 75,
   "failed": 0,
@@ -70,15 +70,15 @@
   "quizzes": [
     {
       "file": "data/quizzes/basic_rules.json",
-      "questions": 5
+      "questions": 10
     },
     {
       "file": "data/quizzes/riemann.json",
-      "questions": 5
+      "questions": 10
     },
     {
       "file": "data/quizzes/techniques.json",
-      "questions": 5
+      "questions": 10
     }
   ],
   "checks": [
