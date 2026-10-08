@@ -74,13 +74,13 @@ with col_in:
 with col_clear:
     st.write("")
     st.write("")
-    st.button("🗑️ ล้าง", key="btn_clear_input", use_container_width=True, help="ล้างช่องใส่โจทย์", on_click=_clear_input)
+    st.button("ล้าง", key="btn_clear_input", use_container_width=True, help="ล้างช่องใส่โจทย์", on_click=_clear_input)
 
 preview_math_expr(st.session_state.get("solver_expr", ""))
 render_syntax_guide()
 
 # Math Keypad
-with st.expander("⌨️ แผงปุ่มลัดสัญลักษณ์คณิตศาสตร์ (Math Keypad)", expanded=True):
+with st.expander("แผงปุ่มลัดสัญลักษณ์คณิตศาสตร์ (Math Keypad)", expanded=True):
     # Mode switch buttons
     st.caption("สลับประเภทการคำนวณ:")
     m_cols = st.columns(3)
@@ -139,15 +139,15 @@ with st.expander("⌨️ แผงปุ่มลัดสัญลักษณ�
     row3_tokens = [
         ("1/x", "1/x"),
         ("|x|", "abs("),
-        ("⌫ ลบตัวสุดท้าย", "BACKSPACE"),
-        ("🗑️ ล้างทั้งหมด", "CLEAR"),
+        ("ลบตัวสุดท้าย", "BACKSPACE"),
+        ("ล้างทั้งหมด", "CLEAR"),
     ]
     for idx, (lbl, tok) in enumerate(row3_tokens):
         with r3_cols[idx]:
             st.button(lbl, key=f"r3_{idx}", use_container_width=True, on_click=_append_token, args=(tok,))
 
 # Quick Preset Examples based on operation
-st.caption("🎯 ตัวอย่างโจทย์ยอดนิยม (คลิกเพื่อทดสอบทันที):")
+st.caption("ตัวอย่างโจทย์ที่พบบ่อย (คลิกเพื่อทดสอบทันที):")
 if st.session_state["solver_op"] == "อินทิเกรต":
     ex_cols = st.columns(6)
     presets = [
@@ -187,7 +187,7 @@ else:
             st.button(lbl, key=f"preset_lim_{idx}", use_container_width=True, on_click=_set_preset, args=(val, pt))
 
 st.write("")
-calc_clicked = st.button("🚀 คำนวณผลลัพธ์", type="primary", key="btn_do_calc", use_container_width=True)
+calc_clicked = st.button("คำนวณผลลัพธ์", type="primary", key="btn_do_calc", use_container_width=True)
 
 # Calculate when button is clicked or if we already have input
 cur_expr = st.session_state.get("solver_expr", "").strip()

@@ -219,7 +219,7 @@ with tab3:
                 elif res.get("u_candidate") is not None:
                     u_c = res["u_candidate"]
                     du_c = res["du_candidate"]
-                    st.info(f"💡 คำแนะนำเทคนิคการเปลี่ยนตัวแปร: สามารถกำหนดให้ $u = {sp.latex(u_c)}$ ซึ่งจะได้ $du = {sp.latex(du_c)} \\, dx$")
+                    st.info(f"คำแนะนำเทคนิคการเปลี่ยนตัวแปร: สามารถกำหนดให้ $u = {sp.latex(u_c)}$ ซึ่งจะได้ $du = {sp.latex(du_c)} \\, dx$")
 
                 st.divider()
                 st.markdown("#### ขั้นตอนการพิจารณา")
