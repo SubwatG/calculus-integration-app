@@ -15,6 +15,7 @@ import numpy as np
 import sympy as sp
 
 from utils.riemann_solver import X
+from utils.sympy_solver import _get_variable
 
 # Playful Bauhaus Pop Palette (Geometric, Vibrant & Crisp)
 CURVE = "#E11D48"      # Bauhaus Vibrant Rose / Magenta
@@ -38,6 +39,17 @@ def _as_curve(values, xs: np.ndarray) -> np.ndarray:
     return np.where(np.isfinite(arr), arr, np.nan)
 
 
+def _get_plot_var(*exprs) -> sp.Symbol:
+    free = set()
+    for e in exprs:
+        if e is not None and hasattr(e, "free_symbols"):
+            free |= e.free_symbols
+    if not free:
+        return sp.Symbol("x")
+    dummy_expr = sum(free)
+    return _get_variable(dummy_expr)
+
+
 def plot_riemann(
     expr: sp.Expr,
     a: float,
@@ -46,7 +58,7 @@ def plot_riemann(
     method: str = "left",
     exact: float | None = None,
 ) -> tuple:
-    """วาดกราฟ f(x) พร้อมสี่เหลี่ยมผลรวมรีมันน์
+    """วาดกราฟ f(x) หรือ f(var) พร้อมสี่เหลี่ยมผลรวมรีมันน์
 
     expr: sympy expression (ผ่านการ parse แล้ว)
     a, b: ขอบเขตช่วง
@@ -56,7 +68,9 @@ def plot_riemann(
 
     Returns (fig, ax)
     """
-    f = sp.lambdify(X, expr, modules=["numpy"])
+    var = _get_plot_var(expr)
+    var_name = var.name
+    f = sp.lambdify(var, expr, modules=["numpy"])
     dx = (b - a) / n
     pad = (b - a) * 0.05
 
@@ -76,7 +90,7 @@ def plot_riemann(
         ys_rect = _as_curve(f(xs_rect), xs_rect)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
-    ax.plot(xs_smooth, ys_smooth, color=CURVE, lw=2, label="y = f(x)")
+    ax.plot(xs_smooth, ys_smooth, color=CURVE, lw=2, label=f"y = f({var_name})")
     ax.axhline(0, color="#999", lw=0.8)
 
     # สี่เหลี่ยม: ใช้ x ของเหลี่ยมนั้นเป็นฐาน
@@ -109,13 +123,13 @@ def plot_riemann(
         0,
         color=FILL,
         alpha=0.55,
-        label="Exact area ∫f(x)dx",
+        label=f"Exact area ∫f({var_name})d{var_name}",
     )
 
-    ax.set_xlabel("x")
+    ax.set_xlabel(var_name)
     ax.set_ylabel("y")
     method_label = {"left": "Left", "right": "Right", "midpoint": "Midpoint"}[method]
-    title = f"Riemann Sum ({method_label}, n={n}, Δx={dx:.4f})"
+    title = f"Riemann Sum ({method_label}, n={n}, Δ{var_name}={dx:.4f})"
     if exact is not None:
         title += f"   | exact={exact:.6f}"
     ax.set_title(title)
@@ -152,7 +166,7 @@ def plot_tangent(
     slope: float | None = None,
     status: str = "finite",
 ) -> tuple:
-    """วาดกราฟ f(x) และเส้นสัมผัสที่จุด x = a
+    """วาดกราฟ f(x) หรือ f(var) และเส้นสัมผัสที่จุด a
 
     expr: sympy expression
     a: จุดที่ต้องการสัมผัส
@@ -160,17 +174,19 @@ def plot_tangent(
     slope: ความชันของเส้นสัมผัส (ถ้ามี)
     status: สถานะเส้นสัมผัส (finite, vertical, non_differentiable, undefined_point)
     """
-    f = sp.lambdify(X, expr, modules=["numpy"])
+    var = _get_plot_var(expr)
+    var_name = var.name
+    f = sp.lambdify(var, expr, modules=["numpy"])
 
-    fa_sym = expr.subs(X, a)
+    fa_sym = expr.subs(var, a)
     try:
         fa = float(fa_sym)
     except (TypeError, ValueError):
         fa = 0.0
 
     if slope is None and status == "finite":
-        df = sp.diff(expr, X)
-        slope_sym = df.subs(X, a)
+        df = sp.diff(expr, var)
+        slope_sym = df.subs(var, a)
         try:
             slope = float(slope_sym)
         except (TypeError, ValueError):
@@ -185,7 +201,7 @@ def plot_tangent(
         ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
-    ax.plot(xs, ys, color=CURVE, lw=2.5, label="y = f(x)")
+    ax.plot(xs, ys, color=CURVE, lw=2.5, label=f"y = f({var_name})")
 
     if status == "vertical":
         ax.axvline(
@@ -193,11 +209,11 @@ def plot_tangent(
             color="#D96B27",
             lw=2,
             linestyle="--",
-            label=f"Vertical Tangent at x={a:.2f}",
+            label=f"Vertical Tangent at {var_name}={a:.2f}",
         )
-        title_str = f"Vertical Tangent at x = {a:.2f}  |  Slope m = ∞"
+        title_str = f"Vertical Tangent at {var_name} = {a:.2f}  |  Slope m = ∞"
     elif status == "non_differentiable":
-        title_str = f"Non-Differentiable at x = {a:.2f} (Corner Point)"
+        title_str = f"Non-Differentiable at {var_name} = {a:.2f} (Corner Point)"
     elif status == "finite" and slope is not None:
         ys_tangent = slope * (xs - a) + fa
         ax.plot(
@@ -206,11 +222,11 @@ def plot_tangent(
             color="#D96B27",
             lw=2,
             linestyle="--",
-            label=f"Tangent at x={a:.2f} (m={slope:.2f})",
+            label=f"Tangent at {var_name}={a:.2f} (m={slope:.2f})",
         )
-        title_str = f"Tangent Line at x = {a:.2f}  |  Slope m = {slope:.4f}"
+        title_str = f"Tangent Line at {var_name} = {a:.2f}  |  Slope m = {slope:.4f}"
     else:
-        title_str = f"Point at x = {a:.2f}"
+        title_str = f"Point at {var_name} = {a:.2f}"
 
     point_label = f"Point ({a:.2f}, {fa:.2f})"
     if status == "non_differentiable":
@@ -234,7 +250,7 @@ def plot_tangent(
         pad = max(1.0, (y_high - y_low) * 0.15)
         ax.set_ylim(y_low - pad, y_high + pad)
 
-    ax.set_xlabel("x")
+    ax.set_xlabel(var_name)
     ax.set_ylabel("y")
     ax.set_title(title_str)
     ax.grid(True, color=GRID, lw=0.5)
@@ -244,22 +260,24 @@ def plot_tangent(
 
 
 def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: float = 0.5, span: float = 3.0) -> tuple:
-    """วาดเส้นโค้ง + จุดวิ่งเข้าใกล้ a ทั้งสองด้าน (หรือพฤติกรรมระยะไกลเมื่อ x -> +-oo)
+    """วาดเส้นโค้ง + จุดวิ่งเข้าใกล้ a ทั้งสองด้าน (หรือพฤติกรรมระยะไกลเมื่อ var -> +-oo)
 
     expr: sympy expression
     a: จุดที่ต้องการหาลิมิต (รองรับตัวเลข, สัญลักษณ์ pi/2, e และอนันต์ inf, -inf)
     delta: ระยะห่างการเข้าใกล้จากซ้ายและขวา
     span: ความกว้างช่วงรอบจุด a
     """
+    var = _get_plot_var(expr)
+    var_name = var.name
     s_a = str(a).lower().replace(" ", "")
     is_pos_inf = (s_a in ("inf", "+inf", "oo", "+oo") or a == sp.oo)
     is_neg_inf = (s_a in ("-inf", "-oo", "-infinity") or a == -sp.oo)
 
     if is_pos_inf or is_neg_inf:
-        f = sp.lambdify(X, expr, modules=["numpy"])
+        f = sp.lambdify(var, expr, modules=["numpy"])
         target_inf = sp.oo if is_pos_inf else -sp.oo
         try:
-            lim_sym = sp.limit(expr, X, target_inf)
+            lim_sym = sp.limit(expr, var, target_inf)
             lim_val = float(lim_sym.evalf()) if getattr(lim_sym, "is_finite", False) else None
         except Exception:
             lim_sym = None
@@ -271,17 +289,17 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
             ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
 
         fig, ax = plt.subplots(figsize=(8, 4.5))
-        ax.plot(xs, ys, color=CURVE, lw=2.5, label="y = f(x)")
+        ax.plot(xs, ys, color=CURVE, lw=2.5, label=f"y = f({var_name})")
         ax.axhline(0, color="#999", lw=0.8, linestyle=":")
 
         title_dir = "+oo" if is_pos_inf else "-oo"
         if lim_val is not None and np.isfinite(lim_val):
             ax.axhline(lim_val, color="#E74C3C", lw=1.6, linestyle="--", label=f"Horizontal Asymptote y = {lim_val:.4f}")
 
-        ax.set_xlabel("x")
+        ax.set_xlabel(var_name)
         ax.set_ylabel("y")
         l_str = f"{lim_val:.4f}" if lim_val is not None else str(lim_sym)
-        ax.set_title(f"End Behavior as x -> {title_dir}  |  L = {l_str}")
+        ax.set_title(f"End Behavior as {var_name} -> {title_dir}  |  L = {l_str}")
         ax.grid(True, color=GRID, lw=0.5)
         ax.legend(loc="best", fontsize=9)
         fig.tight_layout()
@@ -303,9 +321,9 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
         a_disp = "0"
         a_target = sp.Integer(0)
 
-    f = sp.lambdify(X, expr, modules=["numpy"])
+    f = sp.lambdify(var, expr, modules=["numpy"])
     try:
-        lim_sym = sp.limit(expr, X, a_target)
+        lim_sym = sp.limit(expr, var, a_target)
         lim_val = float(lim_sym.evalf()) if getattr(lim_sym, "is_finite", False) else None
         lim_finite = lim_val is not None and np.isfinite(lim_val)
     except Exception:
@@ -325,13 +343,13 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
         ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
-    ax.plot(xs, ys, color=CURVE, lw=2.5, label="y = f(x)")
+    ax.plot(xs, ys, color=CURVE, lw=2.5, label=f"y = f({var_name})")
 
-    # เส้นแนวดิ่งที่ x = a
-    ax.axvline(a_num, color="#9ca3af", lw=1.2, linestyle="--", label=f"x = {a_disp}")
+    # เส้นแนวดิ่งที่ var = a
+    ax.axvline(a_num, color="#9ca3af", lw=1.2, linestyle="--", label=f"{var_name} = {a_disp}")
     ax.axhline(0, color="#999", lw=0.8, linestyle=":")
 
-    # จุดเป้าหมายลิมิตที่ x = a
+    # จุดเป้าหมายลิมิตที่ var = a
     if lim_finite and lim_val is not None:
         ax.plot(
             [a_num],
@@ -351,17 +369,17 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
     x_r = a_num + delta
 
     try:
-        y_l = float(expr.subs(X, x_l))
+        y_l = float(expr.subs(var, x_l))
     except (TypeError, ValueError):
         y_l = None
 
     try:
-        y_r = float(expr.subs(X, x_r))
+        y_r = float(expr.subs(var, x_r))
     except (TypeError, ValueError):
         y_r = None
 
     if y_l is not None and np.isfinite(y_l):
-        ax.scatter([x_l], [y_l], color="#2980B9", s=60, zorder=6, label=f"Left: x={x_l:.2f}")
+        ax.scatter([x_l], [y_l], color="#2980B9", s=60, zorder=6, label=f"Left: {var_name}={x_l:.2f}")
         if lim_finite and lim_val is not None:
             ax.annotate(
                 "",
@@ -371,7 +389,7 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
             )
 
     if y_r is not None and np.isfinite(y_r):
-        ax.scatter([x_r], [y_r], color="#E67E22", s=60, zorder=6, label=f"Right: x={x_r:.2f}")
+        ax.scatter([x_r], [y_r], color="#E67E22", s=60, zorder=6, label=f"Right: {var_name}={x_r:.2f}")
         if lim_finite and lim_val is not None:
             ax.annotate(
                 "",
@@ -380,10 +398,10 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
                 arrowprops=dict(arrowstyle="->", color="#E67E22", lw=1.5),
             )
 
-    ax.set_xlabel("x")
+    ax.set_xlabel(var_name)
     ax.set_ylabel("y")
     l_str = f"{lim_val:.4f}" if (lim_finite and lim_val is not None) else str(lim_sym)
-    ax.set_title(f"Limit as x -> {a_disp}  |  L = {l_str} (delta = {delta:.2f})")
+    ax.set_title(f"Limit as {var_name} -> {a_disp}  |  L = {l_str} (delta = {delta:.2f})")
     ax.grid(True, color=GRID, lw=0.5)
     ax.legend(loc="best", fontsize=9)
     fig.tight_layout()
@@ -402,15 +420,17 @@ def plot_volume(
     method: str = "disk",
     inner_expr=None,
 ) -> tuple:
-    """วาดภาพตัดขวางและการหมุนรอบแกน x แบบ Disk/Washer Method"""
+    """วาดภาพตัดขวางและการหมุนรอบแกนแบบ Disk/Washer Method"""
     from matplotlib.patches import Ellipse
 
     is_washer = (method or "disk").lower() == "washer" and inner_expr is not None
+    var = _get_plot_var(expr, inner_expr)
+    var_name = var.name
 
-    f = sp.lambdify(X, expr, modules=["numpy"])
+    f = sp.lambdify(var, expr, modules=["numpy"])
     f_in = None
     if is_washer:
-        f_in = sp.lambdify(X, inner_expr, modules=["numpy"])
+        f_in = sp.lambdify(var, inner_expr, modules=["numpy"])
 
     x_start = min(a, b)
     x_end = max(a, b)
@@ -432,10 +452,10 @@ def plot_volume(
 
     if is_washer:
         # เส้นขอบนอกและเส้นขอบใน
-        ax.plot(xs_solid, ys_solid, color=CURVE, lw=2.2, label="Outer Radius R(x)")
-        ax.plot(xs_solid, -ys_solid, color=CURVE, lw=1.8, linestyle="--", label="Reflection -R(x)")
-        ax.plot(xs_solid, ys_inner, color="#2563EB", lw=2.0, label="Inner Radius r(x)")
-        ax.plot(xs_solid, -ys_inner, color="#2563EB", lw=1.6, linestyle=":", label="Reflection -r(x)")
+        ax.plot(xs_solid, ys_solid, color=CURVE, lw=2.2, label=f"Outer Radius R({var_name})")
+        ax.plot(xs_solid, -ys_solid, color=CURVE, lw=1.8, linestyle="--", label=f"Reflection -R({var_name})")
+        ax.plot(xs_solid, ys_inner, color="#2563EB", lw=2.0, label=f"Inner Radius r({var_name})")
+        ax.plot(xs_solid, -ys_inner, color="#2563EB", lw=1.6, linestyle=":", label=f"Reflection -r({var_name})")
 
         # แรเงาเนื้อทรงตันวงแหวน
         ax.fill_between(xs_solid, ys_solid, ys_inner, where=(ys_solid >= ys_inner), color=CURVE, alpha=0.3, label="Solid Washer")
@@ -456,9 +476,9 @@ def plot_volume(
                     inner_el = Ellipse((sx, 0), width, 2 * abs(sy_in), edgecolor="#2563EB", facecolor="white", alpha=0.9, lw=1.0)
                     ax.add_patch(inner_el)
     else:
-        # เส้นขอบบนและเส้นสะท้อนขอบล่างรอบแกน x (Disk)
-        ax.plot(xs_solid, ys_solid, color=CURVE, lw=2.2, label="Radius R(x)")
-        ax.plot(xs_solid, -ys_solid, color=CURVE, lw=1.8, linestyle="--", label="Reflection -R(x)")
+        # เส้นขอบบนและเส้นสะท้อนขอบล่างรอบแกน (Disk)
+        ax.plot(xs_solid, ys_solid, color=CURVE, lw=2.2, label=f"Radius R({var_name})")
+        ax.plot(xs_solid, -ys_solid, color=CURVE, lw=1.8, linestyle="--", label=f"Reflection -R({var_name})")
 
         # แรเงาเนื้อทรงตันหมุน
         ax.fill_between(xs_solid, ys_solid, -ys_solid, color=CURVE, alpha=0.25, label="Solid of Revolution")
@@ -476,12 +496,12 @@ def plot_volume(
                 ellipse = Ellipse((sx, 0), width, height, edgecolor="#D97706", facecolor="#FDE68A", alpha=0.35, lw=1.2)
                 ax.add_patch(ellipse)
 
-    # แกนหมุน x-axis
+    # แกนหมุน
     ax.axhline(0, color="#DC2626", lw=1.2, linestyle="-.", label="Axis of Revolution (y = 0)")
     ax.axvline(a, color="#9ca3af", lw=1, linestyle=":")
     ax.axvline(b, color="#9ca3af", lw=1, linestyle=":")
 
-    ax.set_xlabel("x")
+    ax.set_xlabel(var_name)
     ax.set_ylabel("y")
     method_title = "Washer Method" if is_washer else "Disk Method"
     ax.set_title(f"Volume of Solid of Revolution ({method_title} on [{a}, {b}])")
@@ -502,10 +522,12 @@ def plot_volume(
 
 
 def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
-    """วาดเส้นโค้ง 2 เส้น f(x) และ g(x) พร้อมแรเงาพื้นที่ระหว่างเส้นโค้งบนช่วง [a, b]"""
+    """วาดเส้นโค้ง 2 เส้น f(x) หรือ f(var) และ g(x) หรือ g(var) พร้อมแรเงาพื้นที่ระหว่างเส้นโค้งบนช่วง [a, b]"""
     MODULE_MAP = [{"real_root": lambda b, n: np.sign(b) * (np.abs(b) ** (1.0 / n))}, "numpy"]
-    f = sp.lambdify(X, f_expr, modules=MODULE_MAP)
-    g = sp.lambdify(X, g_expr, modules=MODULE_MAP)
+    var = _get_plot_var(f_expr, g_expr)
+    var_name = var.name
+    f = sp.lambdify(var, f_expr, modules=MODULE_MAP)
+    g = sp.lambdify(var, g_expr, modules=MODULE_MAP)
 
     x_start = min(a, b)
     x_end = max(a, b)
@@ -523,8 +545,8 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
         ys_g_area = _as_curve(g(xs_area), xs_area)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
-    ax.plot(xs_full, ys_f_full, color=CURVE, lw=2.2, label="y = f(x)")
-    ax.plot(xs_full, ys_g_full, color="#2563EB", lw=2.2, linestyle="--", label="y = g(x)")
+    ax.plot(xs_full, ys_f_full, color=CURVE, lw=2.2, label=f"y = f({var_name})")
+    ax.plot(xs_full, ys_g_full, color="#2563EB", lw=2.2, linestyle="--", label=f"y = g({var_name})")
 
     # แรเงาพื้นที่ระหว่าง f และ g
     ax.fill_between(
@@ -548,11 +570,11 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
         label="Area (g > f)",
     )
 
-    ax.axvline(a, color="#9ca3af", linestyle=":", lw=1.2, label=f"x = {a}")
-    ax.axvline(b, color="#9ca3af", linestyle=":", lw=1.2, label=f"x = {b}")
+    ax.axvline(a, color="#9ca3af", linestyle=":", lw=1.2, label=f"{var_name} = {a}")
+    ax.axvline(b, color="#9ca3af", linestyle=":", lw=1.2, label=f"{var_name} = {b}")
     ax.axhline(0, color="#9ca3af", lw=0.8, linestyle=":")
 
-    ax.set_xlabel("x")
+    ax.set_xlabel(var_name)
     ax.set_ylabel("y")
     ax.set_title(f"Area Between Curves on [{a}, {b}]")
     ax.grid(True, color=GRID, lw=0.5)
@@ -572,7 +594,9 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
 
 def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | str | sp.Expr | None = None) -> tuple:
     """วาดเส้นโค้งและพื้นที่ใต้กราฟของอินทิกรัลไม่ตรงแบบ (รองรับช่วงจำกัด, กึ่งอนันต์, และสองทาง (-oo, oo))"""
-    f = sp.lambdify(X, expr, modules=["numpy"])
+    var = _get_plot_var(expr)
+    var_name = var.name
+    f = sp.lambdify(var, expr, modules=["numpy"])
 
     s_a = str(a).lower().replace(" ", "")
     is_inf_lower = (s_a in ("-inf", "-oo", "-infinity") or a == -sp.oo)
@@ -612,7 +636,7 @@ def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | s
         ys = _as_curve(f(xs), xs)
 
     fig, ax = plt.subplots(figsize=(8, 4.5))
-    ax.plot(xs, ys, color=CURVE, lw=2.2, label="y = f(x)")
+    ax.plot(xs, ys, color=CURVE, lw=2.2, label=f"y = f({var_name})")
 
     xs_shade = np.linspace(shade_start, shade_end, 300)
     xs_shade = xs_shade[np.abs(xs_shade) > 1e-4]
@@ -637,7 +661,7 @@ def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | s
         ax.axvline(shade_end, color="#DC2626", lw=1.2, linestyle="--", label=f"b = {shade_end:g}")
 
     ax.axhline(0, color="#9ca3af", lw=0.8, linestyle=":")
-    ax.set_xlabel("x")
+    ax.set_xlabel(var_name)
     ax.set_ylabel("y")
     ax.set_title(f"Improper Integral Visualization ({shade_label})")
     ax.grid(True, color=GRID, lw=0.5)
@@ -652,3 +676,4 @@ def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | s
     ax.legend(loc="upper right", fontsize=8.5, framealpha=0.9)
     fig.tight_layout()
     return fig, ax
+

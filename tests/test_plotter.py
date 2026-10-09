@@ -58,3 +58,31 @@ def test_plot_volume_washer():
         assert len(ax.lines) >= 4
     finally:
         plt.close(fig)
+
+
+def test_plotter_supports_arbitrary_variables():
+    from utils.plotter import plot_tangent, plot_limit_near
+    t = sp.Symbol("t")
+    y = sp.Symbol("y")
+    u = sp.Symbol("u")
+
+    fig1, ax1 = plot_riemann(t**2, 0.0, 2.0, n=4)
+    assert ax1.get_xlabel() == "t"
+    plt.close(fig1)
+
+    fig2, ax2 = plot_area_between(t, t**2, 0.0, 1.0)
+    assert ax2.get_xlabel() == "t"
+    plt.close(fig2)
+
+    fig3, ax3 = plot_tangent(y**3, 1.0)
+    assert ax3.get_xlabel() == "y"
+    plt.close(fig3)
+
+    fig4, ax4 = plot_limit_near(sp.sin(u) / u, 0.0)
+    assert ax4.get_xlabel() == "u"
+    plt.close(fig4)
+
+    fig5, ax5 = plot_volume(y, 0.0, 2.0, method="disk")
+    assert ax5.get_xlabel() == "y"
+    plt.close(fig5)
+

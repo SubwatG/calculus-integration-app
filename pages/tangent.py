@@ -113,6 +113,10 @@ if not expr_input.strip():
 else:
     res = compute_tangent(expr_input, a_val)
     if res["ok"]:
+        v_name = res.get("variable", "x")
+        if v_name != "x":
+            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+
         st.markdown("### ผลลัพธ์สมการเส้นสัมผัส")
         col_m1, col_m2 = st.columns([1, 2])
         with col_m1:
@@ -126,7 +130,7 @@ else:
             else:
                 m_val = res["result"]
                 m_str = f"{m_val:.4f}" if m_val is not None else "-"
-            st.metric(label="ความชันเส้นสัมผัส m = f'(a)", value=m_str)
+            st.metric(label=f"ความชันเส้นสัมผัส m = f'({v_name})", value=m_str)
         with col_m2:
             render_latex(res["latex"])
 
@@ -139,8 +143,8 @@ else:
                 status=res.get("status", "finite"),
             )
             st.pyplot(fig)
-        except Exception:
-            st.warning("ไม่สามารถวาดกราฟได้ ตรวจสอบฟังก์ชันอีกครั้ง")
+        except Exception as e:
+            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
 
         st.divider()
         render_steps(res["steps"])

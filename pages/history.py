@@ -11,7 +11,15 @@ if not quiz_scores:
 else:
     table_data = []
     topic_titles = {
-        "basic_rules": "Basic Integration Rules Quiz",
+        "all": "แบบทดสอบรวมทุกบท (80 ข้อ)",
+        "tangent": "1. เส้นสัมผัสและอนุพันธ์",
+        "limits": "2. ลิมิตและความต่อเนื่อง",
+        "basic_rules": "3. กฎพื้นฐานและทฤษฎีบท",
+        "riemann": "4. ผลรวมรีมันน์และการประมาณค่า",
+        "techniques": "5. เทคนิคการเปลี่ยนตัวแปร & By Parts",
+        "area_between": "6. พื้นที่ระหว่างเส้นโค้ง",
+        "improper_integrals": "7. ปริพันธ์ไม่ตรงแบบ",
+        "volume_revolution": "8. ปริมาตรของรูปทรงตันจากการหมุน",
     }
 
     for topic_key, result in quiz_scores.items():

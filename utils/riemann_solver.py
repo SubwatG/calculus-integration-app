@@ -36,6 +36,8 @@ LOCAL_MATH_DICT = {
 
 X = sp.Symbol("x")
 
+from utils.sympy_solver import _clean_calculus_input, _get_variable
+
 # วิธีที่รองรับ: key -> (ชื่อไทย, latex subscript ที่ใช้ในสูตร)
 METHODS = {
     "left": ("ซ้าย (left)", r"L_n"),
@@ -58,9 +60,9 @@ def _fmt_num(x: float) -> str:
     return f"{x:.4f}".rstrip("0").rstrip(".")
 
 
-def _point_latex(expr: sp.Expr, x_val: float) -> str:
+def _point_latex(expr: sp.Expr, x_val: float, var: sp.Symbol = X) -> str:
     """LaTeX ของ f(x_i) เมื่อแทนค่าแล้ว"""
-    val = float(expr.subs(X, x_val))
+    val = float(expr.subs(var, x_val))
     return _fmt_num(val)
 
 
@@ -76,7 +78,14 @@ def compute_riemann(
     Returns dict {ok, result, latex, steps, error}
     """
     try:
-        expr = _parse_input(expr_str)
+        clean_str, diff_var = _clean_calculus_input(expr_str)
+        expr = _parse_input(clean_str)
+        if diff_var is not None:
+            var_sym = sp.Symbol(diff_var)
+        else:
+            var_sym = _get_variable(expr)
+        v_lat = sp.latex(var_sym)
+
         a_f, b_f = float(a), float(b)
         try:
             n_f = float(n)
@@ -103,16 +112,16 @@ def compute_riemann(
 
         terms = []
         for xv in xs:
-            val_sub = expr.subs(X, xv)
+            val_sub = expr.subs(var_sym, xv)
             if val_sub in (sp.zoo, sp.oo, -sp.oo) or getattr(val_sub, "is_infinite", False):
-                raise ValueError(f"ฟังก์ชันมีจุดเอกฐาน (หารด้วยศูนย์) ที่จุดสุ่มตัวอย่าง x = {_fmt_num(xv)}")
+                raise ValueError(f"ฟังก์ชันมีจุดเอกฐาน (หารด้วยศูนย์) ที่จุดสุ่มตัวอย่าง {v_lat} = {_fmt_num(xv)}")
             try:
                 f_val = float(val_sub.evalf())
                 if not math.isfinite(f_val):
-                    raise ValueError(f"ฟังก์ชันไม่จำกัดเขตที่จุด x = {_fmt_num(xv)}")
+                    raise ValueError(f"ฟังก์ชันไม่จำกัดเขตที่จุด {v_lat} = {_fmt_num(xv)}")
                 terms.append(f_val)
             except Exception:
-                raise ValueError(f"ไม่สามารถคำนวณค่าฟังก์ชันบนจุดสุ่มตัวอย่าง x = {_fmt_num(xv)} ได้")
+                raise ValueError(f"ไม่สามารถคำนวณค่าฟังก์ชันบนจุดสุ่มตัวอย่าง {v_lat} = {_fmt_num(xv)} ได้")
 
         total = sum(terms) * dx
 
@@ -124,28 +133,28 @@ def compute_riemann(
         terms_latex = " + ".join(term_strs)
         # ใช้สัญลักษณ์ผลรวมถ้า n ใหญ่
         if n_i > 8:
-            first = _point_latex(expr, xs[0])
-            last = _point_latex(expr, xs[-1])
+            first = _point_latex(expr, xs[0], var=var_sym)
+            last = _point_latex(expr, xs[-1], var=var_sym)
             if method == "midpoint":
-                index_note = r"\bar{x}_i = a + \left(i-\tfrac12\right)\Delta x"
-                terms_latex = f"f(\\bar{{x}}_1)+\\cdots+f(\\bar{{x}}_{{{n_i}}})"
+                index_note = rf"\bar{{{v_lat}}}_i = a + \left(i-\tfrac12\right)\Delta {v_lat}"
+                terms_latex = f"f(\\bar{{{v_lat}}}_1)+\\cdots+f(\\bar{{{v_lat}}}_{{{n_i}}})"
             elif method == "right":
-                index_note = f"x_i = a + i\\,\\Delta x"
-                terms_latex = f"f(x_1)+\\cdots+f(x_{{{n_i}}})"
+                index_note = f"{v_lat}_i = a + i\\,\\Delta {v_lat}"
+                terms_latex = f"f({v_lat}_1)+\\cdots+f({v_lat}_{{{n_i}}})"
             else:
-                index_note = f"x_i = a + i\\,\\Delta x"
-                terms_latex = f"f(x_0)+\\cdots+f(x_{{{n_i-1}}})"
+                index_note = f"{v_lat}_i = a + i\\,\\Delta {v_lat}"
+                terms_latex = f"f({v_lat}_0)+\\cdots+f({v_lat}_{{{n_i-1}}})"
 
-        sample_symbol = r"\bar{x}_i" if method == "midpoint" else "x_i"
+        sample_symbol = rf"\bar{{{v_lat}}}_i" if method == "midpoint" else f"{v_lat}_i"
         sample_label = "จุดกึ่งกลางช่วง" if method == "midpoint" else "จุดแบ่งช่วง"
 
         steps = [
-            f"หาความกว้างของแต่ละช่วง: $\\Delta x = \\frac{{b-a}}{{n}} = \\frac{{{_fmt_num(b_f)}-{_fmt_num(a_f)}}}{{{n_i}}} = {_fmt_num(dx)}$",
+            f"หาความกว้างของแต่ละช่วง: $\\Delta {v_lat} = \\frac{{b-a}}{{n}} = \\frac{{{_fmt_num(b_f)}-{_fmt_num(a_f)}}}{{{n_i}}} = {_fmt_num(dx)}$",
             f"{sample_label} ${sample_symbol}$: ${', '.join(_fmt_num(xv) for xv in xs)}$",
             f"คำนวณ $f({sample_symbol})$ แต่ละจุด แล้วรวมกัน: ${terms_latex}$",
-            f"คูณด้วย $\\Delta x$: ${method_latex} = \\left({terms_latex}\\right)\\cdot {_fmt_num(dx)}$",
+            f"คูณด้วย $\\Delta {v_lat}$: ${method_latex} = \\left({terms_latex}\\right)\\cdot {_fmt_num(dx)}$",
             f"ค่าประมาณ: ${method_latex} \\approx {total:.6f}$",
-            f"ข้อสังเกตมโนทัศน์: เมื่อเพิ่มจำนวนช่วง $n \\to \\infty$ ความกว้าง $\\Delta x \\to 0$ ค่าผลรวมรีมันน์ {method_latex} จะลู่เข้าสู่ค่าพื้นที่จริงตามนิยามปริพันธ์จำกัดเขต $\\int_a^b f(x)\\,dx$",
+            f"ข้อสังเกตมโนทัศน์: เมื่อเพิ่มจำนวนช่วง $n \\to \\infty$ ความกว้าง $\\Delta {v_lat} \\to 0$ ค่าผลรวมรีมันน์ {method_latex} จะลู่เข้าสู่ค่าพื้นที่จริงตามนิยามปริพันธ์จำกัดเขต $\\int_a^b f({v_lat})\\,d{v_lat}$",
         ]
 
         return {
@@ -155,6 +164,7 @@ def compute_riemann(
             "steps": steps,
             "expr": expr,
             "error": None,
+            "variable": str(var_sym.name),
         }
     except Exception as e:
         return {

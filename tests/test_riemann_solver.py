@@ -81,3 +81,11 @@ class TestMethodsCatalog:
         assert set(METHODS.keys()) == {"left", "right", "midpoint"}
         for k, v in METHODS.items():
             assert len(v) == 2  # (ชื่อไทย, latex subscript)
+
+    def test_riemann_supports_variable_t(self):
+        res = compute_riemann("t**2", 0, 2, 2, "left")
+        assert res["ok"] is True
+        assert res["variable"] == "t"
+        assert "\\Delta t" in res["steps"][0]
+        assert abs(res["result"] - 1.0) < 1e-9
+

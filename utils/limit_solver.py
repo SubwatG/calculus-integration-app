@@ -40,6 +40,7 @@ LOCAL_MATH_DICT = {
 }
 
 X = sp.Symbol("x")
+from utils.sympy_solver import _clean_calculus_input, _get_variable
 
 
 def _classify_limit(left: sp.Expr, right: sp.Expr) -> str:
@@ -78,13 +79,13 @@ def _parse_target_a(a_val: float | int | str | sp.Expr) -> sp.Expr:
     return parse_expr(s, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
 
 
-def _check_real_domain(expr: sp.Expr, a: float, delta: float = 0.01) -> tuple[bool, bool]:
+def _check_real_domain(expr: sp.Expr, a: float, delta: float = 0.01, var: sp.Symbol = X) -> tuple[bool, bool]:
     """ตรวจสอบว่าฟังก์ชันนิยามบนระบบจำนวนจริงทางซ้าย a - delta และทางขวา a + delta หรือไม่"""
     left_sample = a - delta
     right_sample = a + delta
 
     try:
-        val_l = expr.subs(X, left_sample)
+        val_l = expr.subs(var, left_sample)
         im_l = float(sp.im(val_l.evalf()))
         re_l = float(sp.re(val_l.evalf()))
         left_real = abs(im_l) < 1e-9 and math.isfinite(re_l)
@@ -92,7 +93,7 @@ def _check_real_domain(expr: sp.Expr, a: float, delta: float = 0.01) -> tuple[bo
         left_real = False
 
     try:
-        val_r = expr.subs(X, right_sample)
+        val_r = expr.subs(var, right_sample)
         im_r = float(sp.im(val_r.evalf()))
         re_r = float(sp.re(val_r.evalf()))
         right_real = abs(im_r) < 1e-9 and math.isfinite(re_r)
@@ -103,7 +104,7 @@ def _check_real_domain(expr: sp.Expr, a: float, delta: float = 0.01) -> tuple[bo
 
 
 def _format_point_str(a_sp: sp.Expr) -> str:
-    """แปลงจุด a_sp เป็นสตริงหรือ LaTeX ที่อ่านง่าย เช่น 2, \pi/2, \infty"""
+    r"""แปลงจุด a_sp เป็นสตริงหรือ LaTeX ที่อ่านง่าย เช่น 2, \pi/2, \infty"""
     if a_sp == sp.oo:
         return "\\infty"
     if a_sp == -sp.oo:
@@ -138,25 +139,31 @@ def _format_samples(a_sp: sp.Expr) -> tuple[str, str]:
 
 
 def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> dict:
-    """คำนวณลิมิต x -> a (รองรับจำนวนจริง, สัญลักษณ์ pi, e และอนันต์ inf, -inf)"""
+    """คำนวณลิมิต x -> a หรือ var -> a (รองรับจำนวนจริง, สัญลักษณ์ pi, e และอนันต์ inf, -inf)"""
     try:
-        expr = _parse_input(expr_str)
+        clean_str, diff_var = _clean_calculus_input(expr_str)
+        expr = _parse_input(clean_str)
+        if diff_var is not None:
+            var_sym = sp.Symbol(diff_var)
+        else:
+            var_sym = _get_variable(expr)
+        v_lat = sp.latex(var_sym)
         a_sp = _parse_target_a(a)
 
         # ---------------------------------------------------------
-        # กรณีลิมิตที่อนันต์ x -> +oo หรือ x -> -oo
+        # กรณีลิมิตที่อนันต์ var -> +oo หรือ var -> -oo
         # ---------------------------------------------------------
         if a_sp in (sp.oo, -sp.oo):
             is_pos_inf = (a_sp == sp.oo)
             dir_tex = "\\infty" if is_pos_inf else "-\\infty"
             x_desc = (
-                "มีค่าเป็นบวกเพิ่มขึ้นอย่างมหาศาล ($x \\to +\\infty$)"
+                f"มีค่าเป็นบวกเพิ่มขึ้นอย่างมหาศาล (${v_lat} \\to +\\infty$)"
                 if is_pos_inf
-                else "มีค่าเป็นลบลดลงอย่างมหาศาล ($x \\to -\\infty$)"
+                else f"มีค่าเป็นลบลดลงอย่างมหาศาล (${v_lat} \\to -\\infty$)"
             )
 
             try:
-                lim_val = sp.limit(expr, X, a_sp)
+                lim_val = sp.limit(expr, var_sym, a_sp)
             except Exception:
                 lim_val = None
 
@@ -164,37 +171,37 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
             if is_oscillating:
                 status = "dne"
                 result = None
-                latex_str = f"\\lim_{{x \\to {dir_tex}}} {sp.latex(expr)} \\quad \\text{{(does not exist)}}"
+                latex_str = f"\\lim_{{{v_lat} \\to {dir_tex}}} {sp.latex(expr)} \\quad \\text{{(does not exist)}}"
                 steps = [
-                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร $x$ {x_desc}\n\\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
-                    f"การวิเคราะห์พฤติกรรม: ฟังก์ชันมีการแกว่งกวัดขึ้นลงไม่สิ้นสุด (Oscillating) เมื่อ $x \\to {dir_tex}$ จึงไม่ลู่เข้าหาค่าคงที่ใด",
-                    f"สรุปผล (ไม่มีลิมิตเนื่องจากการแกว่งกวัด): \\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}",
+                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร ${v_lat}$ {x_desc}\n\\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
+                    f"การวิเคราะห์พฤติกรรม: ฟังก์ชันมีการแกว่งกวัดขึ้นลงไม่สิ้นสุด (Oscillating) เมื่อ ${v_lat} \\to {dir_tex}$ จึงไม่ลู่เข้าหาค่าคงที่ใด",
+                    f"สรุปผล (ไม่มีลิมิตเนื่องจากการแกว่งกวัด): \\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}",
                 ]
             elif lim_val in (sp.oo, -sp.oo):
                 status = "infinite"
                 result = None
-                latex_str = f"\\lim_{{x \\to {dir_tex}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
+                latex_str = f"\\lim_{{{v_lat} \\to {dir_tex}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
                 steps = [
-                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร $x$ {x_desc}\n\\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
+                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร ${v_lat}$ {x_desc}\n\\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
                     f"การวิเคราะห์พฤติกรรม: ค่าฟังก์ชันเพิ่มขึ้น/ลดลงอย่างไม่มีขอบเขต พุ่งไปสู่ ${sp.latex(lim_val)}$",
-                    f"สรุปผล (ลิมิตลู่ออกสู่อนันต์): \\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_val)}",
+                    f"สรุปผล (ลิมิตลู่ออกสู่อนันต์): \\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_val)}",
                 ]
             elif lim_val is not None and getattr(lim_val, "is_finite", False) and getattr(lim_val, "is_real", False):
                 status = "finite"
                 result = float(lim_val.evalf())
-                latex_str = f"\\lim_{{x \\to {dir_tex}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
+                latex_str = f"\\lim_{{{v_lat} \\to {dir_tex}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
                 steps = [
-                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร $x$ {x_desc}\n\\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
-                    f"การวิเคราะห์พฤติกรรมและการจัดรูป: เมื่อ $x \\to {dir_tex}$ พจน์ที่มีกำลังต่ำกว่าจะถูกครอบงำด้วยพจน์กำลังสูงสุด ส่งผลให้ค่าฟังก์ชันลู่เข้าสู่ค่าคงที่ ${sp.latex(lim_val)}$ เกิดเป็นเส้นกำกับแนวนอน (Horizontal Asymptote) $y = {sp.latex(lim_val)}$",
-                    f"พิจารณาค่าลิมิต: \\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_val)}",
-                    f"สรุปผลค่าลิมิตที่อนันต์ (เส้นกำกับแนวนอน): \\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_val)}",
+                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร ${v_lat}$ {x_desc}\n\\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
+                    f"การวิเคราะห์พฤติกรรมและการจัดรูป: เมื่อ ${v_lat} \\to {dir_tex}$ พจน์ที่มีกำลังต่ำกว่าจะถูกครอบงำด้วยพจน์กำลังสูงสุด ส่งผลให้ค่าฟังก์ชันลู่เข้าสู่ค่าคงที่ ${sp.latex(lim_val)}$ เกิดเป็นเส้นกำกับแนวนอน (Horizontal Asymptote) $y = {sp.latex(lim_val)}$",
+                    f"พิจารณาค่าลิมิต: \\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_val)}",
+                    f"สรุปผลค่าลิมิตที่อนันต์ (เส้นกำกับแนวนอน): \\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_val)}",
                 ]
             else:
                 status = "unsupported"
                 result = None
-                latex_str = f"\\lim_{{x \\to {dir_tex}}} {sp.latex(expr)} \\quad \\text{{(unsupported)}}"
+                latex_str = f"\\lim_{{{v_lat} \\to {dir_tex}}} {sp.latex(expr)} \\quad \\text{{(unsupported)}}"
                 steps = [
-                    f"กำหนดโจทย์ลิมิตที่อนันต์: \\lim_{{x \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
+                    f"กำหนดโจทย์ลิมิตที่อนันต์: \\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
                     "ไม่สามารถสรุปค่าลิมิตที่อนันต์ได้จากข้อมูลการคำนวณในระบบ",
                 ]
 
@@ -211,17 +218,18 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
                 "is_oscillating": is_oscillating,
                 "a_sp": a_sp,
                 "is_infinite": True,
+                "variable": str(var_sym.name),
             }
 
         # ---------------------------------------------------------
-        # กรณีลิมิตเข้าใกล้จุดจำกัด x -> a (ตัวเลขหรือสัญลักษณ์จำกัด)
+        # กรณีลิมิตเข้าใกล้จุดจำกัด var -> a (ตัวเลขหรือสัญลักษณ์จำกัด)
         # ---------------------------------------------------------
         a_num = float(a_sp.evalf())
-        left_real, right_real = _check_real_domain(expr, a_num)
+        left_real, right_real = _check_real_domain(expr, a_num, var=var_sym)
 
         try:
-            lim_left = sp.limit(expr, X, a_sp, dir="-")
-            lim_right = sp.limit(expr, X, a_sp, dir="+")
+            lim_left = sp.limit(expr, var_sym, a_sp, dir="-")
+            lim_right = sp.limit(expr, var_sym, a_sp, dir="+")
             status = _classify_limit(lim_left, lim_right)
         except Exception:
             lim_left, lim_right = None, None
@@ -233,7 +241,7 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
         elif left_real and not right_real:
             status = "left_only"
 
-        # ตรวจสอบการแกว่งกวัดความถี่สูง (Oscillating) เช่น sin(1/x)
+        # ตรวจสอบการแกว่งกวัดความถี่สูง (Oscillating) เช่น sin(1/var)
         is_oscillating = isinstance(lim_left, AccumulationBounds) or isinstance(lim_right, AccumulationBounds)
 
         a_str = _format_point_str(a_sp)
@@ -242,97 +250,97 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
         s_left_ex, s_right_ex = _format_samples(a_sp)
 
         steps = [
-            f"กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชัน $f(x)$ เมื่อค่าตัวแปร $x$ ขยับเข้าใกล้จุด $x = {a_str}$ (โดยที่ $x \\neq {a_str}$)\n\\lim_{{x \\to {a_str}}} \\left({sp.latex(expr)}\\right)",
+            f"กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชัน $f({v_lat})$ เมื่อค่าตัวแปร ${v_lat}$ ขยับเข้าใกล้จุด ${v_lat} = {a_str}$ (โดยที่ ${v_lat} \\neq {a_str}$)\n\\lim_{{{v_lat} \\to {a_str}}} \\left({sp.latex(expr)}\\right)",
         ]
 
         if status == "right_only":
             steps.append(
-                f"ข้อสังเกตโดเมน: ฟังก์ชันไม่นิยามบนระบบจำนวนจริงทางซ้ายของ $x = {a_str}$ (เช่น รากที่สองหรือลอการิทึม) จึงพิจารณาเฉพาะลิมิตทางขวา (Right-hand Limit) เท่านั้น"
+                f"ข้อสังเกตโดเมน: ฟังก์ชันไม่นิยามบนระบบจำนวนจริงทางซ้ายของ ${v_lat} = {a_str}$ (เช่น รากที่สองหรือลอการิทึม) จึงพิจารณาเฉพาะลิมิตทางขวา (Right-hand Limit) เท่านั้น"
             )
             steps.append(
-                f"พิจารณาลิมิตทางขวา: สัญลักษณ์ $x \\to {a_dir_right}$ หมายถึงให้ค่า $x$ ค่อย ๆ ขยับเข้าใกล้ ${a_str}$ จากฝั่งขวาบนเส้นจำนวน (โดยที่ $x > {a_str}$ เช่น $x = {s_right_ex} \\dots$)\n\\lim_{{x \\to {a_dir_right}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_right)}"
+                f"พิจารณาลิมิตทางขวา: สัญลักษณ์ ${v_lat} \\to {a_dir_right}$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ ${a_str}$ จากฝั่งขวาบนเส้นจำนวน (โดยที่ ${v_lat} > {a_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\n\\lim_{{{v_lat} \\to {a_dir_right}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_right)}"
             )
             if getattr(lim_right, "is_finite", False) and getattr(lim_right, "is_real", False):
                 result = float(lim_right)
-                latex_str = f"\\lim_{{x \\to {a_dir_right}}} {sp.latex(expr)} = {sp.latex(lim_right)}"
+                latex_str = f"\\lim_{{{v_lat} \\to {a_dir_right}}} {sp.latex(expr)} = {sp.latex(lim_right)}"
             else:
                 result = None
-                latex_str = f"\\lim_{{x \\to {a_dir_right}}} {sp.latex(expr)} = {sp.latex(lim_right)}"
+                latex_str = f"\\lim_{{{v_lat} \\to {a_dir_right}}} {sp.latex(expr)} = {sp.latex(lim_right)}"
         elif status == "left_only":
             steps.append(
-                f"ข้อสังเกตโดเมน: ฟังก์ชันไม่นิยามบนระบบจำนวนจริงทางขวาของ $x = {a_str}$ จึงพิจารณาเฉพาะลิมิตทางซ้าย (Left-hand Limit) เท่านั้น"
+                f"ข้อสังเกตโดเมน: ฟังก์ชันไม่นิยามบนระบบจำนวนจริงทางขวาของ ${v_lat} = {a_str}$ จึงพิจารณาเฉพาะลิมิตทางซ้าย (Left-hand Limit) เท่านั้น"
             )
             steps.append(
-                f"พิจารณาลิมิตทางซ้าย: สัญลักษณ์ $x \\to {a_dir_left}$ หมายถึงให้ค่า $x$ ค่อย ๆ ขยับเข้าใกล้ ${a_str}$ จากฝั่งซ้ายบนเส้นจำนวน (โดยที่ $x < {a_str}$ เช่น $x = {s_left_ex} \\dots$)\n\\lim_{{x \\to {a_dir_left}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_left)}"
+                f"พิจารณาลิมิตทางซ้าย: สัญลักษณ์ ${v_lat} \\to {a_dir_left}$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ ${a_str}$ จากฝั่งซ้ายบนเส้นจำนวน (โดยที่ ${v_lat} < {a_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\n\\lim_{{{v_lat} \\to {a_dir_left}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_left)}"
             )
             if getattr(lim_left, "is_finite", False) and getattr(lim_left, "is_real", False):
                 result = float(lim_left)
-                latex_str = f"\\lim_{{x \\to {a_dir_left}}} {sp.latex(expr)} = {sp.latex(lim_left)}"
+                latex_str = f"\\lim_{{{v_lat} \\to {a_dir_left}}} {sp.latex(expr)} = {sp.latex(lim_left)}"
             else:
                 result = None
-                latex_str = f"\\lim_{{x \\to {a_dir_left}}} {sp.latex(expr)} = {sp.latex(lim_left)}"
+                latex_str = f"\\lim_{{{v_lat} \\to {a_dir_left}}} {sp.latex(expr)} = {sp.latex(lim_left)}"
         else:
             left_note = ""
             if lim_left == sp.oo:
-                left_note = f"เมื่อ $x < {a_str}$ และเข้าใกล้ ${a_str}$ มาก ๆ ค่า $f(x)$ จะมีค่าบวกเพิ่มขึ้นอย่างไม่มีขอบเขต พุ่งขึ้นสู่อนันต์ ($+\\infty$)"
+                left_note = f"เมื่อ ${v_lat} < {a_str}$ และเข้าใกล้ ${a_str}$ มาก ๆ ค่า $f({v_lat})$ จะมีค่าบวกเพิ่มขึ้นอย่างไม่มีขอบเขต พุ่งขึ้นสู่อนันต์ ($+\\infty$)"
             elif lim_left == -sp.oo:
-                left_note = f"เมื่อ $x < {a_str}$ และเข้าใกล้ ${a_str}$ มาก ๆ ตัวส่วนมีค่าน้อยมากฝั่งลบ ทำให้ค่า $f(x)$ ติดลบมหาศาล พุ่งลงสู่ลบอนันต์ ($-\\infty$)"
+                left_note = f"เมื่อ ${v_lat} < {a_str}$ และเข้าใกล้ ${a_str}$ มาก ๆ ตัวส่วนมีค่าน้อยมากฝั่งลบ ทำให้ค่า $f({v_lat})$ ติดลบมหาศาล พุ่งลงสู่ลบอนันต์ ($-\\infty$)"
             elif lim_left is not None:
-                left_note = f"เมื่อค่า $x$ ขยับเข้าใกล้ ${a_str}$ ทางซ้าย ค่าของ $f(x)$ มีแนวโน้มลู่เข้าหาค่าคงที่ ${sp.latex(lim_left)}$"
+                left_note = f"เมื่อค่า ${v_lat}$ ขยับเข้าใกล้ ${a_str}$ ทางซ้าย ค่าของ $f({v_lat})$ มีแนวโน้มลู่เข้าหาค่าคงที่ ${sp.latex(lim_left)}$"
 
             steps.append(
-                f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ $x \\to {a_dir_left}$ หมายถึงให้ค่า $x$ ค่อย ๆ ขยับเข้าใกล้ ${a_str}$ จากฝั่งซ้ายของเส้นจำนวน (ค่าน้อยกว่า ${a_str}$ เสมอ หรือ $x < {a_str}$ เช่น $x = {s_left_ex} \\dots$)\n{left_note}\n\\lim_{{x \\to {a_dir_left}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_left)}"
+                f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ ${v_lat} \\to {a_dir_left}$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ ${a_str}$ จากฝั่งซ้ายของเส้นจำนวน (ค่าน้อยกว่า ${a_str}$ เสมอ หรือ ${v_lat} < {a_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\n{left_note}\n\\lim_{{{v_lat} \\to {a_dir_left}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_left)}"
             )
 
             right_note = ""
             if lim_right == sp.oo:
-                right_note = f"เมื่อ $x > {a_str}$ และเข้าใกล้ ${a_str}$ มาก ๆ ค่า $f(x)$ จะมีค่าบวกเพิ่มขึ้นอย่างไม่มีขอบเขต พุ่งขึ้นสู่อนันต์ ($+\\infty$)"
+                right_note = f"เมื่อ ${v_lat} > {a_str}$ และเข้าใกล้ ${a_str}$ มาก ๆ ค่า $f({v_lat})$ จะมีค่าบวกเพิ่มขึ้นอย่างไม่มีขอบเขต พุ่งขึ้นสู่อนันต์ ($+\\infty$)"
             elif lim_right == -sp.oo:
-                right_note = f"เมื่อ $x > {a_str}$ และเข้าใกล้ ${a_str}$ มาก ๆ ตัวส่วนมีค่าน้อยมากฝั่งลบ ทำให้ค่า $f(x)$ ติดลบมหาศาล พุ่งลงสู่ลบอนันต์ ($-\\infty$)"
+                right_note = f"เมื่อ ${v_lat} > {a_str}$ และเข้าใกล้ ${a_str}$ มาก ๆ ตัวส่วนมีค่าน้อยมากฝั่งลบ ทำให้ค่า $f({v_lat})$ ติดลบมหาศาล พุ่งลงสู่ลบอนันต์ ($-\\infty$)"
             elif lim_right is not None:
-                right_note = f"เมื่อค่า $x$ ขยับเข้าใกล้ ${a_str}$ ทางขวา ค่าของ $f(x)$ มีแนวโน้มลู่เข้าหาค่าคงที่ ${sp.latex(lim_right)}$"
+                right_note = f"เมื่อค่า ${v_lat}$ ขยับเข้าใกล้ ${a_str}$ ทางขวา ค่าของ $f({v_lat})$ มีแนวโน้มลู่เข้าหาค่าคงที่ ${sp.latex(lim_right)}$"
 
             steps.append(
-                f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ $x \\to {a_dir_right}$ หมายถึงให้ค่า $x$ ค่อย ๆ ขยับเข้าใกล้ ${a_str}$ จากฝั่งขวาของเส้นจำนวน (ค่ามากกว่า ${a_str}$ เสมอ หรือ $x > {a_str}$ เช่น $x = {s_right_ex} \\dots$)\n{right_note}\n\\lim_{{x \\to {a_dir_right}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_right)}"
+                f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ ${v_lat} \\to {a_dir_right}$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ ${a_str}$ จากฝั่งขวาของเส้นจำนวน (ค่ามากกว่า ${a_str}$ เสมอ หรือ ${v_lat} > {a_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\n{right_note}\n\\lim_{{{v_lat} \\to {a_dir_right}}} \\left({sp.latex(expr)}\\right) = {sp.latex(lim_right)}"
             )
 
             if is_oscillating:
                 steps.append(
-                    f"ข้อสังเกตเชิงมโนทัศน์: ฟังก์ชันมีการแกว่งกวัดไม่สิ้นสุด (Oscillating Singularity) ในช่วง $\\langle -1, 1\\rangle$ เมื่อเข้าใกล้จุด $x = {a_str}$ ค่าจึงไม่ลู่เข้าหาจำนวนจริงใดจำนวนหนึ่ง"
+                    f"ข้อสังเกตเชิงมโนทัศน์: ฟังก์ชันมีการแกว่งกวัดไม่สิ้นสุด (Oscillating Singularity) ในช่วง $\\langle -1, 1\\rangle$ เมื่อเข้าใกล้จุด ${v_lat} = {a_str}$ ค่าจึงไม่ลู่เข้าหาจำนวนจริงใดจำนวนหนึ่ง"
                 )
                 steps.append(
-                    f"สรุปผล (ไม่มีลิมิตเนื่องจากการแกว่งกวัด): \\lim_{{x \\to {a_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
+                    f"สรุปผล (ไม่มีลิมิตเนื่องจากการแกว่งกวัด): \\lim_{{{v_lat} \\to {a_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
                 )
                 result = None
-                latex_str = f"\\lim_{{x \\to {a_str}}} {sp.latex(expr)} \\quad \\text{{(does not exist)}}"
+                latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {sp.latex(expr)} \\quad \\text{{(does not exist)}}"
             elif status == "finite":
-                lim_val = sp.limit(expr, X, a_sp)
+                lim_val = sp.limit(expr, var_sym, a_sp)
                 lim_val_latex = sp.latex(lim_val)
                 steps.append(
-                    f"เปรียบเทียบและสรุปค่าลิมิตสองด้าน: กฎพื้นฐานคือ ลิมิตสองด้านจะมีค่าได้ก็ต่อเมื่อ ลิมิตซ้ายและขวาต้องมุ่งสู่จำนวนจริงเดียวกัน\nเนื่องจาก $\\lim_{{x \\to {a_dir_left}}} f(x) = \\lim_{{x \\to {a_dir_right}}} f(x) = {lim_val_latex}$ (เส้นกราฟจากทั้งสองฝั่งวิ่งมาบรรจบกันที่ระดับความสูงเดียวกัน) จึงสรุปได้ว่ามีลิมิตสองด้าน\n\\lim_{{x \\to {a_dir_left}}} f(x) = \\lim_{{x \\to {a_dir_right}}} f(x) = {lim_val_latex} \\implies \\lim_{{x \\to {a_str}}} \\left({sp.latex(expr)}\\right) = {lim_val_latex}"
+                    f"เปรียบเทียบและสรุปค่าลิมิตสองด้าน: กฎพื้นฐานคือ ลิมิตสองด้านจะมีค่าได้ก็ต่อเมื่อ ลิมิตซ้ายและขวาต้องมุ่งสู่จำนวนจริงเดียวกัน\nเนื่องจาก $\\lim_{{{v_lat} \\to {a_dir_left}}} f({v_lat}) = \\lim_{{{v_lat} \\to {a_dir_right}}} f({v_lat}) = {lim_val_latex}$ (เส้นกราฟจากทั้งสองฝั่งวิ่งมาบรรจบกันที่ระดับความสูงเดียวกัน) จึงสรุปได้ว่ามีลิมิตสองด้าน\n\\lim_{{{v_lat} \\to {a_dir_left}}} f({v_lat}) = \\lim_{{{v_lat} \\to {a_dir_right}}} f({v_lat}) = {lim_val_latex} \\implies \\lim_{{{v_lat} \\to {a_str}}} \\left({sp.latex(expr)}\\right) = {lim_val_latex}"
                 )
                 result = float(lim_val) if lim_val.is_number and lim_val.is_real else None
-                latex_str = f"\\lim_{{x \\to {a_str}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
+                latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
             elif status == "infinite":
                 lim_val = lim_left
                 lim_val_latex = sp.latex(lim_val)
                 steps.append(
-                    f"สรุปผล (ทั้งสองข้างลู่ไปอนันต์ค่าเดียวกัน): เส้นกราฟทั้งฝั่งซ้ายและฝั่งขวาพุ่งไปสู่ค่าเดียวกันคือ ${lim_val_latex}$ แต่เนื่องจากอนันต์ไม่ใช่จำนวนจริงจำกัด ในทางคณิตศาสตร์จึงถือว่าลิมิตลู่ออก (Diverges)\n\\lim_{{x \\to {a_str}}} \\left({sp.latex(expr)}\\right) = {lim_val_latex}"
+                    f"สรุปผล (ทั้งสองข้างลู่ไปอนันต์ค่าเดียวกัน): เส้นกราฟทั้งฝั่งซ้ายและฝั่งขวาพุ่งไปสู่ค่าเดียวกันคือ ${lim_val_latex}$ แต่เนื่องจากอนันต์ไม่ใช่จำนวนจริงจำกัด ในทางคณิตศาสตร์จึงถือว่าลิมิตลู่ออก (Diverges)\n\\lim_{{{v_lat} \\to {a_str}}} \\left({sp.latex(expr)}\\right) = {lim_val_latex}"
                 )
                 result = None
-                latex_str = f"\\lim_{{x \\to {a_str}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
+                latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
             elif status == "dne":
                 steps.append(
-                    f"สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): เส้นกราฟจากฝั่งซ้ายและฝั่งขวาแยกออกจากกันและไม่มาบรรจบกันที่จุดเดียวกัน\n\\lim_{{x \\to {a_dir_left}}} f(x) = {sp.latex(lim_left)} \\neq \\lim_{{x \\to {a_dir_right}}} f(x) = {sp.latex(lim_right)}\n\\lim_{{x \\to {a_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
+                    f"สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): เส้นกราฟจากฝั่งซ้ายและฝั่งขวาแยกออกจากกันและไม่มาบรรจบกันที่จุดเดียวกัน\n\\lim_{{{v_lat} \\to {a_dir_left}}} f({v_lat}) = {sp.latex(lim_left)} \\neq \\lim_{{{v_lat} \\to {a_dir_right}}} f({v_lat}) = {sp.latex(lim_right)}\n\\lim_{{{v_lat} \\to {a_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
                 )
                 result = None
-                latex_str = f"\\lim_{{x \\to {a_str}}} {sp.latex(expr)} \\quad \\text{{(does not exist)}}"
+                latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {sp.latex(expr)} \\quad \\text{{(does not exist)}}"
             else:
                 steps.append(
                     "ไม่สามารถสรุปค่าลิมิตสองด้านได้จากข้อมูลการคำนวณในระบบ"
                 )
                 result = None
-                latex_str = f"\\lim_{{x \\to {a_str}}} {sp.latex(expr)} \\quad \\text{{(unsupported)}}"
+                latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {sp.latex(expr)} \\quad \\text{{(unsupported)}}"
 
         return {
             "ok": True,
@@ -350,6 +358,7 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
             "a_dir_left": a_dir_left,
             "a_dir_right": a_dir_right,
             "is_infinite": False,
+            "variable": str(var_sym.name),
         }
     except Exception as e:
         return {

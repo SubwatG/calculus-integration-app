@@ -242,6 +242,7 @@ def inject_css() -> None:
 
     /* Bauhaus Geometric Cards & Containers */
     [data-testid="stVerticalBlockBorderWrapper"],
+    div[class*="e1rw0b1u3"],
     div[data-testid="stVerticalBlock"].st-emotion-cache-y5eupb {
         background-color: #FFFFFF !important;
         border: 2.5px solid #18181B !important;

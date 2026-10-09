@@ -61,3 +61,11 @@ class TestComputeVolume:
         fig, ax = plot_volume(expr, 0.0, 2.0, "disk")
         assert fig is not None
         assert ax is not None
+
+    def test_compute_volume_variable_t(self):
+        res = compute_volume('t', 0, 2, 'disk')
+        assert res["ok"] is True
+        assert res["variable"] == "t"
+        assert "\\, dt" in res["latex"]
+        assert res["result"] == pytest.approx(8 * 3.141592653589793 / 3)
+

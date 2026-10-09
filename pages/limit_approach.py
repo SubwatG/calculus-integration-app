@@ -200,6 +200,11 @@ if not expr_input.strip():
 else:
     res = compute_limit_near(expr_input, a_input)
     if res["ok"]:
+        v_name = res.get("variable", "x")
+        var_sym = sp.Symbol(v_name)
+        if v_name != "x":
+            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+
         st.markdown("### ผลลัพธ์ลิมิต")
         col_m1, col_m2 = st.columns([1, 2])
         with col_m1:
@@ -223,8 +228,8 @@ else:
         try:
             fig, _ = plot_limit_near(res["expr"], a_input, delta=delta_val)
             st.pyplot(fig)
-        except Exception:
-            st.warning("ไม่สามารถวาดกราฟได้ ตรวจสอบฟังก์ชันอีกครั้ง")
+        except Exception as e:
+            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
 
         is_infinite = res.get("is_infinite", False)
 
@@ -232,31 +237,31 @@ else:
             # กล่องอธิบายมโนทัศน์สำหรับลิมิตที่อนันต์
             st.markdown("#### มโนทัศน์พื้นฐาน: ลิมิตที่อนันต์และเส้นกำกับแนวนอนคืออะไร?")
             st.info(
-                """
-                * **พฤติกรรมระยะไกล (End Behavior):** ลิมิตที่อนันต์ ($x \\to \\infty$ หรือ $x \\to -\\infty$) ไม่ได้มีลิมิตซ้าย-ขวา แต่เป็นการศึกษาพฤติกรรมเมื่อค่า $x$ ขยายตัวอย่างมหาศาลบนแกนนอน
-                * **เส้นกำกับแนวนอน (Horizontal Asymptote):** หากเมื่อ $x \\to \\infty$ ค่าฟังก์ชันลู่เข้าสู่ค่าคงที่ $L$ เส้นตรง $y = L$ จะทำหน้าที่เป็นเส้นกำกับแนวนอนที่กราฟวิ่งเข้าแนบชิด
+                f"""
+                * **พฤติกรรมระยะไกล (End Behavior):** ลิมิตที่อนันต์ (${v_name} \\to \\infty$ หรือ ${v_name} \\to -\\infty$) ไม่ได้มีลิมิตซ้าย-ขวา แต่เป็นการศึกษาพฤติกรรมเมื่อค่า ${v_name}$ ขยายตัวอย่างมหาศาลบนแกนนอน
+                * **เส้นกำกับแนวนอน (Horizontal Asymptote):** หากเมื่อ ${v_name} \\to \\infty$ ค่าฟังก์ชันลู่เข้าสู่ค่าคงที่ $L$ เส้นตรง $y = L$ จะทำหน้าที่เป็นเส้นกำกับแนวนอนที่กราฟวิ่งเข้าแนบชิด
                 """
             )
 
             # ตารางการแทนค่าเชิงตัวเลขขนาดใหญ่
-            st.markdown("#### ตารางการเข้าใกล้เชิงตัวเลขเมื่อ x ขยายสู่ขนาดใหญ่ (Numerical Inspection)")
-            st.caption("สังเกตพฤติกรรมตัวเลข: เมื่อค่า x เพิ่มขึ้นสู่ขนาดใหญ่ ให้สังเกตว่าค่า f(x) วิ่งลู่เข้าหาค่าคงที่ใด")
+            st.markdown("#### ตารางการเข้าใกล้เชิงตัวเลขเมื่อตัวแปรขยายสู่ขนาดใหญ่ (Numerical Inspection)")
+            st.caption(f"สังเกตพฤติกรรมตัวเลข: เมื่อค่า {v_name} เพิ่มขึ้นสู่ขนาดใหญ่ ให้สังเกตว่าค่า f({v_name}) วิ่งลู่เข้าหาค่าคงที่ใด")
             is_pos = (s_a_clean in ("inf", "+inf", "oo", "+oo"))
             test_xs = [5.0, 10.0, 50.0, 100.0, 500.0, 1000.0] if is_pos else [-5.0, -10.0, -50.0, -100.0, -500.0, -1000.0]
             table_rows = []
             target_L = res.get("result")
             for tx in test_xs:
                 try:
-                    y_val = float(res["expr"].subs(X, tx).evalf())
+                    y_val = float(res["expr"].subs(var_sym, tx).evalf())
                     y_str = f"{y_val:.6f}"
                     diff_str = f"{abs(y_val - target_L):.6f}" if target_L is not None else "-"
                 except Exception:
                     y_str = "N/A"
                     diff_str = "-"
                 table_rows.append({
-                    "ค่าตัวแปร x": f"{tx:g}",
-                    "ค่าฟังก์ชัน f(x)": y_str,
-                    "ผลต่างจากค่าลิมิต |f(x) - L|": diff_str,
+                    f"ค่าตัวแปร {v_name}": f"{tx:g}",
+                    f"ค่าฟังก์ชัน f({v_name})": y_str,
+                    f"ผลต่างจากค่าลิมิต |f({v_name}) - L|": diff_str,
                 })
             st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
 
@@ -275,26 +280,26 @@ else:
             with col_c_left:
                 st.info(
                     f"""
-                    **ลิมิตทางซ้าย ($x \\to {cur_dir_l}$)**
+                    **ลิมิตทางซ้าย (${v_name} \\to {cur_dir_l}$)**
                     * **ทิศทาง:** ก้าวเท้ามาจากฝั่งซ้ายของเส้นจำนวน
-                    * **เงื่อนไข:** ค่า $x$ น้อยกว่า ${cur_a_str}$ เสมอ ($x < {cur_a_str}$) เช่น ขยับจาก {a_num_val - 0.2:.2f} $\\to$ {a_num_val - 0.05:.2f} $\\to$ {a_num_val - 0.001:.3f}
-                    * **เป้าหมาย:** สังเกตว่าเมื่อ $x$ วิ่งเฉียดเข้าใกล้ ${cur_a_str}$ ความสูงของกราฟ $f(x)$ ลู่เข้าหาเลขใด
+                    * **เงื่อนไข:** ค่า ${v_name}$ น้อยกว่า ${cur_a_str}$ เสมอ (${v_name} < {cur_a_str}$) เช่น ขยับจาก {a_num_val - 0.2:.2f} $\\to$ {a_num_val - 0.05:.2f} $\\to$ {a_num_val - 0.001:.3f}
+                    * **เป้าหมาย:** สังเกตว่าเมื่อ ${v_name}$ วิ่งเฉียดเข้าใกล้ ${cur_a_str}$ ความสูงของกราฟ $f({v_name})$ ลู่เข้าหาเลขใด
                     """
                 )
             with col_c_right:
                 st.info(
                     f"""
-                    **ลิมิตทางขวา ($x \\to {cur_dir_r}$)**
+                    **ลิมิตทางขวา (${v_name} \\to {cur_dir_r}$)**
                     * **ทิศทาง:** ก้าวเท้ามาจากฝั่งขวาของเส้นจำนวน
-                    * **เงื่อนไข:** ค่า $x$ มากกว่า ${cur_a_str}$ เสมอ ($x > {cur_a_str}$) เช่น ขยับจาก {a_num_val + 0.2:.2f} $\\to$ {a_num_val + 0.05:.2f} $\\to$ {a_num_val + 0.001:.3f}
-                    * **เป้าหมาย:** สังเกตว่าเมื่อ $x$ วิ่งเฉียดเข้าใกล้ ${cur_a_str}$ ความสูงของกราฟ $f(x)$ ลู่เข้าหาเลขใด
+                    * **เงื่อนไข:** ค่า ${v_name}$ มากกว่า ${cur_a_str}$ เสมอ (${v_name} > {cur_a_str}$) เช่น ขยับจาก {a_num_val + 0.2:.2f} $\\to$ {a_num_val + 0.05:.2f} $\\to$ {a_num_val + 0.001:.3f}
+                    * **เป้าหมาย:** สังเกตว่าเมื่อ ${v_name}$ วิ่งเฉียดเข้าใกล้ ${cur_a_str}$ ความสูงของกราฟ $f({v_name})$ ลู่เข้าหาเลขใด
                     """
                 )
 
             st.markdown(
-                """
+                f"""
                 > **หัวใจสำคัญของการมีลิมิต (Two-Sided Limit):**  
-                > ลิมิตไม่ได้ถามว่า *"ที่จุด $x = a$ ฟังก์ชันมีค่าเท่าไหร่"* (ตรงจุดนั้นอาจเป็นรูโหว่หรือหาค่าไม่ได้ เช่น $\\frac{0}{0}$)  
+                > ลิมิตไม่ได้ถามว่า *"ที่จุด ${v_name} = a$ ฟังก์ชันมีค่าเท่าไหร่"* (ตรงจุดนั้นอาจเป็นรูโหว่หรือหาค่าไม่ได้ เช่น $\\frac{{0}}{{0}}$)  
                 > แต่ลิมิตกำลังถามว่า *"เมื่อเดินเข้าใกล้จุด $a$ จากสองฝั่ง กราฟกำลังจะไปเจอกันที่ความสูงเท่าไหร่"*  
                 > **ถ้าสองฝั่งเดินมาชนกันที่ความสูงเดียวกัน ($L^- = L^+$)** $\\implies$ **มีลิมิตสองด้าน**  
                 > **ถ้าสองฝั่งแยกทางกันหรือไปคนละทิศ ($L^- \\neq L^+$)** $\\implies$ **ไม่มีลิมิตสองด้าน (DNE)**
@@ -303,28 +308,28 @@ else:
 
             # ตารางการแทนค่าเชิงตัวเลขเพื่อสร้างสัญชาตญาณ
             st.markdown("#### ตารางการเข้าใกล้เชิงตัวเลข (Numerical Inspection)")
-            st.caption("สังเกตพฤติกรรมตัวเลข: เมื่อระยะห่าง d ลดลงเรื่อย ๆ ($x$ ขยับเข้าใกล้จุด $a$ มากขึ้น) ให้สังเกตว่าค่า f(x) ฝั่งซ้าย และ f(x) ฝั่งขวา กำลังบีบเข้าหาตัวเลขใด")
+            st.caption(f"สังเกตพฤติกรรมตัวเลข: เมื่อระยะห่าง d ลดลงเรื่อย ๆ (${v_name}$ ขยับเข้าใกล้จุด $a$ มากขึ้น) ให้สังเกตว่าค่า f({v_name}) ฝั่งซ้าย และ f({v_name}) ฝั่งขวา กำลังบีบเข้าหาตัวเลขใด")
             deltas = [delta_val, delta_val / 2, delta_val / 5, delta_val / 10, delta_val / 100]
             table_rows = []
             for d in deltas:
                 xl = a_num_val - d
                 xr = a_num_val + d
                 try:
-                    yl = float(res["expr"].subs(X, xl).evalf())
+                    yl = float(res["expr"].subs(var_sym, xl).evalf())
                     yl_str = f"{yl:.6f}"
                 except Exception:
                     yl_str = "N/A"
                 try:
-                    yr = float(res["expr"].subs(X, xr).evalf())
+                    yr = float(res["expr"].subs(var_sym, xr).evalf())
                     yr_str = f"{yr:.6f}"
                 except Exception:
                     yr_str = "N/A"
                 table_rows.append({
                     "ระยะห่าง d": f"{d:.4f}",
-                    "ฝั่งซ้าย x = a - d": f"{xl:.4f}",
-                    "ค่า f(x) ซ้าย": yl_str,
-                    "ฝั่งขวา x = a + d": f"{xr:.4f}",
-                    "ค่า f(x) ขวา": yr_str,
+                    f"ฝั่งซ้าย {v_name} = a - d": f"{xl:.4f}",
+                    f"ค่า f({v_name}) ซ้าย": yl_str,
+                    f"ฝั่งขวา {v_name} = a + d": f"{xr:.4f}",
+                    f"ค่า f({v_name}) ขวา": yr_str,
                 })
             st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
 

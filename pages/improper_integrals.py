@@ -120,6 +120,10 @@ if not expr_input.strip():
 else:
     res = compute_improper(expr_input, a_input, b_input)
     if res["ok"]:
+        v_name = res.get("variable", "x")
+        if v_name != "x":
+            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+
         st.markdown("### ผลลัพธ์")
         render_latex(res["latex"])
 

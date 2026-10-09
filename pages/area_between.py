@@ -131,6 +131,10 @@ if not f_input.strip() or not g_input.strip():
 else:
     res = compute_area_between(f_input, g_input, a_val, b_val)
     if res["ok"]:
+        v_name = res.get("variable", "x")
+        if v_name != "x":
+            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+
         st.markdown("### ผลลัพธ์")
         render_latex(res["latex"])
         st.divider()

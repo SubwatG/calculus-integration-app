@@ -1,20 +1,43 @@
+import random
+from typing import Any
 import streamlit as st
 from utils.math_render import format_math_spacing
 from utils.quiz_engine import load_quiz
 from utils.theme import inject_css, render_hero
 
+ALL_TOPIC_KEYS = [
+    "tangent",
+    "limits",
+    "basic_rules",
+    "riemann",
+    "techniques",
+    "area_between",
+    "improper_integrals",
+    "volume_revolution",
+]
+
 QUIZ_OPTIONS = {
-    "[ทั้งหมด] ทำโจทย์ทั้งหมด (30 ข้อ)": "all",
-    "[กฎพื้นฐาน] กฎพื้นฐานและทฤษฎีบท (10 ข้อ)": "basic_rules",
-    "[รีมันน์] ผลบวกรีมันน์และการประมาณค่า (10 ข้อ)": "riemann",
-    "[เทคนิค] เทคนิคการเปลี่ยนตัวแปร & By Parts (10 ข้อ)": "techniques",
+    "[ทั้งหมด] ทำโจทย์ทุกบท (80 ข้อ)": "all",
+    "[เส้นสัมผัส] 1. เส้นสัมผัสและอนุพันธ์ (10 ข้อ)": "tangent",
+    "[ลิมิต] 2. ลิมิตและความต่อเนื่อง (10 ข้อ)": "limits",
+    "[กฎพื้นฐาน] 3. กฎพื้นฐานและทฤษฎีบท (10 ข้อ)": "basic_rules",
+    "[รีมันน์] 4. ผลรวมรีมันน์และการประมาณค่า (10 ข้อ)": "riemann",
+    "[เทคนิค] 5. เทคนิคการเปลี่ยนตัวแปร & By Parts (10 ข้อ)": "techniques",
+    "[พื้นที่ระหว่างเส้น] 6. พื้นที่ระหว่างเส้นโค้ง (10 ข้อ)": "area_between",
+    "[ปริพันธ์ไม่ตรงแบบ] 7. ปริพันธ์ไม่ตรงแบบ (10 ข้อ)": "improper_integrals",
+    "[ปริมาตรรูปทรงตัน] 8. ปริมาตรของรูปทรงตันจากการหมุน (10 ข้อ)": "volume_revolution",
 }
 
 TOPIC_LABELS = {
-    "all": "รวมทุกมโนทัศน์",
-    "basic_rules": "กฎพื้นฐานและทฤษฎีบท",
-    "riemann": "ผลบวกรีมันน์",
-    "techniques": "เทคนิคการเปลี่ยนตัวแปร & By Parts",
+    "all": "รวมโจทย์มโนทัศน์ทุกบท",
+    "tangent": "1. เส้นสัมผัสและอนุพันธ์",
+    "limits": "2. ลิมิตและความต่อเนื่อง",
+    "basic_rules": "3. กฎพื้นฐานและทฤษฎีบท",
+    "riemann": "4. ผลรวมรีมันน์และการประมาณค่า",
+    "techniques": "5. เทคนิคการเปลี่ยนตัวแปร & By Parts",
+    "area_between": "6. พื้นที่ระหว่างเส้นโค้ง",
+    "improper_integrals": "7. ปริพันธ์ไม่ตรงแบบ",
+    "volume_revolution": "8. ปริมาตรของรูปทรงตันจากการหมุน",
 }
 
 inject_css()
@@ -85,6 +108,25 @@ st.markdown(
         font-weight: 700 !important;
         box-shadow: 3px 3px 0px #18181B !important;
     }
+    /* Question Bauhaus Card with solid background and tactile frame */
+    div.st-key-quiz_question_box,
+    div[data-testid="stVerticalBlock"].st-key-quiz_question_box {
+        background-color: #FFFFFF !important;
+        border: 2.5px solid #18181B !important;
+        border-radius: 16px !important;
+        box-shadow: 4px 4px 0px #18181B !important;
+        padding: 1.25rem 1.5rem !important;
+        margin-top: 8px !important;
+        margin-bottom: 16px !important;
+    }
+    div.st-key-quiz_question_box p,
+    div[data-testid="stVerticalBlock"].st-key-quiz_question_box p {
+        font-family: "Mali", "Outfit", sans-serif !important;
+        font-size: 1.12rem !important;
+        font-weight: 600 !important;
+        line-height: 1.6 !important;
+        color: #18181B !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -102,14 +144,40 @@ selected_topic_name = st.radio(
 )
 QUIZ_TOPIC = QUIZ_OPTIONS[selected_topic_name]
 
+col_topic_info, col_topic_btn = st.columns([3, 1])
+with col_topic_info:
+    st.caption("🎲 ระบบสุ่มลำดับตัวเลือก (A, B, C, D) และสุ่มลำดับโจทย์แบบไดนามิกทุกรอบ เพื่อฝึกมโนทัศน์แท้จริง")
+with col_topic_btn:
+    if st.button("🎲 สุ่มรอบใหม่", key="btn_reshuffle_now", use_container_width=True):
+        init_quiz_session(QUIZ_TOPIC)
+        st.rerun()
 
-def get_quiz_questions(topic: str):
+
+def get_quiz_questions(topic: str) -> list[dict[str, Any]]:
     if topic == "all":
-        return load_quiz("basic_rules") + load_quiz("riemann") + load_quiz("techniques")
+        all_q = []
+        for key in ALL_TOPIC_KEYS:
+            all_q.extend(load_quiz(key))
+        return all_q
     return load_quiz(topic)
 
 
-questions = get_quiz_questions(QUIZ_TOPIC)
+def prepare_shuffled_questions(
+    raw_questions: list[dict[str, Any]], shuffle_q_order: bool = True
+) -> list[dict[str, Any]]:
+    """Shuffle choices for each question so the correct answer is randomly distributed across A, B, C, D,
+    and optionally shuffle question order."""
+    prepared = []
+    for q in raw_questions:
+        q_copy = dict(q)
+        choices = list(q["choices"])
+        random.shuffle(choices)
+        q_copy["choices"] = choices
+        prepared.append(q_copy)
+    if shuffle_q_order:
+        random.shuffle(prepared)
+    return prepared
+
 
 if "quiz_q_index" not in st.session_state:
     st.session_state.quiz_q_index = 0
@@ -148,13 +216,21 @@ def reset_quiz() -> None:
     st.session_state.quiz_attempt_count = 0
 
 
-if (
-    st.session_state.get("quiz_active_topic") != QUIZ_TOPIC
-    or st.session_state.get("quiz_total_count") != len(questions)
-):
-    st.session_state.quiz_active_topic = QUIZ_TOPIC
-    st.session_state.quiz_total_count = len(questions)
+def init_quiz_session(topic: str) -> None:
+    raw = get_quiz_questions(topic)
+    st.session_state.quiz_questions = prepare_shuffled_questions(raw, shuffle_q_order=True)
+    st.session_state.quiz_active_topic = topic
+    st.session_state.quiz_total_count = len(st.session_state.quiz_questions)
     reset_quiz()
+
+
+if (
+    "quiz_questions" not in st.session_state
+    or st.session_state.get("quiz_active_topic") != QUIZ_TOPIC
+):
+    init_quiz_session(QUIZ_TOPIC)
+
+questions = st.session_state.quiz_questions
 
 
 if st.session_state.quiz_done:
@@ -197,8 +273,8 @@ if st.session_state.quiz_done:
     st.write("")
     col_btn1, col_btn2 = st.columns(2)
     with col_btn1:
-        if st.button("ทำแบบทดสอบอีกครั้ง", key="btn_quiz_restart", use_container_width=True):
-            reset_quiz()
+        if st.button("ทำแบบทดสอบอีกครั้ง (สุ่มตัวเลือกใหม่)", key="btn_quiz_restart", use_container_width=True):
+            init_quiz_session(QUIZ_TOPIC)
             st.rerun()
     with col_btn2:
         if st.button("กลับสู่หน้าหลัก", key="btn_quiz_home", use_container_width=True):
@@ -227,16 +303,16 @@ else:
             f"""
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
                 <div style="display: inline-flex; align-items: center; gap: 8px;">
-                    <span style="background-color: #FEF08A; border: 2px solid #18181B; border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: 14px; box-shadow: 2px 2px 0px #18181B;">
+                    <span style="background-color: #FEF08A; border: 2px solid #18181B; border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: 14px; font-family: 'Mali', 'Outfit', sans-serif; box-shadow: 2px 2px 0px #18181B;">
                         ข้อที่ {q_idx + 1} / {len(questions)}
                     </span>
-                    <span style="background-color: #E0E7FF; border: 2px solid #18181B; border-radius: 999px; padding: 4px 14px; font-weight: 600; font-size: 13px; box-shadow: 2px 2px 0px #18181B;">
+                    <span style="background-color: #E0E7FF; border: 2px solid #18181B; border-radius: 999px; padding: 4px 14px; font-weight: 600; font-size: 13px; font-family: 'Mali', 'Outfit', sans-serif; box-shadow: 2px 2px 0px #18181B;">
                         {topic_name}
                     </span>
                 </div>
-                <div style="background-color: #BAE6FD; border: 2px solid #18181B; border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: 14px; box-shadow: 2px 2px 0px #18181B;">
+                <span style="background-color: #BAE6FD; border: 2px solid #18181B; border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: 14px; font-family: 'Mali', 'Outfit', sans-serif; box-shadow: 2px 2px 0px #18181B; display: inline-flex; align-items: center;">
                     คะแนนสะสม: {st.session_state.quiz_score} คะแนน
-                </div>
+                </span>
             </div>
             """,
             unsafe_allow_html=True,
@@ -245,12 +321,17 @@ else:
         st.progress((q_idx + 1) / len(questions))
 
         # Question Bauhaus Card
-        with st.container(border=True):
+        with st.container(border=True, key="quiz_question_box"):
             st.markdown(
-                """
-                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-                    <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: #F43F5E; border: 1.5px solid #18181B;"></span>
-                    <span style="font-size: 13px; font-weight: 700; color: #4B5563;">โจทย์มโนทัศน์</span>
+                f"""
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 2px dashed #E4E4E7; padding-bottom: 8px;">
+                    <div style="display: inline-flex; align-items: center; gap: 8px;">
+                        <span style="background-color: #F43F5E; color: #FFFFFF; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 800; box-shadow: 1.5px 1.5px 0px #18181B;">✦ โจทย์มโนทัศน์</span>
+                        <span style="font-size: 13px; font-weight: 700; color: #4B5563;">คำถามข้อที่ {q_idx + 1}</span>
+                    </div>
+                    <span style="font-size: 12px; font-weight: 700; color: #71717A; background-color: #F4F4F5; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px;">
+                        1 คะแนน
+                    </span>
                 </div>
                 """,
                 unsafe_allow_html=True,

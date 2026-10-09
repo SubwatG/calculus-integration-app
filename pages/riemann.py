@@ -132,19 +132,24 @@ else:
     res = compute_riemann(expr_input, a_val, b_val, n_val, method_label)
 
     if res["ok"]:
+        v_name = res.get("variable", "x")
+        if v_name != "x":
+            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+
         st.markdown("### ผลลัพธ์การประมาณค่า")
         render_latex(res["latex"])
         st.divider()
 
-        # กราฟ (ใช้ expr ที่ solver parse แล้ว กันปัญหา x undefined)
+        # กราฟ (ใช้ expr ที่ solver parse แล้ว กันปัญหา symbol undefined)
         try:
             expr = res["expr"]
-            exact = sp.integrate(expr, (X, a_val, b_val))
-            exact_val = float(exact)
+            var_sym = sp.Symbol(v_name)
+            exact = sp.integrate(expr, (var_sym, a_val, b_val))
+            exact_val = float(exact) if getattr(exact, "is_number", False) and getattr(exact, "is_real", False) else None
             fig, _ = plot_riemann(expr, a_val, b_val, n_val, method_label, exact_val)
             st.pyplot(fig)
-        except Exception:
-            st.warning("ไม่สามารถวาดกราฟได้ ตรวจสอบฟังก์ชันอีกครั้ง")
+        except Exception as e:
+            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
 
         st.divider()
         render_steps(res["steps"])
