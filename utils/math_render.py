@@ -160,13 +160,11 @@ def render_steps(steps) -> None:
                 # ถ้าในส่วนสมการมีตัวอักษรไทยปนและใช้ $...$
                 if has_thai(core_math) and "$" in math_part:
                     match = re.search(r"^(.*?)\$+(.+?)\$+(.*)$", math_part, re.DOTALL)
-                    if match:
+                    if match and not match.group(3).strip():
                         prefix = match.group(1).strip()
                         inner_math = match.group(2).strip()
-                        suffix = match.group(3).strip()
-                        desc = f"{prefix} {suffix}".strip()
-                        if desc:
-                            st.markdown(format_math_spacing(desc))
+                        if prefix:
+                            st.markdown(format_math_spacing(prefix))
                         try:
                             st.latex(inner_math)
                         except Exception:

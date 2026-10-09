@@ -81,3 +81,24 @@ class TestMethodsCatalog:
         assert set(METHODS.keys()) == {"left", "right", "midpoint"}
         for k, v in METHODS.items():
             assert len(v) == 2  # (ชื่อไทย, latex subscript)
+
+
+class TestRiemannConceptualObservation:
+    def test_left_step6_has_subscript_ln(self):
+        res = compute_riemann("x**2", 0, 2, 2, "left")
+        assert res["ok"] is True
+        obs_step = [s for s in res["steps"] if "ข้อสังเกตมโนทัศน์" in s][0]
+        assert "$L_n$" in obs_step
+
+    def test_right_step6_has_subscript_rn(self):
+        res = compute_riemann("x**2", 0, 2, 2, "right")
+        assert res["ok"] is True
+        obs_step = [s for s in res["steps"] if "ข้อสังเกตมโนทัศน์" in s][0]
+        assert "$R_n$" in obs_step
+
+    def test_midpoint_step6_has_subscript_mn(self):
+        res = compute_riemann("x**2", 0, 2, 2, "midpoint")
+        assert res["ok"] is True
+        obs_step = [s for s in res["steps"] if "ข้อสังเกตมโนทัศน์" in s][0]
+        assert "$M_n$" in obs_step
+
