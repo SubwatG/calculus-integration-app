@@ -93,13 +93,13 @@ def _set_vol_preset(r_val: str, a_val: float, b_val: float, method: str, inner_v
 
 p_cols = st.columns(4)
 with p_cols[0]:
-    st.button("ทรงกรวย $R(x) = x$ บน $[0, 2]$", key="pre_vol_1", use_container_width=True, on_click=_set_vol_preset, args=("x", 0.0, 2.0, "disk"))
+    st.button("ทรงกรวย $R(x) = x$ บน $[0, 2]$", key="pre_vol_1", use_container_width=True, wrap=True, on_click=_set_vol_preset, args=("x", 0.0, 2.0, "disk"))
 with p_cols[1]:
-    st.button("พาราโบลอยด์ $R(x) = \\sqrt{x}$ บน $[0, 4]$", key="pre_vol_2", use_container_width=True, on_click=_set_vol_preset, args=("sqrt(x)", 0.0, 4.0, "disk"))
+    st.button("พาราโบลอยด์ $R(x) = \\sqrt{x}$ บน $[0, 4]$", key="pre_vol_2", use_container_width=True, wrap=True, on_click=_set_vol_preset, args=("sqrt(x)", 0.0, 4.0, "disk"))
 with p_cols[2]:
-    st.button("ทรงระฆังคว่ำ $R(x) = 4 - x^2$ บน $[0, 2]$", key="pre_vol_3", use_container_width=True, on_click=_set_vol_preset, args=("4 - x**2", 0.0, 2.0, "disk"))
+    st.button("ทรงระฆังคว่ำ $R(x) = 4 - x^2$ บน $[0, 2]$", key="pre_vol_3", use_container_width=True, wrap=True, on_click=_set_vol_preset, args=("4 - x**2", 0.0, 2.0, "disk"))
 with p_cols[3]:
-    st.button("วงแหวน $R=\\sqrt{x}, r=x^2$ บน $[0, 1]$", key="pre_vol_4", use_container_width=True, on_click=_set_vol_preset, args=("sqrt(x)", 0.0, 1.0, "washer", "x**2"))
+    st.button("วงแหวน $R=\\sqrt{x}, r=x^2$ บน $[0, 1]$", key="pre_vol_4", use_container_width=True, wrap=True, on_click=_set_vol_preset, args=("sqrt(x)", 0.0, 1.0, "washer", "x**2"))
 
 expr_input = st.text_input(
     "ฟังก์ชันรัศมี R(x) (หรือรัศมีนอกสำหรับ Washer)",

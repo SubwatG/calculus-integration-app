@@ -209,28 +209,56 @@ def inject_css() -> None:
         overflow: visible !important;
     }
 
-    /* Buttons containing math: ensure vertical clearance so exponents/fractions never clip */
-    .stButton > button {
-        min-height: 2.35rem !important;
-        padding: 0.3rem 0.4rem !important;
+    /* Buttons containing math & text: ensure text wrapping and vertical clearance so labels never clip */
+    .stButton button,
+    [data-testid="stButton"] button,
+    button[data-testid^="baseButton"] {
+        min-height: 2.6rem !important;
+        height: auto !important;
+        padding: 0.4rem 0.5rem !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
         font-weight: 700 !important;
+        white-space: normal !important;
+        text-wrap: wrap !important;
+        word-break: break-word !important;
+        overflow-wrap: anywhere !important;
     }
 
-    .stButton > button .katex {
+    .stButton button .katex,
+    [data-testid="stButton"] button .katex,
+    button[data-testid^="baseButton"] .katex {
         line-height: normal !important;
         overflow: visible !important;
         vertical-align: middle !important;
+        white-space: nowrap !important;
     }
 
-    .stButton > button p {
+    .stButton button div[data-testid="stMarkdownContainer"],
+    [data-testid="stButton"] [data-testid="stMarkdownContainer"],
+    button[data-testid^="baseButton"] [data-testid="stMarkdownContainer"] {
+        text-align: center !important;
+        white-space: normal !important;
+        text-wrap: wrap !important;
+        word-break: break-word !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    .stButton button div[data-testid="stMarkdownContainer"] p,
+    .stButton button p,
+    [data-testid="stButton"] [data-testid="stMarkdownContainer"] p,
+    button[data-testid^="baseButton"] p {
+        white-space: normal !important;
+        text-wrap: wrap !important;
+        word-break: break-word !important;
+        overflow-wrap: anywhere !important;
+        text-align: center !important;
         overflow: visible !important;
-        line-height: 1.25 !important;
+        line-height: 1.35 !important;
         margin: 0 !important;
         font-weight: 700 !important;
-        font-size: 0.95rem !important;
+        font-size: 0.92rem !important;
     }
 
     /* Main Container Padding */

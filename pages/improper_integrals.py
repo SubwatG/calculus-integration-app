@@ -79,13 +79,13 @@ def _set_improper_preset(expr_val: str, a_val: str, b_val: str) -> None:
 st.markdown("**ตัวอย่างโจทย์ยอดนิยม:**")
 p_cols = st.columns(4)
 with p_cols[0]:
-    st.button("กำลังสอง $\\frac{1}{x^2}$ บน $[1, \\infty)$", key="pre_imp_1", use_container_width=True, on_click=_set_improper_preset, args=("1/x**2", "1", "inf"))
+    st.button("กำลังสอง $\\frac{1}{x^2}$ บน $[1, \\infty)$", key="pre_imp_1", use_container_width=True, wrap=True, on_click=_set_improper_preset, args=("1/x**2", "1", "inf"))
 with p_cols[1]:
-    st.button("ฮาร์มอนิก $\\frac{1}{x}$ บน $[1, \\infty)$", key="pre_imp_2", use_container_width=True, on_click=_set_improper_preset, args=("1/x", "1", "inf"))
+    st.button("ฮาร์มอนิก $\\frac{1}{x}$ บน $[1, \\infty)$", key="pre_imp_2", use_container_width=True, wrap=True, on_click=_set_improper_preset, args=("1/x", "1", "inf"))
 with p_cols[2]:
-    st.button("เอกซ์โพเนนเชียล $e^{-x}$ บน $[0, \\infty)$", key="pre_imp_3", use_container_width=True, on_click=_set_improper_preset, args=("exp(-x)", "0", "inf"))
+    st.button("เอกซ์โพเนนเชียล $e^{-x}$ บน $[0, \\infty)$", key="pre_imp_3", use_container_width=True, wrap=True, on_click=_set_improper_preset, args=("exp(-x)", "0", "inf"))
 with p_cols[3]:
-    st.button("สองฝั่งอนันต์ $\\frac{1}{1+x^2}$ บน $(-\\infty, \\infty)$", key="pre_imp_4", use_container_width=True, on_click=_set_improper_preset, args=("1/(1+x**2)", "-inf", "inf"))
+    st.button("สองฝั่งอนันต์ $\\frac{1}{1+x^2}$ บน $(-\\infty, \\infty)$", key="pre_imp_4", use_container_width=True, wrap=True, on_click=_set_improper_preset, args=("1/(1+x**2)", "-inf", "inf"))
 
 expr_input = st.text_input(
     "ฟังก์ชัน f(x)",
