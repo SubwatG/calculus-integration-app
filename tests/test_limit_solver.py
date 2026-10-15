@@ -75,3 +75,11 @@ class TestComputeLimitNear:
         assert res["status"] == "infinite"
         assert res["result"] is None
         assert res["left_limit"] == res["right_limit"] == sp.oo
+
+    def test_compute_limit_near_variable_t(self):
+        res = compute_limit_near("sin(t)/t", 0)
+        assert res["ok"] is True
+        assert res["variable"] == "t"
+        assert res["result"] == 1.0
+        assert "\\lim_{t \\to 0}" in res["latex"]
+

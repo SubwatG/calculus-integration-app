@@ -23,7 +23,7 @@ def render_math_keypad(
         elif tok == "BACKSPACE":
             st.session_state[target_key] = curr[:-1] if curr else ""
         elif tok == "^2":
-            if curr and curr[-1] in "x0123456789)":
+            if curr and (curr[-1].isalnum() or curr[-1] in ")_"):
                 st.session_state[target_key] = curr + "^2"
             else:
                 st.session_state[target_key] = curr + "x^2" if curr else "x^2"
@@ -32,9 +32,11 @@ def render_math_keypad(
 
     with st.expander(title, expanded=expanded):
         st.caption("ตัวแปรและตัวดำเนินการ:")
-        r1_cols = st.columns(8)
+        r1_cols = st.columns(10)
         row1_tokens = [
             ("x", "x"),
+            ("t", "t"),
+            ("y", "y"),
             ("+", " + "),
             ("-", " - "),
             ("×", " * "),

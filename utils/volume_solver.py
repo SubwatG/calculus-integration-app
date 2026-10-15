@@ -36,6 +36,7 @@ LOCAL_MATH_DICT = {
 }
 
 X = sp.Symbol("x")
+from utils.sympy_solver import _clean_calculus_input, _get_variable
 
 
 def _parse_input(expr_str: str) -> sp.Expr:
@@ -78,41 +79,53 @@ def compute_volume(
             raise ValueError(f"วิธี '{method}' ยังไม่รองรับในระบบ (รองรับเฉพาะ 'disk' และ 'washer')")
 
         R_expr = _parse_input(clean_outer)
+        r_expr = None
+        if m == "washer":
+            clean_inner = (inner_expr_str or "").strip()
+            if not clean_inner:
+                raise ValueError(
+                    "สำหรับวิธีวงแหวน (Washer Method) ต้องระบุฟังก์ชันรัศมีวงใน r(x) ด้วย (หากไม่มีรัศมีใน ให้เลือกวิธี 'disk')"
+                )
+            r_expr = _parse_input(clean_inner)
+
+        all_free = R_expr.free_symbols | (r_expr.free_symbols if r_expr is not None else set())
+        if not all_free:
+            var_sym = X
+        elif len(all_free) == 1:
+            var_sym = list(all_free)[0]
+        else:
+            dummy_expr = sum(all_free)
+            var_sym = _get_variable(dummy_expr)
+        v_lat = sp.latex(var_sym)
 
         if m == "disk":
-            vol_val = sp.pi * sp.integrate(R_expr**2, (X, a_f, b_f))
+            vol_val = sp.pi * sp.integrate(R_expr**2, (var_sym, a_f, b_f))
             if vol_val.has(sp.Integral) or not (
                 getattr(vol_val, "is_real", False) and getattr(vol_val, "is_finite", False)
             ):
                 raise ValueError("ไม่สามารถคำนวณปริมาตรจำกัดได้บนช่วงที่กำหนด (อาจมีจุดเอกฐาน)")
 
             steps = [
-                f"ฟังก์ชันรัศมี: R(x) = {sp.latex(R_expr)} บนช่วง [{a}, {b}]",
-                f"สูตรวิธีจาน (Disk Method): V = \\pi \\int_{{{a}}}^{{{b}}} [{sp.latex(R_expr)}]^2 \\, dx",
+                f"ฟังก์ชันรัศมี: R({v_lat}) = {sp.latex(R_expr)} บนช่วง [{a}, {b}]",
+                f"สูตรวิธีจาน (Disk Method): V = \\pi \\int_{{{a}}}^{{{b}}} [{sp.latex(R_expr)}]^2 \\, d{v_lat}",
                 f"คำนวณปริมาตรทรงตัน: V = {sp.latex(vol_val)}",
             ]
             return {
                 "ok": True,
                 "result": float(vol_val) if vol_val.is_number and vol_val.is_real else None,
-                "latex": f"V = \\pi \\int_{{{a}}}^{{{b}}} [{sp.latex(R_expr)}]^2 \\, dx = {sp.latex(vol_val)}",
+                "latex": f"V = \\pi \\int_{{{a}}}^{{{b}}} [{sp.latex(R_expr)}]^2 \\, d{v_lat} = {sp.latex(vol_val)}",
                 "steps": steps,
                 "expr": R_expr,
                 "inner_expr": None,
                 "method": "disk",
                 "error": None,
+                "variable": str(var_sym.name),
             }
         else:  # washer
-            clean_inner = (inner_expr_str or "").strip()
-            if not clean_inner:
-                raise ValueError(
-                    "สำหรับวิธีวงแหวน (Washer Method) ต้องระบุฟังก์ชันรัศมีวงใน r(x) ด้วย (หากไม่มีรัศมีใน ให้เลือกวิธี 'disk')"
-                )
-
-            r_expr = _parse_input(clean_inner)
             diff_sq = sp.simplify(R_expr**2 - r_expr**2)
 
             # Direct integration of difference of squares
-            val_direct = sp.pi * sp.integrate(diff_sq, (X, a_f, b_f))
+            val_direct = sp.pi * sp.integrate(diff_sq, (var_sym, a_f, b_f))
             if val_direct.has(sp.Integral) or not (
                 getattr(val_direct, "is_real", False) and getattr(val_direct, "is_finite", False)
             ):
@@ -122,20 +135,21 @@ def compute_volume(
 
             vol_val = abs(val_direct)
             steps = [
-                f"กำหนดรัศมีนอก R(x) = {sp.latex(R_expr)}, \\quad รัศมีใน r(x) = {sp.latex(r_expr)} บนช่วง [{a}, {b}]",
-                f"สูตรวิธีวงแหวน (Washer Method): V = \\pi \\int_{{{a}}}^{{{b}}} \\left( [R(x)]^2 - [r(x)]^2 \\right) \\, dx",
-                f"พื้นที่หน้าตัดวงแหวน: A(x) = \\pi \\left( [{sp.latex(R_expr)}]^2 - [{sp.latex(r_expr)}]^2 \\right) = \\pi \\left( {sp.latex(diff_sq)} \\right)",
+                f"กำหนดรัศมีนอก R({v_lat}) = {sp.latex(R_expr)}, \\quad รัศมีใน r({v_lat}) = {sp.latex(r_expr)} บนช่วง [{a}, {b}]",
+                f"สูตรวิธีวงแหวน (Washer Method): V = \\pi \\int_{{{a}}}^{{{b}}} \\left( [R({v_lat})]^2 - [r({v_lat})]^2 \\right) \\, d{v_lat}",
+                f"พื้นที่หน้าตัดวงแหวน: A({v_lat}) = \\pi \\left( [{sp.latex(R_expr)}]^2 - [{sp.latex(r_expr)}]^2 \\right) = \\pi \\left( {sp.latex(diff_sq)} \\right)",
                 f"คำนวณปริมาตรทรงตัน: V = {sp.latex(vol_val)}",
             ]
             return {
                 "ok": True,
                 "result": float(vol_val) if vol_val.is_number and vol_val.is_real else None,
-                "latex": f"V = \\pi \\int_{{{a}}}^{{{b}}} \\left([{sp.latex(R_expr)}]^2 - [{sp.latex(r_expr)}]^2\\right) \\, dx = {sp.latex(vol_val)}",
+                "latex": f"V = \\pi \\int_{{{a}}}^{{{b}}} \\left([{sp.latex(R_expr)}]^2 - [{sp.latex(r_expr)}]^2\\right) \\, d{v_lat} = {sp.latex(vol_val)}",
                 "steps": steps,
                 "expr": R_expr,
                 "inner_expr": r_expr,
                 "method": "washer",
                 "error": None,
+                "variable": str(var_sym.name),
             }
     except Exception as e:
         return {

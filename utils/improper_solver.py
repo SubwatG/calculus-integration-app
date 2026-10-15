@@ -40,6 +40,7 @@ LOCAL_MATH_DICT = {
 }
 
 X = sp.Symbol("x")
+from utils.sympy_solver import _clean_calculus_input, _get_variable
 
 
 def _parse_input(expr_str: str) -> sp.Expr:
@@ -103,13 +104,13 @@ def _format_bound_latex(val: float | int | str | sp.Expr | None) -> str:
         return str(val)
 
 
-def _find_interior_singularities(expr: sp.Expr, a_val: float, b_val: float) -> list[float]:
+def _find_interior_singularities(expr: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = X) -> list[float]:
     """ค้นหาจุดเอกฐานภายในช่วงเปิด (a, b) จากรากของตัวส่วน"""
     sings = []
     denom = sp.denom(expr)
     if denom != 1:
         try:
-            sol = sp.solve(denom, X)
+            sol = sp.solve(denom, var)
             for s in sol:
                 if getattr(s, "is_real", False) and a_val < float(s) < b_val:
                     s_f = float(s)
@@ -123,7 +124,13 @@ def _find_interior_singularities(expr: sp.Expr, a_val: float, b_val: float) -> l
 def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: float | int | str | sp.Expr | None = None) -> dict:
     """คำนวณอินทิกรัลไม่ตรงแบบผ่านลิมิต ตรวจลู่เข้า/ลู่ออก (รองรับช่วงกึ่งอนันต์, สองทาง (-oo, oo) และจุดเอกฐาน)"""
     try:
-        expr = _parse_input(expr_str)
+        clean_str, diff_var = _clean_calculus_input(expr_str)
+        expr = _parse_input(clean_str)
+        if diff_var is not None:
+            var_sym = sp.Symbol(diff_var)
+        else:
+            var_sym = _get_variable(expr)
+        v_lat = sp.latex(var_sym)
 
         lower = _parse_bound(a, is_upper=False)
         upper = _parse_bound(b, is_upper=True)
@@ -132,7 +139,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         bound_latex = _format_bound_latex(upper)
 
         steps = [
-            f"กำหนดอินทิกรัลไม่ตรงแบบ: \\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx",
+            f"กำหนดอินทิกรัลไม่ตรงแบบ: \\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, d{v_lat}",
         ]
 
         interior_sings: list[float] = []
@@ -144,15 +151,15 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             # เลือกจุดแบ่ง c = 0 (หรือถ้า 0 เป็นจุดเอกฐานให้เลือก c = 1)
             c_val = 0
             denom = sp.denom(expr)
-            if denom.subs(X, 0) == 0:
+            if denom.subs(var_sym, 0) == 0:
                 c_val = 1
 
             steps.append(
-                f"เนื่องจากขอบเขตอินทิเกรตเป็นอนันต์ทั้งสองฝั่ง $(-\\infty, \\infty)$ จึงแยกช่วงที่จุด $c = {c_val}$ ตามนิยาม:\n\\int_{{-\\infty}}^{{\\infty}} f(x)\\,dx = \\lim_{{s \\to -\\infty}} \\int_{{s}}^{{{c_val}}} f(x)\\,dx + \\lim_{{t \\to \\infty}} \\int_{{{c_val}}}^{{t}} f(x)\\,dx"
+                f"เนื่องจากขอบเขตอินทิเกรตเป็นอนันต์ทั้งสองฝั่ง $(-\\infty, \\infty)$ จึงแยกช่วงที่จุด $c = {c_val}$ ตามนิยาม:\n\\int_{{-\\infty}}^{{\\infty}} f({v_lat})\\,d{v_lat} = \\lim_{{s \\to -\\infty}} \\int_{{s}}^{{{c_val}}} f({v_lat})\\,d{v_lat} + \\lim_{{t \\to \\infty}} \\int_{{{c_val}}}^{{t}} f({v_lat})\\,d{v_lat}"
             )
 
-            left_part = sp.integrate(expr, (X, -sp.oo, c_val))
-            right_part = sp.integrate(expr, (X, c_val, sp.oo))
+            left_part = sp.integrate(expr, (var_sym, -sp.oo, c_val))
+            right_part = sp.integrate(expr, (var_sym, c_val, sp.oo))
             left_status = _classify_improper(left_part)
             right_status = _classify_improper(right_part)
 
@@ -172,7 +179,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 result = float(res_val.evalf()) if getattr(res_val, "is_real", False) else None
                 value_latex = sp.latex(res_val)
                 steps.append(
-                    f"ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด:\n\\int_{{-\\infty}}^{{\\infty}} \\left({sp.latex(expr)}\\right) \\, dx = {value_latex}"
+                    f"ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด:\n\\int_{{-\\infty}}^{{\\infty}} \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {value_latex}"
                 )
             else:
                 status = "unsupported"
@@ -180,7 +187,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 value_latex = "\\text{unsupported}"
 
             int_sym = r"\int_{-\infty}^{\infty}"
-            latex_str = f"{int_sym} {sp.latex(expr)} \\, dx = {value_latex}"
+            latex_str = f"{int_sym} {sp.latex(expr)} \\, d{v_lat} = {value_latex}"
             return {
                 "ok": True,
                 "result": result,
@@ -190,6 +197,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "error": None,
                 "status": status,
                 "interior_singularities": [],
+                "variable": str(var_sym.name),
             }
 
         # -------------------------------------------------------------
@@ -197,9 +205,9 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         # -------------------------------------------------------------
         if lower == -sp.oo and upper != sp.oo:
             steps.append(
-                f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตเมื่อขอบล่างเป็น $-\\infty$:\n\\lim_{{s \\to -\\infty}} \\int_{{s}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, dx"
+                f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตเมื่อขอบล่างเป็น $-\\infty$:\n\\lim_{{s \\to -\\infty}} \\int_{{s}}^{{{bound_latex}}} \\left({sp.latex(expr)}\\right) \\, d{v_lat}"
             )
-            res_val = sp.integrate(expr, (X, -sp.oo, upper))
+            res_val = sp.integrate(expr, (var_sym, -sp.oo, upper))
             status = _classify_improper(res_val)
             if status == "finite":
                 result = float(res_val.evalf()) if getattr(res_val, "is_real", False) else None
@@ -213,7 +221,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 result = None
                 value_latex = "\\text{unsupported}"
 
-            latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {sp.latex(expr)} \\, dx = {value_latex}"
+            latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {sp.latex(expr)} \\, d{v_lat} = {value_latex}"
             return {
                 "ok": True,
                 "result": result,
@@ -223,6 +231,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "error": None,
                 "status": status,
                 "interior_singularities": [],
+                "variable": str(var_sym.name),
             }
 
         # -------------------------------------------------------------
@@ -230,9 +239,9 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         # -------------------------------------------------------------
         if lower != -sp.oo and upper == sp.oo:
             steps.append(
-                f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตบนช่วงอนันต์:\n\\lim_{{t \\to \\infty}} \\int_{{{lower_latex}}}^{{t}} \\left({sp.latex(expr)}\\right) \\, dx"
+                f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตบนช่วงอนันต์:\n\\lim_{{t \\to \\infty}} \\int_{{{lower_latex}}}^{{t}} \\left({sp.latex(expr)}\\right) \\, d{v_lat}"
             )
-            res_val = sp.integrate(expr, (X, lower, sp.oo))
+            res_val = sp.integrate(expr, (var_sym, lower, sp.oo))
             status = _classify_improper(res_val)
             if status == "finite":
                 result = float(res_val.evalf()) if getattr(res_val, "is_real", False) else None
@@ -246,7 +255,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 result = None
                 value_latex = "\\text{unsupported}"
 
-            latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {sp.latex(expr)} \\, dx = {value_latex}"
+            latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {sp.latex(expr)} \\, d{v_lat} = {value_latex}"
             return {
                 "ok": True,
                 "result": result,
@@ -256,6 +265,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "error": None,
                 "status": status,
                 "interior_singularities": [],
+                "variable": str(var_sym.name),
             }
 
         # -------------------------------------------------------------
@@ -266,21 +276,21 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         if f_a >= f_b:
             raise ValueError("ขอบล่าง a ต้องน้อยกว่าขอบบน b")
 
-        interior_sings = _find_interior_singularities(expr, f_a, f_b)
+        interior_sings = _find_interior_singularities(expr, f_a, f_b, var=var_sym)
 
         if interior_sings:
             c_val = interior_sings[0]
             c_sp = sp.nsimplify(c_val)
             c_latex = sp.latex(c_sp)
             steps.append(
-                f"พบจุดเอกฐานภายในช่วงอินทิเกรต (Interior Singularity) ที่ $x = {c_latex}$ ซึ่งฟังก์ชันไม่ต่อเนื่องและไม่มีขอบเขต"
+                f"พบจุดเอกฐานภายในช่วงอินทิเกรต (Interior Singularity) ที่ ${v_lat} = {c_latex}$ ซึ่งฟังก์ชันไม่ต่อเนื่องและไม่มีขอบเขต"
             )
             steps.append(
-                f"แยกช่วงการอินทิเกรตออกเป็นสองตอนตามนิยาม: \\int_{{{lower_latex}}}^{{{bound_latex}}} f(x)\\,dx = \\lim_{{t \\to {c_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f(x)\\,dx + \\lim_{{s \\to {c_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f(x)\\,dx"
+                f"แยกช่วงการอินทิเกรตออกเป็นสองตอนตามนิยาม: \\int_{{{lower_latex}}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} = \\lim_{{t \\to {c_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat} + \\lim_{{s \\to {c_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat}"
             )
 
-            left_part = sp.integrate(expr, (X, lower, c_sp))
-            right_part = sp.integrate(expr, (X, c_sp, upper))
+            left_part = sp.integrate(expr, (var_sym, lower, c_sp))
+            right_part = sp.integrate(expr, (var_sym, c_sp, upper))
             left_status = _classify_improper(left_part)
             right_status = _classify_improper(right_part)
 
@@ -300,7 +310,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 result = float(res_val.evalf()) if getattr(res_val, "is_real", False) else None
                 value_latex = sp.latex(res_val)
                 steps.append(
-                    f"ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด: \\int_{{{lower_latex}}}^{{{bound_latex}}} f(x)\\,dx = {value_latex}"
+                    f"ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด: \\int_{{{lower_latex}}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} = {value_latex}"
                 )
             else:
                 status = "unsupported"
@@ -308,9 +318,9 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 value_latex = "\\text{unsupported}"
         else:
             steps.append(
-                f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขต: \\lim_{{t \\to {bound_latex}}} \\int_{{{lower_latex}}}^{{t}} \\left({sp.latex(expr)}\\right) \\, dx"
+                f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขต: \\lim_{{t \\to {bound_latex}}} \\int_{{{lower_latex}}}^{{t}} \\left({sp.latex(expr)}\\right) \\, d{v_lat}"
             )
-            res_val = sp.integrate(expr, (X, lower, upper))
+            res_val = sp.integrate(expr, (var_sym, lower, upper))
             status = _classify_improper(res_val)
 
             if status == "finite":
@@ -325,7 +335,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 result = None
                 value_latex = "\\text{unsupported}"
 
-        latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {sp.latex(expr)} \\, dx = {value_latex}"
+        latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {sp.latex(expr)} \\, d{v_lat} = {value_latex}"
         return {
             "ok": True,
             "result": result,
@@ -335,6 +345,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             "error": None,
             "status": status,
             "interior_singularities": interior_sings,
+            "variable": str(var_sym.name),
         }
     except Exception as e:
         return {

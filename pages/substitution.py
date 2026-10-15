@@ -164,8 +164,8 @@ with tab1:
         u_choice = st.radio(
             "หากท่านเป็นผู้แก้โจทย์ ท่านจะกำหนดให้ u เท่ากับฟังก์ชันใด?",
             options=[
-                "แนวทาง A: กำหนดให้ u = ln(x) (ฟังก์ชันลอการิทึม)",
-                "แนวทาง B: กำหนดให้ u = x (ตัวส่วน)",
+                "แนวทาง A: กำหนดให้ u = x (ตัวส่วน)",
+                "แนวทาง B: กำหนดให้ u = ln(x) (ฟังก์ชันลอการิทึม)",
                 "แนวทาง C: กำหนดให้ u = 1/x (ส่วนกลับของ x)",
                 "แนวทาง D: กำหนดให้ u = x ln(x) (ผลคูณ)",
             ],
@@ -175,7 +175,7 @@ with tab1:
 
         if u_choice is None:
             st.info("[การตัดสินใจ] กรุณาคลิกเลือกตัวแปร u ด้านบนเพื่อตรวจคำตอบ")
-        elif "แนวทาง A" in u_choice:
+        elif "แนวทาง B" in u_choice:
             st.success("**[ถูกต้องตามหลักการ] เหมาะสมที่สุด (Preferred Substitution)**")
             st.markdown("เนื่องจาก $\\frac{d}{dx}[\\ln x] = \\frac{1}{x}$ ซึ่งตรงกับตัวส่วนในโจทย์ $\\frac{1}{x}dx$ พอดิบพอดี:")
 
@@ -194,7 +194,7 @@ with tab1:
 
             st.markdown("**ขั้นที่ 5: ตรวจสอบความถูกต้องด้วยอนุพันธ์ย้อนกลับ**")
             st.latex(r"\frac{d}{dx}\left[\frac{(\ln x)^2}{2} + C\right] = \frac{1}{2} \cdot 2(\ln x) \cdot \frac{1}{x} = \frac{\ln x}{x}")
-        elif "แนวทาง B" in u_choice:
+        elif "แนวทาง A" in u_choice:
             st.warning("**[ไม่ช่วยให้ง่ายขึ้น]** การแทน $u = x$ ทำให้ได้ $\\int \\frac{\\ln u}{u} du$ ซึ่งเหมือนโจทย์เดิมทุกประการ")
         elif "แนวทาง C" in u_choice:
             st.warning("**[กับดักความซับซ้อน]** เมื่อให้ $u = 1/x = x^{-1}$ จะได้ $du = -x^{-2}dx$ ส่งผลให้ตัวแปร $x$ มีดีกรีติดลบเพิ่มขึ้นและไม่สามารถตัดทอน $\\ln x$ ได้")
@@ -209,9 +209,9 @@ with tab1:
         u_choice = st.radio(
             "หากท่านเป็นผู้แก้โจทย์ ท่านจะกำหนดให้ u เท่ากับฟังก์ชันใด?",
             options=[
-                "แนวทาง A: กำหนดให้ u = sin(x) (ฟังก์ชันบนเลขชี้กำลัง)",
-                "แนวทาง B: กำหนดให้ u = cos(x) (ฟังก์ชันตัวคูณด้านหน้า)",
-                "แนวทาง C: กำหนดให้ u = e^(sin x) (ฟังก์ชันเอกซ์โพเนนเชียลทั้งก้อน)",
+                "แนวทาง A: กำหนดให้ u = cos(x) (ฟังก์ชันตัวคูณด้านหน้า)",
+                "แนวทาง B: กำหนดให้ u = e^(sin x) (ฟังก์ชันเอกซ์โพเนนเชียลทั้งก้อน)",
+                "แนวทาง C: กำหนดให้ u = sin(x) (ฟังก์ชันบนเลขชี้กำลัง)",
                 "แนวทาง D: กำหนดให้ u = x",
             ],
             index=None,
@@ -220,7 +220,7 @@ with tab1:
 
         if u_choice is None:
             st.info("[การตัดสินใจ] กรุณาคลิกเลือกตัวแปร u ด้านบนเพื่อตรวจคำตอบ")
-        elif "แนวทาง A" in u_choice:
+        elif "แนวทาง C" in u_choice:
             st.success("**[ถูกต้องตามหลักการ] เหมาะสมที่สุด (Preferred Substitution)**")
             st.markdown("เนื่องจากอนุพันธ์ของเลขชี้กำลัง $\\frac{d}{dx}[\\sin x] = \\cos x$ ซึ่งตรงกับตัวคูณด้านหน้าพอดี:")
 
@@ -236,10 +236,10 @@ with tab1:
 
             st.markdown("**ขั้นที่ 4: ตรวจสอบความถูกต้องด้วยอนุพันธ์ย้อนกลับ**")
             st.latex(r"\frac{d}{dx}\left[e^{\sin(x)} + C\right] = e^{\sin(x)} \cdot \frac{d}{dx}[\sin(x)] = \cos(x) e^{\sin(x)}")
-        elif "แนวทาง B" in u_choice:
+        elif "แนวทาง A" in u_choice:
             st.warning("**[ตัดทอนไม่หมด]** อนุพันธ์ของ $\\cos x$ คือ $-\\sin x$ ซึ่งไม่สามารถไปตัดกับ $\\sin x$ ที่อยู่บนเลขชี้กำลัง $e^{\\sin x}$ ได้")
-        elif "แนวทาง C" in u_choice:
-            st.info("**[ทำได้เช่นกันแต่วิธี A ตรงไปตรงมากว่า]** หากให้ $u = e^{\\sin x}$ จะได้ $du = \\cos(x)e^{\\sin x}dx \\implies \\int 1 du = u + C = e^{\\sin x} + C$")
+        elif "แนวทาง B" in u_choice:
+            st.info("**[ทำได้เช่นกันแต่วิธี C ตรงไปตรงมากว่า]** หากให้ $u = e^{\\sin x}$ จะได้ $du = \\cos(x)e^{\\sin x}dx \\implies \\int 1 du = u + C = e^{\\sin x} + C$")
         else:
             st.warning("**[ไม่ช่วยให้ง่ายขึ้น]** การแทน $u = x$ ไม่ได้ช่วยลดทอนความซับซ้อน")
 
@@ -252,10 +252,10 @@ with tab1:
         u_choice = st.radio(
             "หากท่านเป็นผู้แก้โจทย์ ท่านจะกำหนดให้ u เท่ากับฟังก์ชันใด?",
             options=[
-                "แนวทาง A: กำหนดให้ u = x + 1 แล้วจัดรูปย้อนกลับ x = u - 1 (Linear Adjustment)",
-                "แนวทาง B: กำหนดให้ u = x",
-                "แนวทาง C: กำหนดให้ u = x^2",
-                "แนวทาง D: กำหนดให้ u = √(x + 1)",
+                "แนวทาง A: กำหนดให้ u = x",
+                "แนวทาง B: กำหนดให้ u = x^2",
+                "แนวทาง C: กำหนดให้ u = √(x + 1)",
+                "แนวทาง D: กำหนดให้ u = x + 1 แล้วจัดรูปย้อนกลับ x = u - 1 (Linear Adjustment)",
             ],
             index=None,
             key="radio_u_case4",
@@ -263,7 +263,7 @@ with tab1:
 
         if u_choice is None:
             st.info("[การตัดสินใจ] กรุณาคลิกเลือกตัวแปร u ด้านบนเพื่อตรวจคำตอบ")
-        elif "แนวทาง A" in u_choice:
+        elif "แนวทาง D" in u_choice:
             st.success("**[ถูกต้องตามหลักการขั้นสูง] เทคนิคตัวแปรเหลือเศษ (Algebraic Adjustment)**")
             st.markdown("การจัดรูปย้อนกลับ $x = u - 1$ ช่วยเปลี่ยนการคูณนอกกรณฑ์ ให้กลายเป็นการกระจายกำลังพหุนามที่อินทิเกรตได้ง่าย:")
 
@@ -551,6 +551,10 @@ with tab3:
         else:
             res = solve_substitution(expr_input)
             if res["ok"]:
+                v_name = res.get("variable", "x")
+                if v_name != "x":
+                    st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและอินทิเกรตเทียบกับ $d{v_name}$ อัตโนมัติ")
+
                 st.markdown("#### ผลลัพธ์การคำนวณ")
                 render_latex(res["latex"])
 
@@ -559,7 +563,7 @@ with tab3:
                 elif res.get("u_candidate") is not None:
                     u_c = res["u_candidate"]
                     du_c = res["du_candidate"]
-                    st.info(f"💡 คำแนะนำเทคนิคการเปลี่ยนตัวแปร: สามารถกำหนดให้ $u = {sp.latex(u_c)}$ ซึ่งจะได้ $du = {sp.latex(du_c)} \\, dx$")
+                    st.info(f"💡 คำแนะนำเทคนิคการเปลี่ยนตัวแปร: สามารถกำหนดให้ $u = {sp.latex(u_c)}$ ซึ่งจะได้ $du = {sp.latex(du_c)} \\, d{v_name}$")
 
                 st.divider()
                 st.markdown("#### ขั้นตอนการพิจารณา")

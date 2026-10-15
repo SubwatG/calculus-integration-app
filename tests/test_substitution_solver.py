@@ -49,3 +49,11 @@ class TestSolveSubstitution:
         res = solve_substitution('2*x*exp(x**2)')
         assert res["ok"] is True
         assert res["latex"]
+
+    def test_solve_substitution_variable_t(self):
+        res = solve_substitution('2*t*exp(t**2)')
+        assert res["ok"] is True
+        assert res["variable"] == "t"
+        assert str(res["u_candidate"]) == "t**2"
+        assert "dt" in res["latex"]
+

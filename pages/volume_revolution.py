@@ -141,6 +141,10 @@ if not expr_input.strip():
 else:
     res = compute_volume(expr_input, a_val, b_val, method_label, inner_expr_str=inner_input)
     if res["ok"]:
+        v_name = res.get("variable", "x")
+        if v_name != "x":
+            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+
         st.markdown("### ผลลัพธ์")
         render_latex(res["latex"])
         st.divider()
