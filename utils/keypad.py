@@ -86,8 +86,8 @@ def render_math_keypad(
         row3_tokens = [
             ("1/x", "1/x"),
             ("|x|", "abs("),
-            ("ลบตัวสุดท้าย", "BACKSPACE"),
-            ("ล้างทั้งหมด", "CLEAR"),
+            ("ลบ", "BACKSPACE"),
+            ("ล้าง", "CLEAR"),
         ]
         for idx, (lbl, tok) in enumerate(row3_tokens):
             with r3_cols[idx]:

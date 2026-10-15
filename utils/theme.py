@@ -454,12 +454,177 @@ def inject_css() -> None:
         font-weight: 600 !important;
         color: #18181B !important;
     }
+
+    /* ==========================================================================
+       Mobile Responsive Optimizations: Math Keypad, Quick Chips & Presets
+       Prevents buttons from stretching to 100% full-screen width on mobile viewports
+       ========================================================================== */
+
+    /* 1. Math Keypad inside Expander:
+          - Horizontal flex row
+          - On mobile (<=768px): keys are fixed 48px wide and smoothly scrollable to the right!
+          - On desktop (>768px): keys expand evenly to fill the expander
+    */
+    div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 6px !important;
+        width: 100% !important;
+        margin-bottom: 6px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding-bottom: 6px !important;
+        touch-action: pan-x !important;
+    }
+
+    /* Desktop (>768px): Keypad expands evenly */
+    @media (min-width: 769px) {
+        div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+            flex: 1 1 0px !important;
+            min-width: 0 !important;
+            width: auto !important;
+        }
+    }
+
+    /* Mobile (<=768px): Keypad rows 1 & 2 (8+ keys) scroll horizontally to the right */
+    @media (max-width: 768px) {
+        div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"]:has(> div:nth-child(8)) > div[data-testid="stColumn"] {
+            flex: 0 0 48px !important;
+            min-width: 48px !important;
+            max-width: 48px !important;
+            width: 48px !important;
+        }
+
+        /* Keypad row 3 (4 keys: 1/x, |x|, ลบ, ล้าง) fills the width evenly */
+        div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"]:not(:has(> div:nth-child(8))) > div[data-testid="stColumn"] {
+            flex: 1 1 calc(25% - 6px) !important;
+            min-width: 54px !important;
+        }
+    }
+
+    /* Keypad Scrollbar: clean, sleek and visible on touch devices */
+    div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"]::-webkit-scrollbar {
+        height: 5px !important;
+        display: block !important;
+    }
+    div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"]::-webkit-scrollbar-track {
+        background: #FBCFE8 !important;
+        border-radius: 999px !important;
+    }
+    div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"]::-webkit-scrollbar-thumb {
+        background: #F43F5E !important;
+        border-radius: 999px !important;
+    }
+
+    div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"] .stButton button,
+    div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"] [data-testid="stButton"] button {
+        min-height: 2.3rem !important;
+        height: 2.3rem !important;
+        padding: 0 4px !important;
+        font-size: 0.9rem !important;
+        font-weight: 700 !important;
+        width: 100% !important;
+        white-space: nowrap !important;
+        text-align: center !important;
+        border-radius: 8px !important;
+        border: 1.5px solid #18181B !important;
+        box-shadow: 1.5px 1.5px 0px #18181B !important;
+    }
+
+    div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"] .stButton button p,
+    div[data-testid="stExpanderDetails"] div[data-testid="stHorizontalBlock"] [data-testid="stButton"] button p {
+        font-size: 0.9rem !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+    }
+
+    /* 2. Quick Chips (จุดยอดนิยม / Nested Columns inside col_a):
+          Always 4 compact columns (25% width each) on all screen sizes, never 100% full-screen!
+    */
+    div[data-testid="stColumn"] div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+        width: 100% !important;
+        margin-bottom: 4px !important;
+    }
+
+    div[data-testid="stColumn"] div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+        min-width: calc(25% - 4px) !important;
+        max-width: calc(25% - 4px) !important;
+        flex: 1 1 calc(25% - 4px) !important;
+        width: calc(25% - 4px) !important;
+    }
+
+    div[data-testid="stColumn"] div[data-testid="stHorizontalBlock"] .stButton button,
+    div[data-testid="stColumn"] div[data-testid="stHorizontalBlock"] [data-testid="stButton"] button {
+        min-height: 2.1rem !important;
+        height: 2.1rem !important;
+        padding: 0 2px !important;
+        font-size: 0.88rem !important;
+        font-weight: 700 !important;
+        width: 100% !important;
+        white-space: nowrap !important;
+        border-radius: 8px !important;
+        border: 1.5px solid #18181B !important;
+        box-shadow: 1.5px 1.5px 0px #18181B !important;
+    }
+
+    /* 3. Preset Example Buttons (ตัวอย่างโจทย์ยอดนิยม): 2-Column Responsive Grid on Mobile */
+    @media (max-width: 768px) {
+        div[data-testid="stHorizontalBlock"]:has(> div:nth-child(4)):not(:has(> div:nth-child(8))) {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            gap: 6px !important;
+            width: 100% !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(> div:nth-child(4)):not(:has(> div:nth-child(8))) > div[data-testid="stColumn"] {
+            flex: 1 1 calc(50% - 6px) !important;
+            min-width: calc(50% - 6px) !important;
+            max-width: calc(50% - 6px) !important;
+            width: calc(50% - 6px) !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(> div:nth-child(4)):not(:has(> div:nth-child(8))) .stButton button {
+            min-height: 2.2rem !important;
+            height: auto !important;
+            padding: 4px 6px !important;
+            font-size: 0.82rem !important;
+            line-height: 1.25 !important;
+            border-radius: 8px !important;
+            border: 1.5px solid #18181B !important;
+            box-shadow: 2px 2px 0px #18181B !important;
+        }
+
+        /* จุดยอดนิยม (nested columns inside col_a): MUST STAY exactly 4 columns per row without wrapping! */
+        div[data-testid="stColumn"] div[data-testid="stHorizontalBlock"]:has(> div:nth-child(4)):not(:has(> div:nth-child(8))) > div[data-testid="stColumn"],
+        div[data-testid="stColumn"] div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+            flex: 1 1 0px !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            width: auto !important;
+        }
+
+        div[data-testid="stColumn"] div[data-testid="stHorizontalBlock"] {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            gap: 4px !important;
+            width: 100% !important;
+            margin-bottom: 4px !important;
+        }
+    }
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
 
 
 def render_hero(title: str, subtitle: str) -> None:
+    inject_css()
     html = f"""
     <div style="
         background-color: #FFFFFF;
