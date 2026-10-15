@@ -134,6 +134,8 @@ with col_pre6:
         args=("abs(x)/x", "0"),
     )
 
+st.markdown(r"**สัญลักษณ์แคลคูลัส:** $\lim_{x \to a} f(x)$ โดยพิจารณาตัวแปรอิสระ $x \in \mathbb{R}$ บนเส้นจำนวนจริงและระนาบพิกัดฉาก $xy$")
+
 col_f, col_a, col_d = st.columns([2.2, 1.4, 1.0])
 with col_f:
     expr_input = st.text_input(
@@ -203,8 +205,6 @@ else:
     if res["ok"]:
         v_name = res.get("variable", "x")
         var_sym = sp.Symbol(v_name)
-        if v_name != "x":
-            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
 
         st.markdown("### ผลลัพธ์ลิมิต")
         col_m1, col_m2 = st.columns([1, 2])
