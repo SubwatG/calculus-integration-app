@@ -108,16 +108,12 @@ st.markdown(
         font-weight: 700 !important;
         box-shadow: 3px 3px 0px #18181B !important;
     }
-    /* Question Bauhaus Card with solid background and tactile frame */
+    /* Question Bauhaus Card typography and inner spacing */
     div.st-key-quiz_question_box,
     div[data-testid="stVerticalBlock"].st-key-quiz_question_box {
-        background-color: #FFFFFF !important;
-        border: 2.5px solid #18181B !important;
-        border-radius: 16px !important;
-        box-shadow: 4px 4px 0px #18181B !important;
-        padding: 1.25rem 1.5rem !important;
-        margin-top: 8px !important;
-        margin-bottom: 16px !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
     }
     div.st-key-quiz_question_box p,
     div[data-testid="stVerticalBlock"].st-key-quiz_question_box p {
