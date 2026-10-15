@@ -286,6 +286,77 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
             steps.append(
                 f"รวมผลลัพธ์อนุพันธ์: \\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
             )
+        numer, denom = expr.as_numer_denom()
+        if denom != 1 and denom.has(var_sym) and numer.has(var_sym):
+            du = sp.diff(numer, var_sym)
+            dv = sp.diff(denom, var_sym)
+            u_lat = sp.latex(numer)
+            denom_lat = sp.latex(denom)
+            du_lat = sp.latex(du)
+            dv_lat = sp.latex(dv)
+            expr_lat = sp.latex(expr)
+            res_lat = sp.latex(result)
+            steps.append(
+                r"ใช้กฎผลหารของอนุพันธ์ (Quotient Rule): \frac{d}{d%s}\left[\frac{u}{v}\right] = \frac{v \frac{du}{d%s} - u \frac{dv}{d%s}}{v^2}"
+                % (v_lat, v_lat, v_lat)
+            )
+            steps.append(
+                r"กำหนดตัวเศษ $u = %s \implies \frac{du}{d%s} = %s$ และตัวส่วน $v = %s \implies \frac{dv}{d%s} = %s$"
+                % (u_lat, v_lat, du_lat, denom_lat, v_lat, dv_lat)
+            )
+            steps.append(
+                r"แทนค่าในสูตรผลหาร: \frac{d}{d%s}\left[%s\right] = \frac{(%s)(%s) - (%s)(%s)}{(%s)^2} = %s"
+                % (v_lat, expr_lat, denom_lat, du_lat, u_lat, dv_lat, denom_lat, res_lat)
+            )
+        elif expr.func in (sp.sin, sp.cos, sp.tan, sp.exp, sp.log, sp.asin, sp.atan, sp.acos) and expr.args[0] != var_sym and expr.args[0].has(var_sym):
+            g = expr.args[0]
+            du = sp.diff(g, var_sym)
+            u_sym = sp.Symbol("u")
+            outer_f = expr.func(u_sym)
+            df_du = sp.diff(outer_f, u_sym).subs(u_sym, g)
+            g_lat = sp.latex(g)
+            du_lat = sp.latex(du)
+            df_du_lat = sp.latex(df_du)
+            expr_lat = sp.latex(expr)
+            res_lat = sp.latex(result)
+            steps.append(
+                r"ใช้กฎลูกโซ่ (Chain Rule): \frac{d}{d%s}[f(g(%s))] = f'(g(%s)) \cdot g'(%s)"
+                % (v_lat, v_lat, v_lat, v_lat)
+            )
+            steps.append(
+                r"กำหนดฟังก์ชันก้อนใน: $u = g(%s) = %s \implies \frac{du}{d%s} = %s$"
+                % (v_lat, g_lat, v_lat, du_lat)
+            )
+            steps.append(
+                r"หาอนุพันธ์ของฟังก์ชันภายนอก: \frac{df}{du} = %s \implies f'(g(%s)) = %s"
+                % (sp.latex(sp.diff(outer_f, u_sym)), v_lat, df_du_lat)
+            )
+            steps.append(
+                r"คูณตามกฎลูกโซ่: \frac{d}{d%s}\left[%s\right] = f'(g(%s)) \cdot \frac{du}{d%s} = \left(%s\right) \cdot \left(%s\right) = %s"
+                % (v_lat, expr_lat, v_lat, v_lat, df_du_lat, du_lat, res_lat)
+            )
+        elif isinstance(expr, sp.Pow) and expr.args[0] != var_sym and expr.args[0].has(var_sym) and expr.args[1].is_number:
+            g = expr.args[0]
+            n = expr.args[1]
+            du = sp.diff(g, var_sym)
+            g_lat = sp.latex(g)
+            n_lat = sp.latex(n)
+            nm1_lat = sp.latex(n - 1)
+            du_lat = sp.latex(du)
+            expr_lat = sp.latex(expr)
+            res_lat = sp.latex(result)
+            steps.append(
+                r"ใช้กฎกำลังร่วมกับกฎลูกโซ่ (General Power Rule / Chain Rule): \frac{d}{d%s}[u^n] = n u^{n-1} \frac{du}{d%s}"
+                % (v_lat, v_lat)
+            )
+            steps.append(
+                r"กำหนดฟังก์ชันก้อนใน: $u = %s \implies \frac{du}{d%s} = %s$ และเลขชี้กำลัง $n = %s$"
+                % (g_lat, v_lat, du_lat, n_lat)
+            )
+            steps.append(
+                r"แทนค่าและคูณอนุพันธ์ก้อนใน: \frac{d}{d%s}\left[%s\right] = %s (%s)^{%s} \cdot \left(%s\right) = %s"
+                % (v_lat, expr_lat, n_lat, g_lat, nm1_lat, du_lat, res_lat)
+            )
         elif isinstance(expr, sp.Mul):
             var_factors = [f for f in expr.args if f.has(var_sym)]
             if len(var_factors) == 2:

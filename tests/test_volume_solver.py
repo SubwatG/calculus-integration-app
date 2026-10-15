@@ -69,3 +69,28 @@ class TestComputeVolume:
         assert "\\, dt" in res["latex"]
         assert res["result"] == pytest.approx(8 * 3.141592653589793 / 3)
 
+    def test_compute_volume_disk_detailed_steps(self):
+        import math
+        res = compute_volume('x', 0, 2, 'disk')
+        assert res["ok"] is True
+        assert res["result"] == pytest.approx(8 * math.pi / 3)
+        steps_text = " ".join(res["steps"])
+        assert "แกน" in steps_text
+        assert "R(x) = x" in steps_text or "R(x)" in steps_text
+        assert "dx" in steps_text
+        assert "8" in res["latex"] and "\\pi" in res["latex"]
+
+    def test_compute_volume_washer_detailed_steps(self):
+        res = compute_volume('x', 0, 2, 'washer', inner_expr_str='0')
+        assert res["ok"] is True
+        steps_text = " ".join(res["steps"])
+        assert "รัศมีนอก" in steps_text
+        assert "รัศมีใน" in steps_text
+        assert "แกน" in steps_text
+
+    def test_compute_volume_bogus_method(self):
+        res = compute_volume('x', 0, 2, 'bogus')
+        assert res["ok"] is False
+        assert res["error"]
+        assert "bogus" in res["error"] or "ไม่รองรับ" in res["error"]
+
