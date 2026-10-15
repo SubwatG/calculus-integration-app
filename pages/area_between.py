@@ -93,7 +93,7 @@ with p_cols[0]:
 with p_cols[1]:
     st.button("พาราโบลาคว่ำ-หงาย ($2-x^2$ และ $x^2$)", key="pre_area_2", use_container_width=True, wrap=True, on_click=_set_area_preset, args=("2 - x**2", "x**2", -1.0, 1.0))
 with p_cols[2]:
-    st.button("คลื่นตรีโกณมิติ ($\cos(x)$ และ $x$)", key="pre_area_3", use_container_width=True, wrap=True, on_click=_set_area_preset, args=("cos(x)", "x", 0.0, 1.5))
+    st.button(r"คลื่นตรีโกณมิติ ($\cos(x)$ และ $x$)", key="pre_area_3", use_container_width=True, wrap=True, on_click=_set_area_preset, args=("cos(x)", "x", 0.0, 1.5))
 with p_cols[3]:
     st.button("รากที่สาม ($x^{1/3}$ และ $x$)", key="pre_area_4", use_container_width=True, wrap=True, on_click=_set_area_preset, args=("x**(1/3)", "x", -1.0, 1.0))
 

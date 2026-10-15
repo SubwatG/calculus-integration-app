@@ -494,7 +494,7 @@ with tab2:
             st.latex(r"u = e^x \implies du = e^x \, dx, \quad dv = \cos(x) \, dx \implies v = \sin(x)")
             st.latex(r"I = e^x \sin(x) - \int e^x \sin(x) \, dx")
 
-            st.markdown("**รอบที่ 2 (ทำ By Parts ซ้ำกับก้อน $\int e^x \sin x dx$ โดยคงบทบาทเดิม):**")
+            st.markdown(r"**รอบที่ 2 (ทำ By Parts ซ้ำกับก้อน $\int e^x \sin x dx$ โดยคงบทบาทเดิม):**")
             st.latex(r"u = e^x \implies du = e^x \, dx, \quad dv = \sin(x) \, dx \implies v = -\cos(x)")
             st.latex(r"\int e^x \sin(x) \, dx = -e^x \cos(x) - \int (-e^x \cos x) \, dx = -e^x \cos(x) + I")
 

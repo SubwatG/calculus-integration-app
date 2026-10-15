@@ -175,7 +175,7 @@ def inject_css() -> None:
         padding-bottom: 0.5rem !important;
     }
 
-    /* Display Math Blocks: Generous headroom so upper limits (\int_a^b), superscripts, and fractions are never cut off */
+    /* Display Math Blocks: Generous headroom so upper limits (\\int_a^b), superscripts, and fractions are never cut off */
     .katex-display {
         margin-top: 1rem !important;
         margin-bottom: 1rem !important;
