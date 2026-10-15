@@ -84,6 +84,10 @@ This Pull Request deepens the step-by-step worked solutions across the teaching 
 - Fixed preset buttons on pages (`pages/area_between.py`, `pages/volume_revolution.py`, `pages/improper_integrals.py`) by removing unsupported `wrap=True` argument from `st.button`.
 - Updated plot assertions in AppTest (`test_tangent_page_ux.py`, `test_limit_page_ux.py`) to recognize `imgs` element type in Streamlit 1.58.0.
 
+### 8. UI Cleanliness & Nested Border Fix
+- Resolved issue where `div[class*="e1rw0b1u3"]` and `.st-emotion-cache-y5eupb` wildcard selectors styled all Streamlit vertical blocks and columns as cards, causing nested stacked borders (กรอบซ้อน 3-4 ชั้น).
+- Restricted container card styling strictly to `[data-testid="stVerticalBlockBorderWrapper"]` and removed duplicate borders on quiz question boxes, restoring clean Bauhaus aesthetics.
+
 ---
 
 ## Testing & Verification
