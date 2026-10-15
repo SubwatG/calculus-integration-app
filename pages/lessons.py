@@ -19,12 +19,12 @@ render_hero("บทเรียน", "เนื้อหาบทเรียน
 # Mapping: key ใน THEORY_CONTENT -> หน้า interactive ที่เกี่ยวข้อง
 # ---------------------------------------------------------------------------
 INTERACTIVE_PAGES = {
-    "riemann_sum": "pages/riemann.py",
-    "tangent": "pages/tangent.py",
     "limit": "pages/limit_approach.py",
+    "tangent": "pages/tangent.py",
+    "riemann_sum": "pages/riemann.py",
     "substitution": "pages/substitution.py",
-    "volume": "pages/volume_revolution.py",
     "area_between": "pages/area_between.py",
+    "volume": "pages/volume_revolution.py",
     "improper": "pages/improper_integrals.py",
 }
 

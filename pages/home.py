@@ -12,18 +12,18 @@ search_query = st.text_input(
 
 cards_data = [
     {
-        "title": "1. เส้นสัมผัสและอนุพันธ์",
-        "subtitle": "สำรวจความชันเส้นสัมผัสและอนุพันธ์แบบโต้ตอบ",
-        "btn_label": "เข้าสู่บทเรียนที่ 1",
-        "target": "pages/tangent.py",
-        "key": "btn_card_tangent",
-    },
-    {
-        "title": "2. ลิมิตเข้าใกล้จุด",
+        "title": "1. ลิมิตเข้าใกล้จุด",
         "subtitle": "สำรวจการลู่เข้า ลิมิตสองด้าน และรูปแบบไม่กำหนด",
-        "btn_label": "เข้าสู่บทเรียนที่ 2",
+        "btn_label": "เข้าสู่บทเรียนที่ 1",
         "target": "pages/limit_approach.py",
         "key": "btn_card_limit",
+    },
+    {
+        "title": "2. เส้นสัมผัสและอนุพันธ์",
+        "subtitle": "สำรวจความชันเส้นสัมผัสและอนุพันธ์แบบโต้ตอบ",
+        "btn_label": "เข้าสู่บทเรียนที่ 2",
+        "target": "pages/tangent.py",
+        "key": "btn_card_tangent",
     },
     {
         "title": "3. ผลรวมรีมันน์ (Riemann)",
@@ -47,18 +47,18 @@ cards_data = [
         "key": "btn_card_area",
     },
     {
-        "title": "6. ปริพันธ์ไม่ตรงแบบ",
-        "subtitle": "สำรวจการลู่เข้าหรือลู่ออกบนช่วงอนันต์และจุดเอกฐาน",
-        "btn_label": "เข้าสู่บทเรียนที่ 6",
-        "target": "pages/improper_integrals.py",
-        "key": "btn_card_improper",
-    },
-    {
-        "title": "7. ปริมาตรของรูปทรงตัน",
+        "title": "6. ปริมาตรของรูปทรงตัน",
         "subtitle": "คำนวณปริมาตรทรงตันที่เกิดจากการหมุน (Disk Method)",
-        "btn_label": "เข้าสู่บทเรียนที่ 7",
+        "btn_label": "เข้าสู่บทเรียนที่ 6",
         "target": "pages/volume_revolution.py",
         "key": "btn_card_volume",
+    },
+    {
+        "title": "7. ปริพันธ์ไม่ตรงแบบ",
+        "subtitle": "สำรวจการลู่เข้าหรือลู่ออกบนช่วงอนันต์และจุดเอกฐาน",
+        "btn_label": "เข้าสู่บทเรียนที่ 7",
+        "target": "pages/improper_integrals.py",
+        "key": "btn_card_improper",
     },
     {
         "title": "เครื่องคิดเลขสัญลักษณ์ SymPy",

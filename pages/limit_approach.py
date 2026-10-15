@@ -10,7 +10,13 @@ import sympy as sp
 
 from utils.keypad import render_math_keypad
 from utils.limit_solver import compute_limit_near
-from utils.math_render import preview_math_expr, render_latex, render_steps, render_syntax_guide
+from utils.math_render import (
+    format_math_spacing,
+    preview_math_expr,
+    render_latex,
+    render_steps,
+    render_syntax_guide,
+)
 from utils.plotter import plot_limit_near
 from utils.riemann_solver import X
 from utils.theme import render_hero
@@ -51,7 +57,7 @@ with st.container(border=True):
 
     st.info(
         """**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
-- **ความสอดคล้องของสองฝั่ง (Left vs Right):** สังเกตค่าลิมิตทางซ้าย ($x \\to a^-$) และทางขวา ($x \\to a^+$) หากได้ค่าต่างกัน ลิมิตจะหาค่าไม่ได้ (DNE)
+- **ความสอดคล้องของสองฝั่ง (Left vs Right):** สังเกตค่าลิมิตทางซ้าย ($x \\to a^-$) และทางขวา ($x \\to a^+$) หากได้ค่าต่างกัน ลิมิตสองด้านจะไม่มีค่า (ลิมิตหาค่าไม่ได้)
 - **พฤติกรรมรอบจุด vs ค่า ณ จุดจริง:** ลิมิตสนใจเฉพาะพฤติกรรมเมื่อ $x$ เข้าใกล้ $a$ ไม่จำเป็นต้องหาค่า $f(a)$ ได้ เช่น จุดที่มีรูโหว่หรือรูปแบบ $\\frac{0}{0}$"""
     )
 
@@ -60,16 +66,18 @@ with st.expander("📖 รายละเอียดทฤษฎี ข้อ�
     with col_t1:
         st.markdown("**เงื่อนไขการใช้งาน**")
         for item in theory["conditions"]:
-            st.markdown(f"- {item}")
-        st.markdown("**สมบัติสำคัญ**")
+            st.markdown(f"- {format_math_spacing(item)}")
+        st.markdown("**สมบัติสำคัญ (เน้นสมการคำนวณ)**")
         for item in theory["properties"]:
-            st.markdown(f"- {item}")
+            st.markdown(f"- {format_math_spacing(item)}")
     with col_t2:
         st.markdown("**ข้อควรระวัง**")
-        st.warning(" / ".join(theory["cautions"]))
+        with st.container(border=True):
+            for caution in theory["cautions"]:
+                st.markdown(f"⚠️ {format_math_spacing(caution)}")
         st.markdown("**การประยุกต์ใช้**")
         for item in theory["applications"]:
-            st.markdown(f"- {item}")
+            st.markdown(f"- {format_math_spacing(item)}")
 
 st.divider()
 st.markdown("### ลองสำรวจการลู่เข้าของลิมิต")
@@ -83,11 +91,11 @@ def _set_limit_preset(expr_val: str, a_val: str) -> None:
     st.session_state["limit_a_str"] = a_val
 
 
-st.caption("ตัวอย่างโจทย์ยอดนิยม (ครอบคลุมรูปแบบไม่กำหนด, ตรีโกณมิติ, และลิมิตที่อนันต์):")
+st.caption("ตัวอย่างโจทย์ยอดนิยม (ระบุฟังก์ชันและจุดที่ x ลู่เข้าหา):")
 col_pre1, col_pre2, col_pre3, col_pre4, col_pre5, col_pre6 = st.columns(6)
 with col_pre1:
     st.button(
-        "(x^2 - 4)/(x - 2) → 2",
+        "(x² - 4)/(x - 2) (x → 2)",
         key="btn_lim_1",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -95,7 +103,7 @@ with col_pre1:
     )
 with col_pre2:
     st.button(
-        "sin(x)/x → 0",
+        "sin(x)/x (x → 0)",
         key="btn_lim_2",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -103,7 +111,7 @@ with col_pre2:
     )
 with col_pre3:
     st.button(
-        "tan(x) → π/2",
+        "tan(x) (x → π/2)",
         key="btn_lim_3",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -111,7 +119,7 @@ with col_pre3:
     )
 with col_pre4:
     st.button(
-        "(1 + 1/x)^x → ∞",
+        "(1 + 1/x)ˣ (x → ∞)",
         key="btn_lim_4",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -119,7 +127,7 @@ with col_pre4:
     )
 with col_pre5:
     st.button(
-        "(2x²+1)/(3x²-5) → ∞",
+        "(2x²+1)/(3x²-5) (x → ∞)",
         key="btn_lim_5",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -127,7 +135,7 @@ with col_pre5:
     )
 with col_pre6:
     st.button(
-        "abs(x)/x → 0",
+        "|x|/x (x → 0)",
         key="btn_lim_6",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -215,7 +223,7 @@ else:
             elif status == "infinite":
                 l_str = "∞ (อนันต์)"
             elif status == "dne":
-                l_str = "ไม่มีลิมิต (DNE)"
+                l_str = "ลิมิตหาค่าไม่ได้"
             elif status == "unsupported":
                 l_str = "ยังตัดสินไม่ได้"
             else:
@@ -299,11 +307,11 @@ else:
 
             st.markdown(
                 f"""
-                > **หัวใจสำคัญของการมีลิมิต (Two-Sided Limit):**  
-                > ลิมิตไม่ได้ถามว่า *"ที่จุด ${v_name} = a$ ฟังก์ชันมีค่าเท่าไหร่"* (ตรงจุดนั้นอาจเป็นรูโหว่หรือหาค่าไม่ได้ เช่น $\\frac{{0}}{{0}}$)  
-                > แต่ลิมิตกำลังถามว่า *"เมื่อเดินเข้าใกล้จุด $a$ จากสองฝั่ง กราฟกำลังจะไปเจอกันที่ความสูงเท่าไหร่"*  
+                > **หัวใจสำคัญของการมีลิมิตสองด้าน (Two-Sided Limit):**  
+                > ลิมิตไม่ได้ถามว่า *"ที่จุด $x = a$ ฟังก์ชันมีค่าเท่าไหร่"* (ตรงจุดนั้นอาจเป็นรูโหว่หรือไม่นิยาม เช่น $\\frac{{0}}{{0}}$)  
+                > แต่ลิมิตกำลังถามว่า *"เมื่อ $x$ เดินเข้าใกล้จุด $a$ จากสองฝั่ง กราฟกำลังจะไปเจอกันที่ความสูงเท่าไหร่"*  
                 > **ถ้าสองฝั่งเดินมาชนกันที่ความสูงเดียวกัน ($L^- = L^+$)** $\\implies$ **มีลิมิตสองด้าน**  
-                > **ถ้าสองฝั่งแยกทางกันหรือไปคนละทิศ ($L^- \\neq L^+$)** $\\implies$ **ไม่มีลิมิตสองด้าน (DNE)**
+                > **ถ้าสองฝั่งแยกทางกันหรือไปคนละทิศ ($L^- \\neq L^+$)** $\\implies$ **ลิมิตสองด้านหาค่าไม่ได้**
                 """
             )
 

@@ -25,15 +25,15 @@ home_page = st.Page("pages/home.py", title="หน้าหลัก")
 lessons_page = st.Page("pages/lessons.py", title="ภาพรวมบทเรียนและทฤษฎี")
 
 # -----------------------------------------------------------------------------
-# 2. โมดูลการเรียนรู้ (6 หัวข้อหลักตามโครงร่างโครงงาน)
+# 2. โมดูลการเรียนรู้ (ลำดับตามหลักสูตรแคลคูลัส)
 # -----------------------------------------------------------------------------
-tangent_page = st.Page("pages/tangent.py", title="1. เส้นสัมผัสและอนุพันธ์")
-limit_page = st.Page("pages/limit_approach.py", title="2. ลิมิตเข้าใกล้จุด")
+limit_page = st.Page("pages/limit_approach.py", title="1. ลิมิตเข้าใกล้จุด")
+tangent_page = st.Page("pages/tangent.py", title="2. เส้นสัมผัสและอนุพันธ์")
 riemann_page = st.Page("pages/riemann.py", title="3. ผลรวมรีมันน์ (พื้นที่ใต้กราฟ)")
 substitution_page = st.Page("pages/substitution.py", title="4. เทคนิคการอินทิเกรต (u-Sub และ By Parts)")
 area_between_page = st.Page("pages/area_between.py", title="5. พื้นที่ระหว่างเส้นโค้ง")
-improper_page = st.Page("pages/improper_integrals.py", title="6. ปริพันธ์ไม่ตรงแบบ")
-volume_page = st.Page("pages/volume_revolution.py", title="7. ปริมาตรของรูปทรงตัน")
+volume_page = st.Page("pages/volume_revolution.py", title="6. ปริมาตรของรูปทรงตัน")
+improper_page = st.Page("pages/improper_integrals.py", title="7. ปริพันธ์ไม่ตรงแบบ")
 
 # -----------------------------------------------------------------------------
 # 3. เครื่องมือและการประเมิน (Tools & Assessment)
@@ -52,13 +52,13 @@ pg = st.navigation(
     {
         "ภาพรวม": [home_page, lessons_page],
         "โมดูลการเรียนรู้": [
-            tangent_page,
             limit_page,
+            tangent_page,
             riemann_page,
             substitution_page,
             area_between_page,
-            improper_page,
             volume_page,
+            improper_page,
         ],
         "เครื่องมือและการประเมิน": [solver_page, quiz_page, survey_page],
         "ข้อมูลระบบ": [history_page, help_page],

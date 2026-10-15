@@ -171,11 +171,11 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
             if is_oscillating:
                 status = "dne"
                 result = None
-                latex_str = f"\\lim_{{{v_lat} \\to {dir_tex}}} {sp.latex(expr)} \\quad \\text{{(does not exist)}}"
+                latex_str = f"\\lim_{{{v_lat} \\to {dir_tex}}} {sp.latex(expr)} \\quad \\text{{(หาค่าไม่ได้)}}"
                 steps = [
                     f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร ${v_lat}$ {x_desc}\n\\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right)",
                     f"การวิเคราะห์พฤติกรรม: ฟังก์ชันมีการแกว่งกวัดขึ้นลงไม่สิ้นสุด (Oscillating) เมื่อ ${v_lat} \\to {dir_tex}$ จึงไม่ลู่เข้าหาค่าคงที่ใด",
-                    f"สรุปผล (ไม่มีลิมิตเนื่องจากการแกว่งกวัด): \\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}",
+                    f"สรุปผล (ไม่มีลิมิตเนื่องจากการแกว่งกวัด): \\lim_{{{v_lat} \\to {dir_tex}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(หาค่าไม่ได้)}}",
                 ]
             elif lim_val in (sp.oo, -sp.oo):
                 status = "infinite"
@@ -331,10 +331,10 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
                 latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {sp.latex(expr)} = {sp.latex(lim_val)}"
             elif status == "dne":
                 steps.append(
-                    f"สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): เส้นกราฟจากฝั่งซ้ายและฝั่งขวาแยกออกจากกันและไม่มาบรรจบกันที่จุดเดียวกัน\n\\lim_{{{v_lat} \\to {a_dir_left}}} f({v_lat}) = {sp.latex(lim_left)} \\neq \\lim_{{{v_lat} \\to {a_dir_right}}} f({v_lat}) = {sp.latex(lim_right)}\n\\lim_{{{v_lat} \\to {a_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
+                    f"สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): เส้นกราฟจากฝั่งซ้ายและฝั่งขวาแยกออกจากกันและไม่มาบรรจบกันที่จุดเดียวกัน\n\\lim_{{{v_lat} \\to {a_dir_left}}} f({v_lat}) = {sp.latex(lim_left)} \\neq \\lim_{{{v_lat} \\to {a_dir_right}}} f({v_lat}) = {sp.latex(lim_right)}\n\\lim_{{{v_lat} \\to {a_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(หาค่าไม่ได้)}}"
                 )
                 result = None
-                latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {sp.latex(expr)} \\quad \\text{{(does not exist)}}"
+                latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {sp.latex(expr)} \\quad \\text{{(หาค่าไม่ได้)}}"
             else:
                 steps.append(
                     "ไม่สามารถสรุปค่าลิมิตสองด้านได้จากข้อมูลการคำนวณในระบบ"

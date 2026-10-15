@@ -73,7 +73,9 @@ with st.expander("📖 รายละเอียดทฤษฎี ข้อ�
             st.markdown(f"- {item}")
     with col_t2:
         st.markdown("**ข้อควรระวัง**")
-        st.warning(" / ".join(theory["cautions"]))
+        with st.container(border=True):
+            for caution in theory["cautions"]:
+                st.markdown(f"⚠️ {caution}")
         st.markdown("**การประยุกต์ใช้**")
         for item in theory["applications"]:
             st.markdown(f"- {item}")
