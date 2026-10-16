@@ -5,7 +5,7 @@ from utils.math_render import preview_math_expr, render_latex, render_steps, ren
 from utils.sympy_solver import compute_limit, detect_variable, differentiate, integrate
 from utils.theme import render_hero
 
-render_hero("แคลคูลัส", "เครื่องคิดเลขสัญลักษณ์ SymPy พร้อมวิธีทำทีละขั้นตอน")
+render_hero("🧮 เครื่องคิดเลขแคลคูลัส (Calculus Solver) ✨", "คำนวณอินทิเกรต อนุพันธ์ และลิมิต พร้อมแจกแจงวิธีทำทีละขั้นตอนด้วย SymPy CAS 🚀")
 
 op_options = ["อินทิเกรต", "อนุพันธ์", "ลิมิต"]
 if "solver_op" not in st.session_state:

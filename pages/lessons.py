@@ -13,7 +13,7 @@ from utils.math_render import format_math_spacing
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
 
-render_hero("บทเรียน", "เนื้อหาบทเรียนเรียงตามหัวข้อ")
+render_hero("📚 ภาพรวมบทเรียนและทฤษฎี (Calculus Lessons) ✨", "สำรวจสรุปทฤษฎีบท มโนทัศน์สำคัญ และเอกสารอ้างอิงฉบับเต็ม 🚀")
 
 # ---------------------------------------------------------------------------
 # Mapping: key ใน THEORY_CONTENT -> หน้า interactive ที่เกี่ยวข้อง
@@ -32,7 +32,7 @@ INTERACTIVE_PAGES = {
 ALL_THEORY_KEYS = list(THEORY_CONTENT.keys())
 
 tab_interactive, tab_reference = st.tabs(
-    ["บทเรียน interactive", "เอกสารอ้างอิง (ฉบับเต็ม)"]
+    ["🚀 บทเรียน Interactive", "📖 เอกสารอ้างอิง (ฉบับเต็ม)"]
 )
 
 # ---------------------------------------------------------------------------
@@ -58,31 +58,43 @@ with tab_interactive:
 
         st.markdown(f"## {format_math_spacing(theory['title'])}")
 
-        st.markdown("**เงื่อนไขการใช้งาน**")
-        for item in theory["conditions"]:
-            st.markdown(f"- {format_math_spacing(item)}")
+        # 1. สูตรคำนวณสำคัญ
+        with st.container(border=True):
+            st.markdown("### ⚡ สูตรคำนวณสำคัญ (Key Formulas)")
+            for item in theory["formulas"]:
+                st.markdown(f"* {format_math_spacing(item)}")
 
-        st.markdown("**สูตรที่ใช้**")
-        for item in theory["formulas"]:
-            st.markdown(f"- {format_math_spacing(item)}")
+        # 2. เงื่อนไข และ สมบัติสำคัญ
+        col_cond, col_prop = st.columns(2)
+        with col_cond:
+            with st.container(border=True):
+                st.markdown("#### 📋 เงื่อนไขการใช้งาน (Conditions)")
+                for item in theory["conditions"]:
+                    st.markdown(f"* {format_math_spacing(item)}")
+        with col_prop:
+            with st.container(border=True):
+                st.markdown("#### 🌟 สมบัติสำคัญ (Properties)")
+                for item in theory["properties"]:
+                    st.markdown(f"* {format_math_spacing(item)}")
 
-        st.markdown("**สมบัติ**")
-        for item in theory["properties"]:
-            st.markdown(f"- {format_math_spacing(item)}")
+        # 3. ข้อควรระวัง
+        st.warning("⚠️ **ข้อควรระวังสำคัญ:** " + " • ".join(format_math_spacing(c) for c in theory["cautions"]))
 
-        st.markdown("**ข้อควรระวัง**")
-        st.warning(" / ".join(format_math_spacing(c) for c in theory["cautions"]))
+        # 4. การประยุกต์ใช้ และ คำแนะนำ
+        col_app, col_dec = st.columns(2)
+        with col_app:
+            with st.container(border=True):
+                st.markdown("#### 🚀 การประยุกต์ใช้งาน (Applications)")
+                for item in theory["applications"]:
+                    st.markdown(f"* {format_math_spacing(item)}")
+        with col_dec:
+            with st.container(border=True):
+                st.markdown("#### 💡 คำแนะนำการเลือกวิธี (Decision Guide)")
+                st.markdown(format_math_spacing(theory["decision_guide"]))
 
-        st.markdown("**การประยุกต์ใช้**")
-        for item in theory["applications"]:
-            st.markdown(f"- {format_math_spacing(item)}")
-
-        st.markdown("**คำแนะนำการเลือกใช้**")
-        st.markdown(format_math_spacing(theory["decision_guide"]))
-
-        st.divider()
+        st.write("")
         target = INTERACTIVE_PAGES[selected_key]
-        if st.button("ไปลองเล่นแบบ interactive", type="primary", key="btn_go_interactive"):
+        if st.button("🚀 ไปทดลองเล่นแบบจำลอง Interactive แบบเต็มรูปแบบ", type="primary", key="btn_go_interactive", use_container_width=True):
             st.switch_page(target)
 
 # ---------------------------------------------------------------------------

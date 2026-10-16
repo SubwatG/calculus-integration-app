@@ -1,76 +1,177 @@
 import streamlit as st
 from utils.theme import render_hero
 
+render_hero(
+    "📐 Calculus Learning Sandbox ✨",
+    "เว็บแอปพลิเคชันช่วยเรียนรู้แคลคูลัสแบบมีปฏิสัมพันธ์ เข้าใจง่าย เห็นภาพชัดเจน 🚀",
+)
 
-render_hero("Math Tutor Web App", "เว็บช่วยเรียนคณิตศาสตร์ สำหรับแคลคูลัสเบื้องต้น")
+st.markdown(
+    """
+    <style>
+    .home-hero-banner {
+        background: linear-gradient(135deg, #FFF1F2 0%, #FEF08A 50%, #E0F2FE 100%);
+        border: 2.5px solid #18181B;
+        border-radius: 14px;
+        padding: 12px 18px;
+        box-shadow: 4px 4px 0px #18181B;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .home-stat-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: #FFFFFF;
+        border: 1.5px solid #18181B;
+        border-radius: 999px;
+        padding: 4px 12px;
+        font-family: 'Fredoka', 'Mali', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: #18181B;
+        box-shadow: 2px 2px 0px #18181B;
+    }
+    .card-category-badge {
+        display: inline-block;
+        border: 1.5px solid #18181B;
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-family: 'Fredoka', 'Mali', sans-serif;
+        font-size: 11.5px;
+        font-weight: 700;
+        color: #18181B;
+        box-shadow: 1.5px 1.5px 0px #18181B;
+        margin-bottom: 8px;
+    }
+    .obj-card {
+        background: #FFFFFF;
+        border: 2px solid #18181B;
+        border-radius: 12px;
+        padding: 14px 16px;
+        box-shadow: 3px 3px 0px #18181B;
+        height: 100%;
+        transition: transform 0.15s ease;
+    }
+    .obj-card:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 4.5px 4.5px 0px #18181B;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Highlight Banner
+st.markdown(
+    """
+    <div class="home-hero-banner">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 24px;">✨</span>
+            <span style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 14px; font-weight: 700; color: #18181B;">
+                สำรวจมโนทัศน์แคลคูลัสผ่านกราฟแบบอินเทอร์แอ็กทิฟและการแก้โจทย์ทีละขั้น
+            </span>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="home-stat-pill">🚀 7 โมดูลจำลอง</span>
+            <span class="home-stat-pill">🧮 SymPy CAS</span>
+            <span class="home-stat-pill">💡 80 ข้อสอบ</span>
+            <span class="home-stat-pill">🎓 KU KPS</span>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 search_query = st.text_input(
-    label="ค้นหาสิ่งที่สอน...",
-    placeholder="ค้นหาสิ่งที่สอน...",
+    label="🔍 ค้นหาบทเรียนหรือเครื่องมือ...",
+    placeholder="พิมพ์เพื่อค้นหา เช่น ลิมิต, รีมันน์, ปริมาตร, u-sub...",
     key="home_search",
 )
 
 cards_data = [
     {
-        "title": "1. ลิมิตเข้าใกล้จุด",
-        "subtitle": "สำรวจการลู่เข้า ลิมิตสองด้าน และรูปแบบไม่กำหนด",
-        "btn_label": "เข้าสู่บทเรียนที่ 1",
+        "title": "🎯 1. ลิมิตเข้าใกล้จุด",
+        "subtitle": "สำรวจการลู่เข้า ลิมิตสองด้าน และรูปแบบไม่กำหนด (Indeterminate Forms)",
+        "badge": "บทเรียนที่ 1 • แคลคูลัส 1",
+        "badge_color": "#FECDD3",
+        "btn_label": "🚀 เข้าสู่บทเรียนที่ 1",
         "target": "pages/limit_approach.py",
         "key": "btn_card_limit",
     },
     {
-        "title": "2. เส้นสัมผัสและอนุพันธ์",
-        "subtitle": "สำรวจความชันเส้นสัมผัสและอนุพันธ์แบบโต้ตอบ",
-        "btn_label": "เข้าสู่บทเรียนที่ 2",
+        "title": "📈 2. เส้นสัมผัสและอนุพันธ์",
+        "subtitle": "สำรวจความชันเส้นสัมผัส อนุพันธ์แบบโต้ตอบ และอัตราการเปลี่ยนแปลง",
+        "badge": "บทเรียนที่ 2 • อนุพันธ์",
+        "badge_color": "#FEF08A",
+        "btn_label": "🚀 เข้าสู่บทเรียนที่ 2",
         "target": "pages/tangent.py",
         "key": "btn_card_tangent",
     },
     {
-        "title": "3. ผลรวมรีมันน์ (Riemann)",
-        "subtitle": "จำลองพื้นที่ใต้กราฟและการลู่เข้าสู่ค่าจริง",
-        "btn_label": "เข้าสู่บทเรียนที่ 3",
+        "title": "📊 3. ผลรวมรีมันน์ (Riemann Sum)",
+        "subtitle": "จำลองพื้นที่ใต้กราฟด้วยแท่งสี่เหลี่ยมและการลู่เข้าสู่ค่าอินทิกรัลจริง",
+        "badge": "บทเรียนที่ 3 • ปริพันธ์",
+        "badge_color": "#BAE6FD",
+        "btn_label": "🚀 เข้าสู่บทเรียนที่ 3",
         "target": "pages/riemann.py",
         "key": "btn_card_riemann",
     },
     {
-        "title": "4. เทคนิคการอินทิเกรต",
-        "subtitle": "ฝึกตัดสินใจเลือกตัวแปร u และ By Parts",
-        "btn_label": "เข้าสู่บทเรียนที่ 4",
+        "title": "🔄 4. เทคนิคการอินทิเกรต",
+        "subtitle": "ฝึกตัดสินใจเลือกตัวแปร u-Substitution และ Integration by Parts",
+        "badge": "บทเรียนที่ 4 • เทคนิคอินทิเกรต",
+        "badge_color": "#BBF7D0",
+        "btn_label": "🚀 เข้าสู่บทเรียนที่ 4",
         "target": "pages/substitution.py",
         "key": "btn_card_sub",
     },
     {
-        "title": "5. พื้นที่ระหว่างเส้นโค้ง",
-        "subtitle": "คำนวณพื้นที่ปิดล้อมระหว่างสองฟังก์ชัน f(x) และ g(x)",
-        "btn_label": "เข้าสู่บทเรียนที่ 5",
+        "title": "📉 5. พื้นที่ระหว่างเส้นโค้ง",
+        "subtitle": "คำนวณพื้นที่ปิดล้อมระหว่างสองฟังก์ชัน f(x) และ g(x) พร้อมกราฟแรเงา",
+        "badge": "บทเรียนที่ 5 • การประยุกต์",
+        "badge_color": "#FED7AA",
+        "btn_label": "🚀 เข้าสู่บทเรียนที่ 5",
         "target": "pages/area_between.py",
         "key": "btn_card_area",
     },
     {
-        "title": "6. ปริมาตรของรูปทรงตัน",
-        "subtitle": "คำนวณปริมาตรทรงตันที่เกิดจากการหมุน (Disk Method)",
-        "btn_label": "เข้าสู่บทเรียนที่ 6",
+        "title": "🌀 6. ปริมาตรของรูปทรงตัน",
+        "subtitle": "คำนวณปริมาตรทรงตันที่เกิดจากการหมุนรอบแกนด้วยวิธีจาน (Disk Method)",
+        "badge": "บทเรียนที่ 6 • ปริมาตรหมุน",
+        "badge_color": "#E9D5FF",
+        "btn_label": "🚀 เข้าสู่บทเรียนที่ 6",
         "target": "pages/volume_revolution.py",
         "key": "btn_card_volume",
     },
     {
-        "title": "7. ปริพันธ์ไม่ตรงแบบ",
-        "subtitle": "สำรวจการลู่เข้าหรือลู่ออกบนช่วงอนันต์และจุดเอกฐาน",
-        "btn_label": "เข้าสู่บทเรียนที่ 7",
+        "title": "♾️ 7. ปริพันธ์ไม่ตรงแบบ",
+        "subtitle": "สำรวจการลู่เข้าหรือลู่ออกบนช่วงอนันต์และจุดเอกฐาน (Singularities)",
+        "badge": "บทเรียนที่ 7 • ปริพันธ์ขั้นสูง",
+        "badge_color": "#FBCFE8",
+        "btn_label": "🚀 เข้าสู่บทเรียนที่ 7",
         "target": "pages/improper_integrals.py",
         "key": "btn_card_improper",
     },
     {
-        "title": "เครื่องคิดเลขสัญลักษณ์ SymPy",
-        "subtitle": "แก้โจทย์แคลคูลัสแบบแจกแจงวิธีทำทีละขั้นตอน",
-        "btn_label": "เปิดเครื่องคิดเลข",
+        "title": "🧮 เครื่องคิดเลขสัญลักษณ์ SymPy",
+        "subtitle": "แก้โจทย์แคลคูลัสแบบแจกแจงวิธีทำทีละขั้นตอนอย่างละเอียด",
+        "badge": "เครื่องมืออัจฉริยะ • CAS",
+        "badge_color": "#FEF08A",
+        "btn_label": "✨ เปิดเครื่องคิดเลข",
         "target": "pages/solver.py",
         "key": "btn_card_solver",
     },
     {
-        "title": "แบบทดสอบมโนทัศน์",
-        "subtitle": "ฝึกคิด 80 ข้อ ครอบคลุม 8 บท พร้อมระบบคำใบ้และสุ่มตัวเลือก",
-        "btn_label": "เริ่มทำแบบทดสอบ",
+        "title": "💡 แบบทดสอบมโนทัศน์ (80 ข้อ)",
+        "subtitle": "ฝึกคิด 80 ข้อ ครอบคลุม 8 บทเรียน พร้อมระบบคำใบ้และสุ่มตัวเลือก",
+        "badge": "วัดระดับทักษะ • มีคำใบ้",
+        "badge_color": "#BAE6FD",
+        "btn_label": "🎯 เริ่มทำแบบทดสอบ",
         "target": "pages/quiz.py",
         "key": "btn_card_quiz",
     },
@@ -82,6 +183,7 @@ filtered_cards = [
     if not search_query
     or search_query.lower() in card["title"].lower()
     or search_query.lower() in card["subtitle"].lower()
+    or search_query.lower() in card["badge"].lower()
 ]
 
 if filtered_cards:
@@ -90,19 +192,23 @@ if filtered_cards:
         col = col1 if idx % 2 == 0 else col2
         with col:
             with st.container(border=True):
+                st.markdown(
+                    f"<span class='card-category-badge' style='background-color: {card.get('badge_color', '#FEF08A')};'>{card.get('badge', 'บทเรียน')}</span>",
+                    unsafe_allow_html=True,
+                )
                 st.markdown(f"### {card['title']}")
                 st.markdown(
-                    f"<p style='color: #475569; font-size: 14px; margin-top: -8px;'>{card['subtitle']}</p>",
+                    f"<p style='color: #475569; font-size: 14px; margin-top: -6px; line-height: 1.5;'>{card['subtitle']}</p>",
                     unsafe_allow_html=True,
                 )
                 if st.button(card["btn_label"], key=card["key"], use_container_width=True):
                     st.switch_page(card["target"])
 else:
-    st.markdown("ไม่พบเมนูที่ค้นหา")
+    st.info("🔍 ไม่พบเมนูหรือบทเรียนที่ตรงกับคำค้นหา ลองค้นหาด้วยคำอื่นดูนะ!")
 
 st.divider()
 
-st.markdown("### ผลการทดสอบล่าสุด")
+st.markdown("### 🏆 ผลการทดสอบล่าสุด (Your Recent Progress)")
 scores = st.session_state.get("quiz_scores", {})
 basic_score = scores.get("basic_rules")
 
@@ -111,18 +217,92 @@ if basic_score and isinstance(basic_score, dict):
     t = basic_score.get("total", 5)
     st.metric("คะแนนเกมทบทวน (Basic Rules)", f"{s}/{t}")
     st.progress(s / t if t > 0 else 0)
+    if s == t:
+        st.balloons()
+        st.success("🎉 ยอดเยี่ยมมาก! คุณทำคะแนนเต็มในหมวดนี้ ✨")
 else:
-    st.markdown("ยังไม่มีคะแนน quiz — ไปลองเล่นเกมทบทวนได้เลย")
+    col_sc1, col_sc2 = st.columns([3, 1])
+    with col_sc1:
+        st.markdown(
+            """
+            <div style="background-color: #FFFFFF; border: 2px dashed #94A3B8; border-radius: 12px; padding: 12px 18px;">
+                <span style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 14px; font-weight: 600; color: #475569;">
+                    💡 ยังไม่มีบันทึกคะแนนในเซสชันนี้ — ไปท้าทายความรู้ในแบบทดสอบมโนทัศน์ได้เลย!
+                </span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with col_sc2:
+        if st.button("🎯 ไปทำแบบทดสอบ", key="btn_home_to_quiz", use_container_width=True):
+            st.switch_page("pages/quiz.py")
 
 st.divider()
 
-st.markdown(
-    """
-### วัตถุประสงค์การเรียนรู้
+st.markdown("### 🎯 วัตถุประสงค์การเรียนรู้ (Learning Goals)")
 
-1. อธิบายภาพรวมว่าอินทิเกรตเกี่ยวข้องกับ ปฏิยานุพันธ์ (Antiderivative) และการสะสมปริมาณได้
-2. แยกความแตกต่างระหว่าง Indefinite Integral และ Definite Integral ในระดับเบื้องต้น
-3. เรียนรู้ขั้นตอนการคำนวณอินทิกรัล ปริมาตรของแข็ง และพื้นที่ใต้กราฟ
-4. ทดสอบความรู้เบื้องต้นและทบทวนเฉลยอย่างเป็นระบบ
-"""
-)
+ocol1, ocol2, ocol3, ocol4 = st.columns(4)
+
+with ocol1:
+    st.markdown(
+        """
+        <div class="obj-card" style="background: linear-gradient(180deg, #FFFFFF 0%, #FFF1F2 100%);">
+            <div style="font-size: 26px; margin-bottom: 6px;">📐</div>
+            <h4 style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 14px; font-weight: 700; margin: 0 0 6px 0; color: #E11D48;">
+                1. เชื่อมโยงแนวคิด
+            </h4>
+            <p style="font-family: 'Mali', sans-serif; font-size: 12.5px; color: #4B5563; margin: 0; line-height: 1.5;">
+                เข้าใจความสัมพันธ์ระหว่างปฏิยานุพันธ์และการสะสมปริมาณใต้กราฟ
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with ocol2:
+    st.markdown(
+        """
+        <div class="obj-card" style="background: linear-gradient(180deg, #FFFFFF 0%, #FEF9C3 100%);">
+            <div style="font-size: 26px; margin-bottom: 6px;">⚖️</div>
+            <h4 style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 14px; font-weight: 700; margin: 0 0 6px 0; color: #D97706;">
+                2. แยกแยะปริพันธ์
+            </h4>
+            <p style="font-family: 'Mali', sans-serif; font-size: 12.5px; color: #4B5563; margin: 0; line-height: 1.5;">
+                แยกความแตกต่างระหว่าง Indefinite และ Definite Integral ได้อย่างแม่นยำ
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with ocol3:
+    st.markdown(
+        """
+        <div class="obj-card" style="background: linear-gradient(180deg, #FFFFFF 0%, #F0FDF4 100%);">
+            <div style="font-size: 26px; margin-bottom: 6px;">🌀</div>
+            <h4 style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 14px; font-weight: 700; margin: 0 0 6px 0; color: #16A34A;">
+                3. ประยุกต์เรขาคณิต
+            </h4>
+            <p style="font-family: 'Mali', sans-serif; font-size: 12.5px; color: #4B5563; margin: 0; line-height: 1.5;">
+                คำนวณพื้นที่ใต้กราฟ พื้นที่ระหว่างเส้นโค้ง และปริมาตรทรงตันจากการหมุน
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+with ocol4:
+    st.markdown(
+        """
+        <div class="obj-card" style="background: linear-gradient(180deg, #FFFFFF 0%, #EFF6FF 100%);">
+            <div style="font-size: 26px; margin-bottom: 6px;">📝</div>
+            <h4 style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 14px; font-weight: 700; margin: 0 0 6px 0; color: #2563EB;">
+                4. วัดผลอย่างเป็นระบบ
+            </h4>
+            <p style="font-family: 'Mali', sans-serif; font-size: 12.5px; color: #4B5563; margin: 0; line-height: 1.5;">
+                ทดสอบความรู้ ทบทวนเฉลยอย่างมีเหตุผล พร้อมระบบคำใบ้ฝึกกระบวนการคิด
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
