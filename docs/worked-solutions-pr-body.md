@@ -104,10 +104,20 @@ This Pull Request deepens the step-by-step worked solutions across the teaching 
 - **Tactile Bauhaus Tabs:** Styled `st.tabs` with Playful Bauhaus Pop pills featuring black borders, mechanical drop-shadows, spring hover-pop in bright yellow (`#FEF08A`), and active coral-rose indicator (`#FB7185`).
 - **Dynamic Button Feedback:** Enhanced `.stButton button` with spring hover lift (`translateY(-2px)`), mechanical press plunge (`translateY(2px) scale(0.985)`), and clean accessibility focus-visible outlines.
 
-### 12. Project Creators Profile Page
-- Added `pages/creators.py` with Playful Bauhaus Pop cards showcasing project authors (Khwanruan Samneangdee & Benjakanlayanee Phitthayakul), project advisor (Ajarn Kittiphong Subwattanachai), and institution information (Kasetsart University, Kamphaeng Saen Campus).
+### 12. Project Creators Profile Page & Visual Harmonization
+- Added `pages/creators.py` with Playful Neo-Brutalism Pop cards showcasing project authors (Benjakanlayanee Phitthayakul on the left, Kwanruen Samneangdee on the right), project advisor (Ajarn Kittiphong Subwattanachai), and institution details (Kasetsart University, Kamphaeng Saen Campus).
+- Harmonized card themes with a unified warm ivory/butter gradient (`#FFFFFF` to `#FEFCE8`), dark borders, and mechanical drop-shadows.
+- Fixed emoji visibility and contrast: avatar circular badges feature a crisp white background (`#FFFFFF`) with natural-tone emojis (`👩🏻‍💻`, `👨🏻‍🏫`) and distinct badge icons (`💻`, `🌸`, `🎓`) to completely prevent color blending against yellow backgrounds.
+- Added Bento-style project overview, core objectives, and an open-source repository link button with high-contrast sunny yellow styling.
 - Registered as the bottom menu item under "ข้อมูลระบบ" in `app.py`.
 - Added to automated AppTest coverage with all 17 page mount tests passing.
+
+### 13. Comprehensive UI & Navigation Aesthetic Modernization
+- **Navigation Menu (`app.py`):** Added descriptive, cheerful emojis to every section and page in the sidebar navigation.
+- **Home Page (`pages/home.py`):** Upgraded to a Neo-Brutalist hero banner, Quick-Start feature pills, interactive module cards with difficulty ratings, and a 4-step learning roadmap.
+- **Lessons Page (`pages/lessons.py`):** Replaced default markdown boxes with Bento theory cards featuring color-coded accents, difficulty chips, and structured theorem callouts.
+- **Survey & History (`pages/survey.py`, `pages/history.py`):** Styled System Usability Scale (SUS) survey and session history cards with lively pop indicators and scorecard badges.
+- **Help Center (`pages/help.py`):** Added searchable FAQ accordion cards, quick tips, and keyboard shortcut guides.
 
 ---
 
