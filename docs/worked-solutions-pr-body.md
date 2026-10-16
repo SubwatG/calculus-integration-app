@@ -104,6 +104,11 @@ This Pull Request deepens the step-by-step worked solutions across the teaching 
 - **Tactile Bauhaus Tabs:** Styled `st.tabs` with Playful Bauhaus Pop pills featuring black borders, mechanical drop-shadows, spring hover-pop in bright yellow (`#FEF08A`), and active coral-rose indicator (`#FB7185`).
 - **Dynamic Button Feedback:** Enhanced `.stButton button` with spring hover lift (`translateY(-2px)`), mechanical press plunge (`translateY(2px) scale(0.985)`), and clean accessibility focus-visible outlines.
 
+### 12. Project Creators Profile Page
+- Added `pages/creators.py` with Playful Bauhaus Pop cards showcasing project authors (Khwanruan Samneangdee & Benjakanlayanee Phitthayakul), project advisor (Ajarn Kittiphong Subwattanachai), and institution information (Kasetsart University, Kamphaeng Saen Campus).
+- Registered as the bottom menu item under "ข้อมูลระบบ" in `app.py`.
+- Added to automated AppTest coverage with all 17 page mount tests passing.
+
 ---
 
 ## Testing & Verification
@@ -113,7 +118,7 @@ This Pull Request deepens the step-by-step worked solutions across the teaching 
    ```bash
    pytest -v
    ```
-   **Result:** `235 passed in 45.24s` (100% green; baseline was 218 passed before new test cases).
+   **Result:** `236 passed in 42.40s` (100% green; baseline was 218 passed before new test cases).
 2. **Module Stress Tests:**
    ```bash
    python -m docs.testing.stress_test_modules
@@ -128,7 +133,7 @@ This Pull Request deepens the step-by-step worked solutions across the teaching 
    ```bash
    pytest tests/test_pages_apptest.py -v
    ```
-   **Result:** 16/16 tests passing, verifying default mount of all pages and interactive reshuffle button.
+   **Result:** 17/17 tests passing, verifying default mount of all pages and interactive reshuffle button.
 
 ---
 

@@ -47,6 +47,7 @@ survey_page = st.Page("pages/survey.py", title="แบบประเมิน�
 # -----------------------------------------------------------------------------
 history_page = st.Page("pages/history.py", title="ประวัติคะแนนในเซสชัน")
 help_page = st.Page("pages/help.py", title="คู่มือการใช้งานและโครงงาน")
+creators_page = st.Page("pages/creators.py", title="ประวัติผู้จัดทำ")
 
 pg = st.navigation(
     {
@@ -61,7 +62,7 @@ pg = st.navigation(
             improper_page,
         ],
         "เครื่องมือและการประเมิน": [solver_page, quiz_page, survey_page],
-        "ข้อมูลระบบ": [history_page, help_page],
+        "ข้อมูลระบบ": [history_page, help_page, creators_page],
     },
     position="sidebar",
 )
