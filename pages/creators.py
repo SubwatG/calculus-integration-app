@@ -94,7 +94,7 @@ with col2:
         """
         <div class="creator-card">
             <div>
-                <span class="creator-badge" style="background-color: #BAE6FD;">🎨 ผู้พัฒนาโครงงาน</span>
+                <span class="creator-badge">👩‍💻 ผู้พัฒนาโครงงาน</span>
                 <h4 class="creator-name">นางสาวเบญจกัฬยาณี พิทยากูล</h4>
                 <div class="creator-sub">นิสิตระดับปริญญาตรี • สาขาวิชาคณิตศาสตร์ประยุกต์</div>
                 <p class="creator-desc">
