@@ -10,7 +10,7 @@ st.markdown(
         background-color: #FFFFFF;
         border: 2.5px solid #18181B;
         border-radius: 14px;
-        padding: 20px 22px;
+        padding: 22px 24px;
         box-shadow: 4px 4px 0px #18181B;
         margin-bottom: 20px;
         height: 100%;
@@ -23,7 +23,7 @@ st.markdown(
         background-color: #FEF08A;
         border: 1.5px solid #18181B;
         border-radius: 999px;
-        padding: 4px 12px;
+        padding: 4px 14px;
         font-family: 'Fredoka', 'Mali', sans-serif;
         font-size: 13px;
         font-weight: 700;
@@ -33,30 +33,30 @@ st.markdown(
     }
     .creator-name {
         font-family: 'Fredoka', 'Mali', sans-serif;
-        font-size: 1.25rem;
+        font-size: 1.3rem;
         font-weight: 700;
         color: #18181B;
-        margin: 0 0 4px 0;
+        margin: 0 0 6px 0;
     }
-    .creator-id {
-        font-family: 'Outfit', 'Mali', sans-serif;
+    .creator-sub {
+        font-family: 'Mali', sans-serif;
         font-size: 0.95rem;
         font-weight: 600;
         color: #F43F5E;
-        margin: 0 0 10px 0;
+        margin: 0 0 12px 0;
     }
     .creator-desc {
         font-family: 'Mali', sans-serif;
         font-size: 0.95rem;
         color: #374151;
-        line-height: 1.6;
+        line-height: 1.65;
         margin: 0;
     }
     .advisor-card {
         background: linear-gradient(135deg, #FFF0F5 0%, #FEF9C3 100%);
         border: 2.5px solid #18181B;
         border-radius: 14px;
-        padding: 20px 24px;
+        padding: 22px 26px;
         box-shadow: 4px 4px 0px #18181B;
         margin-top: 8px;
         margin-bottom: 24px;
@@ -77,12 +77,12 @@ with col1:
             <div>
                 <span class="creator-badge">👩‍💻 ผู้พัฒนาโครงงาน</span>
                 <h4 class="creator-name">นางสาวขวัญเรือน สำเนียงดี</h4>
-                <div class="creator-id">รหัสนิสิต: 6621602928</div>
+                <div class="creator-sub">นิสิตระดับปริญญาตรี • สาขาวิชาคณิตศาสตร์ประยุกต์</div>
                 <p class="creator-desc">
-                    • <b>สาขาวิชา:</b> คณิตศาสตร์ประยุกต์<br>
+                    • <b>ภาควิชา:</b> วิทยาการคำนวณและเทคโนโลยีดิจิทัล<br>
                     • <b>คณะ:</b> ศิลปศาสตร์และวิทยาศาสตร์<br>
                     • <b>สถาบัน:</b> มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตกำแพงแสน<br>
-                    • <b>บทบาทหลัก:</b> ออกแบบระบบการคำนวณคณิตศาสตร์ (Math Logic), ปรับปรุงขั้นตอนเฉลยเชิงลึก (Worked-Solution Depth) และการจำลองเรขาคณิตพลวัต
+                    • <b>อีเมลติดต่อ:</b> <code>khwanruan.s@ku.th</code>
                 </p>
             </div>
         </div>
@@ -97,12 +97,12 @@ with col2:
             <div>
                 <span class="creator-badge" style="background-color: #BAE6FD;">🎨 ผู้พัฒนาโครงงาน</span>
                 <h4 class="creator-name">นางสาวเบญจกัฬยาณี พิทยากูล</h4>
-                <div class="creator-id">รหัสนิสิต: 6621602979</div>
+                <div class="creator-sub">นิสิตระดับปริญญาตรี • สาขาวิชาคณิตศาสตร์ประยุกต์</div>
                 <p class="creator-desc">
-                    • <b>สาขาวิชา:</b> คณิตศาสตร์ประยุกต์<br>
+                    • <b>ภาควิชา:</b> วิทยาการคำนวณและเทคโนโลยีดิจิทัล<br>
                     • <b>คณะ:</b> ศิลปศาสตร์และวิทยาศาสตร์<br>
                     • <b>สถาบัน:</b> มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตกำแพงแสน<br>
-                    • <b>บทบาทหลัก:</b> ออกแบบส่วนประสานงานผู้ใช้สไตล์ Playful Bauhaus Pop, พัฒนาระบบแบบทดสอบมโนทัศน์ (Quiz Engine) และการประเมินความพึงพอใจ (SUS)
+                    • <b>อีเมลติดต่อ:</b> <code>benjakanlayanee.p@ku.th</code>
                 </p>
             </div>
         </div>
@@ -115,13 +115,13 @@ st.markdown("### 👨‍🏫 อาจารย์ที่ปรึกษาโ
 st.markdown(
     """
     <div class="advisor-card">
-        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-            <span style="font-size: 36px; line-height: 1;">🎓</span>
+        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <span style="font-size: 38px; line-height: 1;">🎓</span>
             <div>
                 <h4 style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 1.25rem; font-weight: 700; color: #18181B; margin: 0 0 4px 0;">
                     อาจารย์กิตติพงษ์ ทรัพย์วัฒนชัย
                 </h4>
-                <p style="font-family: 'Mali', sans-serif; font-size: 0.95rem; color: #4B5563; margin: 0; line-height: 1.5;">
+                <p style="font-family: 'Mali', sans-serif; font-size: 0.95rem; color: #4B5563; margin: 0; line-height: 1.55;">
                     อาจารย์ที่ปรึกษาโครงงาน • ภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล<br>
                     คณะศิลปศาสตร์และวิทยาศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตกำแพงแสน
                 </p>
@@ -132,14 +132,27 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.markdown("### 🏛️ ข้อมูลโครงงานและสถาบัน (Project Information)")
+st.markdown("### 🏛️ ข้อมูลโครงงานและวัตถุประสงค์ (Project Overview)")
 
 with st.container(border=True):
     st.markdown(
         """
         * **ชื่อโครงงาน:** การพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้น (*Development of an Interactive Web Application for Calculus Learning*)
         * **หน่วยงาน:** ภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล คณะศิลปศาสตร์และวิทยาศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตกำแพงแสน
-        * **เครื่องมือและเทคโนโลยี:** Python, Streamlit, SymPy, Plotly, Matplotlib, KaTeX Math Engine
-        * **GitHub Repository:** [SubwatG/calculus-integration-app](https://github.com/SubwatG/calculus-integration-app)
+        * **วัตถุประสงค์หลัก:**
+          1. เพื่อเป็นสื่อช่วยสอนเสริมและเครื่องมือการเรียนรู้แคลคูลัสแบบเปิด (Open-Access Educational Tool)
+          2. เพื่อเสริมสร้างมโนทัศน์ทางคณิตศาสตร์ (Conceptual Understanding) ผ่านกราฟจำลองเชิงเรขาคณิตแบบอินเทอร์แอ็กทิฟ
+          3. เพื่อยกระดับความเข้าใจขั้นตอนการแก้โจทย์อย่างเป็นระบบตามหลักคณิตศาสตร์ (Step-by-Step Worked Solutions)
+        * **เครื่องมือและเทคโนโลยี:** Python, Streamlit, SymPy CAS, Plotly Dynamic Visualizations, KaTeX Typography
+        * **ซอร์สโค้ดโครงงาน:** [GitHub: SubwatG/calculus-integration-app](https://github.com/SubwatG/calculus-integration-app)
         """
     )
+
+st.write("")
+col_nav1, col_nav2 = st.columns(2)
+with col_nav1:
+    if st.button("📝 ร่วมทำแบบประเมินความพึงพอใจ (SUS)", type="primary", use_container_width=True):
+        st.switch_page("pages/survey.py")
+with col_nav2:
+    if st.button("🏠 กลับสู่หน้าหลัก", use_container_width=True):
+        st.switch_page("pages/home.py")
