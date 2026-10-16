@@ -57,6 +57,21 @@ class TestDifferentiate:
         res = differentiate("")
         assert res["ok"] is False
 
+    def test_chain_rule(self):
+        res = differentiate("sin(x**2)")
+        assert res["ok"] is True
+        assert expr_eq(res["result"], "2*x*cos(x**2)")
+        steps_text = " ".join(res["steps"])
+        assert "กฎลูกโซ่" in steps_text or "Chain Rule" in steps_text
+        assert "2 x" in steps_text or "2*x" in steps_text
+        assert "\\cos" in steps_text
+
+    def test_quotient_rule(self):
+        res = differentiate("x/(x + 1)")
+        assert res["ok"] is True
+        steps_text = " ".join(res["steps"])
+        assert "กฎผลหาร" in steps_text or "Quotient Rule" in steps_text
+
 
 class TestComputeLimit:
     def test_basic_limit(self):

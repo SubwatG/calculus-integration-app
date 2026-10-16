@@ -553,17 +553,20 @@ with tab3:
             if res["ok"]:
                 v_name = res.get("variable", "x")
                 if v_name != "x":
-                    st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและอินทิเกรตเทียบกับ $d{v_name}$ อัตโนมัติ")
+                    st.info(f"ตรวจพบตัวแปร **${v_name}$**: ระบบคำนวณและอินทิเกรตเทียบกับ $d{v_name}$ อัตโนมัติ")
 
                 st.markdown("#### ผลลัพธ์การคำนวณ")
                 render_latex(res["latex"])
 
                 if res.get("status") == "non_elementary":
                     st.warning("ข้อสังเกตเชิงมโนทัศน์: ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน (Non-Elementary Function) คำตอบที่ได้อยู่ในรูปฟังก์ชันพิเศษระดับสูง เช่น erf, Si, li")
+                elif res.get("method") == "by_parts" and res.get("parts_info"):
+                    p = res["parts_info"]
+                    st.info(f"เทคนิคการอินทิเกรตทีละส่วน (By Parts): กำหนด $u = {sp.latex(p['u'])}$ และ $dv = {sp.latex(p['dv'])} \\, d{v_name}$")
                 elif res.get("u_candidate") is not None:
                     u_c = res["u_candidate"]
                     du_c = res["du_candidate"]
-                    st.info(f"💡 คำแนะนำเทคนิคการเปลี่ยนตัวแปร: สามารถกำหนดให้ $u = {sp.latex(u_c)}$ ซึ่งจะได้ $du = {sp.latex(du_c)} \\, d{v_name}$")
+                    st.info(f"คำแนะนำเทคนิคการเปลี่ยนตัวแปร: สามารถกำหนดให้ $u = {sp.latex(u_c)}$ ซึ่งจะได้ $du = {sp.latex(du_c)} \\, d{v_name}$")
 
                 st.divider()
                 st.markdown("#### ขั้นตอนการพิจารณา")

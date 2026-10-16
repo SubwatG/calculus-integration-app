@@ -47,6 +47,24 @@ class TestComputeImproper:
         res = compute_improper('1/sqrt(x)', 0, 1)
         assert res["status"] == "finite"
         assert res["result"] == pytest.approx(2.0)
+        steps_text = " ".join(res["steps"])
+        assert "t \\to 0" in steps_text or "\\lim_{t \\to 0^{+}}" in steps_text or "\\lim_{t \\to 0^+}" in steps_text
+        assert "\\lim_{t \\to 1}" not in steps_text
+
+    def test_singular_upper_endpoint_convergent(self):
+        res = compute_improper('1/sqrt(1-x)', 0, 1)
+        assert res["status"] == "finite"
+        assert res["result"] == pytest.approx(2.0)
+        steps_text = " ".join(res["steps"])
+        assert "t \\to 1" in steps_text or "\\lim_{t \\to 1^{-}}" in steps_text or "\\lim_{t \\to 1^-}" in steps_text
+
+    def test_proper_integral_no_infinity(self):
+        res = compute_improper('x', 0, 2)
+        assert res["ok"] is True
+        assert res["status"] == "finite"
+        assert res["result"] == pytest.approx(2.0)
+        assert "\\infty" not in res["latex"]
+        assert "2" in res["latex"]
 
     def test_interior_singularity_is_not_finite_principal_value(self):
         res = compute_improper('1/x', -1, 1)

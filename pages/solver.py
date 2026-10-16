@@ -1,10 +1,11 @@
 import streamlit as st
+import sympy as sp
 from utils.keypad import render_math_keypad
 from utils.math_render import preview_math_expr, render_latex, render_steps, render_syntax_guide
 from utils.sympy_solver import compute_limit, detect_variable, differentiate, integrate
 from utils.theme import render_hero
 
-render_hero("แคลคูลัส", "เครื่องคิดเลขสัญลักษณ์ SymPy พร้อมวิธีทำทีละขั้นตอน")
+render_hero("🧮 เครื่องคิดเลขแคลคูลัส (Calculus Solver) ✨", "คำนวณอินทิเกรต อนุพันธ์ และลิมิต พร้อมแจกแจงวิธีทำทีละขั้นตอนด้วย SymPy CAS 🚀")
 
 op_options = ["อินทิเกรต", "อนุพันธ์", "ลิมิต"]
 if "solver_op" not in st.session_state:
@@ -153,6 +154,75 @@ if res:
             st.success(f"🎯 **คำนวณสำเร็จเทียบกับตัวแปรอัตโนมัติ:** `{res_var}`")
         st.markdown("### สมการผลลัพธ์")
         render_latex(res["latex"])
+
+        # Comprehensive Result Explanation & Interpretation
+        with st.container(border=True):
+            st.markdown("#### 💡 คำอธิบายผลลัพธ์และการนำไปใช้ (Result Meaning & Insights)")
+
+            if current_op == "อินทิเกรต":
+                col_exp1, col_exp2 = st.columns(2)
+                with col_exp1:
+                    check_diff_tex = sp.latex(sp.diff(res["result"], sp.Symbol(res_var))) if res.get("result") is not None else ""
+                    st.markdown(
+                        f"**1. ปฏิยานุพันธ์ (Antiderivative):**\n"
+                        f"- ผลลัพธ์ $F({res_var}) + C$ คือฟังก์ชันต้นแบบที่มีความชันเท่ากับฟังก์ชันตัวถูกอินทิเกรตเดิม\n"
+                        f"- **การตรวจสอบความถูกต้อง:** ตรวจสอบได้ทันทีโดยการหาอนุพันธ์กลับคืน:\n"
+                        f"  $$\\frac{{d}}{{d{res_var}}}\\left[ {sp.latex(res['result'])} + C \\right] = {check_diff_tex}$$\n"
+                        f"  จะเห็นว่าได้ตัวถูกอินทิเกรตกลับมาตรงกันพอดี"
+                    )
+                with col_exp2:
+                    st.markdown(
+                        f"**2. ค่าคงที่ $+ C$ (Constant of Integration):**\n"
+                        f"- เนื่องจากอนุพันธ์ของค่าคงที่ใดๆ มีค่าเป็น $0$ เสมอ ($\\frac{{d}}{{d{res_var}}}[C] = 0$) คำตอบจึงเป็น **วงศ์ของเส้นโค้ง (Family of Curves)**\n"
+                        f"- ทุกเส้นโค้งมีรูปร่างเหมือนกันและมีความชันเท่ากัน ณ จุด ${res_var}$ เดียวกัน แต่เลื่อนขนานขึ้น-ลงในแนวดิ่งตามระดับค่า $C$\n"
+                        f"- **การนำไปประยุกต์ใช้:** ใช้หาฟังก์ชันระยะทางจากความเร็ว ($s(t) = \\int v(t)\\,dt$), การคำนวณพื้นที่ใต้กราฟเมื่อกำหนดช่วง $[a, b]$, และการแก้สมการเชิงอนุพันธ์"
+                    )
+            elif current_op == "อนุพันธ์":
+                col_exp1, col_exp2 = st.columns(2)
+                with col_exp1:
+                    st.markdown(
+                        f"**1. อัตราการเปลี่ยนแปลงขณะใดขณะหนึ่ง (Instantaneous Rate of Change):**\n"
+                        f"- ผลลัพธ์ $f'({res_var}) = {sp.latex(res['result'])}$ คือสูตรคำนวณอัตราการเปลี่ยนแปลงของฟังก์ชันเทียบกับตัวแปร ${res_var}$ ณ จุดใดๆ\n"
+                        f"- นิยามอย่างแม่นยำจากลิมิตของอัตราการเปลี่ยนแปลงเฉลี่ย:\n"
+                        f"  $$f'({res_var}) = \\lim_{{h \\to 0}} \\frac{{f({res_var}+h) - f({res_var})}}{{h}}$$"
+                    )
+                with col_exp2:
+                    st.markdown(
+                        f"**2. ความหมายทางเรขาคณิต (Slope of Tangent Line):**\n"
+                        f"- $f'({res_var})$ คือ **สูตรคำนวณความชันของเส้นตรงสัมผัสกราฟ** ณ พิกัด $({res_var}, f({res_var}))$\n"
+                        f"- **การวิเคราะห์พฤติกรรมกราฟ:**\n"
+                        f"  - เมื่อ $f' > 0$: กราฟกำลังชันขึ้น ฟังก์ชันมีแนวโน้มเพิ่มขึ้น (Increasing)\n"
+                        f"  - เมื่อ $f' < 0$: กราฟกำลังลาดลง ฟังก์ชันมีแนวโน้มลดลง (Decreasing)\n"
+                        f"  - เมื่อ $f' = 0$: เส้นสัมผัสเป็นแนวนอนขนานแกนราบ เป็นจุดนิ่งหรือจุดวิกฤต (Critical Point) ที่อาจเป็นจุดสูงสุดหรือต่ำสุดสัมพัทธ์\n"
+                        f"- **การนำไปประยุกต์ใช้:** การหาค่าสูงสุด-ต่ำสุดสัมพัทธ์ (Optimization), การประมาณค่าเชิงเส้นเฉพาะที่ ($L(x)$), และการวิเคราะห์ความเร็วและความเร่งในฟิสิกส์"
+                    )
+            else:  # ลิมิต
+                pt_disp = str(int(point_val)) if abs(point_val - round(point_val)) < 1e-6 else str(point_val)
+                col_exp1, col_exp2 = st.columns(2)
+                with col_exp1:
+                    st.markdown(
+                        f"**1. พฤติกรรมเมื่อเข้าใกล้จุดเป้าหมาย (Limit Behavior):**\n"
+                        f"- ลิมิต $\\lim_{{{res_var} \\to {pt_disp}}} f({res_var})$ พิจารณาค่าที่ฟังก์ชันวิ่งเข้าหาเมื่อตัวแปร ${res_var}$ เฉียดเข้าใกล้จุด ${pt_disp}$ (โดยไม่จำเป็นต้องสนใจค่าจริง $f({pt_disp})$ ณ จุดนั้น)\n"
+                        f"- แม้ฟังก์ชันจะไม่นิยามที่จุด ${pt_disp}$ (เช่น เกิดตัวส่วนเป็นศูนย์หรือรูโหว่) แต่ลิมิตอาจยังมีค่าได้"
+                    )
+                with col_exp2:
+                    status = res.get("status")
+                    if status == "finite":
+                        status_desc = f"ลู่เข้าสู่จำนวนจริงจำกัด ${sp.latex(res['result'])}$ (กราฟจากฝั่งซ้ายและขวาวิ่งมาบรรจบที่ระดับความสูงเดียวกัน)"
+                    elif status == "infinite":
+                        status_desc = f"ลู่ไปสู่ทิศทางอนันต์ (${sp.latex(res['result'])}$) ฟังก์ชันพุ่งขึ้นหรือลงอย่างไร้ขอบเขต เกิดเส้นกำกับแนวดิ่ง ${res_var} = {pt_disp}$"
+                    elif status == "dne":
+                        status_desc = "ไม่มีลิมิตสองด้าน (Does Not Exist - DNE) เนื่องจากลิมิตทางซ้ายไม่เท่ากับลิมิตทางขวา เส้นกราฟขาดตอนออกจากกัน"
+                    else:
+                        status_desc = "ระบบไม่สามารถตัดสินหรือระบุค่าลิมิตได้อย่างแน่ชัด"
+                    st.markdown(
+                        f"**2. เงื่อนไขการมีอยู่ของลิมิตสองด้าน (Two-Sided Existence):**\n"
+                        f"- ลิมิตสองด้านจะมีค่าได้ ก็ต่อเมื่อ ลิมิตทางซ้ายเท่ากับลิมิตทางขวา:\n"
+                        f"  $$\\lim_{{{res_var} \\to {pt_disp}^-}} f({res_var}) = \\lim_{{{res_var} \\to {pt_disp}^+}} f({res_var}) = L$$\n"
+                        f"- **ข้อสรุปสำหรับโจทย์นี้:** {status_desc}"
+                    )
+
+        st.divider()
 
         # Render step-by-step solution cleanly
         render_steps(res["steps"])

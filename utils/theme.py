@@ -269,9 +269,7 @@ def inject_css() -> None:
     }
 
     /* Bauhaus Geometric Cards & Containers */
-    [data-testid="stVerticalBlockBorderWrapper"],
-    div[class*="e1rw0b1u3"],
-    div[data-testid="stVerticalBlock"].st-emotion-cache-y5eupb {
+    [data-testid="stVerticalBlockBorderWrapper"] {
         background-color: #FFFFFF !important;
         border: 2.5px solid #18181B !important;
         border-radius: 14px !important;
@@ -295,7 +293,83 @@ def inject_css() -> None:
         color: #18181B !important;
     }
 
-    /* Primary Buttons (Coral-Rose Bauhaus Pop with Mechanical Press) */
+    /* Celebration Card Bounce Animation */
+    @keyframes celebrationPop {
+        0% {
+            transform: scale(0.92) translateY(6px);
+            opacity: 0;
+        }
+        55% {
+            transform: scale(1.025) translateY(-2px);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .celebration-bounce-card {
+        animation: celebrationPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+    }
+
+    /* Tactile Bauhaus Tabs with Dynamic Feedback */
+    div[data-testid="stTabs"] div[data-baseweb="tab-list"] {
+        gap: 10px !important;
+        background-color: transparent !important;
+        border-bottom: none !important;
+        padding-bottom: 8px !important;
+        flex-wrap: wrap !important;
+    }
+
+    div[data-testid="stTabs"] div[data-baseweb="tab-border"],
+    div[data-testid="stTabs"] div[data-baseweb="tab-highlight"] {
+        display: none !important;
+    }
+
+    div[data-testid="stTabs"] button[data-baseweb="tab"] {
+        background-color: #FFFFFF !important;
+        border: 2px solid #18181B !important;
+        border-radius: 12px !important;
+        padding: 8px 18px !important;
+        font-family: "Fredoka", "Mali", "Outfit", sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+        color: #18181B !important;
+        box-shadow: 2.5px 2.5px 0px #18181B !important;
+        transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+        cursor: pointer !important;
+        margin-bottom: 4px !important;
+    }
+
+    div[data-testid="stTabs"] button[data-baseweb="tab"]:hover {
+        background-color: #FEF08A !important;
+        color: #18181B !important;
+        transform: translate(-2px, -2px) !important;
+        box-shadow: 4.5px 4.5px 0px #18181B !important;
+    }
+
+    div[data-testid="stTabs"] button[data-baseweb="tab"]:active {
+        transform: translate(2px, 2px) !important;
+        box-shadow: 1px 1px 0px #18181B !important;
+    }
+
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] {
+        background-color: #FB7185 !important;
+        color: #18181B !important;
+        border: 2.5px solid #18181B !important;
+        box-shadow: 3.5px 3.5px 0px #18181B !important;
+        transform: translate(-1px, -1px) !important;
+    }
+
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] p,
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] div,
+    div[data-testid="stTabs"] button[data-baseweb="tab"][aria-selected="true"] span {
+        color: #18181B !important;
+        font-weight: 800 !important;
+    }
+
+    /* Primary Buttons (Coral-Rose Bauhaus Pop with Mechanical Press & Dynamic Feedback) */
     .stButton > button[kind="primary"],
     .stButton > button[data-testid="baseButton-primary"] {
         background-color: #FB7185 !important;
@@ -306,7 +380,7 @@ def inject_css() -> None:
         font-weight: 700 !important;
         font-size: 1rem !important;
         box-shadow: 3px 3px 0px #18181B !important;
-        transition: all 0.12s ease-out !important;
+        transition: all 0.14s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
     }
 
     .stButton > button[kind="primary"] *,
@@ -317,17 +391,23 @@ def inject_css() -> None:
     .stButton > button[kind="primary"]:hover,
     .stButton > button[data-testid="baseButton-primary"]:hover {
         background-color: #F43F5E !important;
-        transform: translate(-1px, -1px) !important;
-        box-shadow: 4px 4px 0px #18181B !important;
+        transform: translate(-2px, -2px) !important;
+        box-shadow: 4.5px 4.5px 0px #18181B !important;
     }
 
     .stButton > button[kind="primary"]:active,
     .stButton > button[data-testid="baseButton-primary"]:active {
-        transform: translate(2px, 2px) !important;
+        transform: translate(2px, 2px) scale(0.985) !important;
         box-shadow: 1px 1px 0px #18181B !important;
     }
 
-    /* Secondary / Preset Buttons (White with Yellow Pop on Hover) */
+    .stButton > button[kind="primary"]:focus-visible,
+    .stButton > button[data-testid="baseButton-primary"]:focus-visible {
+        outline: 2.5px solid #18181B !important;
+        outline-offset: 2.5px !important;
+    }
+
+    /* Secondary / Preset Buttons (White with Yellow Pop & Spring Lift) */
     .stButton > button[kind="secondary"],
     .stButton > button[data-testid="baseButton-secondary"] {
         background-color: #FFFFFF !important;
@@ -337,7 +417,7 @@ def inject_css() -> None:
         font-family: "Fredoka", "Mali", sans-serif !important;
         font-weight: 600 !important;
         box-shadow: 3px 3px 0px #18181B !important;
-        transition: all 0.12s ease-out !important;
+        transition: all 0.14s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
     }
 
     .stButton > button[kind="secondary"] *,
@@ -348,15 +428,21 @@ def inject_css() -> None:
     .stButton > button[kind="secondary"]:hover,
     .stButton > button[data-testid="baseButton-secondary"]:hover {
         background-color: #FEF08A !important;
-        transform: translate(-1px, -1px) !important;
-        box-shadow: 4px 4px 0px #18181B !important;
+        transform: translate(-2px, -2px) !important;
+        box-shadow: 4.5px 4.5px 0px #18181B !important;
         color: #18181B !important;
     }
 
     .stButton > button[kind="secondary"]:active,
     .stButton > button[data-testid="baseButton-secondary"]:active {
-        transform: translate(2px, 2px) !important;
+        transform: translate(2px, 2px) scale(0.985) !important;
         box-shadow: 1px 1px 0px #18181B !important;
+    }
+
+    .stButton > button[kind="secondary"]:focus-visible,
+    .stButton > button[data-testid="baseButton-secondary"]:focus-visible {
+        outline: 2.5px solid #18181B !important;
+        outline-offset: 2.5px !important;
     }
 
     /* Inputs, Number Inputs, Sliders */

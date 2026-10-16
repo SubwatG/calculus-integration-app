@@ -79,6 +79,36 @@ class TestComputeAreaBetween:
         assert res["ok"] is True
         assert res["result"] == pytest.approx(0.92848, rel=1e-3)
 
+    def test_compute_area_between_steps_no_interior_crossings(self):
+        res = compute_area_between('x', 'x**2', 0, 1)
+        assert res["ok"] is True
+        assert res["result"] == pytest.approx(1.0 / 6.0)
+        steps_text = " ".join(res["steps"])
+        assert "จุดตัด" in steps_text
+        assert "\\frac{1}{6}" in steps_text or "1/6" in steps_text or "0.166667" in steps_text
+
+    def test_compute_area_between_steps_swapped(self):
+        res = compute_area_between('x**2', 'x', 0, 1)
+        assert res["ok"] is True
+        assert res["result"] == pytest.approx(1.0 / 6.0)
+        steps_text = " ".join(res["steps"])
+        assert "ค่าสัมบูรณ์" in steps_text or "Absolute value" in steps_text or "|f" in steps_text
+        assert res["result"] > 0
+
+    def test_compute_area_between_steps_polynomial_cubic_crossing(self):
+        res = compute_area_between('x**3-6*x**2+8*x', '0', -1, 5)
+        assert res["ok"] is True
+        assert res["result"] == pytest.approx(20.5)
+        assert "\\frac{41}{2}" in res["latex"] or "41/2" in res["latex"] or "20.5" in res["latex"]
+        assert len(res["crossings"]) >= 3
+        crossings = [round(c, 2) for c in res["crossings"]]
+        assert 0.0 in crossings
+        assert 2.0 in crossings
+        assert 4.0 in crossings
+        steps_text = " ".join(res["steps"])
+        assert "0" in steps_text and "2" in steps_text and "4" in steps_text
+        assert "[-1" in steps_text or "-1" in steps_text
+
     def test_plot_area_between_figure(self):
         import sympy as sp
         from utils.plotter import plot_area_between
