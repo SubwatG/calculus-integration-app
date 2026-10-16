@@ -247,7 +247,30 @@ if st.session_state.quiz_done:
     st.progress(final_score / total_q if total_q > 0 else 0)
 
     if percentage >= 80:
-        st.success("ผลการประเมิน: ระดับดีมาก มีความเข้าใจมโนทัศน์แคลคูลัสอย่างแม่นยำ")
+        st.balloons()
+        st.markdown(
+            f"""
+            <div class="celebration-bounce-card" style="
+                background: linear-gradient(135deg, #FEF08A 0%, #FBCFE8 50%, #BAE6FD 100%);
+                border: 3px solid #18181B;
+                border-radius: 16px;
+                padding: 20px 24px;
+                box-shadow: 4.5px 4.5px 0px #18181B;
+                text-align: center;
+                margin-top: 12px;
+                margin-bottom: 20px;
+            ">
+                <div style="font-size: 38px; line-height: 1.2; margin-bottom: 6px;">🏆 🎈 🌟</div>
+                <h3 style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 1.45rem; font-weight: 700; color: #18181B; margin: 0 0 6px 0;">
+                    สุดยอดมาก! ผ่านการทดสอบระดับยอดเยี่ยม
+                </h3>
+                <p style="font-family: 'Mali', sans-serif; font-size: 1.05rem; font-weight: 600; color: #18181B; margin: 0;">
+                    มีความเข้าใจมโนทัศน์แคลคูลัสอย่างแม่นยำ พร้อมลุยบทเรียนต่อไปได้เลย!
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
     elif percentage >= 50:
         st.info("ผลการประเมิน: ระดับผ่านเกณฑ์ มีความเข้าใจพื้นฐานที่ดี สามารถทบทวนเพิ่มเติมในหัวข้อที่ตอบผิดได้จากหน้าบทเรียน")
     else:
@@ -398,7 +421,33 @@ else:
 
         else:
             if current_choice == q["answer"]:
-                st.success("✓ **ถูกต้องยอดเยี่ยม!** ได้รับ 1 คะแนน")
+                st.balloons()
+                st.markdown(
+                    """
+                    <div class="celebration-bounce-card" style="
+                        background: linear-gradient(135deg, #DCFCE7 0%, #FEF08A 100%);
+                        border: 2.5px solid #18181B;
+                        border-radius: 14px;
+                        padding: 14px 18px;
+                        box-shadow: 3.5px 3.5px 0px #18181B;
+                        margin-bottom: 16px;
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                    ">
+                        <span style="font-size: 28px; line-height: 1;">🎉</span>
+                        <div>
+                            <div style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 1.12rem; font-weight: 700; color: #166534;">
+                                ถูกต้องยอดเยี่ยม! +1 คะแนน 🌟
+                            </div>
+                            <div style="font-family: 'Mali', sans-serif; font-size: 0.9rem; color: #15803D; font-weight: 600;">
+                                มโนทัศน์แม่นยำมาก เก่งมากครับ!
+                            </div>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
             else:
                 st.error(f"✗ **ยังไม่ถูกต้อง** (คำตอบที่ถูกต้องคือ: ข้อ **{correct_prefix}**)")
 

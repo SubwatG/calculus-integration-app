@@ -98,6 +98,12 @@ This Pull Request deepens the step-by-step worked solutions across the teaching 
 - Added `quiz_round` to radio widget keys so re-randomized questions reset cleanly with `index=None`.
 - Added automated AppTest button interaction test in `tests/test_pages_apptest.py`.
 
+### 11. Playful Bauhaus Pop Dynamic Feedback & Celebration Effects
+- **Celebration Effects:** Added `st.balloons()` and an animated celebratory bounce card (`celebrationPop`) with high-energy cheerful copy (`🎉 ถูกต้องยอดเยี่ยม! +1 คะแนน 🌟`) upon submitting correct answers in `pages/quiz.py`.
+- **Achievement Banner:** Added celebratory achievement card with trophy badge (`🏆 🎈 🌟`) when scoring $\ge 80\%$ on quiz completion.
+- **Tactile Bauhaus Tabs:** Styled `st.tabs` with Playful Bauhaus Pop pills featuring black borders, mechanical drop-shadows, spring hover-pop in bright yellow (`#FEF08A`), and active coral-rose indicator (`#FB7185`).
+- **Dynamic Button Feedback:** Enhanced `.stButton button` with spring hover lift (`translateY(-2px)`), mechanical press plunge (`translateY(2px) scale(0.985)`), and clean accessibility focus-visible outlines.
+
 ---
 
 ## Testing & Verification
