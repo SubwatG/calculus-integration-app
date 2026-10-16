@@ -81,8 +81,7 @@ with col1:
                 <p class="creator-desc">
                     • <b>ภาควิชา:</b> วิทยาการคำนวณและเทคโนโลยีดิจิทัล<br>
                     • <b>คณะ:</b> ศิลปศาสตร์และวิทยาศาสตร์<br>
-                    • <b>สถาบัน:</b> มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตกำแพงแสน<br>
-                    • <b>อีเมลติดต่อ:</b> <code>khwanruan.s@ku.th</code>
+                    • <b>สถาบัน:</b> มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตกำแพงแสน
                 </p>
             </div>
         </div>
@@ -101,8 +100,7 @@ with col2:
                 <p class="creator-desc">
                     • <b>ภาควิชา:</b> วิทยาการคำนวณและเทคโนโลยีดิจิทัล<br>
                     • <b>คณะ:</b> ศิลปศาสตร์และวิทยาศาสตร์<br>
-                    • <b>สถาบัน:</b> มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตกำแพงแสน<br>
-                    • <b>อีเมลติดต่อ:</b> <code>benjakanlayanee.p@ku.th</code>
+                    • <b>สถาบัน:</b> มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตกำแพงแสน
                 </p>
             </div>
         </div>
@@ -119,7 +117,7 @@ st.markdown(
             <span style="font-size: 38px; line-height: 1;">🎓</span>
             <div>
                 <h4 style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 1.25rem; font-weight: 700; color: #18181B; margin: 0 0 4px 0;">
-                    อาจารย์กิตติพงษ์ ทรัพย์วัฒนชัย
+                    อาจารย์กิตติพงษ์ ทรัพย์วัฒนาชัย
                 </h4>
                 <p style="font-family: 'Mali', sans-serif; font-size: 0.95rem; color: #4B5563; margin: 0; line-height: 1.55;">
                     อาจารย์ที่ปรึกษาโครงงาน • ภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล<br>
