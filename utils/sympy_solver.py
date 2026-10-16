@@ -128,64 +128,147 @@ def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, An
         v_lat = sp.latex(var_sym)
 
         steps: list[str] = [
-            f"กำหนดโจทย์ปริพันธ์ไม่จำกัดเขต: \\int \\left({sp.latex(expr)}\\right) \\, d{v_lat}"
+            f"กำหนดโจทย์ปริพันธ์ไม่จำกัดเขต (Indefinite Integral): "
+            f"หาปฏิยานุพันธ์ของฟังก์ชันเทียบกับตัวแปร ${v_lat}$:\n"
+            f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat}"
         ]
 
         if not expr.has(var_sym):
             steps.append(
-                f"ใช้กฎปริพันธ์ของค่าคงที่: \\int c \\, d{v_lat} = c {v_lat} + C \\implies \\int {sp.latex(expr)} \\, d{v_lat} = {sp.latex(result)} + C"
+                f"ดึงค่าคงที่ออกจากเครื่องหมายปริพันธ์: "
+                f"ตามสมบัติ $\\int c \\, d{v_lat} = c \\int 1 \\, d{v_lat}$:\n"
+                f"\\int {sp.latex(expr)} \\, d{v_lat} = {sp.latex(expr)} \\int 1 \\, d{v_lat}"
+            )
+            steps.append(
+                f"คำนวณปริพันธ์ของ 1: "
+                f"ปฏิยานุพันธ์ของ 1 เทียบกับ ${v_lat}$ คือ ${v_lat}$:\n"
+                f"\\int 1 \\, d{v_lat} = {v_lat} + C"
+            )
+            steps.append(
+                f"สรุปผลลัพธ์ปริพันธ์: "
+                f"นำค่าคงที่คูณกลับและใส่ค่าคงที่ของการอินทิเกรต $C$:\n"
+                f"\\int {sp.latex(expr)} \\, d{v_lat} = {sp.latex(result)} + C"
+            )
+            steps.append(
+                f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                f"อนุพันธ์ของคำตอบต้องเท่ากับตัวถูกอินทิเกรตเดิม:\n"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(result)} + C\\right] = {sp.latex(expr)}"
             )
         elif expr == var_sym:
             steps.append(
-                f"ใช้กฎกำลัง (Power Rule): \\int {v_lat}^n \\, d{v_lat} = \\frac{{{v_lat}^{{n+1}}}}{{n+1}} + C \\quad (n \\neq -1)"
+                f"ระบุกฎเลขชี้กำลัง (Power Rule): "
+                f"สำหรับพจน์ยกกำลังหนึ่ง $n = 1$:\n"
+                f"\\int {v_lat}^n \\, d{v_lat} = \\frac{{{v_lat}^{{n+1}}}}{{n+1}} + C \\quad (n \\neq -1)"
             )
             steps.append(
-                f"แทนค่าเลขชี้กำลัง $n = 1$: \\int {v_lat} \\, d{v_lat} = \\frac{{{v_lat}^{{1+1}}}}{{1+1}} + C = \\frac{{{v_lat}^2}}{{2}} + C"
+                f"แทนค่าเลขชี้กำลัง n = 1: "
+                f"เพิ่มเลขชี้กำลังขึ้น 1 และหารด้วยเลขชี้กำลังใหม่:\n"
+                f"\\int {v_lat} \\, d{v_lat} = \\frac{{{v_lat}^{{1+1}}}}{{1+1}} + C = \\frac{{{v_lat}^2}}{{2}} + C"
+            )
+            steps.append(
+                f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                f"ดิฟคำตอบกลับเพื่อยืนยันความถูกต้อง:\n"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[\\frac{{{v_lat}^2}}{{2}} + C\\right] = \\frac{{2{v_lat}}}{{2}} = {v_lat}"
             )
         elif isinstance(expr, sp.Pow) and expr.args[0] == var_sym and expr.args[1].is_number:
             n = expr.args[1]
             if n == -1:
                 steps.append(
-                    f"ใช้กฎปริพันธ์ฟังก์ชันส่วนกลับ: \\int \\frac{{1}}{{{v_lat}}} \\, d{v_lat} = \\ln|{v_lat}| + C"
+                    f"ใช้กฎปริพันธ์ฟังก์ชันส่วนกลับ: "
+                    f"เมื่อ $n = -1$ สูตร $\\frac{{{v_lat}^{{n+1}}}}{{n+1}}$ ส่วนจะเป็นศูนย์ จึงใช้นิยามลอการิทึมธรรมชาติ:\n"
+                    f"\\int \\frac{{1}}{{{v_lat}}} \\, d{v_lat} = \\ln|{v_lat}| + C \\quad ({v_lat} \\neq 0)"
+                )
+                steps.append(
+                    f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                    f"อนุพันธ์ของ $\\ln|{v_lat}|$ คือ $\\frac{{1}}{{{v_lat}}}$:\n"
+                    f"\\frac{{d}}{{d{v_lat}}}[\\ln|{v_lat}| + C] = \\frac{{1}}{{{v_lat}}}"
                 )
             else:
                 steps.append(
-                    f"ใช้กฎกำลัง (Power Rule): \\int {v_lat}^n \\, d{v_lat} = \\frac{{{v_lat}^{{n+1}}}}{{n+1}} + C \\quad (n \\neq -1)"
+                    f"ระบุกฎเลขชี้กำลัง (Power Rule): "
+                    f"สูตรอินทิเกรตฟังก์ชันพหุนามและเลขยกกำลัง:\n"
+                    f"\\int {v_lat}^n \\, d{v_lat} = \\frac{{{v_lat}^{{n+1}}}}{{n+1}} + C \\quad (n \\neq -1)"
                 )
                 steps.append(
-                    f"แทนค่า $n = {sp.latex(n)}$: \\int {v_lat}^{{{sp.latex(n)}}} \\, d{v_lat} = \\frac{{{v_lat}^{{{sp.latex(n+1)}}}}}{{{sp.latex(n+1)}}} + C = {sp.latex(result)} + C"
+                    f"แทนค่าเลขชี้กำลัง $n = {sp.latex(n)}$: "
+                    f"คำนวณเลขชี้กำลังใหม่ $n + 1 = {sp.latex(n+1)}$:\n"
+                    f"\\int {v_lat}^{{{sp.latex(n)}}} \\, d{v_lat} = \\frac{{{v_lat}^{{{sp.latex(n+1)}}}}}{{{sp.latex(n+1)}}} + C"
+                )
+                steps.append(
+                    f"จัดรูปผลสำเร็จและใส่ค่าคงที่ C: "
+                    f"สมการปริพันธ์ในรูปชัดแจ้ง:\n"
+                    f"\\int {v_lat}^{{{sp.latex(n)}}} \\, d{v_lat} = {sp.latex(result)} + C"
+                )
+                steps.append(
+                    f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                    f"ทดสอบดิฟผลลัพธ์กลับ:\n"
+                    f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(result)} + C\\right] = {sp.latex(expr)}"
                 )
         elif isinstance(expr, sp.Add):
             terms = expr.as_ordered_terms()
             terms_integrals = " + ".join(f"\\int \\left({sp.latex(term)}\\right) \\, d{v_lat}" for term in terms)
             steps.append(
-                f"ใช้สมบัติเชิงเส้นของการอินทิเกรต (แยกพจน์): \\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {terms_integrals}"
+                f"ใช้สมบัติเชิงเส้นของการอินทิเกรต (Linearity Property): "
+                f"สามารถแยกอินทิเกรตทีละพจน์บวก-ลบได้อิสระ:\n"
+                f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {terms_integrals}"
             )
             sub_results = []
             for term in terms:
                 sub_res = sp.integrate(term, var_sym)
                 sub_results.append(f"\\int \\left({sp.latex(term)}\\right) \\, d{v_lat} = {sp.latex(sub_res)}")
             steps.append(
-                "อินทิเกรตทีละพจน์: " + ", \\quad ".join(sub_results)
+                f"คำนวณอินทิเกรตทีละพจน์: "
+                f"หาปฏิยานุพันธ์ของแต่ละส่วนประกอบย่อย:\n"
+                + "\n".join(sub_results)
             )
             steps.append(
-                f"รวมผลลัพธ์ทุกพจน์และบวกค่าคงที่ของการอินทิเกรต C: \\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
+                f"รวมผลลัพธ์ทุกพจน์และบวกค่าคงที่ C: "
+                f"รวมผลการอินทิเกรตทั้งหมดเข้าด้วยกัน:\n"
+                f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
+            )
+            steps.append(
+                f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                f"หาอนุพันธ์ของผลรวมกลับคืน:\n"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(result)} + C\\right] = {sp.latex(expr)}"
             )
         elif isinstance(expr, sp.sin) and expr.args[0] == var_sym:
             steps.append(
-                f"ใช้สูตรปริพันธ์ฟังก์ชันไซน์: \\int \\sin({v_lat}) \\, d{v_lat} = -\\cos({v_lat}) + C"
+                f"ใช้สูตรปริพันธ์ฟังก์ชันไซน์: "
+                f"เนื่องจาก $\\frac{{d}}{{d{v_lat}}}[\\cos({v_lat})] = -\\sin({v_lat})$:\n"
+                f"\\int \\sin({v_lat}) \\, d{v_lat} = -\\cos({v_lat}) + C"
+            )
+            steps.append(
+                f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                f"\\frac{{d}}{{d{v_lat}}}[-\\cos({v_lat}) + C] = -(-\\sin({v_lat})) = \\sin({v_lat})"
             )
         elif isinstance(expr, sp.cos) and expr.args[0] == var_sym:
             steps.append(
-                f"ใช้สูตรปริพันธ์ฟังก์ชันโคไซน์: \\int \\cos({v_lat}) \\, d{v_lat} = \\sin({v_lat}) + C"
+                f"ใช้สูตรปริพันธ์ฟังก์ชันโคไซน์: "
+                f"เนื่องจาก $\\frac{{d}}{{d{v_lat}}}[\\sin({v_lat})] = \\cos({v_lat})$:\n"
+                f"\\int \\cos({v_lat}) \\, d{v_lat} = \\sin({v_lat}) + C"
+            )
+            steps.append(
+                f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                f"\\frac{{d}}{{d{v_lat}}}[\\sin({v_lat}) + C] = \\cos({v_lat})"
             )
         elif isinstance(expr, sp.exp) and expr.args[0] == var_sym:
             steps.append(
-                f"ใช้สูตรปริพันธ์ฟังก์ชันเอกซ์โพเนนเชียล: \\int e^{{{v_lat}}} \\, d{v_lat} = e^{{{v_lat}}} + C"
+                f"ใช้สูตรปริพันธ์ฟังก์ชันเอกซ์โพเนนเชียลธรรมชาติ: "
+                f"ฟังก์ชัน $e^{{{v_lat}}}$ มีอัตราการเปลี่ยนแปลงเท่ากับตัวเองเสมอ:\n"
+                f"\\int e^{{{v_lat}}} \\, d{v_lat} = e^{{{v_lat}}} + C"
+            )
+            steps.append(
+                f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                f"\\frac{{d}}{{d{v_lat}}}[e^{{{v_lat}}} + C] = e^{{{v_lat}}}"
             )
         elif expr == 1 / var_sym:
             steps.append(
-                f"ใช้กฎปริพันธ์ฟังก์ชันส่วนกลับ: \\int \\frac{{1}}{{{v_lat}}} \\, d{v_lat} = \\ln|{v_lat}| + C"
+                f"ใช้กฎปริพันธ์ฟังก์ชันส่วนกลับ: "
+                f"\\int \\frac{{1}}{{{v_lat}}} \\, d{v_lat} = \\ln|{v_lat}| + C \\quad ({v_lat} \\neq 0)"
+            )
+            steps.append(
+                f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                f"\\frac{{d}}{{d{v_lat}}}[\\ln|{v_lat}| + C] = \\frac{{1}}{{{v_lat}}}"
             )
         else:
             u_cand = None
@@ -203,14 +286,33 @@ def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, An
                 du = sp.diff(u_cand, var_sym)
                 sub_var_name = "w" if var_sym.name == "u" else "u"
                 steps.append(
-                    f"พิจารณาการเปลี่ยนตัวแปร ({sub_var_name}-Substitution): {sub_var_name} = {sp.latex(u_cand)} \\implies d{sub_var_name} = {sp.latex(du)} \\, d{v_lat}"
+                    f"วิเคราะห์การเปลี่ยนตัวแปร ({sub_var_name}-Substitution): "
+                    f"กำหนดฟังก์ชันก้อนในเป็นตัวแปรใหม่:\n"
+                    f"{sub_var_name} = {sp.latex(u_cand)}"
                 )
                 steps.append(
-                    f"คำนวณปริพันธ์ผลลัพธ์: \\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
+                    f"หาผลต่างสืบเนื่อง d{sub_var_name}: "
+                    f"หาอนุพันธ์เทียบกับตัวแปร ${v_lat}$:\n"
+                    f"\\frac{{d{sub_var_name}}}{{d{v_lat}}} = {sp.latex(du)} \\implies d{sub_var_name} = {sp.latex(du)} \\, d{v_lat}"
+                )
+                steps.append(
+                    f"คำนวณปริพันธ์และแทนค่ากลับ: "
+                    f"แทนค่า ${sub_var_name}$ กลับคืนสู่ตัวแปรเดิม:\n"
+                    f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
+                )
+                steps.append(
+                    f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                    f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(result)} + C\\right] = {sp.latex(expr)}"
                 )
             else:
                 steps.append(
-                    f"คำนวณปริพันธ์เชิงสัญลักษณ์: \\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
+                    f"คำนวณปริพันธ์เชิงสัญลักษณ์: "
+                    f"ใช้วิธีการวิเคราะห์ทางแคลคูลัสเชิงสัญลักษณ์:\n"
+                    f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
+                )
+                steps.append(
+                    f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
+                    f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(result)} + C\\right] = {sp.latex(expr)}"
                 )
 
         latex_str = f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
@@ -251,40 +353,68 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
         v_lat = sp.latex(var_sym)
 
         steps: list[str] = [
-            f"กำหนดฟังก์ชันที่ต้องการหาอนุพันธ์: f({v_lat}) = {sp.latex(expr)}"
+            f"กำหนดฟังก์ชันที่ต้องการหาอนุพันธ์: "
+            f"คำนวณอัตราการเปลี่ยนแปลงของฟังก์ชันเทียบกับตัวแปร ${v_lat}$:\n"
+            f"f({v_lat}) = {sp.latex(expr)}"
         ]
 
         if not expr.has(var_sym):
             steps.append(
-                f"ใช้กฎอนุพันธ์ของค่าคงที่: \\frac{{d}}{{d{v_lat}}}[c] = 0 \\implies \\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = 0"
+                f"ใช้กฎอนุพันธ์ของค่าคงที่ (Constant Rule): "
+                f"ค่าคงที่ไม่ขึ้นกับตัวแปร ${v_lat}$ จึงไม่มีการเปลี่ยนแปลง:\n"
+                f"\\frac{{d}}{{d{v_lat}}}[c] = 0 \\implies \\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = 0"
+            )
+            steps.append(
+                f"ความหมายทางเรขาคณิต: "
+                f"กราฟของฟังก์ชันคงที่เป็นเส้นตรงแนวนอนขนานแกน ${v_lat}$ จึงมีความชัน $m = 0$ ทุกจุด"
             )
         elif expr == var_sym:
             steps.append(
-                f"ใช้กฎอนุพันธ์ของตัวแปร {v_lat}: \\frac{{d}}{{d{v_lat}}}[{v_lat}] = 1"
+                f"ใช้กฎอนุพันธ์ของตัวแปรอิสระ: "
+                f"อัตราการเปลี่ยนแปลงของตัวแปรเทียบกับตัวเองมีค่าเท่ากับ 1 เสมอ:\n"
+                f"\\frac{{d}}{{d{v_lat}}}[{v_lat}] = 1"
+            )
+            steps.append(
+                f"ความหมายทางเรขาคณิต: "
+                f"กราฟเป็นเส้นตรง $y = {v_lat}$ มีความชัน $m = 1$ คงที่สม่ำเสมอ"
             )
         elif isinstance(expr, sp.Pow) and expr.args[0] == var_sym and expr.args[1].is_number:
             n = expr.args[1]
             steps.append(
-                f"ใช้กฎกำลัง (Power Rule): \\frac{{d}}{{d{v_lat}}}[{v_lat}^n] = n {v_lat}^{{n-1}}"
+                f"ใช้กฎเลขชี้กำลัง (Power Rule): "
+                f"นำเลขชี้กำลังมาคูณข้างหน้าแล้วลดเลขชี้กำลังลง 1:\n"
+                f"\\frac{{d}}{{d{v_lat}}}[{v_lat}^n] = n {v_lat}^{{n-1}}"
             )
             steps.append(
-                f"แทนค่าเลขชี้กำลัง $n = {sp.latex(n)}$: \\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(n)} {v_lat}^{{{sp.latex(n-1)}}} = {sp.latex(result)}"
+                f"แทนค่าเลขชี้กำลัง $n = {sp.latex(n)}$: "
+                f"คำนวณ $n - 1 = {sp.latex(n-1)}$:\n"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(n)} {v_lat}^{{{sp.latex(n-1)}}} = {sp.latex(result)}"
+            )
+            steps.append(
+                f"ความหมายทางเรขาคณิต: "
+                f"สูตรความชันของเส้นสัมผัส ณ พิกัด ${v_lat}$ ใดๆ บนกราฟคือ $m = {sp.latex(result)}$"
             )
         elif isinstance(expr, sp.Add):
             terms = expr.as_ordered_terms()
             diff_terms_str = " + ".join(f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(term)}\\right]" for term in terms)
             steps.append(
-                f"ใช้กฎผลบวกและผลต่างของอนุพันธ์ (แยกหาทีละพจน์): \\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {diff_terms_str}"
+                f"ใช้กฎผลบวกและผลต่างของอนุพันธ์ (Sum & Difference Rule): "
+                f"สามารถแยกหาอนุพันธ์ของแต่ละพจน์ได้:\n"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {diff_terms_str}"
             )
             sub_results = []
             for term in terms:
                 sub_res = sp.diff(term, var_sym)
                 sub_results.append(f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(term)}\\right] = {sp.latex(sub_res)}")
             steps.append(
-                "หาอนุพันธ์ของแต่ละพจน์: " + ", \\quad ".join(sub_results)
+                f"หาอนุพันธ์ของแต่ละพจน์: "
+                f"คำนวณอนุพันธ์ย่อยทีละส่วนประกอบ:\n"
+                + "\n".join(sub_results)
             )
             steps.append(
-                f"รวมผลลัพธ์อนุพันธ์: \\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
+                f"รวมผลลัพธ์ทุกพจน์: "
+                f"นำผลอนุพันธ์ของแต่ละพจน์มารวมกัน:\n"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
             )
         numer, denom = expr.as_numer_denom()
         if denom != 1 and denom.has(var_sym) and numer.has(var_sym):
@@ -297,16 +427,23 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
             expr_lat = sp.latex(expr)
             res_lat = sp.latex(result)
             steps.append(
-                r"ใช้กฎผลหารของอนุพันธ์ (Quotient Rule): \frac{d}{d%s}\left[\frac{u}{v}\right] = \frac{v \frac{du}{d%s} - u \frac{dv}{d%s}}{v^2}"
-                % (v_lat, v_lat, v_lat)
+                f"ใช้กฎผลหารของอนุพันธ์ (Quotient Rule): "
+                f"สูตรอนุพันธ์ของฟังก์ชันเศษส่วน:\n"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[\\frac{{u}}{{v}}\\right] = \\frac{{v \\frac{{du}}{{d{v_lat}}} - u \\frac{{dv}}{{d{v_lat}}}}}{{v^2}}"
             )
             steps.append(
-                r"กำหนดตัวเศษ $u = %s \implies \frac{du}{d%s} = %s$ และตัวส่วน $v = %s \implies \frac{dv}{d%s} = %s$"
-                % (u_lat, v_lat, du_lat, denom_lat, v_lat, dv_lat)
+                f"กำหนดตัวเศษ u และตัวส่วน v พร้อมหาอนุพันธ์: "
+                f"ตัวเศษ $u = {u_lat} \\implies \\frac{{du}}{{d{v_lat}}} = {du_lat}$\n"
+                f"ตัวส่วน $v = {denom_lat} \\implies \\frac{{dv}}{{d{v_lat}}} = {dv_lat}$"
             )
             steps.append(
-                r"แทนค่าในสูตรผลหาร: \frac{d}{d%s}\left[%s\right] = \frac{(%s)(%s) - (%s)(%s)}{(%s)^2} = %s"
-                % (v_lat, expr_lat, denom_lat, du_lat, u_lat, dv_lat, denom_lat, res_lat)
+                f"แทนค่าลงในสูตรผลหาร: "
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{expr_lat}\\right] = \\frac{{({denom_lat})({du_lat}) - ({u_lat})({dv_lat})}}{{({denom_lat})^2}}"
+            )
+            steps.append(
+                f"จัดรูปผลสำเร็จ: "
+                f"กระจายพจน์ตัวเศษและรวมพจน์ที่คล้ายกัน:\n"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{expr_lat}\\right] = {res_lat}"
             )
         elif expr.func in (sp.sin, sp.cos, sp.tan, sp.exp, sp.log, sp.asin, sp.atan, sp.acos) and expr.args[0] != var_sym and expr.args[0].has(var_sym):
             g = expr.args[0]
@@ -320,20 +457,21 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
             expr_lat = sp.latex(expr)
             res_lat = sp.latex(result)
             steps.append(
-                r"ใช้กฎลูกโซ่ (Chain Rule): \frac{d}{d%s}[f(g(%s))] = f'(g(%s)) \cdot g'(%s)"
-                % (v_lat, v_lat, v_lat, v_lat)
+                f"ใช้กฎลูกโซ่ (Chain Rule): "
+                f"สำหรับฟังก์ชันคอมโพสิต $f(g({v_lat}))$:\n"
+                f"\\frac{{d}}{{d{v_lat}}}[f(g({v_lat}))] = f'(g({v_lat})) \\cdot g'({v_lat})"
             )
             steps.append(
-                r"กำหนดฟังก์ชันก้อนใน: $u = g(%s) = %s \implies \frac{du}{d%s} = %s$"
-                % (v_lat, g_lat, v_lat, du_lat)
+                f"กำหนดฟังก์ชันก้อนใน: "
+                f"u = g({v_lat}) = {g_lat} \\implies \\frac{{du}}{{d{v_lat}}} = {du_lat}"
             )
             steps.append(
-                r"หาอนุพันธ์ของฟังก์ชันภายนอก: \frac{df}{du} = %s \implies f'(g(%s)) = %s"
-                % (sp.latex(sp.diff(outer_f, u_sym)), v_lat, df_du_lat)
+                f"หาอนุพันธ์ของฟังก์ชันภายนอก: "
+                f"\\frac{{df}}{{du}} = {sp.latex(sp.diff(outer_f, u_sym))} \\implies f'(g({v_lat})) = {df_du_lat}"
             )
             steps.append(
-                r"คูณตามกฎลูกโซ่: \frac{d}{d%s}\left[%s\right] = f'(g(%s)) \cdot \frac{du}{d%s} = \left(%s\right) \cdot \left(%s\right) = %s"
-                % (v_lat, expr_lat, v_lat, v_lat, df_du_lat, du_lat, res_lat)
+                f"คูณตามกฎลูกโซ่และจัดรูป: "
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{expr_lat}\\right] = f'(g({v_lat})) \\cdot \\frac{{du}}{{d{v_lat}}} = \\left({df_du_lat}\\right) \\cdot \\left({du_lat}\\right) = {res_lat}"
             )
         elif isinstance(expr, sp.Pow) and expr.args[0] != var_sym and expr.args[0].has(var_sym) and expr.args[1].is_number:
             g = expr.args[0]
@@ -346,47 +484,68 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
             expr_lat = sp.latex(expr)
             res_lat = sp.latex(result)
             steps.append(
-                r"ใช้กฎกำลังร่วมกับกฎลูกโซ่ (General Power Rule / Chain Rule): \frac{d}{d%s}[u^n] = n u^{n-1} \frac{du}{d%s}"
-                % (v_lat, v_lat)
+                f"ใช้กฎกำลังร่วมกับกฎลูกโซ่ (General Power Rule / Chain Rule): "
+                f"\\frac{{d}}{{d{v_lat}}}[u^n] = n u^{{n-1}} \\frac{{du}}{{d{v_lat}}}"
             )
             steps.append(
-                r"กำหนดฟังก์ชันก้อนใน: $u = %s \implies \frac{du}{d%s} = %s$ และเลขชี้กำลัง $n = %s$"
-                % (g_lat, v_lat, du_lat, n_lat)
+                f"กำหนดฟังก์ชันก้อนใน: "
+                f"u = {g_lat} \\implies \\frac{{du}}{{d{v_lat}}} = {du_lat} \\quad (n = {n_lat})"
             )
             steps.append(
-                r"แทนค่าและคูณอนุพันธ์ก้อนใน: \frac{d}{d%s}\left[%s\right] = %s (%s)^{%s} \cdot \left(%s\right) = %s"
-                % (v_lat, expr_lat, n_lat, g_lat, nm1_lat, du_lat, res_lat)
+                f"แทนค่าและคูณอนุพันธ์ก้อนใน: "
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{expr_lat}\\right] = {n_lat} ({g_lat})^{{{nm1_lat}}} \\cdot \\left({du_lat}\\right) = {res_lat}"
             )
         elif isinstance(expr, sp.Mul):
             var_factors = [f for f in expr.args if f.has(var_sym)]
             if len(var_factors) == 2:
                 u, v = var_factors[0], var_factors[1]
                 steps.append(
-                    f"ใช้กฎผลคูณของอนุพันธ์ (Product Rule): \\frac{{d}}{{d{v_lat}}}[u \\cdot v] = u \\frac{{dv}}{{d{v_lat}}} + v \\frac{{du}}{{d{v_lat}}}"
+                    f"ใช้กฎผลคูณของอนุพันธ์ (Product Rule): "
+                    f"\\frac{{d}}{{d{v_lat}}}[u \\cdot v] = u \\frac{{dv}}{{d{v_lat}}} + v \\frac{{du}}{{d{v_lat}}}"
                 )
                 steps.append(
-                    f"กำหนด $u = {sp.latex(u)}$ และ $v = {sp.latex(v)}$: \\frac{{du}}{{d{v_lat}}} = {sp.latex(sp.diff(u, var_sym))}, \\quad \\frac{{dv}}{{d{v_lat}}} = {sp.latex(sp.diff(v, var_sym))}"
+                    f"กำหนดฟังก์ชันย่อย: "
+                    f"u = {sp.latex(u)} \\implies \\frac{{du}}{{d{v_lat}}} = {sp.latex(sp.diff(u, var_sym))}\n"
+                    f"v = {sp.latex(v)} \\implies \\frac{{dv}}{{d{v_lat}}} = {sp.latex(sp.diff(v, var_sym))}"
                 )
                 steps.append(
-                    f"แทนค่าและจัดรูปอนุพันธ์: \\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
+                    f"แทนค่าในสูตรผลคูณและจัดรูป: "
+                    f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
                 )
             else:
                 steps.append(
-                    f"คำนวณอนุพันธ์เชิงสัญลักษณ์: \\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
+                    f"คำนวณอนุพันธ์เชิงสัญลักษณ์: "
+                    f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
                 )
         elif isinstance(expr, sp.sin) and expr.args[0] == var_sym:
-            steps.append(f"ใช้สูตรอนุพันธ์ของฟังก์ชันไซน์: \\frac{{d}}{{d{v_lat}}}[\\sin({v_lat})] = \\cos({v_lat})")
+            steps.append(
+                f"ใช้สูตรอนุพันธ์ของฟังก์ชันไซน์: "
+                f"\\frac{{d}}{{d{v_lat}}}[\\sin({v_lat})] = \\cos({v_lat})"
+            )
         elif isinstance(expr, sp.cos) and expr.args[0] == var_sym:
-            steps.append(f"ใช้สูตรอนุพันธ์ของฟังก์ชันโคไซน์: \\frac{{d}}{{d{v_lat}}}[\\cos({v_lat})] = -\\sin({v_lat})")
+            steps.append(
+                f"ใช้สูตรอนุพันธ์ของฟังก์ชันโคไซน์: "
+                f"\\frac{{d}}{{d{v_lat}}}[\\cos({v_lat})] = -\\sin({v_lat})"
+            )
         elif isinstance(expr, sp.tan) and expr.args[0] == var_sym:
-            steps.append(f"ใช้สูตรอนุพันธ์ของฟังก์ชันแทนเจนต์: \\frac{{d}}{{d{v_lat}}}[\\tan({v_lat})] = \\sec^2({v_lat})")
+            steps.append(
+                f"ใช้สูตรอนุพันธ์ของฟังก์ชันแทนเจนต์: "
+                f"\\frac{{d}}{{d{v_lat}}}[\\tan({v_lat})] = \\sec^2({v_lat})"
+            )
         elif isinstance(expr, sp.exp) and expr.args[0] == var_sym:
-            steps.append(f"ใช้สูตรอนุพันธ์ของฟังก์ชันเอกซ์โพเนนเชียล: \\frac{{d}}{{d{v_lat}}}[e^{{{v_lat}}}] = e^{{{v_lat}}}")
+            steps.append(
+                f"ใช้สูตรอนุพันธ์ของฟังก์ชันเอกซ์โพเนนเชียล: "
+                f"\\frac{{d}}{{d{v_lat}}}[e^{{{v_lat}}}] = e^{{{v_lat}}}"
+            )
         elif isinstance(expr, sp.log) and expr.args[0] == var_sym:
-            steps.append(f"ใช้สูตรอนุพันธ์ของฟังก์ชันลอการิทึมธรรมชาติ: \\frac{{d}}{{d{v_lat}}}[\\ln({v_lat})] = \\frac{{1}}{{{v_lat}}}")
+            steps.append(
+                f"ใช้สูตรอนุพันธ์ของฟังก์ชันลอการิทึมธรรมชาติ: "
+                f"\\frac{{d}}{{d{v_lat}}}[\\ln({v_lat})] = \\frac{{1}}{{{v_lat}}} \\quad ({v_lat} > 0)"
+            )
         else:
             steps.append(
-                f"คำนวณอนุพันธ์เชิงสัญลักษณ์: \\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
+                f"คำนวณอนุพันธ์เชิงสัญลักษณ์: "
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
             )
 
         latex_str = f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"

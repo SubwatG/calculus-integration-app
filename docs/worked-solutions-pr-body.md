@@ -88,6 +88,16 @@ This Pull Request deepens the step-by-step worked solutions across the teaching 
 - Resolved issue where `div[class*="e1rw0b1u3"]` and `.st-emotion-cache-y5eupb` wildcard selectors styled all Streamlit vertical blocks and columns as cards, causing nested stacked borders (กรอบซ้อน 3-4 ชั้น).
 - Restricted container card styling strictly to `[data-testid="stVerticalBlockBorderWrapper"]` and removed duplicate borders on quiz question boxes, restoring clean Bauhaus aesthetics.
 
+### 9. Tangent & SymPy Solver Deepening and Result Insights
+- Expanded tangent line step-by-step solutions to a 6-step pedagogical flow covering goal identification, contact point evaluation, derivative rules, slope calculation & graph trend analysis, point-slope line equation derivation, and local linear approximation $L(x)$.
+- Added special handling for vertical tangent lines ($x = a$) and non-differentiable corner points ($f'_- \neq f'_+$).
+- Added "Result Meaning & Insights" pedagogical cards on `pages/solver.py` with automatic derivative verification, $+C$ family of curves interpretation, and two-sided limit classification.
+
+### 10. Conceptual Quiz Reshuffle Button Fix
+- Resolved `NameError: name 'init_quiz_session' is not defined` when clicking the "สุ่มรอบใหม่" button on `pages/quiz.py` by placing initialization functions and session state prior to topic selector rendering.
+- Added `quiz_round` to radio widget keys so re-randomized questions reset cleanly with `index=None`.
+- Added automated AppTest button interaction test in `tests/test_pages_apptest.py`.
+
 ---
 
 ## Testing & Verification
@@ -97,7 +107,7 @@ This Pull Request deepens the step-by-step worked solutions across the teaching 
    ```bash
    pytest -v
    ```
-   **Result:** `234 passed in 40.97s` (100% green; baseline was 218 passed before new test cases).
+   **Result:** `235 passed in 45.24s` (100% green; baseline was 218 passed before new test cases).
 2. **Module Stress Tests:**
    ```bash
    python -m docs.testing.stress_test_modules
@@ -108,11 +118,11 @@ This Pull Request deepens the step-by-step worked solutions across the teaching 
    python -m docs.testing.run-test-dataset
    ```
    **Result:** `{"total": 86, "passed": 86, "failed": 0, "mathematical_failures": 0, "proposed_validation_failures": 0}`.
-4. **AppTest Page Mount Verification:**
+4. **AppTest Page Mount & Interaction Verification:**
    ```bash
    pytest tests/test_pages_apptest.py -v
    ```
-   **Result:** 15/15 Streamlit pages mount and execute without uncaught exceptions.
+   **Result:** 16/16 tests passing, verifying default mount of all pages and interactive reshuffle button.
 
 ---
 

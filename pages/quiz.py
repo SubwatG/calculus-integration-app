@@ -128,27 +128,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำแนะนำและสะสมคะแนน")
-
-st.markdown("### เลือกชุดข้อสอบมโนทัศน์")
-selected_topic_name = st.radio(
-    "คลิกเลือกชุดข้อสอบที่ต้องการทำ:",
-    list(QUIZ_OPTIONS.keys()),
-    index=0,
-    horizontal=True,
-    key="quiz_topic_selector_main",
-)
-QUIZ_TOPIC = QUIZ_OPTIONS[selected_topic_name]
-
-col_topic_info, col_topic_btn = st.columns([3, 1])
-with col_topic_info:
-    st.caption("🎲 ระบบสุ่มลำดับตัวเลือก (A, B, C, D) และสุ่มลำดับโจทย์แบบไดนามิกทุกรอบ เพื่อฝึกมโนทัศน์แท้จริง")
-with col_topic_btn:
-    if st.button("🎲 สุ่มรอบใหม่", key="btn_reshuffle_now", use_container_width=True):
-        init_quiz_session(QUIZ_TOPIC)
-        st.rerun()
-
-
 def get_quiz_questions(topic: str) -> list[dict[str, Any]]:
     if topic == "all":
         all_q = []
@@ -175,6 +154,8 @@ def prepare_shuffled_questions(
     return prepared
 
 
+if "quiz_round" not in st.session_state:
+    st.session_state.quiz_round = 0
 if "quiz_q_index" not in st.session_state:
     st.session_state.quiz_q_index = 0
 if "quiz_score" not in st.session_state:
@@ -217,8 +198,29 @@ def init_quiz_session(topic: str) -> None:
     st.session_state.quiz_questions = prepare_shuffled_questions(raw, shuffle_q_order=True)
     st.session_state.quiz_active_topic = topic
     st.session_state.quiz_total_count = len(st.session_state.quiz_questions)
+    st.session_state.quiz_round = st.session_state.get("quiz_round", 0) + 1
     reset_quiz()
 
+
+render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำแนะนำและสะสมคะแนน")
+
+st.markdown("### เลือกชุดข้อสอบมโนทัศน์")
+selected_topic_name = st.radio(
+    "คลิกเลือกชุดข้อสอบที่ต้องการทำ:",
+    list(QUIZ_OPTIONS.keys()),
+    index=0,
+    horizontal=True,
+    key="quiz_topic_selector_main",
+)
+QUIZ_TOPIC = QUIZ_OPTIONS[selected_topic_name]
+
+col_topic_info, col_topic_btn = st.columns([3, 1])
+with col_topic_info:
+    st.caption("🎲 ระบบสุ่มลำดับตัวเลือก (A, B, C, D) และสุ่มลำดับโจทย์แบบไดนามิกทุกรอบ เพื่อฝึกมโนทัศน์แท้จริง")
+with col_topic_btn:
+    if st.button("🎲 สุ่มรอบใหม่", key="btn_reshuffle_now", use_container_width=True):
+        init_quiz_session(QUIZ_TOPIC)
+        st.rerun()
 
 if (
     "quiz_questions" not in st.session_state
@@ -345,12 +347,13 @@ else:
                     f"*สามารถสลับไปทดลองในเครื่องคิดเลข SymPy หรือตัวจำลองกราฟในแอปเพื่อหาคำตอบได้*"
                 )
 
+            round_id = st.session_state.get("quiz_round", 0)
             selected_idx = st.radio(
                 "เลือกคำตอบที่ถูกต้อง:",
                 options=list(range(len(q["choices"]))),
                 format_func=lambda i: f"**{choice_prefixes[i]}.** {format_math_spacing(q['choices'][i])}",
                 index=None,
-                key=f"radio_choice_{q_idx}_{st.session_state.quiz_attempt_count}",
+                key=f"radio_choice_{round_id}_{q_idx}_{st.session_state.quiz_attempt_count}",
             )
 
             st.write("")

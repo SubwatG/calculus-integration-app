@@ -146,15 +146,103 @@ def compute_riemann(
                 terms_latex = f"f({v_lat}_0)+\\cdots+f({v_lat}_{{{n_i-1}}})"
 
         sample_symbol = rf"\bar{{{v_lat}}}_i" if method == "midpoint" else f"{v_lat}_i"
-        sample_label = "จุดกึ่งกลางช่วง" if method == "midpoint" else "จุดแบ่งช่วง"
+
+        # สูตรจุดสุ่มตัวอย่างและสูตรซิกม่า
+        if method == "left":
+            sample_rule = f"{sample_symbol} = a + i\\,\\Delta {v_lat} \\quad (i = 0, 1, \\dots, {n_i-1})"
+            sample_name = "ขอบซ้าย"
+            sigma_formula = (
+                f"{method_latex} = \\sum_{{i=0}}^{{{n_i-1}}} f({v_lat}_i)\\,\\Delta {v_lat} = "
+                f"\\Delta {v_lat} \\left[ \\sum_{{i=0}}^{{{n_i-1}}} f({v_lat}_i) \\right]"
+            )
+        elif method == "right":
+            sample_rule = f"{sample_symbol} = a + i\\,\\Delta {v_lat} \\quad (i = 1, 2, \\dots, {n_i})"
+            sample_name = "ขอบขวา"
+            sigma_formula = (
+                f"{method_latex} = \\sum_{{i=1}}^{{{n_i}}} f({v_lat}_i)\\,\\Delta {v_lat} = "
+                f"\\Delta {v_lat} \\left[ \\sum_{{i=1}}^{{{n_i}}} f({v_lat}_i) \\right]"
+            )
+        else:
+            sample_rule = rf"{sample_symbol} = a + \left(i - \tfrac12\right)\Delta {v_lat} \quad (i = 1, 2, \dots, {n_i})"
+            sample_name = "จุดกึ่งกลาง"
+            sigma_formula = (
+                f"{method_latex} = \\sum_{{i=1}}^{{{n_i}}} f(\\bar{{{v_lat}}}_i)\\,\\Delta {v_lat} = "
+                f"\\Delta {v_lat} \\left[ \\sum_{{i=1}}^{{{n_i}}} f(\\bar{{{v_lat}}}_i) \\right]"
+            )
+
+        expanded_formula = f"= \\Delta {v_lat} \\left[ {terms_latex} \\right]"
+
+        # การแสดงจุดสุ่มตัวอย่าง
+        if n_i <= 8:
+            pts_disp = ", ".join(_fmt_num(xv) for xv in xs)
+            pts_latex = f"{sample_symbol} \\in \\{{{pts_disp}\\}}"
+        else:
+            first_few = ", ".join(_fmt_num(xv) for xv in xs[:3])
+            pts_latex = f"{sample_symbol} \\in \\{{{first_few}, \\dots, {_fmt_num(xs[-1])}\\}} \\quad (n = {n_i})"
+
+        # การแสดงค่าฟังก์ชันแต่ละจุด
+        if n_i <= 6:
+            f_eval_list = [f"f({_fmt_num(xv)}) = {_fmt_num(tv)}" for xv, tv in zip(xs, terms)]
+            f_eval_str = ", \\quad ".join(f_eval_list)
+            sum_terms_str = " + ".join(_fmt_num(tv) for tv in terms)
+            heights_lines = f"{f_eval_str}\n\\sum f({sample_symbol}) = {sum_terms_str} = {_fmt_num(sum(terms))}"
+        else:
+            first_pts = ", \\quad ".join([f"f({_fmt_num(xv)}) = {_fmt_num(tv)}" for xv, tv in zip(xs[:3], terms[:3])])
+            last_pt = f"f({_fmt_num(xs[-1])}) = {_fmt_num(terms[-1])}"
+            f_eval_str = f"{first_pts}, \\quad \\dots, \\quad {last_pt}"
+            sum_terms_str = f"{_fmt_num(terms[0])} + {_fmt_num(terms[1])} + \\cdots + {_fmt_num(terms[-1])}"
+            heights_lines = f"{f_eval_str}\n\\sum f({sample_symbol}) = {sum_terms_str} = {_fmt_num(sum(terms))}"
+
+        sum_h_str = _fmt_num(sum(terms))
+        calc_line = f"{method_latex} = \\Delta {v_lat} \\cdot \\left(\\sum f({sample_symbol})\\right)"
+        sub_line = f"= ({_fmt_num(dx)}) \\cdot ({sum_h_str})"
+        res_line = f"= {total:.6f}"
+
+        # เปรียบเทียบกับค่าจริงปริพันธ์จำกัดเขต
+        try:
+            exact_sym = sp.integrate(expr, (var_sym, a_f, b_f))
+            if getattr(exact_sym, "is_real", False) and getattr(exact_sym, "is_finite", False):
+                exact_val = float(exact_sym)
+                err_val = abs(total - exact_val)
+                comp_lines = (
+                    f"\\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {sp.latex(expr)}\\,d{v_lat} = "
+                    f"{sp.latex(exact_sym)} \\approx {exact_val:.6f}\n"
+                    f"|\\text{{Error}}| = |{total:.6f} - {exact_val:.6f}| = {err_val:.6f}"
+                )
+            else:
+                comp_lines = f"\\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {sp.latex(expr)}\\,d{v_lat}"
+        except Exception:
+            comp_lines = f"\\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {sp.latex(expr)}\\,d{v_lat}"
 
         steps = [
-            f"หาความกว้างของแต่ละช่วง: $\\Delta {v_lat} = \\frac{{b-a}}{{n}} = \\frac{{{_fmt_num(b_f)}-{_fmt_num(a_f)}}}{{{n_i}}} = {_fmt_num(dx)}$",
-            f"{sample_label} ${sample_symbol}$: ${', '.join(_fmt_num(xv) for xv in xs)}$",
-            f"คำนวณ $f({sample_symbol})$ แต่ละจุด แล้วรวมกัน: ${terms_latex}$",
-            f"คูณด้วย $\\Delta {v_lat}$: ${method_latex} = \\left({terms_latex}\\right)\\cdot {_fmt_num(dx)}$",
-            f"ค่าประมาณ: ${method_latex} \\approx {total:.6f}$",
-            f"ข้อสังเกตมโนทัศน์: เมื่อเพิ่มจำนวนช่วง $n \\to \\infty$ ความกว้าง $\\Delta {v_lat} \\to 0$ ค่าผลรวมรีมันน์ ${method_latex}$ จะลู่เข้าสู่ค่าพื้นที่จริงตามนิยามปริพันธ์จำกัดเขต $\\int_a^b f({v_lat})\\,d{v_lat}$",
+            f"คำนวณความกว้างของแต่ละช่วงย่อย (Subinterval Width: \\Delta {v_lat}): "
+            f"แบ่งช่วง $[a, b] = [{_fmt_num(a_f)}, {_fmt_num(b_f)}]$ ออกเป็น $n = {n_i}$ ช่วงย่อยเท่ากัน:\n"
+            f"\\Delta {v_lat} = \\frac{{b - a}}{{n}} = \\frac{{{_fmt_num(b_f)} - {_fmt_num(a_f)}}}{{{n_i}}} = {_fmt_num(dx)}",
+
+            f"กำหนดจุดสุ่มตัวอย่าง{sample_name} (Sample Points): "
+            f"สูตรพิกัดจุดสุ่มตัวอย่างสำหรับ{sample_name}:\n"
+            f"{sample_rule}\n"
+            f"{pts_latex}",
+
+            f"ตั้งสูตรผลรวมรีมันน์ (Riemann Sum Formula): "
+            f"ผลรวมพื้นที่สี่เหลี่ยมผืนผ้า (ความกว้าง $\\times$ ผลรวมความสูง):\n"
+            f"{sigma_formula}\n"
+            f"{expanded_formula}",
+
+            f"คำนวณความสูงของแต่ละแท่ง (Evaluate Heights): "
+            f"แทนจุดสุ่มตัวอย่างลงใน $f({v_lat}) = {sp.latex(expr)}$:\n"
+            f"{heights_lines}",
+
+            f"คำนวณผลรวมพื้นที่รีมันน์ (Total Area): "
+            f"นำความกว้าง $\\Delta {v_lat} = {_fmt_num(dx)}$ คูณผลรวมความสูง:\n"
+            f"{calc_line}\n"
+            f"{sub_line}\n"
+            f"{res_line}",
+
+            f"เปรียบเทียบกับปริพันธ์จำกัดเขต (Definite Integral Comparison): "
+            f"เปรียบเทียบค่าประมาณ ${method_latex}$ กับค่าจริงจากปริพันธ์จำกัดเขต:\n"
+            f"{comp_lines}\n"
+            f"ข้อสังเกตมโนทัศน์: เมื่อ $n \\to \\infty$ จะได้ $\\Delta {v_lat} \\to 0$ และค่าผลรวมรีมันน์ ${method_latex} \\to \\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {sp.latex(expr)}\\,d{v_lat}$",
         ]
 
         return {
