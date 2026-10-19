@@ -1,0 +1,5 @@
+{
+  "utils/sympy_solver.py": "ced33f20c9eec39f08a9ae52ea722c5ee56eb17b873069ec7ba0b061e7b9b0c4",
+  "utils/tangent_solver.py": "a1c00265451a8b20bc57f42018ae6769c50133a70702bcb52af27634c173f6d6",
+  "tests/test_derivation_regressions.py": "b1d9032579c83f70c0ac21a2a8a36097734e4981f2728860c7462c7686e36633"
+}

@@ -1,0 +1,32 @@
+{
+  "success": true,
+  "status": "completed",
+  "process_success": true,
+  "bot": "bot-rigor",
+  "exit_code": 0,
+  "duration_s": 47.318,
+  "session_id": "20261019_140835_748314",
+  "output": "{\"status\":\"completed\",\"summary\":\"Focused review passed with no blocking findings in the supplied scope. Current candidate passed 15 existing API probes, 2 derivation checks, and all 5 supplied regression tests with SyntaxWarning treated as error. Reviewed per-side oscillation explanations, chain-rule factor grouping, API/status preservation, and string escaping. Artifact documents evidence and limitations; this is not a claim of general mathematical correctness or independent verification of the parent's 37-test run.\",\"artifacts\":[\"math-rereview.json\"]}",
+  "stderr": "",
+  "error": null,
+  "worker_result": {
+    "status": "completed",
+    "summary": "Focused review passed with no blocking findings in the supplied scope. Current candidate passed 15 existing API probes, 2 derivation checks, and all 5 supplied regression tests with SyntaxWarning treated as error. Reviewed per-side oscillation explanations, chain-rule factor grouping, API/status preservation, and string escaping. Artifact documents evidence and limitations; this is not a claim of general mathematical correctness or independent verification of the parent's 37-test run.",
+    "artifacts": [
+      "math-rereview.json"
+    ]
+  },
+  "checks": [
+    {
+      "argv": [
+        "/home/kitti/Documents/GitHub/calculus-integration-app/.venv/bin/python",
+        "-c",
+        "from pathlib import Path;import json;r=json.loads(Path(\"math-rereview.json\").read_text());assert r[\"verdict\"] in (\"pass\",\"blocked\");assert isinstance(r[\"findings\"],list);assert isinstance(r[\"checks\"],list);print(\"REVIEW_ARTIFACT_ONLY\")"
+      ],
+      "exit_code": 0,
+      "output": "REVIEW_ARTIFACT_ONLY\n",
+      "stderr": "",
+      "timed_out": false
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 โครงสร้างตาม blueprint: pages/riemann.py
 
 ลำดับการนำเสนอ (ปรับใหม่):
-  1) ทดลองสำรวจก่อน — ใส่ฟังก์ชัน/จุด a/ระยะ delta แล้วเห็นผลลัพธ์ กราฟ ตารางตัวเลข และวิธีทำทันที
+  1) ทดลองสำรวจก่อน : ใส่ฟังก์ชัน/จุด a/ระยะ delta แล้วเห็นผลลัพธ์ กราฟ ตารางตัวเลข และวิธีทำทันที
   2) จึงตามด้วยทฤษฎีและมโนทัศน์แบบย่อ (รายละเอียดทั้งหมดอยู่ใน expander ที่ตั้งชื่อชัดเจน)
 """
 
@@ -147,7 +147,7 @@ st.caption("ตัวอย่างโจทย์ยอดนิยม คร�
 col_pre1, col_pre2, col_pre3, col_pre4, col_pre5, col_pre6 = st.columns(6)
 with col_pre1:
     st.button(
-        "3x + 1 (x → 2)",
+        "3x + 1 (x -> 2)",
         key="btn_lim_1",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -155,7 +155,7 @@ with col_pre1:
     )
 with col_pre2:
     st.button(
-        "(x² - 4)/(x - 2) (x → 2)",
+        "(x² - 4)/(x - 2) (x -> 2)",
         key="btn_lim_2",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -163,7 +163,7 @@ with col_pre2:
     )
 with col_pre3:
     st.button(
-        "sin(x)/x (x → 0)",
+        "sin(x)/x (x -> 0)",
         key="btn_lim_3",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -171,7 +171,7 @@ with col_pre3:
     )
 with col_pre4:
     st.button(
-        "1/x (x → 0)",
+        "1/x (x -> 0)",
         key="btn_lim_4",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -179,7 +179,7 @@ with col_pre4:
     )
 with col_pre5:
     st.button(
-        "|x|/x (x → 0)",
+        "|x|/x (x -> 0)",
         key="btn_lim_5",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -187,7 +187,7 @@ with col_pre5:
     )
 with col_pre6:
     st.button(
-        "(2x² + 1)/(3x² - 5) (x → ∞)",
+        "(2x² + 1)/(3x² - 5) (x -> ∞)",
         key="btn_lim_6",
         use_container_width=True,
         on_click=_set_limit_preset,
@@ -365,7 +365,7 @@ else:
                 st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
 
         # -------------------------------------------------------------
-        # วิธีทำฉบับเต็ม (Worked Solution) — อยู่ใน expander ที่ตั้งชื่อชัดเจน
+        # วิธีทำฉบับเต็ม (Worked Solution): อยู่ใน expander ที่ตั้งชื่อชัดเจน
         # -------------------------------------------------------------
         with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)", expanded=False):
             render_steps(res["steps"])

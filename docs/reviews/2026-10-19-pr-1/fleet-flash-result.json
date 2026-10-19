@@ -1,0 +1,14 @@
+{
+  "success": false,
+  "status": "failed",
+  "process_success": false,
+  "bot": "bot-worker-flash",
+  "exit_code": 1,
+  "duration_s": 179.879,
+  "session_id": "20261019_144004_8fa585",
+  "output": "{\"status\": \"failed\", \"summary\": \"Audit reached iteration limit prior to writing flash-ui-lessons-audit.json artifact. Verified all 241 unit/AppTest tests pass; confirmed 16 page modules and app.py mount cleanly; identified orphaned component pages/topics.py excluded from st.navigation in app.py; confirmed data/lessons/ markdown files are disconnected from pages/lessons.py which now routes to external Silpakorn University PDF URLs; interactive widget handlers and quiz reshuffle operate cleanly.\", \"artifacts\": []}",
+  "stderr": "",
+  "error": "Worker CLI exited unsuccessfully",
+  "worker_result": null,
+  "checks": []
+}

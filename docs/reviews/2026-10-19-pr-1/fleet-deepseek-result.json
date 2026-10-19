@@ -1,0 +1,14 @@
+{
+  "success": false,
+  "status": "timed_out",
+  "process_success": false,
+  "bot": "bot-worker-deepseek",
+  "exit_code": -9,
+  "duration_s": 240.113,
+  "session_id": null,
+  "output": "",
+  "stderr": "",
+  "error": "Worker exceeded the dispatch time budget",
+  "worker_result": null,
+  "checks": []
+}

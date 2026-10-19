@@ -1,6 +1,8 @@
 """utils/area_solver.py — พื้นที่ระหว่างเส้นโค้ง
 
 คำนวณพื้นที่เรขาคณิต A = ∫_a^b |f(x) - g(x)| dx บนช่วงจริงจำกัด [a, b]
+พร้อมแสดงขั้นตอนการหาจุดตัด การแบ่งช่วงย่อย และการปลดเครื่องหมายค่าสัมบูรณ์
+ตามเกณฑ์ Universal Step Contract
 """
 import math
 import sympy as sp
@@ -25,6 +27,11 @@ LOCAL_MATH_DICT = {
 }
 
 X = sp.Symbol("x", real=True)
+
+
+def _to_latex(sym_obj) -> str:
+    lat = sp.latex(sym_obj)
+    return lat.replace(r"\log", r"\ln")
 
 
 def _parse_input(expr_str: str) -> sp.Expr:
@@ -60,43 +67,20 @@ def _to_rational_bound(val: float | int | str) -> sp.Rational:
 
 
 def _format_bound_latex(val: float | int | sp.Rational) -> str:
-    """จัดรูปแบบขอบเขตบน/ล่างเป็น LaTeX ที่กระชับและคมชัด (เช่น 0, 1 แทน 0.0, 1.0 และ 1.02 แทน 51/50)"""
+    """จัดรูปแบบขอบเขตบน/ล่างเป็น LaTeX ที่กระชับและคมชัด"""
     try:
         f = float(val)
         if f.is_integer():
             return str(int(f))
         return f"{f:g}"
     except Exception:
-        return sp.latex(val)
-
-
-def _polynomial_area(diff: sp.Expr, x: sp.Symbol, lower: sp.Rational, upper: sp.Rational) -> sp.Expr:
-    try:
-        poly = sp.Poly(diff, x)
-    except Exception:
-        raise ValueError("Not a single-variable polynomial")
-    if any(c.is_Rational is not True for c in poly.all_coeffs()):
-        raise ValueError("Unsupported polynomial coefficients")
-    poly = poly.set_domain(sp.QQ)
-    if poly.is_zero:
-        return sp.S.Zero
-    roots = sorted(set(poly.real_roots()))
-    cuts = [lower] + [r for r in roots if lower < r < upper] + [upper]
-    primitive = sp.integrate(diff, x)
-    total = sp.S.Zero
-    for left, right in zip(cuts, cuts[1:]):
-        mid = (left + right) / 2
-        sign = sp.sign(diff.subs(x, mid))
-        if sign not in (sp.S.One, sp.S.NegativeOne):
-            raise ValueError("Cannot certify sign on subinterval")
-        total += sign * (primitive.subs(x, right) - primitive.subs(x, left))
-    return sp.simplify(total)
+        return _to_latex(val)
 
 
 def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = X) -> list[float]:
-    """ค้นหาจุดตัด f(x) - g(x) = 0 บนช่วงเปิด (a, b) อย่างรวดเร็วและแม่นยำ"""
+    """ค้นหาจุดตัด f(x) - g(x) = 0 บนช่วงเปิด (a, b)"""
     roots = []
-    # 1. ตรวจสอบรากพหุนามก่อน
+    # 1. ตรวจสอบรากพหุนาม
     try:
         poly = sp.Poly(diff, var)
         if all(c.is_Rational for c in poly.all_coeffs()):
@@ -153,7 +137,7 @@ def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = 
 
 
 def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
-    """คำนวณพื้นที่เรขาคณิตระหว่างเส้นโค้ง A = ∫_a^b |f(x) - g(x)| dx"""
+    """คำนวณพื้นที่เรขาคณิตระหว่างเส้นโค้ง A = ∫_a^b |f(x) - g(x)| dx พร้อมแจกแจงขั้นตอนละเอียด"""
     try:
         a_sp = _to_rational_bound(a)
         b_sp = _to_rational_bound(b)
@@ -183,18 +167,18 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             if extra:
                 raise ValueError(f"พบตัวแปรมากกว่า 1 ตัวแปรในสมการ: {all_free} (กรุณาใช้ตัวแปรเดียวกันสำหรับ f และ g)")
 
-        v_lat = sp.latex(var_sym)
+        v_lat = _to_latex(var_sym)
         diff_expr = sp.simplify(f_expr - g_expr)
 
         if diff_expr.is_zero or diff_expr == 0:
             return {
                 "ok": True,
                 "result": 0.0,
-                "latex": f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |{sp.latex(diff_expr)}| \\, d{v_lat} = 0",
+                "latex": f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |{_to_latex(diff_expr)}| \\, d{v_lat} = 0",
                 "steps": [
-                    f"กำหนดฟังก์ชัน: f({v_lat}) = {sp.latex(f_raw)}, \\quad g({v_lat}) = {sp.latex(g_raw)}",
-                    f"เส้นโค้งทั้งสองทับกันพอดีทั่วทั้งช่วง: f({v_lat}) - g({v_lat}) = 0",
-                    "พื้นที่ระหว่างเส้นโค้ง: A = 0",
+                    f"กำหนดฟังก์ชัน: $f({v_lat}) = {_to_latex(f_raw)}, \\quad g({v_lat}) = {_to_latex(g_raw)}$ บนช่วง $[{a_disp}, {b_disp}]$ ",
+                    f"เส้นโค้งทั้งสองทับกันพอดีทั่วทั้งช่วง: $f({v_lat}) - g({v_lat}) = 0$",
+                    "พื้นที่ระหว่างเส้นโค้ง: $A = 0$",
                 ],
                 "expr": diff_expr,
                 "f_expr": f_expr,
@@ -204,7 +188,18 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
                 "variable": str(var_sym.name),
             }
 
-        # ตรวจสอบจุดเอกฐานบนโดเมน
+        # ตรวจสอบจุดเอกฐานบนโดเมน (ตัวส่วนเป็นศูนย์ หรือค่าเป็นอนันต์)
+        denom_diff = sp.denom(diff_expr.rewrite(sp.cos))
+        if denom_diff != 1:
+            try:
+                for r in sp.solve(denom_diff, var_sym):
+                    if getattr(r, "is_real", False) and float(a_sp) <= float(r) <= float(b_sp):
+                        raise ValueError(f"ไม่สามารถคำนวณพื้นที่จำกัดได้บนช่วงที่กำหนด (พบจุดเอกฐานที่ {var_sym} = {r})")
+            except ValueError:
+                raise
+            except Exception:
+                pass
+
         check_pts = [float(a_sp), float(b_sp), (float(a_sp) + float(b_sp)) / 2.0]
         if float(a_sp) < 0.0 < float(b_sp):
             check_pts.append(0.0)
@@ -213,83 +208,125 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             if val_pt in (sp.zoo, sp.oo, -sp.oo) or getattr(val_pt, "is_infinite", False):
                 raise ValueError("ไม่สามารถคำนวณพื้นที่จำกัดได้บนช่วงที่กำหนด (พบจุดเอกฐาน หรือไม่อยู่ในโดเมนจำนวนจริง)")
 
-        area_val = None
-        roots = []
-        sub_steps = []
-
-        # เส้นทางที่ 1: พหุนามสัมประสิทธิ์ตรรกยะ (แม่นยำ 100% ในรูปเศษส่วน)
+        # -------------------------------------------------------------
+        # ค้นหาจุดตัด f(x) - g(x) = 0 ทั้งหมดบนช่วงเปิด (a, b)
+        # -------------------------------------------------------------
+        interior_roots_sym = []
+        is_poly = False
         try:
-            val_poly = _polynomial_area(diff_expr, var_sym, a_sp, b_sp)
-            if not val_poly.has(sp.Integral) and getattr(val_poly, "is_real", False) is True and getattr(val_poly, "is_finite", False) is True:
-                area_val = val_poly
+            poly = sp.Poly(diff_expr, var_sym)
+            if all(c.is_Rational for c in poly.all_coeffs()):
+                is_poly = True
+                poly_q = poly.set_domain(sp.QQ)
+                interior_roots_sym = [r for r in poly_q.real_roots() if a_sp < r < b_sp]
         except Exception:
-            pass
+            is_poly = False
 
-        # เส้นทางที่ 2: ฟังก์ชันทั่วไป / ฟังก์ชันอดิศัย (แยกช่วงตามจุดตัดเพื่อหลีกเลี่ยงการค้างของ symbolic Abs)
-        if area_val is None:
-            roots = _find_crossings(diff_expr, float(a_sp), float(b_sp), var=var_sym)
-            cuts = sorted([float(a_sp)] + roots + [float(b_sp)])
+        if not is_poly or not interior_roots_sym:
+            float_roots = _find_crossings(diff_expr, float(a_sp), float(b_sp), var=var_sym)
+            if not interior_roots_sym:
+                interior_roots_sym = [sp.Rational(str(round(r, 6))) for r in float_roots]
 
-            total_sub = sp.S.Zero
-            piece_ok = True
-            for i, (l_c, r_c) in enumerate(zip(cuts, cuts[1:]), start=1):
-                try:
-                    piece_int = sp.integrate(diff_expr, (var_sym, l_c, r_c))
-                    if piece_int.has(sp.Integral) or not (
-                        getattr(piece_int, "is_real", False) and getattr(piece_int, "is_finite", False)
-                    ):
-                    # fallback to numerical evaluation on this piece
-                        piece_int = sp.Integral(diff_expr, (var_sym, l_c, r_c)).evalf()
-                    piece_area = abs(piece_int)
-                    total_sub += piece_area
-                    sub_steps.append(
-                        f"ช่วงย่อยที่ {i} [{l_c:.4g}, {r_c:.4g}]: A_{i} = \\left|\\int_{{{l_c:.4g}}}^{{{r_c:.4g}}} (f({v_lat})-g({v_lat}))\\,d{v_lat}\\right| \\approx {float(piece_area.evalf()):.4g}"
-                    )
-                except Exception:
-                    piece_ok = False
-                    break
+        # จุดแบ่งทั้งหมด
+        cuts = [a_sp] + sorted(set(interior_roots_sym)) + [b_sp]
+        crossings_float = [float(r) for r in cuts[1:-1]]
 
-            if piece_ok and getattr(total_sub, "is_real", False) is True and getattr(total_sub, "is_finite", False) is True:
-                area_val = total_sub
+        sub_steps = []
+        total_area = sp.S.Zero
+        piece_areas = []
 
-        # เส้นทางที่ 3: Numerical Quadrature fallback
-        if area_val is None:
+        for i, (left, right) in enumerate(zip(cuts, cuts[1:]), start=1):
+            left_disp = _format_bound_latex(left)
+            right_disp = _format_bound_latex(right)
+            # ตรวจสอบเครื่องหมายบนช่วงย่อย
+            mid = (left + right) / 2
+            mid_val = diff_expr.subs(var_sym, mid)
+            is_pos = True
             try:
-                num = sp.Integral(sp.Abs(diff_expr), (var_sym, a_sp, b_sp)).evalf()
-                if getattr(num, "is_real", False) is True and getattr(num, "is_finite", False) is True:
-                    area_val = num
+                is_pos = (float(mid_val.evalf()) >= 0)
             except Exception:
-                pass
+                is_pos = True
 
-        if area_val is None or not (getattr(area_val, "is_real", False) is True and getattr(area_val, "is_finite", False) is True):
-            raise ValueError("ไม่สามารถคำนวณพื้นที่จำกัดได้บนช่วงที่กำหนด (อาจมีจุดเอกฐาน หรือไม่อยู่ในโดเมนจำนวนจริง)")
+            piece_integral = sp.integrate(diff_expr, (var_sym, left, right))
+            if piece_integral.has(sp.Integral) or not (
+                getattr(piece_integral, "is_real", False) and getattr(piece_integral, "is_finite", False)
+            ):
+                piece_integral = sp.Integral(diff_expr, (var_sym, left, right)).evalf()
+            piece_area = abs(piece_integral)
+            total_area += piece_area
+            piece_areas.append(piece_area)
 
+            sign_desc = f"$f({v_lat}) \\geq g({v_lat})$" if is_pos else f"$g({v_lat}) \\geq f({v_lat})$ (สลับเครื่องหมาย)"
+            sub_steps.append(
+                f"ช่วงย่อยที่ {i} $[{left_disp}, {right_disp}]$ ({sign_desc}): "
+                f"$A_{i} = \\left| \\int_{{{left_disp}}}^{{{right_disp}}} \\left({_to_latex(diff_expr)}\\right) \\, d{v_lat} \\right| = {_to_latex(piece_area)}$"
+            )
+
+        area_val = sp.simplify(total_area)
         res_float = float(area_val.evalf() if hasattr(area_val, "evalf") else area_val)
 
+        # -------------------------------------------------------------
+        # สร้าง Steps ตาม Universal Step Contract
+        # -------------------------------------------------------------
         steps = [
-            f"กำหนดฟังก์ชัน: f({v_lat}) = {sp.latex(f_raw)}, \\quad g({v_lat}) = {sp.latex(g_raw)}",
-            f"ตั้งสูตรอินทิกรัลพื้นที่เรขาคณิต: A = \\int_{{{a_disp}}}^{{{b_disp}}} |f({v_lat}) - g({v_lat})| \\, d{v_lat}",
-            f"หาผลต่างของฟังก์ชัน: f({v_lat}) - g({v_lat}) = {sp.latex(diff_expr)}",
+            f"กำหนดฟังก์ชัน: $f({v_lat}) = {_to_latex(f_raw)}, \\quad g({v_lat}) = {_to_latex(g_raw)}$ บนช่วง $[{a_disp}, {b_disp}]$",
+            f"เป้าหมาย / กฎที่ใช้ (Goal / Rule): ตั้งสูตรอินทิกรัลพื้นที่เรขาคณิต (Geometric Area) $A = \\int_{{{a_disp}}}^{{{b_disp}}} |f({v_lat}) - g({v_lat})| \\, d{v_lat}$ "
+            f"โดยใช้ค่าสัมบูรณ์ (Absolute value) เพื่อไม่ให้พื้นที่บริเวณที่เส้นโค้งสลับบน-ล่างหักล้างกัน",
+            f"พีชคณิตระหว่างทาง (Intermediate algebra): หาผลต่างของฟังก์ชัน $f({v_lat}) - g({v_lat}) = {_to_latex(diff_expr)}$",
         ]
 
-        if roots:
-            roots_str = ", ".join(f"{v_lat} \\approx {r:.4g}" for r in roots)
-            steps.append(f"พบจุดตัดของเส้นโค้ง f({v_lat}) = g({v_lat}) ภายในช่วงที่: {roots_str}")
+        if crossings_float:
+            roots_str = ", ".join(f"${v_lat} = {_format_bound_latex(r)}$" for r in cuts[1:-1])
+            steps.append(
+                f"หาจุดตัด (Intersections): แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ พบจุดตัดภายในช่วงที่ {roots_str} "
+                f"จึงแบ่งการคำนวณออกเป็น {len(cuts) - 1} ช่วงย่อยเพื่อปลดเครื่องหมายค่าสัมบูรณ์"
+            )
             steps.extend(sub_steps)
+            # รวมผลบวกทุกช่วงย่อย
+            sum_str = " + ".join(f"A_{i}" for i in range(1, len(cuts)))
+            pieces_val_str = " + ".join(f"{_to_latex(p)}" for p in piece_areas)
+            steps.append(
+                f"รวมพื้นที่ทุกช่วงย่อย: $A = {sum_str} = {pieces_val_str} = {_to_latex(area_val)}$"
+            )
+        else:
+            # ไม่มีจุดตัดภายในช่วง
+            mid_full = (a_sp + b_sp) / 2
+            mid_val = diff_expr.subs(var_sym, mid_full)
+            try:
+                is_pos = (float(mid_val.evalf()) >= 0)
+            except Exception:
+                is_pos = True
+            if is_pos:
+                steps.append(
+                    f"หาจุดตัด (Intersections): แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
+                    f"โดยบนช่วงนี้ $f({v_lat}) \\geq g({v_lat})$ ดังนั้น $|f({v_lat}) - g({v_lat})| = f({v_lat}) - g({v_lat})$"
+                )
+            else:
+                steps.append(
+                    f"หาจุดตัด (Intersections): แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
+                    f"โดยบนช่วงนี้ $g({v_lat}) \\geq f({v_lat})$ (เส้นโค้ง $g$ อยู่เหนือ $f$) "
+                    f"ดังนั้นจึงสลับเครื่องหมายค่าสัมบูรณ์: $|f({v_lat}) - g({v_lat})| = g({v_lat}) - f({v_lat}) = {_to_latex(-diff_expr)}$"
+                )
+            steps.append(
+                f"คำนวณปริพันธ์บนช่วง: $A = \\int_{{{a_disp}}}^{{{b_disp}}} |f({v_lat}) - g({v_lat})| \\, d{v_lat} = {_to_latex(area_val)}$"
+            )
 
         steps.append(
-            f"คำนวณพื้นที่เรขาคณิตรวม: A = {sp.latex(area_val)} \\approx {res_float:.6g}"
+            f"เงื่อนไขโดเมน (Domain restriction): ฟังก์ชันทั้งสองมีความต่อเนื่องบนช่วงปิด $[{a_disp}, {b_disp}]$"
+        )
+        steps.append(
+            f"ผลลัพธ์แม่นตรง (Exact result): คำนวณพื้นที่เรขาคณิตรวม: $A = {_to_latex(area_val)} \\approx {res_float:.6g}$"
         )
 
         return {
             "ok": True,
             "result": res_float,
-            "latex": f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |{sp.latex(diff_expr)}| \\, d{v_lat} = {sp.latex(area_val)}",
+            "latex": f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |{_to_latex(diff_expr)}| \\, d{v_lat} = {_to_latex(area_val)}",
             "steps": steps,
             "expr": diff_expr,
             "f_expr": f_expr,
             "g_expr": g_expr,
-            "crossings": roots,
+            "crossings": crossings_float,
             "error": None,
             "variable": str(var_sym.name),
         }

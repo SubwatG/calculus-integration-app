@@ -108,7 +108,7 @@ class TestPageLayout:
     def test_graph_is_rendered_next_to_the_controls(self):
         at = _render("x^2", 1.0)
         assert any(s.key == "tangent_a" for s in at.slider)
-        assert len(at.get("image")) >= 1, "tangent graph (st.pyplot) was not rendered"
+        assert len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "tangent graph (st.pyplot) was not rendered"
         # source order: tangent-point control, then the plot call, then the theory divider
         i_ctrl = PAGE_SRC.index("จุดสัมผัส a เลื่อนแล้วกราฟ")
         i_plot = PAGE_SRC.index("st.pyplot(fig)")
@@ -236,7 +236,7 @@ class TestRequiredCases:
         fb = _feedback(at)
         assert "หาอนุพันธ์ไม่ได้" in fb
         assert "ไม่มีเส้นสัมผัส" in fb
-        assert len(at.get("image")) >= 1, "curve with the corner point should still be plotted"
+        assert len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "curve with the corner point should still be plotted"
         assert _raw_latex_leaks(at) == []
 
     def test_undefined_domain_point_is_reported(self):

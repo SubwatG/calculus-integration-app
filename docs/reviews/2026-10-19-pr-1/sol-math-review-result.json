@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "status": "completed",
+  "process_success": true,
+  "bot": "bot-rigor",
+  "exit_code": 0,
+  "duration_s": 131.62,
+  "session_id": "20261019_135714_ceea56",
+  "output": "{\"status\":\"completed\",\"summary\":\"Bounded mathematical review completed. All 15 public API result checks passed. Two confirmed derivation issues were recorded: the generic oscillatory-limit explanation asserts unequal identical accumulation bounds, and the composite tangent explanation omits the chain rule despite returning the correct answer. Final probe exit code is 1 for these derivation checks. Regression provenance remains unverified because no original-base source paths were supplied; no general mathematical certification is claimed.\",\"artifacts\":[\"math-review.json\",\"math-probes.py\",\"math-probes-output.json\"]}",
+  "stderr": "",
+  "error": null,
+  "worker_result": {
+    "status": "completed",
+    "summary": "Bounded mathematical review completed. All 15 public API result checks passed. Two confirmed derivation issues were recorded: the generic oscillatory-limit explanation asserts unequal identical accumulation bounds, and the composite tangent explanation omits the chain rule despite returning the correct answer. Final probe exit code is 1 for these derivation checks. Regression provenance remains unverified because no original-base source paths were supplied; no general mathematical certification is claimed.",
+    "artifacts": [
+      "math-review.json",
+      "math-probes.py",
+      "math-probes-output.json"
+    ]
+  },
+  "checks": [
+    {
+      "argv": [
+        "/home/kitti/Documents/GitHub/calculus-integration-app/.venv/bin/python",
+        "-c",
+        "import json;from pathlib import Path;r=json.loads(Path(\"math-review.json\").read_text());assert r[\"head_sha\"]==\"fa6761c9e7ee53e55690b8bea5d56e30b04d835e\";assert isinstance(r[\"findings\"],list);assert isinstance(r[\"executed_checks\"],list) and len(r[\"executed_checks\"])>=3;assert isinstance(r[\"unverified\"],list);assert isinstance(r[\"probe_exit_code\"],int);assert Path(\"math-probes-output.json\").is_file();print(\"REVIEW_STRUCTURE_OK_NOT_MATH_ACCEPTANCE\")"
+      ],
+      "exit_code": 0,
+      "output": "REVIEW_STRUCTURE_OK_NOT_MATH_ACCEPTANCE\n",
+      "stderr": "",
+      "timed_out": false
+    }
+  ]
+}

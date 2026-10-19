@@ -1,0 +1,11 @@
+fa6761c docs(pr): update PR body with UI decorations and creators contrast details
+73f166e feat(ui,creators): decorate pages with neo-brutalist pop style and polish creators profile emojis
+587e330 style(creators): harmonize creator badges with uniform yellow color
+f619133 fix(creators): omit email addresses and correct advisor surname to ทรัพย์วัฒนาชัย
+7aa6e3c refactor(creators): remove student ids and roles, add academic emails and project objectives
+d6e0cdf feat(creators): add project creators profile page at bottom of sidebar menu
+c7f6cc7 feat(ui,quiz): add celebration effects and dynamic feedback for buttons and tabs
+7332c13 feat(solver,quiz): deepen tangent and symbolic step solutions and fix quiz reshuffle button
+98692e1 docs(pr): update PR body with nested borders resolution and test details
+c84cc73 fix(ui): eliminate nested stacked borders by restricting card selector to border wrappers
+4982811 feat(solver): deepen worked solutions across seven teaching modules

@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "status": "completed",
+  "process_success": true,
+  "bot": "bot-worker-haiku",
+  "exit_code": 0,
+  "duration_s": 180.365,
+  "session_id": "20261019_144016_c1b1eb",
+  "output": "{\"status\":\"completed\",\"summary\":\"Audit of calculus candidate (pages/*.py, utils/theory.py, data/lessons/*.md excluding _archive). Wrote haiku-antislop-audit.json with 29 slop_instances and production_readiness needs_fix. Main findings: marketing and cheerleader tone in home.py, help.py and creators.py (exclamation marks, 'ยอดเยี่ยมมาก', 'Made with Love', '100% Open Access'); Unicode arrows in pages/limit_approach.py (149-190, 249) and pages/solver.py (119-122), plus cal2/ch02/03-partial-fractions.md:24; em-dashes in utils/theory.py (lines 2, 14, 97), data/lessons/SPEC.md, MAPPING.md and cal2/ch03/03-arc-length.md frontmatter; filler connectives ('ยิ่งไปกว่านั้น', 'อย่างชัดเจน', 'อย่างง่ายดาย', 'ถือเป็น', 'เป็นที่น่าสนใจว่า') in cal1 and cal2 lesson files. Limitations: scripted Python scans were blocked in this unattended session, so the list is representative, not an exhaustive census. Full grep hits are in grep-hits.txt. The 'อย่างไรก็ตาม' and 'กล่าวได้ว่า' connectives in textbook prose were not flagged individually. Line numbers come from search output and were checked against the file-level hits, but not every entry was re-read at its exact line. Math LaTeX was not edited, per SPEC.md rule 7.\",\"artifacts\":[\"haiku-antislop-audit.json\",\"grep-hits.txt\"]}",
+  "stderr": "",
+  "error": null,
+  "worker_result": {
+    "status": "completed",
+    "summary": "Audit of calculus candidate (pages/*.py, utils/theory.py, data/lessons/*.md excluding _archive). Wrote haiku-antislop-audit.json with 29 slop_instances and production_readiness needs_fix. Main findings: marketing and cheerleader tone in home.py, help.py and creators.py (exclamation marks, 'ยอดเยี่ยมมาก', 'Made with Love', '100% Open Access'); Unicode arrows in pages/limit_approach.py (149-190, 249) and pages/solver.py (119-122), plus cal2/ch02/03-partial-fractions.md:24; em-dashes in utils/theory.py (lines 2, 14, 97), data/lessons/SPEC.md, MAPPING.md and cal2/ch03/03-arc-length.md frontmatter; filler connectives ('ยิ่งไปกว่านั้น', 'อย่างชัดเจน', 'อย่างง่ายดาย', 'ถือเป็น', 'เป็นที่น่าสนใจว่า') in cal1 and cal2 lesson files. Limitations: scripted Python scans were blocked in this unattended session, so the list is representative, not an exhaustive census. Full grep hits are in grep-hits.txt. The 'อย่างไรก็ตาม' and 'กล่าวได้ว่า' connectives in textbook prose were not flagged individually. Line numbers come from search output and were checked against the file-level hits, but not every entry was re-read at its exact line. Math LaTeX was not edited, per SPEC.md rule 7.",
+    "artifacts": [
+      "haiku-antislop-audit.json",
+      "grep-hits.txt"
+    ]
+  },
+  "checks": [
+    {
+      "argv": [
+        "python3",
+        "-c",
+        "import json, pathlib; d = json.loads(pathlib.Path(\"haiku-antislop-audit.json\").read_text()); assert d[\"status\"] == \"completed\"; assert isinstance(d[\"slop_instances\"], list); print(\"HAIKU_AUDIT_OK\")"
+      ],
+      "exit_code": 0,
+      "output": "HAIKU_AUDIT_OK\n",
+      "stderr": "",
+      "timed_out": false
+    }
+  ]
+}

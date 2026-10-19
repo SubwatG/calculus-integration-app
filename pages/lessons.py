@@ -1,4 +1,4 @@
-"""pages/lessons.py — บทเรียน
+"""pages/lessons.py - บทเรียน
 
 แสดงเนื้อหาบทเรียนโดยรวมจาก utils/theory.py (THEORY_CONTENT)
 ของแต่ละหัวข้อ interactive พร้อมปุ่มไปยังหน้า interactive ที่เกี่ยวข้อง
@@ -13,7 +13,7 @@ from utils.math_render import format_math_spacing
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
 
-render_hero("บทเรียน", "เนื้อหาบทเรียนเรียงตามหัวข้อ")
+render_hero("ภาพรวมบทเรียนและทฤษฎี (Calculus Lessons)", "สำรวจสรุปทฤษฎีบท มโนทัศน์สำคัญ และเอกสารอ้างอิงฉบับเต็ม")
 
 # ---------------------------------------------------------------------------
 # Mapping: key ใน THEORY_CONTENT -> หน้า interactive ที่เกี่ยวข้อง
@@ -32,7 +32,7 @@ INTERACTIVE_PAGES = {
 ALL_THEORY_KEYS = list(THEORY_CONTENT.keys())
 
 tab_interactive, tab_reference = st.tabs(
-    ["บทเรียน interactive", "เอกสารอ้างอิง (ฉบับเต็ม)"]
+    ["บทเรียน Interactive", "เอกสารอ้างอิง (ฉบับเต็ม)"]
 )
 
 # ---------------------------------------------------------------------------
@@ -58,31 +58,43 @@ with tab_interactive:
 
         st.markdown(f"## {format_math_spacing(theory['title'])}")
 
-        st.markdown("**เงื่อนไขการใช้งาน**")
-        for item in theory["conditions"]:
-            st.markdown(f"- {format_math_spacing(item)}")
+        # 1. สูตรคำนวณสำคัญ
+        with st.container(border=True):
+            st.markdown("### สูตรคำนวณสำคัญ (Key Formulas)")
+            for item in theory["formulas"]:
+                st.markdown(f"* {format_math_spacing(item)}")
 
-        st.markdown("**สูตรที่ใช้**")
-        for item in theory["formulas"]:
-            st.markdown(f"- {format_math_spacing(item)}")
+        # 2. เงื่อนไข และ สมบัติสำคัญ
+        col_cond, col_prop = st.columns(2)
+        with col_cond:
+            with st.container(border=True):
+                st.markdown("#### เงื่อนไขการใช้งาน (Conditions)")
+                for item in theory["conditions"]:
+                    st.markdown(f"* {format_math_spacing(item)}")
+        with col_prop:
+            with st.container(border=True):
+                st.markdown("#### สมบัติสำคัญ (Properties)")
+                for item in theory["properties"]:
+                    st.markdown(f"* {format_math_spacing(item)}")
 
-        st.markdown("**สมบัติ**")
-        for item in theory["properties"]:
-            st.markdown(f"- {format_math_spacing(item)}")
+        # 3. ข้อควรระวัง
+        st.warning("**ข้อควรระวังสำคัญ:** " + " • ".join(format_math_spacing(c) for c in theory["cautions"]), icon=":material/warning:")
 
-        st.markdown("**ข้อควรระวัง**")
-        st.warning(" / ".join(format_math_spacing(c) for c in theory["cautions"]))
+        # 4. การประยุกต์ใช้ และ คำแนะนำ
+        col_app, col_dec = st.columns(2)
+        with col_app:
+            with st.container(border=True):
+                st.markdown("#### การประยุกต์ใช้งาน (Applications)")
+                for item in theory["applications"]:
+                    st.markdown(f"* {format_math_spacing(item)}")
+        with col_dec:
+            with st.container(border=True):
+                st.markdown("#### คำแนะนำการเลือกวิธี (Decision Guide)")
+                st.markdown(format_math_spacing(theory["decision_guide"]))
 
-        st.markdown("**การประยุกต์ใช้**")
-        for item in theory["applications"]:
-            st.markdown(f"- {format_math_spacing(item)}")
-
-        st.markdown("**คำแนะนำการเลือกใช้**")
-        st.markdown(format_math_spacing(theory["decision_guide"]))
-
-        st.divider()
+        st.write("")
         target = INTERACTIVE_PAGES[selected_key]
-        if st.button("ไปลองเล่นแบบ interactive", type="primary", key="btn_go_interactive"):
+        if st.button("ไปทดลองเล่นแบบจำลอง Interactive แบบเต็มรูปแบบ", icon=":material/play_arrow:", type="primary", key="btn_go_interactive", use_container_width=True):
             st.switch_page(target)
 
 # ---------------------------------------------------------------------------
@@ -100,7 +112,7 @@ with tab_reference:
             box-shadow: 3px 3px 0px #18181B;
         ">
             <h3 style="margin: 0 0 8px 0; font-family: 'Fredoka', 'Mali', sans-serif; font-size: 1.15rem; color: #18181B;">
-                📚 แหล่งเรียนรู้อ้างอิงทางการ (Open Academic Resources)
+                แหล่งเรียนรู้อ้างอิงทางการ (Open Academic Resources)
             </h3>
             <p style="margin: 0; font-size: 0.95rem; color: #4B5563; line-height: 1.65;">
                 เอกสารประกอบการเรียนรู้และชุดฝึกหัดฉบับเต็ม เผยแพร่เพื่อประโยชน์ทางการศึกษาโดย 
@@ -113,8 +125,9 @@ with tab_reference:
     )
 
     st.link_button(
-        "🌐 ไปยังคลังหนังสือ ภาควิชาคณิตศาสตร์ ม.ศิลปากร (math.sc.su.ac.th)",
+        "ไปยังคลังหนังสือ ภาควิชาคณิตศาสตร์ ม.ศิลปากร (math.sc.su.ac.th)",
         "https://math.sc.su.ac.th/หนังสือ/",
+        icon=":material/public:",
         type="primary",
         use_container_width=True,
     )
@@ -124,7 +137,7 @@ with tab_reference:
     col_cal1, col_cal2 = st.columns(2)
 
     with col_cal1:
-        st.markdown("### 📘 ไฟล์หนังสือเรียน แคลคูลัส I")
+        st.markdown("### ไฟล์หนังสือเรียน แคลคูลัส I")
         cal1_links = [
             ("บทที่ 1 ลิมิตและความต่อเนื่อง", "https://math.sc.su.ac.th/wp-content/uploads/2025/10/cal1_ch1.pdf"),
             ("บทที่ 2 อนุพันธ์", "https://math.sc.su.ac.th/wp-content/uploads/2025/10/cal1_ch2.pdf"),
@@ -137,7 +150,7 @@ with tab_reference:
             st.markdown(f"- [{title}]({url})")
 
     with col_cal2:
-        st.markdown("### 📙 ไฟล์หนังสือเรียน แคลคูลัส II")
+        st.markdown("### ไฟล์หนังสือเรียน แคลคูลัส II")
         cal2_links = [
             ("บทที่ 1 อินทิกรัล", "https://math.sc.su.ac.th/wp-content/uploads/2025/10/Calculus2-ch1-integrals.pdf"),
             ("บทที่ 2 เทคนิคการอินทิเกรต", "https://math.sc.su.ac.th/wp-content/uploads/2025/10/Calculus2-ch2-integration-techniques.pdf"),
@@ -152,7 +165,7 @@ with tab_reference:
         for title, url in cal2_links:
             st.markdown(f"- [{title}]({url})")
 
-    with st.expander("📝 ชุดฝึกหัดเสริมเพิ่มเติม (คณิตศาสตร์ ม.ศิลปากร)"):
+    with st.expander("ชุดฝึกหัดเสริมเพิ่มเติม (คณิตศาสตร์ ม.ศิลปากร)", icon=":material/assignment:"):
         exercise_links = [
             ("1-1 การพิสูจน์ลิมิตเป็นจริง", "https://math.sc.su.ac.th/wp-content/uploads/2025/10/1-1-.pdf"),
             ("1-2 การคำนวณค่าลิมิตทั่วไป", "https://math.sc.su.ac.th/wp-content/uploads/2025/10/1-2-.pdf"),

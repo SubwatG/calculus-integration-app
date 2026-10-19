@@ -1,0 +1,67 @@
+--- PR/utils/sympy_solver.py
++++ candidate/utils/sympy_solver.py
+@@ -676,15 +676,23 @@
+         elif status == "dne":
+             result = None
+             latex_str = f"\\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
+-            steps.append(
+-                f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^-$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้าย (${v_lat} < {pt_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
+-            )
+-            steps.append(
+-                f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^+$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งขวา (${v_lat} > {pt_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
+-            )
+-            steps.append(
+-                f"สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): เส้นกราฟจากฝั่งซ้ายและฝั่งขวาแยกออกจากกันและไม่มาบรรจบกันที่จุดเดียวกัน\n\\lim_{{{v_lat} \\to {pt_str}^-}} f({v_lat}) = {sp.latex(left)} \\neq \\lim_{{{v_lat} \\to {pt_str}^+}} f({v_lat}) = {sp.latex(right)}\n\\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
+-            )
++            if isinstance(left, sp.AccumBounds) or isinstance(right, sp.AccumBounds):
++                bounds = left if isinstance(left, sp.AccumBounds) else right
++                steps.append(
++                    f"พิจารณาการแกว่งของฟังก์ชัน: ค่าในแต่ละด้านไม่เข้าใกล้จำนวนเดียว แต่แกว่งระหว่างขอบเขตสะสม {sp.latex(bounds)}; ลิมิตทางเดียวจึงไม่มีอยู่ ไม่ใช่ลิมิตสองด้านที่ไม่เท่ากัน\n"
++                    f"\\limsup={sp.latex(bounds.max)} , \\quad \\liminf={sp.latex(bounds.min)}\n"
++                    f"\\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
++                )
++            else:
++                steps.append(
++                    f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^-$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้าย (${v_lat} < {pt_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
++                )
++                steps.append(
++                    f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^+$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งขวา (${v_lat} > {pt_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
++                )
++                steps.append(
++                    f"สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): เส้นกราฟจากฝั่งซ้ายและฝั่งขวาแยกออกจากกันและไม่มาบรรจบกันที่จุดเดียวกัน\n\\lim_{{{v_lat} \\to {pt_str}^-}} f({v_lat}) = {sp.latex(left)} \\neq \\lim_{{{v_lat} \\to {pt_str}^+}} f({v_lat}) = {sp.latex(right)}\n\\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
++                )
+ 
+         else:
+             result = None
+--- PR/utils/tangent_solver.py
++++ candidate/utils/tangent_solver.py
+@@ -51,6 +51,29 @@
+ def _explain_diff_rule(expr: sp.Expr, var: sp.Symbol) -> str:
+     """อธิบายกฎและสูตรการหาอนุพันธ์ที่ใช้กับนิพจน์นี้อย่างเข้าใจง่ายและเน้นสมการ"""
+     v_str = str(var.name)
++    elementary = (sp.sin, sp.cos, sp.tan, sp.exp, sp.log)
++    if expr.func in elementary and expr.args[0] != var:
++        inner = expr.args[0]
++        inner_derivative = sp.diff(inner, var)
++        inner_lat = sp.latex(inner)
++        inner_derivative_lat = sp.latex(inner_derivative)
++        if expr.func is sp.sin:
++            outer_derivative = rf"\cos\left({inner_lat}\right)"
++        elif expr.func is sp.cos:
++            outer_derivative = rf"-\sin\left({inner_lat}\right)"
++        elif expr.func is sp.tan:
++            outer_derivative = rf"\sec^2\left({inner_lat}\right)"
++        elif expr.func is sp.exp:
++            outer_derivative = rf"e^{{{inner_lat}}}"
++        else:
++            outer_derivative = rf"\frac{{1}}{{{inner_lat}}}"
++        domain_note = f" (เมื่อ ${inner_lat} > 0$)" if expr.func is sp.log else ""
++        return (
++            f"ใช้กฎลูกโซ่ โดยกำหนด $u = {inner_lat}$ และ $\\frac{{du}}{{d{v_str}}} = {inner_derivative_lat}$; "
++            f"อนุพันธ์ฟังก์ชันชั้นนอกคือ ${outer_derivative}${domain_note}; "
++            f"คูณอนุพันธ์ชั้นนอกกับอนุพันธ์ชั้นใน:\n"
++            f"\\frac{{d}}{{d{v_str}}}\\left[{sp.latex(expr)}\\right] = {outer_derivative} \\cdot {inner_derivative_lat}"
++        )
+     if isinstance(expr, sp.sin):
+         return f"สูตรอนุพันธ์ไซน์: $\\frac{{d}}{{d{v_str}}}[\\sin({v_str})] = \\cos({v_str})$"
+     if isinstance(expr, sp.cos):

@@ -1,0 +1,1614 @@
+[
+  {
+    "file": "app.py",
+    "hits": [
+      {
+        "line": 6,
+        "chars": [
+          "📐"
+        ],
+        "preview": "📐"
+      },
+      {
+        "line": 25,
+        "chars": [
+          "🏠"
+        ],
+        "preview": "🏠"
+      },
+      {
+        "line": 26,
+        "chars": [
+          "📚"
+        ],
+        "preview": "📚"
+      },
+      {
+        "line": 31,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "🎯"
+      },
+      {
+        "line": 32,
+        "chars": [
+          "📈"
+        ],
+        "preview": "📈"
+      },
+      {
+        "line": 33,
+        "chars": [
+          "📊"
+        ],
+        "preview": "📊"
+      },
+      {
+        "line": 34,
+        "chars": [
+          "🔄"
+        ],
+        "preview": "🔄"
+      },
+      {
+        "line": 35,
+        "chars": [
+          "📉"
+        ],
+        "preview": "📉"
+      },
+      {
+        "line": 36,
+        "chars": [
+          "🌀"
+        ],
+        "preview": "🌀"
+      },
+      {
+        "line": 37,
+        "chars": [
+          "♾",
+          "️"
+        ],
+        "preview": "♾️"
+      },
+      {
+        "line": 42,
+        "chars": [
+          "🧮"
+        ],
+        "preview": "🧮"
+      },
+      {
+        "line": 43,
+        "chars": [
+          "💡"
+        ],
+        "preview": "💡"
+      },
+      {
+        "line": 44,
+        "chars": [
+          "📝"
+        ],
+        "preview": "📝"
+      },
+      {
+        "line": 49,
+        "chars": [
+          "🏆"
+        ],
+        "preview": "🏆"
+      },
+      {
+        "line": 50,
+        "chars": [
+          "📖"
+        ],
+        "preview": "📖"
+      },
+      {
+        "line": 51,
+        "chars": [
+          "‍",
+          "🎓",
+          "👩"
+        ],
+        "preview": "👩‍🎓"
+      },
+      {
+        "line": 55,
+        "chars": [
+          "✨"
+        ],
+        "preview": "✨ ภาพรวมระบบ"
+      },
+      {
+        "line": 56,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 โมดูลการเรียนรู้"
+      },
+      {
+        "line": 65,
+        "chars": [
+          "️",
+          "🛠"
+        ],
+        "preview": "🛠️ เครื่องมือและการประเมิน"
+      },
+      {
+        "line": 66,
+        "chars": [
+          "️"
+        ],
+        "preview": "ℹ️ ข้อมูลโครงงาน"
+      }
+    ]
+  },
+  {
+    "file": "pages/area_between.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "pages/area_between.py — บทเรียน interactive: พื้นที่ระหว่างเส้นโค้ง (Area Between Curves)\n\nคำนวณพื้นที่ปิดล้อมระหว่างสองฟังก์ชัน f"
+      },
+      {
+        "line": 58,
+        "chars": [
+          "️",
+          "👁"
+        ],
+        "preview": "**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**\n- **เส้นบน ลบ เส้นล่าง (Top minus Bottom):** ตรวจสอบให้มั่นใจว่า $f(x) \\ge g(x)$ ตลอดช่วง "
+      },
+      {
+        "line": 63,
+        "chars": [
+          "📖"
+        ],
+        "preview": "📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม"
+      },
+      {
+        "line": 35,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "<span style=\"\n                background-color: #FEF08A;\n                border: 1.5px solid #18181B;\n                border-radiu"
+      },
+      {
+        "line": 138,
+        "chars": [
+          "✨"
+        ],
+        "preview": "✨ ตรวจพบตัวแปร **$"
+      },
+      {
+        "line": 138,
+        "chars": [
+          "—"
+        ],
+        "preview": "$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร $"
+      },
+      {
+        "line": 76,
+        "chars": [
+          "⚠",
+          "️"
+        ],
+        "preview": "⚠️ "
+      }
+    ]
+  },
+  {
+    "file": "pages/creators.py",
+    "hits": [
+      {
+        "line": 5,
+        "chars": [
+          "‍",
+          "✨",
+          "🎓",
+          "👩"
+        ],
+        "preview": "👩‍🎓 ประวัติคณะผู้จัดทำและอาจารย์ที่ปรึกษา (Creators & Advisor) ✨"
+      },
+      {
+        "line": 6,
+        "chars": [
+          "✨",
+          "🌾"
+        ],
+        "preview": "✨ คณะผู้พัฒนาเว็บแอปพลิเคชันช่วยเรียนรู้แคลคูลัสแบบมีปฏิสัมพันธ์ (Calculus Learning Sandbox) • ภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจ"
+      },
+      {
+        "line": 200,
+        "chars": [
+          "✨",
+          "🌾",
+          "💖",
+          "💡",
+          "📐",
+          "🧮"
+        ],
+        "preview": "\n    <div class=\"creators-intro-banner\">\n        <div style=\"display: flex; align-items: center; gap: 10px;\">\n            <span st"
+      },
+      {
+        "line": 254,
+        "chars": [
+          "‍",
+          "🎓",
+          "👩"
+        ],
+        "preview": "### 👩‍🎓 คณะผู้จัดทำโครงงาน (Project Creators)"
+      },
+      {
+        "line": 312,
+        "chars": [
+          "‍",
+          "🏫",
+          "👨"
+        ],
+        "preview": "### 👨‍🏫 อาจารย์ที่ปรึกษาโครงงาน (Project Advisor)"
+      },
+      {
+        "line": 315,
+        "chars": [
+          "‍",
+          "✨",
+          "🌟",
+          "🌾",
+          "🎓",
+          "🏫",
+          "🏻",
+          "👨",
+          "💻"
+        ],
+        "preview": "\n    <div class=\"advisor-card\">\n        <div style=\"display: flex; align-items: center; gap: 20px; flex-wrap: wrap;\">\n            "
+      },
+      {
+        "line": 357,
+        "chars": [
+          "️",
+          "🏛"
+        ],
+        "preview": "### 🏛️ ข้อมูลโครงงานและวัตถุประสงค์ (Project Overview)"
+      },
+      {
+        "line": 260,
+        "chars": [
+          "‍",
+          "🌾",
+          "🏻",
+          "👩",
+          "💻"
+        ],
+        "preview": "\n        <div class=\"creator-card-unified\">\n            <div>\n                <div style=\"display: flex; align-items: center; just"
+      },
+      {
+        "line": 287,
+        "chars": [
+          "‍",
+          "🌸",
+          "🌾",
+          "🏻",
+          "👩",
+          "💻",
+          "📐"
+        ],
+        "preview": "\n        <div class=\"creator-card-unified\">\n            <div>\n                <div style=\"display: flex; align-items: center; just"
+      },
+      {
+        "line": 363,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "\n        <div class=\"bento-card\" style=\"background: linear-gradient(180deg, #FFFFFF 0%, #FFF1F2 100%);\">\n            <div style=\"d"
+      },
+      {
+        "line": 383,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "\n        <div class=\"bento-card\" style=\"background: linear-gradient(180deg, #FFFFFF 0%, #F0FDF4 100%);\">\n            <div style=\"d"
+      },
+      {
+        "line": 403,
+        "chars": [
+          "⚡",
+          "️",
+          "🎈",
+          "🎨",
+          "🐍",
+          "📊",
+          "📐",
+          "🛠",
+          "🧪"
+        ],
+        "preview": "\n        <div class=\"bento-card\" style=\"background: linear-gradient(180deg, #FFFFFF 0%, #EFF6FF 100%);\">\n            <div style=\"d"
+      },
+      {
+        "line": 429,
+        "chars": [
+          "⭐",
+          "🐙"
+        ],
+        "preview": "\n        <div style=\"display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;\">\n           "
+      },
+      {
+        "line": 453,
+        "chars": [
+          "📝"
+        ],
+        "preview": "📝 ร่วมทำแบบประเมินความพึงพอใจ (SUS)"
+      },
+      {
+        "line": 456,
+        "chars": [
+          "🏠"
+        ],
+        "preview": "🏠 กลับสู่หน้าหลัก"
+      }
+    ]
+  },
+  {
+    "file": "pages/help.py",
+    "hits": [
+      {
+        "line": 5,
+        "chars": [
+          "✨",
+          "📖"
+        ],
+        "preview": "📖 คู่มือการใช้งานและโครงงาน (User Guide) ✨"
+      },
+      {
+        "line": 6,
+        "chars": [
+          "💡",
+          "🚀"
+        ],
+        "preview": "💡 แนวทางการใช้งานเว็บแอปพลิเคชัน ไวยากรณ์คณิตศาสตร์ และข้อแนะนำในการเรียนรู้ 🚀"
+      },
+      {
+        "line": 54,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "### 🚀 ขั้นตอนการเริ่มต้นใช้งาน (Getting Started)"
+      },
+      {
+        "line": 57,
+        "chars": [
+          "️",
+          "🎛",
+          "💡",
+          "📚",
+          "🧮"
+        ],
+        "preview": "\n    <div class=\"help-step-card\">\n        <div class=\"help-step-num\" style=\"background-color: #FECDD3;\">1</div>\n        <div>\n    "
+      },
+      {
+        "line": 108,
+        "chars": [
+          "️"
+        ],
+        "preview": "### ⌨️ รูปแบบการใส่โจทย์ (SymPy Syntax Guide)"
+      },
+      {
+        "line": 140,
+        "chars": [
+          "️"
+        ],
+        "preview": "### ℹ️ ข้อแนะนำและข้อจำกัดของระบบ (System Notes)"
+      },
+      {
+        "line": 114,
+        "chars": [
+          "📐"
+        ],
+        "preview": "#### 📐 พหุนามและเลขยกกำลัง"
+      },
+      {
+        "line": 127,
+        "chars": [
+          "🌊"
+        ],
+        "preview": "#### 🌊 ฟังก์ชันอดิศัย (Trigonometric & Exp)"
+      }
+    ]
+  },
+  {
+    "file": "pages/history.py",
+    "hits": [
+      {
+        "line": 5,
+        "chars": [
+          "✨",
+          "🏆"
+        ],
+        "preview": "🏆 ประวัติคะแนนและการเรียนรู้ (Learning History) ✨"
+      },
+      {
+        "line": 6,
+        "chars": [
+          "🌟",
+          "📊"
+        ],
+        "preview": "📊 บันทึกผลคะแนนแบบทดสอบและสถิติการเรียนรู้ในเซสชันปัจจุบัน 🌟"
+      },
+      {
+        "line": 13,
+        "chars": [
+          "💡"
+        ],
+        "preview": "\n        <div style=\"background-color: #FFFFFF; border: 2.5px dashed #18181B; border-radius: 14px; padding: 24px; text-align: cent"
+      },
+      {
+        "line": 26,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "🎯 เริ่มทำแบบทดสอบมโนทัศน์"
+      },
+      {
+        "line": 31,
+        "chars": [
+          "🌟"
+        ],
+        "preview": "🌟 แบบทดสอบรวมทุกบท (80 ข้อ)"
+      },
+      {
+        "line": 32,
+        "chars": [
+          "📈"
+        ],
+        "preview": "📈 1. เส้นสัมผัสและอนุพันธ์"
+      },
+      {
+        "line": 33,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "🎯 2. ลิมิตและความต่อเนื่อง"
+      },
+      {
+        "line": 34,
+        "chars": [
+          "📐"
+        ],
+        "preview": "📐 3. กฎพื้นฐานและทฤษฎีบท"
+      },
+      {
+        "line": 35,
+        "chars": [
+          "📊"
+        ],
+        "preview": "📊 4. ผลรวมรีมันน์และการประมาณค่า"
+      },
+      {
+        "line": 36,
+        "chars": [
+          "🔄"
+        ],
+        "preview": "🔄 5. เทคนิคการเปลี่ยนตัวแปร & By Parts"
+      },
+      {
+        "line": 37,
+        "chars": [
+          "📉"
+        ],
+        "preview": "📉 6. พื้นที่ระหว่างเส้นโค้ง"
+      },
+      {
+        "line": 38,
+        "chars": [
+          "♾",
+          "️"
+        ],
+        "preview": "♾️ 7. ปริพันธ์ไม่ตรงแบบ"
+      },
+      {
+        "line": 39,
+        "chars": [
+          "🌀"
+        ],
+        "preview": "🌀 8. ปริมาตรของรูปทรงตันจากการหมุน"
+      },
+      {
+        "line": 77,
+        "chars": [
+          "💡"
+        ],
+        "preview": "💡 ทำแบบทดสอบเพิ่ม"
+      },
+      {
+        "line": 80,
+        "chars": [
+          "🏠"
+        ],
+        "preview": "🏠 กลับสู่หน้าหลัก"
+      }
+    ]
+  },
+  {
+    "file": "pages/home.py",
+    "hits": [
+      {
+        "line": 5,
+        "chars": [
+          "✨",
+          "📐"
+        ],
+        "preview": "📐 Calculus Learning Sandbox ✨"
+      },
+      {
+        "line": 6,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "เว็บแอปพลิเคชันช่วยเรียนรู้แคลคูลัสแบบมีปฏิสัมพันธ์ เข้าใจง่าย เห็นภาพชัดเจน 🚀"
+      },
+      {
+        "line": 71,
+        "chars": [
+          "✨",
+          "🎓",
+          "💡",
+          "🚀",
+          "🧮"
+        ],
+        "preview": "\n    <div class=\"home-hero-banner\">\n        <div style=\"display: flex; align-items: center; gap: 8px;\">\n            <span style=\"f"
+      },
+      {
+        "line": 211,
+        "chars": [
+          "🏆"
+        ],
+        "preview": "### 🏆 ผลการทดสอบล่าสุด (Your Recent Progress)"
+      },
+      {
+        "line": 242,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "### 🎯 วัตถุประสงค์การเรียนรู้ (Learning Goals)"
+      },
+      {
+        "line": 91,
+        "chars": [
+          "🔍"
+        ],
+        "preview": "🔍 ค้นหาบทเรียนหรือเครื่องมือ..."
+      },
+      {
+        "line": 98,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "🎯 1. ลิมิตเข้าใกล้จุด"
+      },
+      {
+        "line": 102,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 เข้าสู่บทเรียนที่ 1"
+      },
+      {
+        "line": 107,
+        "chars": [
+          "📈"
+        ],
+        "preview": "📈 2. เส้นสัมผัสและอนุพันธ์"
+      },
+      {
+        "line": 111,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 เข้าสู่บทเรียนที่ 2"
+      },
+      {
+        "line": 116,
+        "chars": [
+          "📊"
+        ],
+        "preview": "📊 3. ผลรวมรีมันน์ (Riemann Sum)"
+      },
+      {
+        "line": 120,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 เข้าสู่บทเรียนที่ 3"
+      },
+      {
+        "line": 125,
+        "chars": [
+          "🔄"
+        ],
+        "preview": "🔄 4. เทคนิคการอินทิเกรต"
+      },
+      {
+        "line": 129,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 เข้าสู่บทเรียนที่ 4"
+      },
+      {
+        "line": 134,
+        "chars": [
+          "📉"
+        ],
+        "preview": "📉 5. พื้นที่ระหว่างเส้นโค้ง"
+      },
+      {
+        "line": 138,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 เข้าสู่บทเรียนที่ 5"
+      },
+      {
+        "line": 143,
+        "chars": [
+          "🌀"
+        ],
+        "preview": "🌀 6. ปริมาตรของรูปทรงตัน"
+      },
+      {
+        "line": 147,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 เข้าสู่บทเรียนที่ 6"
+      },
+      {
+        "line": 152,
+        "chars": [
+          "♾",
+          "️"
+        ],
+        "preview": "♾️ 7. ปริพันธ์ไม่ตรงแบบ"
+      },
+      {
+        "line": 156,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 เข้าสู่บทเรียนที่ 7"
+      },
+      {
+        "line": 161,
+        "chars": [
+          "🧮"
+        ],
+        "preview": "🧮 เครื่องคิดเลขสัญลักษณ์ SymPy"
+      },
+      {
+        "line": 165,
+        "chars": [
+          "✨"
+        ],
+        "preview": "✨ เปิดเครื่องคิดเลข"
+      },
+      {
+        "line": 170,
+        "chars": [
+          "💡"
+        ],
+        "preview": "💡 แบบทดสอบมโนทัศน์ (80 ข้อ)"
+      },
+      {
+        "line": 174,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "🎯 เริ่มทำแบบทดสอบ"
+      },
+      {
+        "line": 207,
+        "chars": [
+          "🔍"
+        ],
+        "preview": "🔍 ไม่พบเมนูหรือบทเรียนที่ตรงกับคำค้นหา ลองค้นหาด้วยคำอื่นดูนะ!"
+      },
+      {
+        "line": 248,
+        "chars": [
+          "📐"
+        ],
+        "preview": "\n        <div class=\"obj-card\" style=\"background: linear-gradient(180deg, #FFFFFF 0%, #FFF1F2 100%);\">\n            <div style=\"fon"
+      },
+      {
+        "line": 264,
+        "chars": [
+          "⚖",
+          "️"
+        ],
+        "preview": "\n        <div class=\"obj-card\" style=\"background: linear-gradient(180deg, #FFFFFF 0%, #FEF9C3 100%);\">\n            <div style=\"fon"
+      },
+      {
+        "line": 280,
+        "chars": [
+          "🌀"
+        ],
+        "preview": "\n        <div class=\"obj-card\" style=\"background: linear-gradient(180deg, #FFFFFF 0%, #F0FDF4 100%);\">\n            <div style=\"fon"
+      },
+      {
+        "line": 296,
+        "chars": [
+          "📝"
+        ],
+        "preview": "\n        <div class=\"obj-card\" style=\"background: linear-gradient(180deg, #FFFFFF 0%, #EFF6FF 100%);\">\n            <div style=\"fon"
+      },
+      {
+        "line": 222,
+        "chars": [
+          "✨",
+          "🎉"
+        ],
+        "preview": "🎉 ยอดเยี่ยมมาก! คุณทำคะแนนเต็มในหมวดนี้ ✨"
+      },
+      {
+        "line": 227,
+        "chars": [
+          "—",
+          "💡"
+        ],
+        "preview": "\n            <div style=\"background-color: #FFFFFF; border: 2px dashed #94A3B8; border-radius: 12px; padding: 12px 18px;\">\n       "
+      },
+      {
+        "line": 237,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "🎯 ไปทำแบบทดสอบ"
+      }
+    ]
+  },
+  {
+    "file": "pages/improper_integrals.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "pages/improper_integrals.py — บทเรียน interactive: ปริพันธ์ไม่ตรงแบบ (Improper Integrals)\n\nสำรวจการลู่เข้าหรือลู่ออกของปริพันธ์บนช"
+      },
+      {
+        "line": 50,
+        "chars": [
+          "️",
+          "👁"
+        ],
+        "preview": "**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**\n- **การลู่เข้า vs ลู่ออก (Convergence vs Divergence):** สังเกตว่าเมื่อขอบเขตขยายสู่อนันต์ "
+      },
+      {
+        "line": 55,
+        "chars": [
+          "📖"
+        ],
+        "preview": "📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม"
+      },
+      {
+        "line": 27,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "<span style=\"\n                background-color: #FEF08A;\n                border: 1.5px solid #18181B;\n                border-radiu"
+      },
+      {
+        "line": 127,
+        "chars": [
+          "✨"
+        ],
+        "preview": "✨ ตรวจพบตัวแปร **$"
+      },
+      {
+        "line": 127,
+        "chars": [
+          "—"
+        ],
+        "preview": "$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร $"
+      },
+      {
+        "line": 68,
+        "chars": [
+          "⚠",
+          "️"
+        ],
+        "preview": "⚠️ "
+      }
+    ]
+  },
+  {
+    "file": "pages/lessons.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "pages/lessons.py — บทเรียน\n\nแสดงเนื้อหาบทเรียนโดยรวมจาก utils/theory.py (THEORY_CONTENT)\nของแต่ละหัวข้อ interactive พร้อมปุ่มไปยัง"
+      },
+      {
+        "line": 16,
+        "chars": [
+          "✨",
+          "📚"
+        ],
+        "preview": "📚 ภาพรวมบทเรียนและทฤษฎี (Calculus Lessons) ✨"
+      },
+      {
+        "line": 16,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "สำรวจสรุปทฤษฎีบท มโนทัศน์สำคัญ และเอกสารอ้างอิงฉบับเต็ม 🚀"
+      },
+      {
+        "line": 35,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 บทเรียน Interactive"
+      },
+      {
+        "line": 35,
+        "chars": [
+          "📖"
+        ],
+        "preview": "📖 เอกสารอ้างอิง (ฉบับเต็ม)"
+      },
+      {
+        "line": 105,
+        "chars": [
+          "📚"
+        ],
+        "preview": "\n        <div style=\"\n            background-color: #FFFFFF;\n            border: 2.5px solid #18181B;\n            border-radius: 1"
+      },
+      {
+        "line": 128,
+        "chars": [
+          "🌐"
+        ],
+        "preview": "🌐 ไปยังคลังหนังสือ ภาควิชาคณิตศาสตร์ ม.ศิลปากร (math.sc.su.ac.th)"
+      },
+      {
+        "line": 97,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 ไปทดลองเล่นแบบจำลอง Interactive แบบเต็มรูปแบบ"
+      },
+      {
+        "line": 139,
+        "chars": [
+          "📘"
+        ],
+        "preview": "### 📘 ไฟล์หนังสือเรียน แคลคูลัส I"
+      },
+      {
+        "line": 152,
+        "chars": [
+          "📙"
+        ],
+        "preview": "### 📙 ไฟล์หนังสือเรียน แคลคูลัส II"
+      },
+      {
+        "line": 167,
+        "chars": [
+          "📝"
+        ],
+        "preview": "📝 ชุดฝึกหัดเสริมเพิ่มเติม (คณิตศาสตร์ ม.ศิลปากร)"
+      },
+      {
+        "line": 63,
+        "chars": [
+          "⚡"
+        ],
+        "preview": "### ⚡ สูตรคำนวณสำคัญ (Key Formulas)"
+      },
+      {
+        "line": 81,
+        "chars": [
+          "⚠",
+          "️"
+        ],
+        "preview": "⚠️ **ข้อควรระวังสำคัญ:** "
+      },
+      {
+        "line": 71,
+        "chars": [
+          "📋"
+        ],
+        "preview": "#### 📋 เงื่อนไขการใช้งาน (Conditions)"
+      },
+      {
+        "line": 76,
+        "chars": [
+          "🌟"
+        ],
+        "preview": "#### 🌟 สมบัติสำคัญ (Properties)"
+      },
+      {
+        "line": 87,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "#### 🚀 การประยุกต์ใช้งาน (Applications)"
+      },
+      {
+        "line": 92,
+        "chars": [
+          "💡"
+        ],
+        "preview": "#### 💡 คำแนะนำการเลือกวิธี (Decision Guide)"
+      }
+    ]
+  },
+  {
+    "file": "pages/limit_approach.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "pages/limit_approach.py : บทเรียน interactive: ลิมิตเข้าใกล้จุด (Limit at a Point)\n\nโครงสร้างตาม blueprint: pages/riemann.py\n\nลำดั"
+      },
+      {
+        "line": 150,
+        "chars": [
+          "→"
+        ],
+        "preview": "3x + 1 (x → 2)"
+      },
+      {
+        "line": 158,
+        "chars": [
+          "→"
+        ],
+        "preview": "(x² - 4)/(x - 2) (x → 2)"
+      },
+      {
+        "line": 166,
+        "chars": [
+          "→"
+        ],
+        "preview": "sin(x)/x (x → 0)"
+      },
+      {
+        "line": 174,
+        "chars": [
+          "→"
+        ],
+        "preview": "1/x (x → 0)"
+      },
+      {
+        "line": 182,
+        "chars": [
+          "→"
+        ],
+        "preview": "|x|/x (x → 0)"
+      },
+      {
+        "line": 190,
+        "chars": [
+          "→"
+        ],
+        "preview": "(2x² + 1)/(3x² - 5) (x → ∞)"
+      },
+      {
+        "line": 249,
+        "chars": [
+          "→"
+        ],
+        "preview": "โหมดลิมิตที่อนันต์ (x → ±∞) ไม่ต้องกำหนดระยะ delta"
+      }
+    ]
+  },
+  {
+    "file": "pages/quiz.py",
+    "hits": [
+      {
+        "line": 219,
+        "chars": [
+          "🎲"
+        ],
+        "preview": "🎲 ระบบสุ่มลำดับตัวเลือก (A, B, C, D) และสุ่มลำดับโจทย์แบบไดนามิกทุกรอบ เพื่อฝึกมโนทัศน์แท้จริง"
+      },
+      {
+        "line": 221,
+        "chars": [
+          "🎲"
+        ],
+        "preview": "🎲 สุ่มรอบใหม่"
+      },
+      {
+        "line": 286,
+        "chars": [
+          "✓"
+        ],
+        "preview": "✓ ถูกต้อง"
+      },
+      {
+        "line": 286,
+        "chars": [
+          "✗"
+        ],
+        "preview": "✗ ยังไม่ถูก"
+      },
+      {
+        "line": 252,
+        "chars": [
+          "🌟",
+          "🎈",
+          "🏆"
+        ],
+        "preview": "\n            <div class=\"celebration-bounce-card\" style=\"\n                background: linear-gradient(135deg, #FEF08A 0%, #FBCFE8 "
+      },
+      {
+        "line": 468,
+        "chars": [
+          "→"
+        ],
+        "preview": "ข้อถัดไป →"
+      },
+      {
+        "line": 347,
+        "chars": [
+          "✦"
+        ],
+        "preview": "\n                <div style=\"display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-botto"
+      },
+      {
+        "line": 426,
+        "chars": [
+          "🌟",
+          "🎉"
+        ],
+        "preview": "\n                    <div class=\"celebration-bounce-card\" style=\"\n                        background: linear-gradient(135deg, #DCF"
+      },
+      {
+        "line": 452,
+        "chars": [
+          "✗"
+        ],
+        "preview": "✗ **ยังไม่ถูกต้อง** (คำตอบที่ถูกต้องคือ: ข้อ **"
+      },
+      {
+        "line": 459,
+        "chars": [
+          "✓"
+        ],
+        "preview": " &nbsp; *(✓ คำตอบที่ถูกต้อง)*"
+      },
+      {
+        "line": 461,
+        "chars": [
+          "✗"
+        ],
+        "preview": " &nbsp; *(✗ คำตอบที่คุณเลือก)*"
+      }
+    ]
+  },
+  {
+    "file": "pages/riemann.py",
+    "hits": [
+      {
+        "line": 55,
+        "chars": [
+          "️",
+          "👁"
+        ],
+        "preview": "**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**\n- **การลู่เข้า (Convergence):** ลองเลื่อนสไลเดอร์เพิ่ม $n$ สังเกตช่องว่างส่วนเกิน/ส่วนขาดจ"
+      },
+      {
+        "line": 60,
+        "chars": [
+          "📖"
+        ],
+        "preview": "📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม"
+      },
+      {
+        "line": 32,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "<span style=\"\n                background-color: #FEF08A;\n                border: 1.5px solid #18181B;\n                border-radiu"
+      },
+      {
+        "line": 139,
+        "chars": [
+          "✨"
+        ],
+        "preview": "✨ ตรวจพบตัวแปร **$"
+      },
+      {
+        "line": 139,
+        "chars": [
+          "—"
+        ],
+        "preview": "$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร $"
+      },
+      {
+        "line": 73,
+        "chars": [
+          "⚠",
+          "️"
+        ],
+        "preview": "⚠️ "
+      }
+    ]
+  },
+  {
+    "file": "pages/solver.py",
+    "hits": [
+      {
+        "line": 8,
+        "chars": [
+          "✨",
+          "🧮"
+        ],
+        "preview": "🧮 เครื่องคิดเลขแคลคูลัส (Calculus Solver) ✨"
+      },
+      {
+        "line": 8,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "คำนวณอินทิเกรต อนุพันธ์ และลิมิต พร้อมแจกแจงวิธีทำทีละขั้นตอนด้วย SymPy CAS 🚀"
+      },
+      {
+        "line": 89,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "🎯 ตัวอย่างโจทย์ยอดนิยม (คลิกเพื่อทดสอบทันที):"
+      },
+      {
+        "line": 129,
+        "chars": [
+          "🚀"
+        ],
+        "preview": "🚀 คำนวณผลลัพธ์"
+      },
+      {
+        "line": 75,
+        "chars": [
+          "️",
+          "🗑"
+        ],
+        "preview": "🗑️ ล้าง"
+      },
+      {
+        "line": 80,
+        "chars": [
+          "✨"
+        ],
+        "preview": "✨ **ระบบตรวจจับตัวแปรอัตโนมัติ (Auto-detect):** คำนวณเทียบกับตัวแปร `"
+      },
+      {
+        "line": 119,
+        "chars": [
+          "→"
+        ],
+        "preview": "(x²-4)/(x-2) → 2"
+      },
+      {
+        "line": 120,
+        "chars": [
+          "→"
+        ],
+        "preview": "sin(x)/x → 0"
+      },
+      {
+        "line": 121,
+        "chars": [
+          "→"
+        ],
+        "preview": "1/x → 0"
+      },
+      {
+        "line": 122,
+        "chars": [
+          "→"
+        ],
+        "preview": "(√x - 1)/(x - 1) → 1"
+      },
+      {
+        "line": 160,
+        "chars": [
+          "💡"
+        ],
+        "preview": "#### 💡 คำอธิบายผลลัพธ์และการนำไปใช้ (Result Meaning & Insights)"
+      },
+      {
+        "line": 154,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "🎯 **คำนวณสำเร็จเทียบกับตัวแปรอัตโนมัติ:** `"
+      }
+    ]
+  },
+  {
+    "file": "pages/substitution.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "pages/substitution.py — เทคนิคการอินทิเกรต (การเปลี่ยนตัวแปรและการอินทิเกรตทีละส่วน)\n\nออกแบบเพื่อสร้างมโนทัศน์การตัดสินใจเลือกตัวแ"
+      },
+      {
+        "line": 98,
+        "chars": [
+          "—"
+        ],
+        "preview": "โจทย์ที่ 1: ฟังก์ชันใต้กรณฑ์/ยกกำลัง — ∫ 2x √(x² + 1) dx"
+      },
+      {
+        "line": 99,
+        "chars": [
+          "—"
+        ],
+        "preview": "โจทย์ที่ 2: ฟังก์ชันเศษส่วนและลอการิทึม — ∫ (ln x) / x dx"
+      },
+      {
+        "line": 100,
+        "chars": [
+          "—"
+        ],
+        "preview": "โจทย์ที่ 3: ฟังก์ชันเลขชี้กำลังและตรีโกณ — ∫ cos(x) e^(sin x) dx"
+      },
+      {
+        "line": 101,
+        "chars": [
+          "—"
+        ],
+        "preview": "โจทย์ที่ 4: พีชคณิตเหลือเศษ (Linear Adjustment) — ∫ x √(x + 1) dx"
+      },
+      {
+        "line": 326,
+        "chars": [
+          "—"
+        ],
+        "preview": "โจทย์ที่ 1: พีชคณิต × เอกซ์โพเนนเชียล — ∫ x e^(2x) dx"
+      },
+      {
+        "line": 327,
+        "chars": [
+          "—"
+        ],
+        "preview": "โจทย์ที่ 2: พีชคณิต × ตรีโกณมิติ — ∫ x sin(x) dx"
+      },
+      {
+        "line": 328,
+        "chars": [
+          "—"
+        ],
+        "preview": "โจทย์ที่ 3: ลอการิทึมเดี่ยว (ซ่อน dv = dx) — ∫ ln(x) dx"
+      },
+      {
+        "line": 329,
+        "chars": [
+          "—"
+        ],
+        "preview": "โจทย์ที่ 4: วนลูปกลับมาที่เดิม (Cyclic Integration) — ∫ e^x cos(x) dx"
+      }
+    ]
+  },
+  {
+    "file": "pages/survey.py",
+    "hits": [
+      {
+        "line": 6,
+        "chars": [
+          "✨",
+          "📝"
+        ],
+        "preview": "📝 แบบประเมินความพึงพอใจ (SUS) ✨"
+      },
+      {
+        "line": 7,
+        "chars": [
+          "✨",
+          "💖"
+        ],
+        "preview": "✨ ร่วมประเมินการใช้งานเว็บแอปพลิเคชันช่วยสอนแคลคูลัส เพื่อการวิจัยและพัฒนาปรับปรุงอย่างต่อเนื่อง 💖"
+      },
+      {
+        "line": 42,
+        "chars": [
+          "🌸",
+          "🙏"
+        ],
+        "preview": "\n    <div class=\"survey-banner\">\n        <b>🙏 ขอความอนุเคราะห์ผู้เรียนและผู้ร่วมทดลองใช้งานทุกท่าน:</b><br>\n        ร่วมตอบแบบประเ"
+      },
+      {
+        "line": 55,
+        "chars": [
+          "📱"
+        ],
+        "preview": "### 📱 สแกน QR Code ผ่านสมาร์ตโฟน"
+      },
+      {
+        "line": 62,
+        "chars": [
+          "💻"
+        ],
+        "preview": "### 💻 หรือเปิดทำแบบสอบถามบนเบราว์เซอร์"
+      },
+      {
+        "line": 63,
+        "chars": [
+          "️"
+        ],
+        "preview": "⏱️ แบบสอบถามประกอบด้วย 4 ตอน ใช้เวลาทำประมาณ 3-5 นาทีเท่านั้น"
+      },
+      {
+        "line": 65,
+        "chars": [
+          "📝"
+        ],
+        "preview": "📝 เปิดทำแบบสอบถามออนไลน์ (Google Forms)"
+      },
+      {
+        "line": 71,
+        "chars": [
+          "📋"
+        ],
+        "preview": "#### 📋 โครงสร้างแบบประเมิน:"
+      },
+      {
+        "line": 73,
+        "chars": [
+          "⭐",
+          "🎓",
+          "💬",
+          "📊"
+        ],
+        "preview": "\n        <div class=\"survey-section-card\" style=\"border-left: 6px solid #F43F5E;\">\n            <b>ตอนที่ 1: ข้อมูลทั่วไปและภูมิหลั"
+      },
+      {
+        "line": 59,
+        "chars": [
+          "📷"
+        ],
+        "preview": "📷 ใช้กล้องมือถือสแกนเพื่อเปิดแบบสอบถาม"
+      }
+    ]
+  },
+  {
+    "file": "pages/volume_revolution.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "pages/volume_revolution.py — บทเรียน interactive: ปริมาตรของทรงตันที่เกิดจากการหมุน (Volume of Solids)\n\nคำนวณปริมาตรแบบ Disk Metho"
+      },
+      {
+        "line": 60,
+        "chars": [
+          "️",
+          "👁"
+        ],
+        "preview": "**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**\n- **จานตัน vs วงแหวนกลวง:** หากพื้นที่แนบสนิทกับแกนหมุนจะไม่มีรูตรงกลาง (ใช้ Disk) หากมีช่"
+      },
+      {
+        "line": 65,
+        "chars": [
+          "📖"
+        ],
+        "preview": "📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม"
+      },
+      {
+        "line": 37,
+        "chars": [
+          "🎯"
+        ],
+        "preview": "<span style=\"\n                background-color: #FEF08A;\n                border: 1.5px solid #18181B;\n                border-radiu"
+      },
+      {
+        "line": 148,
+        "chars": [
+          "✨"
+        ],
+        "preview": "✨ ตรวจพบตัวแปร **$"
+      },
+      {
+        "line": 148,
+        "chars": [
+          "—"
+        ],
+        "preview": "$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร $"
+      },
+      {
+        "line": 78,
+        "chars": [
+          "⚠",
+          "️"
+        ],
+        "preview": "⚠️ "
+      }
+    ]
+  },
+  {
+    "file": "utils/area_solver.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "utils/area_solver.py — พื้นที่ระหว่างเส้นโค้ง\n\nคำนวณพื้นที่เรขาคณิต A = ∫_a^b |f(x) - g(x)| dx บนช่วงจริงจำกัด [a, b]\nพร้อมแสดงขั้"
+      }
+    ]
+  },
+  {
+    "file": "utils/improper_solver.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "utils/improper_solver.py — อินทิกรัลไม่ตรงแบบ (Improper Integrals)\n\nคำนวณอินทิกรัลไม่ตรงแบบผ่านลิมิต ตรวจสอบการลู่เข้า/ลู่ออก (Con"
+      }
+    ]
+  },
+  {
+    "file": "utils/keypad.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "utils/keypad.py — แผงปุ่มลัดสัญลักษณ์คณิตศาสตร์ (Math Keypad)\n\nคอมโพเนนต์ปุ่มลัดสำหรับพิมพ์สูตรคณิตศาสตร์ใน Streamlit\nใช้ร่วมกันระ"
+      }
+    ]
+  },
+  {
+    "file": "utils/limit_solver.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "utils/limit_solver.py — ลิมิตเข้าใกล้จุด\n\nskeleton สำหรับนักศึกษา project\nTODO: ใส่ logic จริงให้ test ใน tests/ ผ่าน\nอ้างอิง blue"
+      },
+      {
+        "line": 238,
+        "chars": [
+          "—"
+        ],
+        "preview": "Level 2: รูปแบบยังไม่กำหนด 0/0 — แยกตัวประกอบ/จัดรูป แล้วตัดทอนตัวร่วม"
+      },
+      {
+        "line": 365,
+        "chars": [
+          "—"
+        ],
+        "preview": "Level 5: ฟังก์ชันค่าสัมบูรณ์ / ฟังก์ชันแบ่งช่วง — แยกพิจารณาสองฝั่งอย่างชัดเจน"
+      }
+    ]
+  },
+  {
+    "file": "utils/math_render.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "→"
+        ],
+        "preview": "\nMath rendering helpers for Streamlit (native KaTeX).\n\nกฎของ Streamlit:\n- st.latex(expr)  → display math; expr ต้องเป็น pure LaTeX"
+      }
+    ]
+  },
+  {
+    "file": "utils/plotter.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "\nutils/plotter.py — ฟังก์ชันวาดกราฟสำหรับบทเรียน interactive แคลคูลัส\n\nใช้ matplotlib (Agg) คืน (fig, ax) สำหรับ st.pyplot\nlabel ใ"
+      }
+    ]
+  },
+  {
+    "file": "utils/riemann_solver.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "\nutils/riemann_solver.py — คำนวณผลรวมรีมันน์ (Riemann sum) ทีละขั้น\n\nสำหรับบทเรียน interactive 3.1 พื้นที่ภายใต้เส้นโค้ง\nใช้ SymPy"
+      }
+    ]
+  },
+  {
+    "file": "utils/substitution_solver.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "utils/substitution_solver.py — การอินทิเกรตโดยการแทนตัวแปรและเทคนิคการอินทิเกรต\n\nรองรับการตรวจหาตัวแปร u เชิงสัญลักษณ์, เทคนิคการอ"
+      }
+    ]
+  },
+  {
+    "file": "utils/tangent_solver.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "utils/tangent_solver.py — เส้นสัมผัสและอนุพันธ์\n\nskeleton สำหรับนักศึกษา project\nTODO: ใส่ logic จริงให้ test ใน tests/ ผ่าน\nอ้างอ"
+      }
+    ]
+  },
+  {
+    "file": "utils/theme.py",
+    "hits": [
+      {
+        "line": 5,
+        "chars": [
+          "✦"
+        ],
+        "preview": "\n    <style>\n    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Mali:ital,wght@0,400;0,"
+      }
+    ]
+  },
+  {
+    "file": "utils/theory.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "\nmodules/theory.py — เนื้อหาทฤษฎีบทเรียน interactive แคลคูลัส\n\nภาษาไทยทั้งหมด ใช้ LaTeX ($...$) สำหรับสัญลักษณ์ทางคณิตศาสตร์\n\nโครง"
+      },
+      {
+        "line": 97,
+        "chars": [
+          "—"
+        ],
+        "preview": "**ลำดับการเลือกเทคนิค (Hierarchy of Evaluation):** (1) ลองแทนค่าตรงก่อน (Direct Substitution) (2) ถ้าได้ $\\frac{0}{0}$ ให้จัดรูปพี"
+      }
+    ]
+  },
+  {
+    "file": "utils/volume_solver.py",
+    "hits": [
+      {
+        "line": 1,
+        "chars": [
+          "—"
+        ],
+        "preview": "utils/volume_solver.py — ปริมาตรของรูปทรงตันจากการหมุนรอบแกน\n\nคำนวณปริมาตรของรูปทรงตันที่เกิดจากการหมุนรอบแกน x แบบ Disk หรือ Wash"
+      }
+    ]
+  }
+]

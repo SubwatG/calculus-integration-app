@@ -1,0 +1,13 @@
+{
+  "base": "d36dd7e19dc834a3e572431c9f551a80157c9e9e",
+  "head": "fa6761c9e7ee53e55690b8bea5d56e30b04d835e",
+  "snapshot": "/home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929",
+  "report_dir": "/home/kitti/Documents/GitHub/calculus-integration-app/docs/reviews/2026-10-19-pr-1",
+  "changed_files": 31,
+  "dirty_hashes_before": {
+    "pages/riemann.py": "0b6d00c01d0f9e317be536432d12ed8c5b16893ccfddf43e6db016c71bf9edb4",
+    "utils/riemann_solver.py": "37f6cc609020444331dd82fab1f5a18fb7547ed524d96e25df3ac749bcf81400",
+    "tests/test_riemann_solver.py": "ca3130f3bf42a154fb6ac280a4f0b69611335b943afaf2e78805318d9454ca20",
+    "tests/test_riemann_page_ux.py": "5fbd9a2a851f7820154576dd3661c310a893ca09c5d7abae3329cff8f62afeb9"
+  }
+}

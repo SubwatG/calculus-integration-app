@@ -1,0 +1,8 @@
+{
+  "target": "utils/riemann_solver.py",
+  "merge_preview_exit": 1,
+  "conflict_regions": 1,
+  "preview_dir": "/home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929-riemann-reconcile",
+  "original_local_unchanged": true,
+  "source_edits_applied": false
+}

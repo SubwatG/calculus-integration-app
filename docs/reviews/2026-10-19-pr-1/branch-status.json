@@ -1,0 +1,47 @@
+[
+  {
+    "branch": "origin/feat/quiz-ui-and-solver-enhancements",
+    "behind_main": 9,
+    "ahead_main": 0
+  },
+  {
+    "branch": "origin/feat/tangent-limit-interactive",
+    "behind_main": 45,
+    "ahead_main": 0
+  },
+  {
+    "branch": "origin/feat/ui-and-math-fixes",
+    "behind_main": 25,
+    "ahead_main": 0
+  },
+  {
+    "branch": "origin/feat/ui-clean-hero-bar",
+    "behind_main": 26,
+    "ahead_main": 0
+  },
+  {
+    "branch": "origin/feat/worked-solutions-detail",
+    "behind_main": 0,
+    "ahead_main": 11
+  },
+  {
+    "branch": "origin/fix/katex-clipping-and-bounds",
+    "behind_main": 23,
+    "ahead_main": 0
+  },
+  {
+    "branch": "origin/fix/riemann-subscript-observation",
+    "behind_main": 8,
+    "ahead_main": 0
+  },
+  {
+    "branch": "origin/main",
+    "behind_main": 0,
+    "ahead_main": 0
+  },
+  {
+    "branch": "origin/quiz-conceptual-bank",
+    "behind_main": 46,
+    "ahead_main": 5
+  }
+]

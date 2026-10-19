@@ -39,7 +39,7 @@ with st.container(border=True):
                 font-weight: 700;
                 color: #18181B;
                 display: inline-block;
-            ">🎯 มโนทัศน์หลัก</span>""",
+            ">มโนทัศน์หลัก</span>""",
             unsafe_allow_html=True,
         )
     with col_concept:
@@ -52,12 +52,12 @@ with st.container(border=True):
     st.latex(r"A = \lim_{n \to \infty} \sum_{i=1}^{n} f(x_i^*) \Delta x = \int_a^b f(x)\,dx \quad \left(\text{โดยที่ } \Delta x = \frac{b-a}{n}\right)")
 
     st.info(
-        """**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
+        """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
 - **การลู่เข้า (Convergence):** ลองเลื่อนสไลเดอร์เพิ่ม $n$ สังเกตช่องว่างส่วนเกิน/ส่วนขาดจะเล็กลงจนผลรวมเข้าใกล้ค่าจริง
 - **ทิศทางการประมาณ:** สำหรับฟังก์ชันเพิ่ม ($f' > 0$) ค่า $L_n$ จะประเมินต่ำกว่าจริง (Underestimate) ส่วน $R_n$ จะประเมินสูงกว่าจริง (Overestimate)"""
     )
 
-with st.expander("📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
+with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
     col_t1, col_t2 = st.columns(2)
     with col_t1:
         st.markdown("**เงื่อนไขการใช้งาน**")
@@ -70,7 +70,7 @@ with st.expander("📖 รายละเอียดทฤษฎี ข้อ�
         st.markdown("**ข้อควรระวัง**")
         with st.container(border=True):
             for caution in theory["cautions"]:
-                st.markdown(f"⚠️ {caution}")
+                st.markdown(f"- {caution}")
         st.markdown("**การประยุกต์ใช้**")
         for item in theory["applications"]:
             st.markdown(f"- {item}")
@@ -136,7 +136,24 @@ else:
     if res["ok"]:
         v_name = res.get("variable", "x")
         if v_name != "x":
-            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+            st.info(f"ตรวจพบตัวแปร **${v_name}$**: ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+
+        if res.get("has_negative_region") and res.get("negative_warning"):
+            st.warning(f"พื้นที่คิดเครื่องหมาย (Net Signed Area): {res['negative_warning']}")
+
+        comp = res.get("methods_comparison")
+        if comp:
+            st.markdown("#### การเปรียบเทียบ 3 วิธีกับค่าจริง")
+            c1, c2, c3 = st.columns(3)
+            with c1:
+                left_d = comp.get("left", {})
+                st.metric("ปลายขอบซ้าย (Left)", f"{left_d.get('val', 0):.4f}", f"{left_d.get('error_pct', 0):+.2f}%")
+            with c2:
+                mid_d = comp.get("midpoint", {})
+                st.metric("จุดกึ่งกลาง (Midpoint)", f"{mid_d.get('val', 0):.4f}", f"{mid_d.get('error_pct', 0):+.2f}%")
+            with c3:
+                right_d = comp.get("right", {})
+                st.metric("ปลายขอบขวา (Right)", f"{right_d.get('val', 0):.4f}", f"{right_d.get('error_pct', 0):+.2f}%")
 
         st.markdown("### ผลลัพธ์การประมาณค่า")
         render_latex(res["latex"])

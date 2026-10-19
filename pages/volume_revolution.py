@@ -1,4 +1,4 @@
-"""pages/volume_revolution.py — บทเรียน interactive: ปริมาตรของทรงตันที่เกิดจากการหมุน (Volume of Solids)
+"""pages/volume_revolution.py : บทเรียน interactive: ปริมาตรของทรงตันที่เกิดจากการหมุน (Volume of Solids)
 
 คำนวณปริมาตรแบบ Disk Method พร้อมพล็อตภาพตัดขวางและการหมุนรอบแกน
 """
@@ -44,7 +44,7 @@ with st.container(border=True):
                 font-weight: 700;
                 color: #18181B;
                 display: inline-block;
-            ">🎯 มโนทัศน์หลัก</span>""",
+            ">มโนทัศน์หลัก</span>""",
             unsafe_allow_html=True,
         )
     with col_concept:
@@ -57,12 +57,12 @@ with st.container(border=True):
     st.latex(r"V_{\text{Disk}} = \pi \int_a^b [R(x)]^2\,dx \qquad V_{\text{Washer}} = \pi \int_a^b \left([R(x)]^2 - [r(x)]^2\right)\,dx")
 
     st.info(
-        """**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
+        """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
 - **จานตัน vs วงแหวนกลวง:** หากพื้นที่แนบสนิทกับแกนหมุนจะไม่มีรูตรงกลาง (ใช้ Disk) หากมีช่องว่างระหว่างกราฟกับแกนหมุนจะเกิดรูกลวง (ใช้ Washer)
 - **กับดักเลขยกกำลังสอง:** สูตร Washer คือ $\\pi (R^2 - r^2)$ ไม่ใช่ $\\pi (R - r)^2$ (ต้องนำแต่ละรัศมียกกำลังสองแยกกันก่อนลบ)"""
     )
 
-with st.expander("📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
+with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
     col_t1, col_t2 = st.columns(2)
     with col_t1:
         st.markdown("**เงื่อนไขการใช้งาน**")
@@ -75,7 +75,7 @@ with st.expander("📖 รายละเอียดทฤษฎี ข้อ�
         st.markdown("**ข้อควรระวัง**")
         with st.container(border=True):
             for caution in theory["cautions"]:
-                st.markdown(f"⚠️ {caution}")
+                st.markdown(f"- {caution}")
         st.markdown("**การประยุกต์ใช้**")
         for item in theory["applications"]:
             st.markdown(f"- {item}")
@@ -95,13 +95,13 @@ def _set_vol_preset(r_val: str, a_val: float, b_val: float, method: str, inner_v
 
 p_cols = st.columns(4)
 with p_cols[0]:
-    st.button("ทรงกรวย $R(x) = x$ บน $[0, 2]$", key="pre_vol_1", use_container_width=True, wrap=True, on_click=_set_vol_preset, args=("x", 0.0, 2.0, "disk"))
+    st.button("ทรงกรวย $R(x) = x$ บน $[0, 2]$", key="pre_vol_1", use_container_width=True, on_click=_set_vol_preset, args=("x", 0.0, 2.0, "disk"))
 with p_cols[1]:
-    st.button("พาราโบลอยด์ $R(x) = \\sqrt{x}$ บน $[0, 4]$", key="pre_vol_2", use_container_width=True, wrap=True, on_click=_set_vol_preset, args=("sqrt(x)", 0.0, 4.0, "disk"))
+    st.button("พาราโบลอยด์ $R(x) = \\sqrt{x}$ บน $[0, 4]$", key="pre_vol_2", use_container_width=True, on_click=_set_vol_preset, args=("sqrt(x)", 0.0, 4.0, "disk"))
 with p_cols[2]:
-    st.button("ทรงระฆังคว่ำ $R(x) = 4 - x^2$ บน $[0, 2]$", key="pre_vol_3", use_container_width=True, wrap=True, on_click=_set_vol_preset, args=("4 - x**2", 0.0, 2.0, "disk"))
+    st.button("ทรงระฆังคว่ำ $R(x) = 4 - x^2$ บน $[0, 2]$", key="pre_vol_3", use_container_width=True, on_click=_set_vol_preset, args=("4 - x**2", 0.0, 2.0, "disk"))
 with p_cols[3]:
-    st.button("วงแหวน $R=\\sqrt{x}, r=x^2$ บน $[0, 1]$", key="pre_vol_4", use_container_width=True, wrap=True, on_click=_set_vol_preset, args=("sqrt(x)", 0.0, 1.0, "washer", "x**2"))
+    st.button("วงแหวน $R=\\sqrt{x}, r=x^2$ บน $[0, 1]$", key="pre_vol_4", use_container_width=True, on_click=_set_vol_preset, args=("sqrt(x)", 0.0, 1.0, "washer", "x**2"))
 
 expr_input = st.text_input(
     "ฟังก์ชันรัศมี R(x) (หรือรัศมีนอกสำหรับ Washer)",
@@ -145,7 +145,7 @@ else:
     if res["ok"]:
         v_name = res.get("variable", "x")
         if v_name != "x":
-            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+            st.info(f"ตรวจพบตัวแปร **${v_name}$**: ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
 
         st.markdown("### ผลลัพธ์")
         render_latex(res["latex"])

@@ -1,0 +1,80 @@
+........................................................................ [ 30%]
+........................................................................ [ 61%]
+..................F..................................................... [ 91%]
+....................                                                     [100%]
+=================================== FAILURES ===================================
+____________________ test_substitution_page_apptest_render _____________________
+
+    def test_substitution_page_apptest_render():
+        from streamlit.testing.v1 import AppTest
+>       at = AppTest.from_file("pages/substitution.py")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_substitution_solver.py:126: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cls = <class 'streamlit.testing.v1.app_test.AppTest'>
+script_path = PosixPath('pages/substitution.py'), default_timeout = 3
+
+    @classmethod
+    def from_file(
+        cls, script_path: str | Path, *, default_timeout: float = 3
+    ) -> AppTest:
+        """
+        Create an ``AppTest`` for an app entrypoint defined in a file.
+    
+        This option is most convenient for CI workflows and testing of
+        published apps. The script must be executable on its own and so must
+        contain all necessary imports. For a multipage app, pass the main
+        script that you would supply to ``streamlit run``. To test a
+        file-based child page, initialize from the main script and use
+        ``AppTest.switch_page()``.
+    
+        Parameters
+        ----------
+        script_path: str | Path
+            Path to the app's entrypoint script. An absolute path is used as
+            given. A relative path is resolved against the Python file that
+            calls ``AppTest.from_file()``.
+    
+        default_timeout: float
+            Default time in seconds before a script run is timed out. Can be
+            overridden for individual ``.run()`` calls.
+    
+        Returns
+        -------
+        AppTest
+            A simulated Streamlit app for testing. The simulated app can be
+            executed via ``.run()``.
+    
+        Raises
+        ------
+        FileNotFoundError
+            If ``script_path`` does not point to an existing file.
+    
+        Examples
+        --------
+        Initialize a multipage app from its entrypoint, then switch to a page:
+    
+        >>> at = AppTest.from_file("app.py").run()
+        >>> at.switch_page("pages/settings.py").run()
+        """
+        script_path = Path(script_path)
+        if script_path.is_absolute():
+            path = script_path
+        else:
+            stack = traceback.StackSummary.extract(traceback.walk_stack(None))
+            caller_file = Path(stack[1].filename)
+            path = caller_file.parent / script_path
+    
+        if not path.is_file():
+>           raise FileNotFoundError(
+                f"AppTest script not found at {path.resolve()}. Relative paths are "
+                "resolved against the file that calls AppTest.from_file()."
+            )
+E           FileNotFoundError: AppTest script not found at /home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929/tests/pages/substitution.py. Relative paths are resolved against the file that calls AppTest.from_file().
+
+/home/kitti/Documents/GitHub/calculus-integration-app/.venv/lib/python3.12/site-packages/streamlit/testing/v1/app_test.py:348: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_substitution_solver.py::test_substitution_page_apptest_render
+1 failed, 235 passed in 23.64s

@@ -1,0 +1,43 @@
+{
+  "success": true,
+  "status": "completed",
+  "process_success": true,
+  "bot": "bot-worker-luna",
+  "exit_code": 0,
+  "duration_s": 99.242,
+  "session_id": "20261019_140226_e2718f",
+  "output": "{\"status\":\"completed\",\"summary\":\"Fixed the oscillatory-limit explanation without changing limit status or result semantics, and added chain-rule derivations for composite sin/cos/tan/exp/log tangent cases. The RED run failed on the two intended explanation checks (33 passed); the scoped GREEN run passed, 35 passed. Verification was limited to the new regression file and the two specified existing test files; this does not certify all math cases.\",\"artifacts\":[\"utils/sympy_solver.py\",\"utils/tangent_solver.py\",\"tests/test_derivation_regressions.py\",\"math-red.log\",\"math-green.log\"]}",
+  "stderr": "",
+  "error": null,
+  "worker_result": {
+    "status": "completed",
+    "summary": "Fixed the oscillatory-limit explanation without changing limit status or result semantics, and added chain-rule derivations for composite sin/cos/tan/exp/log tangent cases. The RED run failed on the two intended explanation checks (33 passed); the scoped GREEN run passed, 35 passed. Verification was limited to the new regression file and the two specified existing test files; this does not certify all math cases.",
+    "artifacts": [
+      "utils/sympy_solver.py",
+      "utils/tangent_solver.py",
+      "tests/test_derivation_regressions.py",
+      "math-red.log",
+      "math-green.log"
+    ]
+  },
+  "checks": [
+    {
+      "argv": [
+        "/home/kitti/Documents/GitHub/calculus-integration-app/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "/home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929-candidate/tests/test_derivation_regressions.py",
+        "/home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929-candidate/tests/test_sympy_solver.py",
+        "/home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929-candidate/tests/test_tangent_solver.py",
+        "-q",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "exit_code": 0,
+      "output": "...................................                                      [100%]\n35 passed in 0.79s\n",
+      "stderr": "",
+      "timed_out": false
+    }
+  ]
+}

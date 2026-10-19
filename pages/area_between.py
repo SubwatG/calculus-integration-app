@@ -1,4 +1,4 @@
-"""pages/area_between.py — บทเรียน interactive: พื้นที่ระหว่างเส้นโค้ง (Area Between Curves)
+"""pages/area_between.py : บทเรียน interactive: พื้นที่ระหว่างเส้นโค้ง (Area Between Curves)
 
 คำนวณพื้นที่ปิดล้อมระหว่างสองฟังก์ชัน f(x) และ g(x) พร้อมแรเงากราฟและแสดงขั้นตอนวิธีทำ
 """
@@ -42,7 +42,7 @@ with st.container(border=True):
                 font-weight: 700;
                 color: #18181B;
                 display: inline-block;
-            ">🎯 มโนทัศน์หลัก</span>""",
+            ">มโนทัศน์หลัก</span>""",
             unsafe_allow_html=True,
         )
     with col_concept:
@@ -55,12 +55,12 @@ with st.container(border=True):
     st.latex(r"A = \int_a^b [f(x) - g(x)]\,dx \quad \left(\text{โดยที่ } f(x) \ge g(x) \text{ บนช่วง } [a, b]\right)")
 
     st.info(
-        """**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
+        """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
 - **เส้นบน ลบ เส้นล่าง (Top minus Bottom):** ตรวจสอบให้มั่นใจว่า $f(x) \\ge g(x)$ ตลอดช่วง หากใส่สลับกัน ค่าพื้นที่ที่คำนวณได้จะติดลบ
 - **จุดตัดของเส้นโค้ง ($f(x) = g(x)$):** ขอบเขต $a, b$ มักได้จากการแก้หาจุดตัด หากกราฟตัดกันสลับบน-ล่าง ต้องแยกอินทิเกรตทีละช่วง"""
     )
 
-with st.expander("📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
+with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
     col_t1, col_t2 = st.columns(2)
     with col_t1:
         st.markdown("**เงื่อนไขการใช้งาน**")
@@ -73,7 +73,7 @@ with st.expander("📖 รายละเอียดทฤษฎี ข้อ�
         st.markdown("**ข้อควรระวัง**")
         with st.container(border=True):
             for caution in theory["cautions"]:
-                st.markdown(f"⚠️ {caution}")
+                st.markdown(f"- {caution}")
         st.markdown("**การประยุกต์ใช้**")
         for item in theory["applications"]:
             st.markdown(f"- {item}")
@@ -91,13 +91,13 @@ def _set_area_preset(f_val: str, g_val: str, a_val: float, b_val: float) -> None
 
 p_cols = st.columns(4)
 with p_cols[0]:
-    st.button("เส้นตรงกับพาราโบลา ($x$ และ $x^2$)", key="pre_area_1", use_container_width=True, wrap=True, on_click=_set_area_preset, args=("x", "x**2", 0.0, 1.0))
+    st.button("เส้นตรงกับพาราโบลา ($x$ และ $x^2$)", key="pre_area_1", use_container_width=True, on_click=_set_area_preset, args=("x", "x**2", 0.0, 1.0))
 with p_cols[1]:
-    st.button("พาราโบลาคว่ำ-หงาย ($2-x^2$ และ $x^2$)", key="pre_area_2", use_container_width=True, wrap=True, on_click=_set_area_preset, args=("2 - x**2", "x**2", -1.0, 1.0))
+    st.button("พาราโบลาคว่ำ-หงาย ($2-x^2$ และ $x^2$)", key="pre_area_2", use_container_width=True, on_click=_set_area_preset, args=("2 - x**2", "x**2", -1.0, 1.0))
 with p_cols[2]:
-    st.button(r"คลื่นตรีโกณมิติ ($\cos(x)$ และ $x$)", key="pre_area_3", use_container_width=True, wrap=True, on_click=_set_area_preset, args=("cos(x)", "x", 0.0, 1.5))
+    st.button(r"คลื่นตรีโกณมิติ ($\cos(x)$ และ $x$)", key="pre_area_3", use_container_width=True, on_click=_set_area_preset, args=("cos(x)", "x", 0.0, 1.5))
 with p_cols[3]:
-    st.button("รากที่สาม ($x^{1/3}$ และ $x$)", key="pre_area_4", use_container_width=True, wrap=True, on_click=_set_area_preset, args=("x**(1/3)", "x", -1.0, 1.0))
+    st.button("รากที่สาม ($x^{1/3}$ และ $x$)", key="pre_area_4", use_container_width=True, on_click=_set_area_preset, args=("x**(1/3)", "x", -1.0, 1.0))
 
 col_f, col_g = st.columns(2)
 with col_f:
@@ -135,7 +135,7 @@ else:
     if res["ok"]:
         v_name = res.get("variable", "x")
         if v_name != "x":
-            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+            st.info(f"ตรวจพบตัวแปร **${v_name}$**: ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
 
         st.markdown("### ผลลัพธ์")
         render_latex(res["latex"])

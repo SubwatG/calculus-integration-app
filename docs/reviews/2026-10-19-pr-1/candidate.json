@@ -1,0 +1,7 @@
+{
+  "candidate": "/home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929-candidate",
+  "base_head": "fa6761c9e7ee53e55690b8bea5d56e30b04d835e",
+  "allowed_source_changes": [
+    "tests/test_substitution_solver.py"
+  ]
+}

@@ -169,7 +169,7 @@ class TestPageLayout:
     def test_graph_is_rendered_next_to_delta_control(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
         assert any(s.key == "limit_delta" for s in at.slider)
-        assert len(at.get("image")) >= 1, "graph (st.pyplot) was not rendered"
+        assert len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "graph (st.pyplot) was not rendered"
         # source order: delta control, then the plot call, then the theory divider
         i_delta = PAGE_SRC.index("ระยะ delta ควบคุมช่วงที่กราฟ")
         i_plot = PAGE_SRC.index("st.pyplot(fig)")

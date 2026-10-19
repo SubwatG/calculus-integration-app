@@ -1,0 +1,536 @@
+{
+  "head_sha_supplied": "fa6761c9e7ee53e55690b8bea5d56e30b04d835e",
+  "interpreter": "/home/kitti/Documents/GitHub/calculus-integration-app/.venv/bin/python",
+  "pythonpath_removed": true,
+  "sympy_version": "1.14.0",
+  "imported_sources": {
+    "utils.limit_solver": "/home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929-candidate/utils/limit_solver.py",
+    "utils.tangent_solver": "/home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929-candidate/utils/tangent_solver.py",
+    "utils.sympy_solver": "/home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929-candidate/utils/sympy_solver.py",
+    "utils.area_solver": "/home/kitti/.hermes/profiles/teaching-orchestrated/cache/scratch/calculus-pr-1-133929-candidate/utils/area_solver.py"
+  },
+  "checks": [
+    {
+      "name": "compute_limit_near reciprocal",
+      "api": "utils.limit_solver.compute_limit_near",
+      "args": [
+        "1/x",
+        0
+      ],
+      "expected": {
+        "status": "dne",
+        "result": null,
+        "left_limit": "-oo",
+        "right_limit": "oo"
+      },
+      "actual": {
+        "ok": true,
+        "result": null,
+        "latex": "\\lim_{x \\to 0} \\frac{1}{x} \\quad \\text{(does not exist)}",
+        "steps": [
+          "กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชัน $f(x)$ เมื่อค่าตัวแปร $x$ ขยับเข้าใกล้จุด $x = 0$ (โดยที่ $x \\neq 0$)\n\\lim_{x \\to 0} \\left(\\frac{1}{x}\\right)",
+          "ตรวจสอบการแทนค่า: ขณะที่ $x \\to 0$ ตัวเศษลู่เข้าหาค่าคงที่ที่ไม่ใช่ศูนย์ ($c \\neq 0$) แต่ตัวส่วนลู่เข้าสู่ $0$ (รูป $\\frac{c}{0}$) ค่าฟังก์ชันจึงไม่มีขอบเขต ต้องวิเคราะห์เครื่องหมายจากทั้งสองฝั่งของ $x = 0$ (เส้นกำกับแนวดิ่ง / Vertical Asymptote)",
+          "พิจารณาลิมิตทางซ้าย (Left-hand limit, $x \\to 0^-$): ลองแทนค่า $x = -0.1, -0.01, -0.001 \\dots$ เพื่อดูเครื่องหมาย\nค่าของ $f(x)$ ติดลบและมีขนาดเพิ่มขึ้นอย่างไม่มีขอบเขต พุ่งลงสู่ลบอนันต์ ($-\\infty$)\n\\lim_{x \\to 0^-} \\left(\\frac{1}{x}\\right) = -\\infty",
+          "พิจารณาลิมิตทางขวา (Right-hand limit, $x \\to 0^+$): ลองแทนค่า $x = 0.1, 0.01, 0.001 \\dots$ เพื่อดูเครื่องหมาย\nค่าของ $f(x)$ เป็นบวกและมีขนาดเพิ่มขึ้นอย่างไม่มีขอบเขต พุ่งขึ้นสู่อนันต์ ($+\\infty$)\n\\lim_{x \\to 0^+} \\left(\\frac{1}{x}\\right) = \\infty",
+          "สรุปผล: เครื่องหมายของตัวส่วนจากสองฝั่งต่างกัน จึงได้ $\\lim_{x \\to 0^-} f(x) = -\\infty \\neq \\lim_{x \\to 0^+} f(x) = \\infty$ เส้นกราฟแยกออกจากกันคนละทิศทาง จึงสรุปว่าไม่มีลิมิต\n\\lim_{x \\to 0} \\left(\\frac{1}{x}\\right) \\quad \\text{(does not exist)}"
+        ],
+        "expr": "1/x",
+        "error": null,
+        "status": "dne",
+        "left_limit": "-oo",
+        "right_limit": "oo",
+        "is_oscillating": false,
+        "a_sp": "0",
+        "a_str": "0",
+        "a_dir_left": "0^-",
+        "a_dir_right": "0^+",
+        "is_infinite": false,
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "compute_limit_near oscillation",
+      "api": "utils.limit_solver.compute_limit_near",
+      "args": [
+        "sin(1/x)",
+        0
+      ],
+      "expected": {
+        "status": "dne",
+        "result": null,
+        "derivation": "Neither one-sided limit exists; equal accumulation bounds do not imply unequal limits."
+      },
+      "actual": {
+        "ok": true,
+        "result": null,
+        "latex": "\\lim_{x \\to 0} \\sin{\\left(\\frac{1}{x} \\right)} \\quad \\text{(does not exist)}",
+        "steps": [
+          "กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชัน $f(x)$ เมื่อค่าตัวแปร $x$ ขยับเข้าใกล้จุด $x = 0$ (โดยที่ $x \\neq 0$)\n\\lim_{x \\to 0} \\left(\\sin{\\left(\\frac{1}{x} \\right)}\\right)",
+          "ข้อสังเกตเชิงมโนทัศน์: ฟังก์ชันมีการแกว่งกวัดไม่สิ้นสุด (Oscillating Singularity) ในช่วง $\\langle -1, 1\\rangle$ เมื่อเข้าใกล้จุด $x = 0$ ค่าจึงไม่ลู่เข้าหาจำนวนจริงใดจำนวนหนึ่ง",
+          "สรุปผล (ไม่มีลิมิตเนื่องจากการแกว่งกวัด): \\lim_{x \\to 0} \\left(\\sin{\\left(\\frac{1}{x} \\right)}\\right) \\quad \\text{(does not exist)}"
+        ],
+        "expr": "sin(1/x)",
+        "error": null,
+        "status": "dne",
+        "left_limit": "AccumBounds(-1, 1)",
+        "right_limit": "AccumBounds(-1, 1)",
+        "is_oscillating": true,
+        "a_sp": "0",
+        "a_str": "0",
+        "a_dir_left": "0^-",
+        "a_dir_right": "0^+",
+        "is_infinite": false,
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "compute_limit_near removable trig",
+      "api": "utils.limit_solver.compute_limit_near",
+      "args": [
+        "sin(x)/x",
+        0
+      ],
+      "expected": {
+        "status": "finite",
+        "result": "1"
+      },
+      "actual": {
+        "ok": true,
+        "result": 1.0,
+        "latex": "\\lim_{x \\to 0} \\frac{\\sin{\\left(x \\right)}}{x} = 1",
+        "steps": [
+          "กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชัน $f(x)$ เมื่อค่าตัวแปร $x$ ขยับเข้าใกล้จุด $x = 0$ (โดยที่ $x \\neq 0$)\n\\lim_{x \\to 0} \\left(\\frac{\\sin{\\left(x \\right)}}{x}\\right)",
+          "ตรวจสอบการแทนค่าเบื้องต้น: แทน $x = 0$ ตรง ๆ ได้ $\\frac{0}{0}$ (รูปแบบยังไม่กำหนด) แต่โจทย์นี้อยู่ในรูปของลิมิตตรีโกณมิติพื้นฐานที่ทราบค่าได้จากทฤษฎีบท",
+          "ทฤษฎีบทลิมิตตรีโกณมิติพื้นฐาน (Fundamental Trigonometric Limit): $\\lim_{x \\to 0} \\frac{\\sin(x)}{x} = 1$ (พิสูจน์ได้ด้วยทฤษฎีบทบีบ / Squeeze Theorem) และขณะที่ $x \\to 0$ จะได้ $x \\to 0$",
+          "จัดรูปโจทย์ให้ตรงกับทฤษฎีบท: $\\frac{\\sin{\\left(x \\right)}}{x} = 1 \\cdot \\frac{\\sin(x)}{x}$",
+          "สรุปผลค่าลิมิต: \\lim_{x \\to 0} \\left(\\frac{\\sin{\\left(x \\right)}}{x}\\right) = 1 \\cdot 1 = 1"
+        ],
+        "expr": "sin(x)/x",
+        "error": null,
+        "status": "finite",
+        "left_limit": "1",
+        "right_limit": "1",
+        "is_oscillating": false,
+        "a_sp": "0",
+        "a_str": "0",
+        "a_dir_left": "0^-",
+        "a_dir_right": "0^+",
+        "is_infinite": false,
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "compute_limit reciprocal",
+      "api": "utils.sympy_solver.compute_limit",
+      "args": [
+        "1/x",
+        0
+      ],
+      "expected": {
+        "status": "dne",
+        "result": null,
+        "left_limit": "-oo",
+        "right_limit": "oo"
+      },
+      "actual": {
+        "ok": true,
+        "result": null,
+        "latex": "\\lim_{x \\to 0} \\left(\\frac{1}{x}\\right) \\quad \\text{(does not exist)}",
+        "steps": [
+          "กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชันเมื่อตัวแปร $x$ ขยับเข้าใกล้จุด $x = 0$ (โดยที่ $x \\neq 0$)\n\\lim_{x \\to 0} \\left(\\frac{1}{x}\\right)",
+          "พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ $x \\to 0^-$ หมายถึงให้ค่า $x$ ขยับเข้าใกล้ 0 จากฝั่งซ้าย ($x < 0$ เช่น $x = -0.1, -0.01, -0.001 \\dots$)\n\\lim_{x \\to 0^-} \\left(\\frac{1}{x}\\right) = -\\infty",
+          "พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ $x \\to 0^+$ หมายถึงให้ค่า $x$ ขยับเข้าใกล้ 0 จากฝั่งขวา ($x > 0$ เช่น $x = 0.1, 0.01, 0.001 \\dots$)\n\\lim_{x \\to 0^+} \\left(\\frac{1}{x}\\right) = \\infty",
+          "สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): เส้นกราฟจากฝั่งซ้ายและฝั่งขวาแยกออกจากกันและไม่มาบรรจบกันที่จุดเดียวกัน\n\\lim_{x \\to 0^-} f(x) = -\\infty \\neq \\lim_{x \\to 0^+} f(x) = \\infty\n\\lim_{x \\to 0} \\left(\\frac{1}{x}\\right) \\quad \\text{(does not exist)}"
+        ],
+        "error": null,
+        "status": "dne",
+        "left_limit": "-oo",
+        "right_limit": "oo",
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "compute_limit oscillation",
+      "api": "utils.sympy_solver.compute_limit",
+      "args": [
+        "sin(1/x)",
+        0
+      ],
+      "expected": {
+        "status": "dne",
+        "result": null,
+        "derivation": "Neither one-sided limit exists; equal accumulation bounds do not imply unequal limits."
+      },
+      "actual": {
+        "ok": true,
+        "result": null,
+        "latex": "\\lim_{x \\to 0} \\left(\\sin{\\left(\\frac{1}{x} \\right)}\\right) \\quad \\text{(does not exist)}",
+        "steps": [
+          "กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชันเมื่อตัวแปร $x$ ขยับเข้าใกล้จุด $x = 0$ (โดยที่ $x \\neq 0$)\n\\lim_{x \\to 0} \\left(\\sin{\\left(\\frac{1}{x} \\right)}\\right)",
+          "พิจารณาการแกว่งของฟังก์ชัน: ค่าในแต่ละด้านไม่เข้าใกล้จำนวนเดียว แต่แกว่งระหว่างขอบเขตสะสม \\left\\langle -1, 1\\right\\rangle; ลิมิตทางเดียวจึงไม่มีอยู่ ไม่ใช่ลิมิตสองด้านที่ไม่เท่ากัน\n\\limsup=1 , \\quad \\liminf=-1\n\\lim_{x \\to 0} \\left(\\sin{\\left(\\frac{1}{x} \\right)}\\right) \\quad \\text{(does not exist)}"
+        ],
+        "error": null,
+        "status": "dne",
+        "left_limit": "AccumBounds(-1, 1)",
+        "right_limit": "AccumBounds(-1, 1)",
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "compute_limit removable trig",
+      "api": "utils.sympy_solver.compute_limit",
+      "args": [
+        "sin(x)/x",
+        0
+      ],
+      "expected": {
+        "status": "finite",
+        "result": "1"
+      },
+      "actual": {
+        "ok": true,
+        "result": "1",
+        "latex": "\\lim_{x \\to 0} \\left(\\frac{\\sin{\\left(x \\right)}}{x}\\right) = 1",
+        "steps": [
+          "กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชันเมื่อตัวแปร $x$ ขยับเข้าใกล้จุด $x = 0$ (โดยที่ $x \\neq 0$)\n\\lim_{x \\to 0} \\left(\\frac{\\sin{\\left(x \\right)}}{x}\\right)",
+          "พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ $x \\to 0^-$ หมายถึงให้ค่า $x$ ค่อย ๆ ขยับเข้าใกล้ 0 จากฝั่งซ้ายของเส้นจำนวน (ค่าน้อยกว่า 0 เสมอ หรือ $x < 0$ เช่น $x = -0.1, -0.01, -0.001 \\dots$)\nเมื่อ $x$ วิ่งเฉียดเข้าหา 0 ทางซ้าย ค่าของฟังก์ชันมีแนวโน้มลู่เข้าหา 1\n\\lim_{x \\to 0^-} \\left(\\frac{\\sin{\\left(x \\right)}}{x}\\right) = 1",
+          "พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ $x \\to 0^+$ หมายถึงให้ค่า $x$ ค่อย ๆ ขยับเข้าใกล้ 0 จากฝั่งขวาบนเส้นจำนวน (ค่ามากกว่า 0 เสมอ หรือ $x > 0$ เช่น $x = 0.1, 0.01, 0.001 \\dots$)\nเมื่อ $x$ วิ่งเฉียดเข้าหา 0 ทางขวา ค่าของฟังก์ชันมีแนวโน้มลู่เข้าหา 1\n\\lim_{x \\to 0^+} \\left(\\frac{\\sin{\\left(x \\right)}}{x}\\right) = 1",
+          "สรุปค่าลิมิตสองด้าน: กฎพื้นฐานคือ ลิมิตสองด้านจะมีค่าได้ก็ต่อเมื่อ ลิมิตซ้ายและขวาต้องมุ่งสู่จำนวนจริงเดียวกัน\nเนื่องจากเส้นกราฟจากทั้งสองฝั่งวิ่งมาบรรจบกันที่ระดับความสูงเดียวกัน ($1$)\n\\lim_{x \\to 0^-} f(x) = \\lim_{x \\to 0^+} f(x) = 1 \\implies \\lim_{x \\to 0} \\left(\\frac{\\sin{\\left(x \\right)}}{x}\\right) = 1"
+        ],
+        "error": null,
+        "status": "finite",
+        "left_limit": "1",
+        "right_limit": "1",
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "chain rule",
+      "api": "utils.sympy_solver.differentiate",
+      "args": [
+        "sin(x**2)"
+      ],
+      "expected": {
+        "result": "2*x*cos(x**2)",
+        "inner": "u=x**2",
+        "inner_derivative": "2*x",
+        "outer_derivative": "cos(u)"
+      },
+      "actual": {
+        "ok": true,
+        "result": "2*x*cos(x**2)",
+        "latex": "\\frac{d}{dx}\\left[\\sin{\\left(x^{2} \\right)}\\right] = 2 x \\cos{\\left(x^{2} \\right)}",
+        "steps": [
+          "กำหนดฟังก์ชันที่ต้องการหาอนุพันธ์: คำนวณอัตราการเปลี่ยนแปลงของฟังก์ชันเทียบกับตัวแปร $x$:\nf(x) = \\sin{\\left(x^{2} \\right)}",
+          "ใช้กฎลูกโซ่ (Chain Rule): สำหรับฟังก์ชันคอมโพสิต $f(g(x))$:\n\\frac{d}{dx}[f(g(x))] = f'(g(x)) \\cdot g'(x)",
+          "กำหนดฟังก์ชันก้อนใน: u = g(x) = x^{2} \\implies \\frac{du}{dx} = 2 x",
+          "หาอนุพันธ์ของฟังก์ชันภายนอก: \\frac{df}{du} = \\cos{\\left(u \\right)} \\implies f'(g(x)) = \\cos{\\left(x^{2} \\right)}",
+          "คูณตามกฎลูกโซ่และจัดรูป: \\frac{d}{dx}\\left[\\sin{\\left(x^{2} \\right)}\\right] = f'(g(x)) \\cdot \\frac{du}{dx} = \\left(\\cos{\\left(x^{2} \\right)}\\right) \\cdot \\left(2 x\\right) = 2 x \\cos{\\left(x^{2} \\right)}"
+        ],
+        "error": null,
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "composite tangent derivation",
+      "api": "utils.tangent_solver.compute_tangent",
+      "args": [
+        "sin(x**2)",
+        1
+      ],
+      "expected": {
+        "result": "2*cos(1)",
+        "derivation": "d/dx sin(x**2)=cos(x**2)*2*x (Chain Rule)"
+      },
+      "actual": {
+        "ok": true,
+        "result": 1.0806046117362795,
+        "latex": "y = \\left(2 x - 2\\right) \\cos{\\left(1 \\right)} + \\sin{\\left(1 \\right)}",
+        "steps": [
+          "กำหนดโจทย์และเป้าหมาย (Problem Setup & Goal): กำหนดฟังก์ชันและจุดที่พิจารณา:\nf(x) = \\sin{\\left(x^{2} \\right)}, \\quad a = 1\nเป้าหมาย: หาสมการเส้นตรงสัมผัส $y - f(a) = f'(a)(x - a)$",
+          "คำนวณพิกัด y ของจุดสัมผัส (Point of Tangency): แทนค่า $x = 1$ ในฟังก์ชัน:\nf(1) = \\sin{\\left(1 \\right)}\nได้จุดสัมผัส $(a, f(a)) = (1, \\sin{\\left(1 \\right)})$",
+          "หาอนุพันธ์ f'(x) เพื่อเป็นสูตรความชัน (Derivative Function): ใช้กฎลูกโซ่ โดยกำหนด $u = x^{2}$ และ $\\frac{du}{dx} = 2 x$; อนุพันธ์ฟังก์ชันชั้นนอกคือ $\\cos\\left(x^{2}\\right)$; คูณอนุพันธ์ชั้นนอกกับอนุพันธ์ชั้นใน:\n\\frac{d}{dx}\\left[\\sin{\\left(x^{2} \\right)}\\right] = \\cos\\left(x^{2}\\right) \\cdot 2 x\nf'(x) = \\frac{d}{dx}\\left[\\sin{\\left(x^{2} \\right)}\\right] = 2 x \\cos{\\left(x^{2} \\right)}",
+          "แทนค่าจุดสัมผัสหาความชัน m = f'(a) (Evaluate Slope): แทนค่า $x = 1$ ในสูตรอนุพันธ์:\nm = f'(1) = 2 \\cos{\\left(1 \\right)}\nความหมายเรขาคณิต: ความชัน $m = 1.0806 > 0$ กราฟมีแนวโน้มเพิ่มขึ้น (Increasing)",
+          "แทนค่าในสมการรูปจุดและความชัน (Point-Slope Form): แทนจุด $(1, \\sin{\\left(1 \\right)})$ และความชัน $m = 2 \\cos{\\left(1 \\right)}$ ลงในสูตร $y - f(a) = m(x - a)$:\ny - (\\sin{\\left(1 \\right)}) = 2 \\cos{\\left(1 \\right)}\\left(x - 1\\right)",
+          "จัดรูปสมการความชัน-จุดตัดแกน (Slope-Intercept Form: y = mx + c): กระจายพจน์และย้ายข้างสมการ:\ny - (\\sin{\\left(1 \\right)}) = 2 \\cos{\\left(1 \\right)}\\left(x - 1\\right)\ny - (\\sin{\\left(1 \\right)}) = 2 \\cos{\\left(1 \\right)}x - (2 \\cos{\\left(1 \\right)})\ny = 2 \\cos{\\left(1 \\right)}x - (2 \\cos{\\left(1 \\right)}) + (\\sin{\\left(1 \\right)})\ny = \\left(2 x - 2\\right) \\cos{\\left(1 \\right)} + \\sin{\\left(1 \\right)}\nสมการเส้นสัมผัสคือ $y = \\left(2 x - 2\\right) \\cos{\\left(1 \\right)} + \\sin{\\left(1 \\right)}$ (จุดตัดแกน $y$ คือ $(0, - 2 \\cos{\\left(1 \\right)} + \\sin{\\left(1 \\right)})$)",
+          "มโนทัศน์เพิ่มเติมและเส้นแนวฉาก (Insights & Normal Line): 1. การประมาณค่าเชิงเส้น: $L(x) = \\left(2 x - 2\\right) \\cos{\\left(1 \\right)} + \\sin{\\left(1 \\right)}$ เมื่อ $x \\approx 1$\n2. เส้นแนวฉาก (Normal Line): ความชันตั้งฉาก $m_{\\perp} = -\\frac{1}{m} = - \\frac{1}{2 \\cos{\\left(1 \\right)}}$\ny - (\\sin{\\left(1 \\right)}) = - \\frac{1}{2 \\cos{\\left(1 \\right)}}\\left(x - 1\\right) \\implies y = \\frac{- x + \\sin{\\left(2 \\right)} + 1}{2 \\cos{\\left(1 \\right)}}"
+        ],
+        "expr": "sin(x**2)",
+        "error": null,
+        "status": "finite",
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "corner tangent",
+      "api": "utils.tangent_solver.compute_tangent",
+      "args": [
+        "Abs(x)",
+        0
+      ],
+      "expected": {
+        "status": "non_differentiable",
+        "result": null,
+        "left_derivative": "-1",
+        "right_derivative": "1"
+      },
+      "actual": {
+        "ok": true,
+        "result": null,
+        "latex": "\\text{(does not exist)}",
+        "steps": [
+          "กำหนดโจทย์และจุดที่พิจารณา: $f(x) = \\left|{x}\\right|, \\quad a = 0$",
+          "คำนวณพิกัดจุดบนกราฟ: $f(0) = 0$ ได้จุด $(a, f(a)) = (0, 0)$",
+          "เงื่อนไขอนุพันธ์: ฟังก์ชันหาอนุพันธ์ได้ ก็ต่อเมื่อ อนุพันธ์ทางซ้ายเท่ากับอนุพันธ์ทางขวา ($f'_-(0) = f'_+(0)$)",
+          "คำนวณอนุพันธ์ทางซ้าย (Left-Hand Derivative as h -> 0^-): f'_-(0) = \\lim_{h \\to 0^-} \\frac{f(0+h) - f(0)}{h} = -1",
+          "คำนวณอนุพันธ์ทางขวา (Right-Hand Derivative as h -> 0^+): f'_+(0) = \\lim_{h \\to 0^+} \\frac{f(0+h) - f(0)}{h} = 1",
+          "สรุปผลการวิเคราะห์: เนื่องจาก $f'_-(0) = -1 \\neq 1 = f'_+(0)$\nกราฟมีลักษณะเป็นจุดมุมหัก (Corner Point) ฟังก์ชันจึงหาอนุพันธ์ไม่ได้และไม่มีเส้นสัมผัส"
+        ],
+        "expr": "Abs(x)",
+        "error": null,
+        "status": "non_differentiable",
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "real cube root tangent",
+      "api": "utils.tangent_solver.compute_tangent",
+      "args": [
+        "sign(x)*Abs(x)**(1/3)",
+        0
+      ],
+      "expected": {
+        "status": "vertical",
+        "result": null,
+        "latex": "x = 0",
+        "both_difference_quotient_limits": "oo"
+      },
+      "actual": {
+        "ok": true,
+        "result": null,
+        "latex": "x = 0",
+        "steps": [
+          "กำหนดโจทย์และจุดที่พิจารณา: $f(x) = \\sqrt[3]{\\left|{x}\\right|} \\operatorname{sign}{\\left(x \\right)}, \\quad a = 0$",
+          "คำนวณพิกัดจุดสัมผัส: $f(0) = 0$ ได้จุด $(a, f(a)) = (0, 0)$",
+          "พิจารณาลิมิตของอัตราส่วนผลต่าง: \\lim_{h \\to 0} \\frac{f(0+h) - f(0)}{h} = \\infty",
+          "วิเคราะห์ความชัน: ความชันลู่สู่อนันต์ ($\\infty$) เส้นสัมผัสตั้งฉากกับแกน $x$ (แนวดิ่ง)",
+          "สรุปสมการเส้นสัมผัสแนวดิ่ง (Vertical Tangent Line): เส้นสัมผัสแนวดิ่งผ่านจุด $(0, 0)$ มีสมการคือ $x = 0$"
+        ],
+        "expr": "Abs(x)**(1/3)*sign(x)",
+        "error": null,
+        "status": "vertical",
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "area ordering x",
+      "api": "utils.area_solver.compute_area_between",
+      "args": [
+        "x",
+        "x**2",
+        0,
+        1
+      ],
+      "expected": {
+        "area": "1/6",
+        "crossings": []
+      },
+      "actual": {
+        "ok": true,
+        "result": 0.16666666666666666,
+        "latex": "A = \\int_{0}^{1} |x \\left(1 - x\\right)| \\, dx = \\frac{1}{6}",
+        "steps": [
+          "กำหนดฟังก์ชัน: $f(x) = x, \\quad g(x) = x^{2}$ บนช่วง $[0, 1]$",
+          "เป้าหมาย / กฎที่ใช้ (Goal / Rule): ตั้งสูตรอินทิกรัลพื้นที่เรขาคณิต (Geometric Area) $A = \\int_{0}^{1} |f(x) - g(x)| \\, dx$ โดยใช้ค่าสัมบูรณ์ (Absolute value) เพื่อไม่ให้พื้นที่บริเวณที่เส้นโค้งสลับบน-ล่างหักล้างกัน",
+          "พีชคณิตระหว่างทาง (Intermediate algebra): หาผลต่างของฟังก์ชัน $f(x) - g(x) = x \\left(1 - x\\right)$",
+          "หาจุดตัด (Intersections): แก้สมการ $f(x) - g(x) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $(0, 1)$ โดยบนช่วงนี้ $f(x) \\geq g(x)$ ดังนั้น $|f(x) - g(x)| = f(x) - g(x)$",
+          "คำนวณปริพันธ์บนช่วง: $A = \\int_{0}^{1} |f(x) - g(x)| \\, dx = \\frac{1}{6}$",
+          "เงื่อนไขโดเมน (Domain restriction): ฟังก์ชันทั้งสองมีความต่อเนื่องบนช่วงปิด $[0, 1]$",
+          "ผลลัพธ์แม่นตรง (Exact result): คำนวณพื้นที่เรขาคณิตรวม: $A = \\frac{1}{6} \\approx 0.166667$"
+        ],
+        "expr": "x*(1 - x)",
+        "f_expr": "x",
+        "g_expr": "x**2",
+        "crossings": [],
+        "error": null,
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "area ordering x**2",
+      "api": "utils.area_solver.compute_area_between",
+      "args": [
+        "x**2",
+        "x",
+        0,
+        1
+      ],
+      "expected": {
+        "area": "1/6",
+        "crossings": []
+      },
+      "actual": {
+        "ok": true,
+        "result": 0.16666666666666666,
+        "latex": "A = \\int_{0}^{1} |x \\left(x - 1\\right)| \\, dx = \\frac{1}{6}",
+        "steps": [
+          "กำหนดฟังก์ชัน: $f(x) = x^{2}, \\quad g(x) = x$ บนช่วง $[0, 1]$",
+          "เป้าหมาย / กฎที่ใช้ (Goal / Rule): ตั้งสูตรอินทิกรัลพื้นที่เรขาคณิต (Geometric Area) $A = \\int_{0}^{1} |f(x) - g(x)| \\, dx$ โดยใช้ค่าสัมบูรณ์ (Absolute value) เพื่อไม่ให้พื้นที่บริเวณที่เส้นโค้งสลับบน-ล่างหักล้างกัน",
+          "พีชคณิตระหว่างทาง (Intermediate algebra): หาผลต่างของฟังก์ชัน $f(x) - g(x) = x \\left(x - 1\\right)$",
+          "หาจุดตัด (Intersections): แก้สมการ $f(x) - g(x) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $(0, 1)$ โดยบนช่วงนี้ $g(x) \\geq f(x)$ (เส้นโค้ง $g$ อยู่เหนือ $f$) ดังนั้นจึงสลับเครื่องหมายค่าสัมบูรณ์: $|f(x) - g(x)| = g(x) - f(x) = - x \\left(x - 1\\right)$",
+          "คำนวณปริพันธ์บนช่วง: $A = \\int_{0}^{1} |f(x) - g(x)| \\, dx = \\frac{1}{6}$",
+          "เงื่อนไขโดเมน (Domain restriction): ฟังก์ชันทั้งสองมีความต่อเนื่องบนช่วงปิด $[0, 1]$",
+          "ผลลัพธ์แม่นตรง (Exact result): คำนวณพื้นที่เรขาคณิตรวม: $A = \\frac{1}{6} \\approx 0.166667$"
+        ],
+        "expr": "x*(x - 1)",
+        "f_expr": "x**2",
+        "g_expr": "x",
+        "crossings": [],
+        "error": null,
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "cubic split area",
+      "api": "utils.area_solver.compute_area_between",
+      "args": [
+        "x**3-6*x**2+8*x",
+        "0",
+        -1,
+        5
+      ],
+      "expected": {
+        "area": "41/2",
+        "crossings": [
+          0,
+          2,
+          4
+        ],
+        "piece_areas": [
+          "25/4",
+          "4",
+          "4",
+          "25/4"
+        ]
+      },
+      "actual": {
+        "ok": true,
+        "result": 20.5,
+        "latex": "A = \\int_{-1}^{5} |x \\left(x^{2} - 6 x + 8\\right)| \\, dx = \\frac{41}{2}",
+        "steps": [
+          "กำหนดฟังก์ชัน: $f(x) = x^{3} - 6 x^{2} + 8 x, \\quad g(x) = 0$ บนช่วง $[-1, 5]$",
+          "เป้าหมาย / กฎที่ใช้ (Goal / Rule): ตั้งสูตรอินทิกรัลพื้นที่เรขาคณิต (Geometric Area) $A = \\int_{-1}^{5} |f(x) - g(x)| \\, dx$ โดยใช้ค่าสัมบูรณ์ (Absolute value) เพื่อไม่ให้พื้นที่บริเวณที่เส้นโค้งสลับบน-ล่างหักล้างกัน",
+          "พีชคณิตระหว่างทาง (Intermediate algebra): หาผลต่างของฟังก์ชัน $f(x) - g(x) = x \\left(x^{2} - 6 x + 8\\right)$",
+          "หาจุดตัด (Intersections): แก้สมการ $f(x) - g(x) = 0$ พบจุดตัดภายในช่วงที่ $x = 0$, $x = 2$, $x = 4$ จึงแบ่งการคำนวณออกเป็น 4 ช่วงย่อยเพื่อปลดเครื่องหมายค่าสัมบูรณ์",
+          "ช่วงย่อยที่ 1 $[-1, 0]$ ($g(x) \\geq f(x)$ (สลับเครื่องหมาย)): $A_1 = \\left| \\int_{-1}^{0} \\left(x \\left(x^{2} - 6 x + 8\\right)\\right) \\, dx \\right| = \\frac{25}{4}$",
+          "ช่วงย่อยที่ 2 $[0, 2]$ ($f(x) \\geq g(x)$): $A_2 = \\left| \\int_{0}^{2} \\left(x \\left(x^{2} - 6 x + 8\\right)\\right) \\, dx \\right| = 4$",
+          "ช่วงย่อยที่ 3 $[2, 4]$ ($g(x) \\geq f(x)$ (สลับเครื่องหมาย)): $A_3 = \\left| \\int_{2}^{4} \\left(x \\left(x^{2} - 6 x + 8\\right)\\right) \\, dx \\right| = 4$",
+          "ช่วงย่อยที่ 4 $[4, 5]$ ($f(x) \\geq g(x)$): $A_4 = \\left| \\int_{4}^{5} \\left(x \\left(x^{2} - 6 x + 8\\right)\\right) \\, dx \\right| = \\frac{25}{4}$",
+          "รวมพื้นที่ทุกช่วงย่อย: $A = A_1 + A_2 + A_3 + A_4 = \\frac{25}{4} + 4 + 4 + \\frac{25}{4} = \\frac{41}{2}$",
+          "เงื่อนไขโดเมน (Domain restriction): ฟังก์ชันทั้งสองมีความต่อเนื่องบนช่วงปิด $[-1, 5]$",
+          "ผลลัพธ์แม่นตรง (Exact result): คำนวณพื้นที่เรขาคณิตรวม: $A = \\frac{41}{2} \\approx 20.5$"
+        ],
+        "expr": "x*(x**2 - 6*x + 8)",
+        "f_expr": "x**3 - 6*x**2 + 8*x",
+        "g_expr": "0",
+        "crossings": [
+          0.0,
+          2.0,
+          4.0
+        ],
+        "error": null,
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "identical curves",
+      "api": "utils.area_solver.compute_area_between",
+      "args": [
+        "x**2",
+        "x**2",
+        0,
+        1
+      ],
+      "expected": {
+        "area": "0"
+      },
+      "actual": {
+        "ok": true,
+        "result": 0.0,
+        "latex": "A = \\int_{0}^{1} |0| \\, dx = 0",
+        "steps": [
+          "กำหนดฟังก์ชัน: $f(x) = x^{2}, \\quad g(x) = x^{2}$ บนช่วง $[0, 1]$ ",
+          "เส้นโค้งทั้งสองทับกันพอดีทั่วทั้งช่วง: $f(x) - g(x) = 0$",
+          "พื้นที่ระหว่างเส้นโค้ง: $A = 0$"
+        ],
+        "expr": "0",
+        "f_expr": "x**2",
+        "g_expr": "x**2",
+        "crossings": [],
+        "error": null,
+        "variable": "x"
+      },
+      "check_passed": true
+    },
+    {
+      "name": "finite nonpolynomial domain boundary",
+      "api": "utils.area_solver.compute_area_between",
+      "args": [
+        "sqrt(x)",
+        "0",
+        0,
+        1
+      ],
+      "expected": {
+        "area": "2/3",
+        "domain": "continuous on [0,1], not real for x<0"
+      },
+      "actual": {
+        "ok": true,
+        "result": 0.6666666666666666,
+        "latex": "A = \\int_{0}^{1} |\\sqrt{x}| \\, dx = \\frac{2}{3}",
+        "steps": [
+          "กำหนดฟังก์ชัน: $f(x) = \\sqrt{x}, \\quad g(x) = 0$ บนช่วง $[0, 1]$",
+          "เป้าหมาย / กฎที่ใช้ (Goal / Rule): ตั้งสูตรอินทิกรัลพื้นที่เรขาคณิต (Geometric Area) $A = \\int_{0}^{1} |f(x) - g(x)| \\, dx$ โดยใช้ค่าสัมบูรณ์ (Absolute value) เพื่อไม่ให้พื้นที่บริเวณที่เส้นโค้งสลับบน-ล่างหักล้างกัน",
+          "พีชคณิตระหว่างทาง (Intermediate algebra): หาผลต่างของฟังก์ชัน $f(x) - g(x) = \\sqrt{x}$",
+          "หาจุดตัด (Intersections): แก้สมการ $f(x) - g(x) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $(0, 1)$ โดยบนช่วงนี้ $f(x) \\geq g(x)$ ดังนั้น $|f(x) - g(x)| = f(x) - g(x)$",
+          "คำนวณปริพันธ์บนช่วง: $A = \\int_{0}^{1} |f(x) - g(x)| \\, dx = \\frac{2}{3}$",
+          "เงื่อนไขโดเมน (Domain restriction): ฟังก์ชันทั้งสองมีความต่อเนื่องบนช่วงปิด $[0, 1]$",
+          "ผลลัพธ์แม่นตรง (Exact result): คำนวณพื้นที่เรขาคณิตรวม: $A = \\frac{2}{3} \\approx 0.666667$"
+        ],
+        "expr": "sqrt(x)",
+        "f_expr": "sqrt(x)",
+        "g_expr": "0",
+        "crossings": [],
+        "error": null,
+        "variable": "x"
+      },
+      "check_passed": true
+    }
+  ],
+  "check_count": 15,
+  "derivation_checks": [
+    {
+      "name": "oscillation must not assert unequal identical accumulation bounds",
+      "check_passed": true
+    },
+    {
+      "name": "composite tangent must explain inner derivative through chain rule",
+      "check_passed": true
+    }
+  ],
+  "failed_checks": []
+}

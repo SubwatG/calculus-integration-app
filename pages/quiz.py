@@ -108,16 +108,12 @@ st.markdown(
         font-weight: 700 !important;
         box-shadow: 3px 3px 0px #18181B !important;
     }
-    /* Question Bauhaus Card with solid background and tactile frame */
+    /* Question Bauhaus Card typography and inner spacing */
     div.st-key-quiz_question_box,
     div[data-testid="stVerticalBlock"].st-key-quiz_question_box {
-        background-color: #FFFFFF !important;
-        border: 2.5px solid #18181B !important;
-        border-radius: 16px !important;
-        box-shadow: 4px 4px 0px #18181B !important;
-        padding: 1.25rem 1.5rem !important;
-        margin-top: 8px !important;
-        margin-bottom: 16px !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
     }
     div.st-key-quiz_question_box p,
     div[data-testid="stVerticalBlock"].st-key-quiz_question_box p {
@@ -131,27 +127,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำแนะนำและสะสมคะแนน")
-
-st.markdown("### เลือกชุดข้อสอบมโนทัศน์")
-selected_topic_name = st.radio(
-    "คลิกเลือกชุดข้อสอบที่ต้องการทำ:",
-    list(QUIZ_OPTIONS.keys()),
-    index=0,
-    horizontal=True,
-    key="quiz_topic_selector_main",
-)
-QUIZ_TOPIC = QUIZ_OPTIONS[selected_topic_name]
-
-col_topic_info, col_topic_btn = st.columns([3, 1])
-with col_topic_info:
-    st.caption("🎲 ระบบสุ่มลำดับตัวเลือก (A, B, C, D) และสุ่มลำดับโจทย์แบบไดนามิกทุกรอบ เพื่อฝึกมโนทัศน์แท้จริง")
-with col_topic_btn:
-    if st.button("🎲 สุ่มรอบใหม่", key="btn_reshuffle_now", use_container_width=True):
-        init_quiz_session(QUIZ_TOPIC)
-        st.rerun()
-
 
 def get_quiz_questions(topic: str) -> list[dict[str, Any]]:
     if topic == "all":
@@ -179,6 +154,8 @@ def prepare_shuffled_questions(
     return prepared
 
 
+if "quiz_round" not in st.session_state:
+    st.session_state.quiz_round = 0
 if "quiz_q_index" not in st.session_state:
     st.session_state.quiz_q_index = 0
 if "quiz_score" not in st.session_state:
@@ -221,8 +198,29 @@ def init_quiz_session(topic: str) -> None:
     st.session_state.quiz_questions = prepare_shuffled_questions(raw, shuffle_q_order=True)
     st.session_state.quiz_active_topic = topic
     st.session_state.quiz_total_count = len(st.session_state.quiz_questions)
+    st.session_state.quiz_round = st.session_state.get("quiz_round", 0) + 1
     reset_quiz()
 
+
+render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำแนะนำและสะสมคะแนน")
+
+st.markdown("### เลือกชุดข้อสอบมโนทัศน์")
+selected_topic_name = st.radio(
+    "คลิกเลือกชุดข้อสอบที่ต้องการทำ:",
+    list(QUIZ_OPTIONS.keys()),
+    index=0,
+    horizontal=True,
+    key="quiz_topic_selector_main",
+)
+QUIZ_TOPIC = QUIZ_OPTIONS[selected_topic_name]
+
+col_topic_info, col_topic_btn = st.columns([3, 1])
+with col_topic_info:
+    st.caption("ระบบสุ่มลำดับตัวเลือก (A, B, C, D) และสุ่มลำดับโจทย์แบบไดนามิกทุกรอบ เพื่อฝึกมโนทัศน์แท้จริง")
+with col_topic_btn:
+    if st.button("สุ่มรอบใหม่", icon=":material/casino:", key="btn_reshuffle_now", use_container_width=True):
+        init_quiz_session(QUIZ_TOPIC)
+        st.rerun()
 
 if (
     "quiz_questions" not in st.session_state
@@ -249,7 +247,29 @@ if st.session_state.quiz_done:
     st.progress(final_score / total_q if total_q > 0 else 0)
 
     if percentage >= 80:
-        st.success("ผลการประเมิน: ระดับดีมาก มีความเข้าใจมโนทัศน์แคลคูลัสอย่างแม่นยำ")
+        st.balloons()
+        st.markdown(
+            f"""
+            <div class="celebration-bounce-card" style="
+                background: linear-gradient(135deg, #FEF08A 0%, #FBCFE8 50%, #BAE6FD 100%);
+                border: 3px solid #18181B;
+                border-radius: 16px;
+                padding: 20px 24px;
+                box-shadow: 4.5px 4.5px 0px #18181B;
+                text-align: center;
+                margin-top: 12px;
+                margin-bottom: 20px;
+            ">
+                <h3 style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 1.45rem; font-weight: 700; color: #18181B; margin: 0 0 6px 0;">
+                    สุดยอดมาก! ผ่านการทดสอบระดับยอดเยี่ยม
+                </h3>
+                <p style="font-family: 'Mali', sans-serif; font-size: 1.05rem; font-weight: 600; color: #18181B; margin: 0;">
+                    มีความเข้าใจมโนทัศน์แคลคูลัสอย่างแม่นยำ พร้อมลุยบทเรียนต่อไปได้เลย!
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
     elif percentage >= 50:
         st.info("ผลการประเมิน: ระดับผ่านเกณฑ์ มีความเข้าใจพื้นฐานที่ดี สามารถทบทวนเพิ่มเติมในหัวข้อที่ตอบผิดได้จากหน้าบทเรียน")
     else:
@@ -262,7 +282,7 @@ if st.session_state.quiz_done:
     for idx, q in enumerate(questions):
         user_ans = saved_answers.get(idx, "ไม่ได้ตอบ")
         is_correct = user_ans == q["answer"]
-        status_symbol = "✓ ถูกต้อง" if is_correct else "✗ ยังไม่ถูก"
+        status_symbol = "[ถูกต้อง]" if is_correct else "[ยังไม่ถูก]"
 
         with st.expander(f"ข้อ {idx + 1}: {status_symbol}", expanded=False):
             st.markdown(f"**คำถาม:**\n\n{format_math_spacing(q['question'])}")
@@ -326,7 +346,7 @@ else:
                 f"""
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 2px dashed #E4E4E7; padding-bottom: 8px;">
                     <div style="display: inline-flex; align-items: center; gap: 8px;">
-                        <span style="background-color: #F43F5E; color: #FFFFFF; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 800; box-shadow: 1.5px 1.5px 0px #18181B;">✦ โจทย์มโนทัศน์</span>
+                        <span style="background-color: #F43F5E; color: #FFFFFF; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 800; box-shadow: 1.5px 1.5px 0px #18181B;">โจทย์มโนทัศน์</span>
                         <span style="font-size: 13px; font-weight: 700; color: #4B5563;">คำถามข้อที่ {q_idx + 1}</span>
                     </div>
                     <span style="font-size: 12px; font-weight: 700; color: #71717A; background-color: #F4F4F5; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px;">
@@ -349,12 +369,13 @@ else:
                     f"*สามารถสลับไปทดลองในเครื่องคิดเลข SymPy หรือตัวจำลองกราฟในแอปเพื่อหาคำตอบได้*"
                 )
 
+            round_id = st.session_state.get("quiz_round", 0)
             selected_idx = st.radio(
                 "เลือกคำตอบที่ถูกต้อง:",
                 options=list(range(len(q["choices"]))),
                 format_func=lambda i: f"**{choice_prefixes[i]}.** {format_math_spacing(q['choices'][i])}",
                 index=None,
-                key=f"radio_choice_{q_idx}_{st.session_state.quiz_attempt_count}",
+                key=f"radio_choice_{round_id}_{q_idx}_{st.session_state.quiz_attempt_count}",
             )
 
             st.write("")
@@ -399,25 +420,47 @@ else:
 
         else:
             if current_choice == q["answer"]:
-                st.success("✓ **ถูกต้องยอดเยี่ยม!** ได้รับ 1 คะแนน")
+                st.balloons()
+                st.markdown(
+                    """
+                    <div class="celebration-bounce-card" style="
+                        background: linear-gradient(135deg, #DCFCE7 0%, #FEF08A 100%);
+                        border: 2.5px solid #18181B;
+                        border-radius: 14px;
+                        padding: 14px 18px;
+                        box-shadow: 3.5px 3.5px 0px #18181B;
+                        margin-bottom: 16px;
+                    ">
+                        <div>
+                            <div style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 1.12rem; font-weight: 700; color: #166534;">
+                                ถูกต้องยอดเยี่ยม! +1 คะแนน
+                            </div>
+                            <div style="font-family: 'Mali', sans-serif; font-size: 0.9rem; color: #15803D; font-weight: 600;">
+                                มโนทัศน์แม่นยำมาก เก่งมากครับ!
+                            </div>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
             else:
-                st.error(f"✗ **ยังไม่ถูกต้อง** (คำตอบที่ถูกต้องคือ: ข้อ **{correct_prefix}**)")
+                st.error(f"**ยังไม่ถูกต้อง** (คำตอบที่ถูกต้องคือ: ข้อ **{correct_prefix}**)")
 
             st.markdown("##### ตัวเลือกทั้งหมด:")
             for i, choice_text in enumerate(q["choices"]):
                 prefix = choice_prefixes[i]
                 formatted = format_math_spacing(choice_text)
                 if choice_text == q["answer"]:
-                    st.success(f"**[{prefix}]** {formatted} &nbsp; *(✓ คำตอบที่ถูกต้อง)*")
+                    st.success(f"**[{prefix}]** {formatted} &nbsp; *(คำตอบที่ถูกต้อง)*")
                 elif choice_text == current_choice:
-                    st.error(f"**[{prefix}]** {formatted} &nbsp; *(✗ คำตอบที่คุณเลือก)*")
+                    st.error(f"**[{prefix}]** {formatted} &nbsp; *(คำตอบที่คุณเลือก)*")
                 else:
                     st.markdown(f"- **[{prefix}]** {formatted}")
 
             st.info(f"**[คำอธิบายอย่างละเอียด]**\n\n{format_math_spacing(q['explanation'])}")
 
             st.write("")
-            if st.button("ข้อถัดไป →", type="primary", use_container_width=True, key=f"btn_next_q_{q_idx}"):
+            if st.button("ข้อถัดไป", icon=":material/arrow_forward:", type="primary", use_container_width=True, key=f"btn_next_q_{q_idx}"):
                 if q_idx + 1 < len(questions):
                     st.session_state.quiz_q_index += 1
                     st.session_state.quiz_revealed = False

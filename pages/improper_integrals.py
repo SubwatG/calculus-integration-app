@@ -1,4 +1,4 @@
-"""pages/improper_integrals.py — บทเรียน interactive: ปริพันธ์ไม่ตรงแบบ (Improper Integrals)
+"""pages/improper_integrals.py : บทเรียน interactive: ปริพันธ์ไม่ตรงแบบ (Improper Integrals)
 
 สำรวจการลู่เข้าหรือลู่ออกของปริพันธ์บนช่วงอนันต์ พร้อมกราฟแรเงาและขั้นตอนการคำนวณลิมิต
 """
@@ -34,7 +34,7 @@ with st.container(border=True):
                 font-weight: 700;
                 color: #18181B;
                 display: inline-block;
-            ">🎯 มโนทัศน์หลัก</span>""",
+            ">มโนทัศน์หลัก</span>""",
             unsafe_allow_html=True,
         )
     with col_concept:
@@ -47,12 +47,12 @@ with st.container(border=True):
     st.latex(r"\int_a^\infty f(x)\,dx = \lim_{t \to \infty} \int_a^t f(x)\,dx \quad \left(\text{ถ้าลิมิตมีค่าจริง } \implies \text{ลู่เข้า / Converges}\right)")
 
     st.info(
-        """**👁️ จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
+        """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
 - **การลู่เข้า vs ลู่ออก (Convergence vs Divergence):** สังเกตว่าเมื่อขอบเขตขยายสู่อนันต์ พื้นที่ใต้กราฟหยุดสะสมและคงที่ (ลู่เข้า) หรือโตขึ้นเรื่อย ๆ ไม่สิ้นสุด (ลู่ออก)
 - **การทดสอบด้วยอันดับ ($p$-Integral Test):** บนช่วง $[1, \\infty)$ ฟังก์ชัน $\\frac{1}{x^p}$ จะลู่เข้าเมื่อ $p > 1$ และจะลู่ออกเมื่อ $p \\le 1$"""
     )
 
-with st.expander("📖 รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
+with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
     col_t1, col_t2 = st.columns(2)
     with col_t1:
         st.markdown("**เงื่อนไขการใช้งาน**")
@@ -65,7 +65,7 @@ with st.expander("📖 รายละเอียดทฤษฎี ข้อ�
         st.markdown("**ข้อควรระวัง**")
         with st.container(border=True):
             for caution in theory["cautions"]:
-                st.markdown(f"⚠️ {caution}")
+                st.markdown(f"- {caution}")
         st.markdown("**การประยุกต์ใช้**")
         for item in theory["applications"]:
             st.markdown(f"- {item}")
@@ -81,13 +81,13 @@ def _set_improper_preset(expr_val: str, a_val: str, b_val: str) -> None:
 st.markdown("**ตัวอย่างโจทย์ยอดนิยม:**")
 p_cols = st.columns(4)
 with p_cols[0]:
-    st.button("กำลังสอง $\\frac{1}{x^2}$ บน $[1, \\infty)$", key="pre_imp_1", use_container_width=True, wrap=True, on_click=_set_improper_preset, args=("1/x**2", "1", "inf"))
+    st.button("กำลังสอง $\\frac{1}{x^2}$ บน $[1, \\infty)$", key="pre_imp_1", use_container_width=True, on_click=_set_improper_preset, args=("1/x**2", "1", "inf"))
 with p_cols[1]:
-    st.button("ฮาร์มอนิก $\\frac{1}{x}$ บน $[1, \\infty)$", key="pre_imp_2", use_container_width=True, wrap=True, on_click=_set_improper_preset, args=("1/x", "1", "inf"))
+    st.button("ฮาร์มอนิก $\\frac{1}{x}$ บน $[1, \\infty)$", key="pre_imp_2", use_container_width=True, on_click=_set_improper_preset, args=("1/x", "1", "inf"))
 with p_cols[2]:
-    st.button("เอกซ์โพเนนเชียล $e^{-x}$ บน $[0, \\infty)$", key="pre_imp_3", use_container_width=True, wrap=True, on_click=_set_improper_preset, args=("exp(-x)", "0", "inf"))
+    st.button("เอกซ์โพเนนเชียล $e^{-x}$ บน $[0, \\infty)$", key="pre_imp_3", use_container_width=True, on_click=_set_improper_preset, args=("exp(-x)", "0", "inf"))
 with p_cols[3]:
-    st.button("สองฝั่งอนันต์ $\\frac{1}{1+x^2}$ บน $(-\\infty, \\infty)$", key="pre_imp_4", use_container_width=True, wrap=True, on_click=_set_improper_preset, args=("1/(1+x**2)", "-inf", "inf"))
+    st.button("สองฝั่งอนันต์ $\\frac{1}{1+x^2}$ บน $(-\\infty, \\infty)$", key="pre_imp_4", use_container_width=True, on_click=_set_improper_preset, args=("1/(1+x**2)", "-inf", "inf"))
 
 expr_input = st.text_input(
     "ฟังก์ชัน f(x)",
@@ -124,7 +124,7 @@ else:
     if res["ok"]:
         v_name = res.get("variable", "x")
         if v_name != "x":
-            st.info(f"✨ ตรวจพบตัวแปร **${v_name}$** — ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
+            st.info(f"ตรวจพบตัวแปร **${v_name}$**: ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
 
         st.markdown("### ผลลัพธ์")
         render_latex(res["latex"])
