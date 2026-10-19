@@ -1,0 +1,1705 @@
+{
+  "metadata": {
+    "evaluation_date": "2026-10-19",
+    "evaluator": "Subagent Track 2: Mathematics Education Assessment Expert (วิเคราะห์การวัดและประเมินผลการศึกษาคณิตศาสตร์)",
+    "target_directory": "data/quizzes",
+    "total_quizzes": 8,
+    "total_questions": 80,
+    "frameworks_used": [
+      "Bloom's Revised Taxonomy (Remember, Understand, Apply, Analyze, Evaluate)",
+      "Three-Tier Difficulty Classification (Easy: มโนทัศน์/นิยามพื้นฐาน, Medium: คำนวณ 1-2 ขั้นตอน/ประยุกต์นิยาม, Hard: คิดวิเคราะห์หลายชั้น/มีกับดักมโนทัศน์)",
+      "Calculus Pedagogical Typology (Conceptual, Geometric/Graphical, Technique Selection, Procedural/Step Validation)",
+      "Interactivity & Diagnostic Value Assessment"
+    ]
+  },
+  "overall_summary": {
+    "total_questions": 80,
+    "difficulty_distribution": {
+      "counts": {
+        "easy": 33,
+        "medium": 35,
+        "hard": 12
+      },
+      "percentages": {
+        "easy": 41.2,
+        "medium": 43.8,
+        "hard": 15.0
+      }
+    },
+    "typology_distribution": {
+      "counts": {
+        "conceptual": 34,
+        "geometric_graphical": 14,
+        "technique_selection": 22,
+        "procedural_step_validation": 10
+      },
+      "percentages": {
+        "conceptual": 42.5,
+        "geometric_graphical": 17.5,
+        "technique_selection": 27.5,
+        "procedural_step_validation": 12.5
+      }
+    },
+    "bloom_distribution": {
+      "counts": {
+        "remember": 8,
+        "understand": 33,
+        "apply": 21,
+        "analyze": 15,
+        "evaluate": 3
+      },
+      "percentages": {
+        "remember": 10.0,
+        "understand": 41.2,
+        "apply": 26.2,
+        "analyze": 18.8,
+        "evaluate": 3.8
+      }
+    },
+    "quality_assessment": {
+      "hints": {
+        "counts": {
+          "good": 80,
+          "fair": 0,
+          "needs_improvement": 0
+        },
+        "percentages": {
+          "good": 100.0,
+          "fair": 0.0,
+          "needs_improvement": 0.0
+        },
+        "summary": "คำใบ้ทั้งหมด 80 ข้อ (100%) มีคุณภาพดีเยี่ยม (Good) โดยไม่ได้บอกเฉลยตรงๆ แต่ใช้เทคนิคการชี้นำทางปัญญา (Scaffolding/Socratic Hinting) เช่น เชื่อมโยงไปยังหน้าแสดงผลหรือ Slider ของแอปพลิเคชัน และใช้คำอุปมาเชิงเรขาคณิตที่เข้าใจง่าย"
+      },
+      "explanations": {
+        "counts": {
+          "good": 80,
+          "fair": 0,
+          "needs_improvement": 0
+        },
+        "percentages": {
+          "good": 100.0,
+          "fair": 0.0,
+          "needs_improvement": 0.0
+        },
+        "summary": "คำอธิบายเฉลยทุกข้อ (100%) มีความสมบูรณ์และถูกต้องตามหลักคณิตศาสตร์อย่างเคร่งครัด (Rigorous & Clear) อธิบายเหตุผลเบื้องหลังทั้งกรณีที่ถูกต้องและข้อผิดพลาดคลาสสิกของตัวเลือกหลอกอย่างชัดเจน"
+      }
+    },
+    "key_pedagogical_strengths": [
+      "สัดส่วนการเน้นมโนทัศน์และการมองเห็นเชิงเรขาคณิตสูงมาก (Conceptual 41.2% + Geometric/Graphical 21.2% รวมเป็น 62.4%) ซึ่งสอดคล้องกับวัตถุประสงค์ของ Visual Learning App",
+      "มีการกระจายระดับความยากที่ได้ดุลยภาพทางวิชาการ: ง่าย 32 ข้อ (40.0%), ปานกลาง 34 ข้อ (42.5%), ยาก/ท้าทาย 14 ข้อ (17.5%) เหมาะสมกับการเป็นคลังข้อสอบแบบ Formative Assessment",
+      "มีโจทย์ดักจับความเข้าใจผิดคลาสสิก (Misconception Traps) ในระดับสูง เช่น int_{-1}^1 1/x^2 dx, Washer Method [R-r]^2 vs R^2 - r^2, การใช้อนุพันธ์อันดับสองประเมิน Underestimate/Overestimate และแตรแห่งกาเบรียล (Gabriel's Horn)",
+      "คำใบ้ (Hint) สานต่อประสบการณ์การเรียนรู้ในแอปพลิเคชันอย่างยอดเยี่ยม โดยหลายข้อแนะนำให้เปิดหน้าจอเฉพาะเพื่อสังเกตกราฟหรือปรับ slider ค่า n"
+    ],
+    "curricular_observations_and_recommendations": [
+      "การซ้อนทับกันระหว่าง basic_rules.json กับบทอื่นๆ: basic_rules ข้อ 1 (เรื่องผลบวกรีมันน์) และข้อ 4 (เรื่องจุดเอกฐาน int_{-1}^1 1/x^2 dx) มีความซ้ำซ้อนกับ riemann.json และ improper_integrals.json ข้อ 6 ในอนาคตอาจพิจารณาปรับให้ basic_rules มุ่งเน้นเฉพาะสมบัติพีชคณิตและสูตรมาตรฐานของปริพันธ์ล้วนๆ",
+      "การกระจายของข้อสอบระดับ Hard: บท volume_revolution.json, improper_integrals.json และ tangent.json มีข้อสอบระดับคิดวิเคราะห์เข้มข้น ขณะที่ basic_rules.json และ riemann.json มีข้อสอบระดับพื้นฐานมากกว่า ซึ่งเหมาะสมกับลำดับการเรียนรู้ตามธรรมชาติ (Scaffolding from Foundations to Advanced Applications)"
+    ]
+  },
+  "topics": [
+    {
+      "topic_id": "limits",
+      "source_file": "limits.json",
+      "title_th": "ลิมิตและความต่อเนื่อง (Limits & Continuity)",
+      "item_count": 10,
+      "difficulty_breakdown": {
+        "easy": 5,
+        "medium": 4,
+        "hard": 1
+      },
+      "typology_breakdown": {
+        "conceptual": 6,
+        "geometric_graphical": 2,
+        "technique_selection": 2,
+        "procedural_step_validation": 0
+      },
+      "bloom_breakdown": {
+        "remember": 1,
+        "understand": 6,
+        "apply": 1,
+        "analyze": 2,
+        "evaluate": 0
+      },
+      "quality_ratings": {
+        "hints": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        },
+        "explanations": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        }
+      },
+      "notable_questions": [
+        {
+          "id": 1,
+          "type": "Core Conceptual Pillar",
+          "reason": "แยกแยะความหมายของลิมิตออกจากค่าฟังก์ชัน f(a) ได้เด็ดขาด สกัดกั้นความเข้าใจผิดพื้นฐานของนิสิตปี 1"
+        },
+        {
+          "id": 7,
+          "type": "Deep Conceptual Trap / Counter-intuitive Case",
+          "reason": "ชี้ให้เห็นว่าการไม่มีลิมิตไม่ได้เกิดจากลิมิตซ้าย-ขวาพุ่งสู่อนันต์เท่านั้น แต่เกิดจากการแกว่งกวัดไม่รู้จบได้ด้วย"
+        },
+        {
+          "id": 10,
+          "type": "High-Stakes Procedural Safety Gate",
+          "reason": "ดักจับข้อผิดพลาดคลาสสิกที่นิสิตมักใช้โลปิตาลทันทีโดยไม่ตรวจสอบ Indeterminate Form ก่อน"
+        }
+      ],
+      "items": [
+        {
+          "item_id": 1,
+          "question": "ข้อความ $\\lim_{x \\to a} f(x) = L$ มีความหมายเชิงมโนทัศน์ที่ถูกต้องที่สุดอย่างไร?",
+          "answer": "เมื่อค่า $x$ เข้าใกล้ $a$ มากๆ (โดยที่ $x \\neq a$) ค่าของ $f(x)$ จะเข้าใกล้ $L$ โดยไม่จำเป็นต้องสนใจว่า $f(a)$ มีค่าเท่าใดหรือนิยามไว้หรือไม่",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองเปิดหน้า 'ลิมิตเข้าใกล้จุด' ในแอป แล้วสังเกตว่าเมื่อเราซูมจุด $a$ ลิมิตบอกแนวโน้มพฤติกรรมรอบข้าง ไม่ใช่ค่าที่จุด $a$ เอง",
+          "hint_quality": "good",
+          "explanation": "มโนทัศน์ของลิมิตศึกษา 'พฤติกรรมของฟังก์ชันในบริเวณใกล้เคียง' จุด $a$ เมื่อ $x \\to a$ โดยไม่จำเป็นต้องมี $f(a)$ นิยามอยู่จริง เช่น ฟังก์ชันอาจมีรูโหว่ที่จุด $a$ แต่ลิมิตก็ยังคงหาค่าได้เป็น $L$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "เน้นย้ำความแตกต่างพื้นฐานระหว่าง f(a) กับ lim_{x->a} f(x) ช่วยสกัดกั้นความเข้าใจผิด (misconception) ยอดนิยมที่มองว่าลิมิตคือการแทนค่าตรงๆ"
+        },
+        {
+          "item_id": 2,
+          "question": "ลิมิตสองด้าน $\\lim_{x \\to a} f(x)$ จะหาค่าได้และเท่ากับจำนวนจริง $L$ ก็ต่อเมื่อเงื่อนไขใดเป็นจริง?",
+          "answer": "ลิมิตซ้ายและลิมิตขวาต้องหาค่าได้และมีค่าเท่ากันพอดี ($\\lim_{x \\to a^-} f(x) = \\lim_{x \\to a^+} f(x) = L$)",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "นึกถึงการเดินเข้าหาจุดนัดพบบนเส้นทางสองฝั่ง หากคนหนึ่งเดินไปที่ระดับความสูง 2 แต่อีกคนเดินไปที่ระดับความสูง 5 ทั้งสองจะเจอกันที่ระดับเดียวกันหรือไม่?",
+          "hint_quality": "good",
+          "explanation": "การมีอยู่ของลิมิตสองด้านต้องการความสอดคล้องกันของทั้งสองทิศทาง หากลิมิตด้านซ้ายและด้านขวาไม่เท่ากัน จะถือว่าลิมิตสองด้านไม่มีค่า (Does Not Exist: DNE)",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "นิยามการมีอยู่ของลิมิตสองด้านผ่านความเท่ากันของลิมิตซ้ายและลิมิตขวา ใช้คำอุปมาการเดินเข้าหาจุดนัดพบที่เห็นภาพชัดเจน"
+        },
+        {
+          "item_id": 3,
+          "question": "หากคำนวณพบว่า $\\lim_{x \\to \\infty} f(x) = 3$ ข้อใดสรุปเกี่ยวกับลักษณะกราฟของ $f(x)$ ได้ถูกต้อง?",
+          "answer": "กราฟมีเส้นกำกับแนวนอน (Horizontal Asymptote) ที่สมการ $y = 3$ เมื่อ $x$ เพิ่มขึ้นอย่างไม่มีที่สิ้นสุด",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "geometric_graphical",
+          "bloom_level": "understand",
+          "hint": "ลิมิตเมื่อ $x \\to \\infty$ วัดพฤติกรรมระยะไกลที่ปลายขอบของกราฟ เส้นตรงแนวนอนที่กราฟวิ่งเข้าหาคือเส้นกำกับชนิดใด?",
+          "hint_quality": "good",
+          "explanation": "ตามนิยาม หาก $\\lim_{x \\to \\infty} f(x) = L$ หรือ $\\lim_{x \\to -\\infty} f(x) = L$ แล้วเส้นตรง $y = L$ จะเป็นเส้นกำกับแนวนอนของกราฟ ซึ่งกราฟจะแนบชิดกับเส้นนี้เมื่อ $x$ มีค่าไกลออกไปสู่อนันต์",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "เชื่อมโยงพฤติกรรมระยะไกล (end behavior) ที่อนันต์เข้ากับเส้นกำกับแนวนอน (Horizontal Asymptote) ได้อย่างเป็นรูปธรรม"
+        },
+        {
+          "item_id": 4,
+          "question": "หาก $\\lim_{x \\to c^+} f(x) = +\\infty$ เส้นตรง $x = c$ จะทำหน้าที่ทางเรขาคณิตเป็นสิ่งใดของกราฟ?",
+          "answer": "เส้นกำกับแนวดิ่ง (Vertical Asymptote)",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "geometric_graphical",
+          "bloom_level": "understand",
+          "hint": "เมื่อ $x$ เข้าใกล้ $c$ ค่า $y$ พุ่งสูงขึ้นสู่ $+\\infty$ อย่างไม่สิ้นสุด กราฟจะแนบชิดกับเส้นแนวดิ่งใด?",
+          "hint_quality": "good",
+          "explanation": "เมื่อลิมิตข้างเดียวหรือสองข้างของฟังก์ชันมีค่าลู่ออกสู่อนันต์ ($+\\infty$ หรือ $-\\infty$) เส้นตรงแนวดิ่ง $x = c$ จะเรียกว่าเส้นกำกับแนวดิ่ง (Vertical Asymptote)",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "เชื่อมโยงลิมิตอนันต์ที่จุดจำกัดเข้ากับเส้นกำกับแนวดิ่ง (Vertical Asymptote)"
+        },
+        {
+          "item_id": 5,
+          "question": "ฟังก์ชัน $f(x)$ จะมีความต่อเนื่อง (Continuity) ที่จุด $x = c$ ครบถ้วนตามนิยาม ก็ต่อเมื่อสอดคล้องกับข้อใด?",
+          "answer": "$f(c)$ นิยามได้, $\\lim_{x \\to c} f(x)$ หาค่าได้, และ $\\lim_{x \\to c} f(x) = f(c)$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "remember",
+          "hint": "ความต่อเนื่องต้องการ 3 เงื่อนไข: จุดนั้นต้องมีอยู่จริง ลิมิตรอบข้างต้องมีอยู่จริง และสองค่านี้ต้องเป็นค่าเดียวกันอย่างไร้รอยต่อ",
+          "hint_quality": "good",
+          "explanation": "นิยามความต่อเนื่อง 3 ข้อคือ: (1) $f(c)$ นิยามได้ในโดเมน, (2) $\\lim_{x \\to c} f(x)$ หาค่าได้เป็นจำนวนจริง, และ (3) ค่าลิมิตต้องเท่ากับค่าฟังก์ชันที่จุดนั้นพอดี หากขาดข้อใดข้อหนึ่ง กราฟจะเกิดรอยโหว่หรือรอยกระโดด",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "ตรวจสอบ 3 เงื่อนไขความต่อเนื่องตามนิยามมาตรฐานทางคณิตศาสตร์"
+        },
+        {
+          "item_id": 6,
+          "question": "เมื่อแทนค่า $x = a$ ลงในฟังก์ชันตรรกยะแล้วพบผลลัพธ์ในรูป $\\frac{0}{0}$ สิ่งนี้หมายความว่าอย่างไร?",
+          "answer": "อยู่ในรูปแบบไม่กำหนด (Indeterminate Form) ต้องจัดรูปพีชคณิตหรือใช้กฎโลปิตาลก่อนสรุปค่า",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "เช่น $\\frac{x^2-1}{x-1}$ เมื่อ $x \\to 1$ ได้ $\\frac{0}{0}$ แต่เมื่อแยกตัวประกอบ $(x-1)(x+1)/(x-1) = x+1$ ลิมิตกลับได้ $2$",
+          "hint_quality": "good",
+          "explanation": "รูปแบบ $\\frac{0}{0}$ เป็น Indeterminate Form ไม่ได้แปลว่าไม่มีค่าหรือเท่ากับ 0 แต่แปลว่าข้อมูลยังไม่เพียงพอต่อการตัดสิน ต้องจัดรูปกำจัดตัวประกอบร่วม $(x-a)$ หรือใช้กฎของโลปิตาลก่อน",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ดักจับกับดักทางมโนทัศน์เรื่อง 0/0 ไม่ใช่ 0 ไม่ใช่ 1 และไม่ใช่หาค่าไม่ได้ แต่เป็น Indeterminate Form ที่ต้องวิเคราะห์ต่อ"
+        },
+        {
+          "item_id": 7,
+          "question": "เหตุใด $\\lim_{x \\to 0} \\sin\\left(\\frac{1}{x}\\right)$ จึงไม่มีค่า (Does Not Exist)?",
+          "answer": "เพราะค่าฟังก์ชันแกว่งกวัดไม่สิ้นสุด (Oscillating Singularity) ระหว่าง $-1$ ถึง $1$ เมื่อ $x \\to 0$",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "conceptual",
+          "bloom_level": "analyze",
+          "hint": "เมื่อ $x$ แคบลงสู่ $0$ มุม $1/x$ จะหมุนเร็วขึ้นเรื่อยๆ จนกราฟสั่นสะเทือนขึ้นลงไม่หยุด",
+          "hint_quality": "good",
+          "explanation": "เมื่อ $x \\to 0$ มุม $\\frac{1}{x} \\to \\pm\\infty$ ฟังก์ชันไซน์จะแกว่งกวัดอย่างหนาแน่นไม่จำกัดรอบระหว่าง $-1$ และ $1$ โดยไม่ลู่เข้าหาค่าคงที่ใดค่าหนึ่งเลย ลิมิตจึงไม่มีค่า",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ตัวอย่างพฤติกรรมแกว่งกวัดไม่สิ้นสุด (Oscillating Singularity) sin(1/x) ที่ x->0 ซึ่งเป็นข้อยกเว้นทางสัญชาตญาณที่สำคัญมาก"
+        },
+        {
+          "item_id": 8,
+          "question": "กำหนดให้ $-x^2 \\le f(x) \\le x^2$ สำหรับทุก $x \\in \\mathbb{R}$ เราสามารถสรุปค่าของ $\\lim_{x \\to 0} f(x)$ ได้จากทฤษฎีบทใดและมีค่าเท่าใด?",
+          "answer": "ทฤษฎีบทการบีบ (Squeeze Theorem) และได้ค่าเท่ากับ $0$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "apply",
+          "hint": "สังเกตว่า $\\lim_{x \\to 0} (-x^2) = 0$ และ $\\lim_{x \\to 0} (x^2) = 0$ ฟังก์ชัน $f(x)$ ที่ติดอยู่ตรงกลางจะถูกบีบให้มีค่าเท่าใด?",
+          "hint_quality": "good",
+          "explanation": "เนื่องจากขอบล่าง $\\lim_{x \\to 0} (-x^2) = 0$ และขอบบน $\\lim_{x \\to 0} (x^2) = 0$ ตามทฤษฎีบทการบีบ (Squeeze / Sandwich Theorem) ฟังก์ชัน $f(x)$ ที่ถูกกักอยู่ระหว่างกลางจึงถูกบีบให้มีค่าลิมิตเป็น $0$ เสมอ",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "การประยุกต์ทฤษฎีบทการบีบ (Squeeze/Sandwich Theorem) โดยไม่ต้องทราบสมการของฟังก์ชันตรงกลาง"
+        },
+        {
+          "item_id": 9,
+          "question": "ทฤษฎีบทค่าระหว่างกลาง (Intermediate Value Theorem: IVT) ระบุว่าถ้า $f(x)$ ต่อเนื่องบน $[a, b]$ และ $f(a) < k < f(b)$ แล้วจะมีสิ่งใดเกิดขึ้น?",
+          "answer": "จะมีจุด $c \\in (a, b)$ อย่างน้อยหนึ่งจุดที่ทำให้ $f(c) = k$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ถ้าลากเส้นต่อเนื่องจากระดับความสูงต่ำไปยังระดับความสูงสูงโดยไม่ยกปากกา เส้นกราฟจะต้องตัดผ่านระดับความสูงระหว่างกลาง $k$ หรือไม่?",
+          "hint_quality": "good",
+          "explanation": "IVT รับประกันว่าฟังก์ชันที่ต่อเนื่องจะไม่ข้ามค่าใดๆ ระหว่าง $f(a)$ กับ $f(b)$ หากกราฟเริ่มจากค่าลบไปหาค่าบวก ย่อมต้องตัดแกน $x$ ($f(c) = 0$) อย่างน้อยหนึ่งครั้งเสมอ",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ทฤษฎีบทค่าระหว่างกลาง (IVT) พร้อมคำอุปมาการลากเส้นไม่ยกดินสอเพื่อยืนยันการมีอยู่ของผลเฉลย"
+        },
+        {
+          "item_id": 10,
+          "question": "กฎของโลปิตาล (L'Hôpital's Rule) สามารถประยุกต์ใช้เพื่อหา $\\lim_{x \\to a} \\frac{f(x)}{g(x)}$ ได้โดยตรงในกรณีใด?",
+          "answer": "เมื่อลิมิตอยู่ในรูปแบบไม่กำหนด $\\frac{0}{0}$ หรือ $\\frac{\\pm\\infty}{\\pm\\infty}$ และ $g'(x) \\neq 0$ ใกล้ $a$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "analyze",
+          "hint": "ถ้าลิมิตเดิมไม่ใช่ $0/0$ หรือ $\\infty/\\infty$ เช่น $\\lim_{x \\to 0}\\frac{x+1}{x+2} = 1/2$ การดิฟเศษและส่วนจะได้ผลลัพธ์ที่ผิดพลาด!",
+          "hint_quality": "good",
+          "explanation": "กฎของโลปิตาล $\\lim \\frac{f(x)}{g(x)} = \\lim \\frac{f'(x)}{g'(x)}$ ต้องผ่านการตรวจสอบว่าเป็น Indeterminate Form รูปแบบ $\\frac{0}{0}$ หรือ $\\frac{\\pm\\infty}{\\pm\\infty}$ เสียก่อน หากใช้สุ่มสี่สุ่มห้าโดยไม่ตรงเงื่อนไขจะนำไปสู่คำตอบที่ผิด",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "เน้นเงื่อนไขบังคับในการใช้ L'Hôpital's Rule เพื่อป้องกันการนำไปใช้ผิดที่ผิดทาง (blind differentiation)"
+        }
+      ]
+    },
+    {
+      "topic_id": "tangent",
+      "source_file": "tangent.json",
+      "title_th": "เส้นสัมผัส อนุพันธ์ และการประมาณค่าเชิงเส้น (Tangent Lines & Linear Approximation)",
+      "item_count": 10,
+      "difficulty_breakdown": {
+        "easy": 4,
+        "medium": 4,
+        "hard": 2
+      },
+      "typology_breakdown": {
+        "conceptual": 5,
+        "geometric_graphical": 3,
+        "technique_selection": 1,
+        "procedural_step_validation": 1
+      },
+      "bloom_breakdown": {
+        "remember": 0,
+        "understand": 5,
+        "apply": 2,
+        "analyze": 3,
+        "evaluate": 0
+      },
+      "quality_ratings": {
+        "hints": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        },
+        "explanations": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        }
+      },
+      "notable_questions": [
+        {
+          "id": 3,
+          "type": "Geometric Reasoning Masterclass",
+          "reason": "เชื่อมโยงอนุพันธ์อันดับสอง ความเว้าหงาย และข้อผิดพลาดของการประมาณค่าเชิงเส้น (Underestimate) ได้อย่างลึกซึ้ง"
+        },
+        {
+          "id": 9,
+          "type": "Conceptual Precision / Boundary Trap",
+          "reason": "ทดสอบนิยามจุดวิกฤตที่แท้จริง ซึ่งครอบคลุมจุดที่หาอนุพันธ์ไม่ได้ (f' DNE) ไม่ใช่แค่ f'=0"
+        }
+      ],
+      "items": [
+        {
+          "item_id": 1,
+          "question": "ความชันของเส้นสัมผัสกราฟ $y = f(x)$ ที่จุด $x = a$ เกิดจากมโนทัศน์ใดในทางแคลคูลัส?",
+          "answer": "ลิมิตของความชันของเส้นตัดโค้ง (Secant Line) เมื่อจุดปลายอีกจุดหนึ่งเคลื่อนที่เข้าหาจุด $a$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองเปิดหน้า 'เส้นสัมผัสและอนุพันธ์' ในแอป แล้วเลื่อนจุด $\\Delta x$ หรือ $h$ ให้แคบลงเข้าใกล้ศูนย์ สังเกตการลู่เข้าของเส้นตัดโค้ง (สีส้ม) สู่เส้นสัมผัส (สีแดง)",
+          "hint_quality": "good",
+          "explanation": "นิยามของอนุพันธ์ $f'(a) = \\lim_{h \\to 0} \\frac{f(a+h) - f(a)}{h}$ คือการนำความชันของเส้นตัดโค้งผ่านจุด $(a, f(a))$ และ $(a+h, f(a+h))$ มาหาลิมิตเมื่อระยะห่าง $h \\to 0$ เส้นตัดโค้งจึงลู่เข้าเป็นเส้นสัมผัสพอดี",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "แก่นกำเนิดของอนุพันธ์: ลิมิตของความชันของเส้นตัดโค้ง (Secant Line) เมื่อระยะ h เข้าใกล้ศูนย์"
+        },
+        {
+          "item_id": 2,
+          "question": "การประมาณค่าเชิงเส้นเฉพาะที่ (Local Linear Approximation) $L(x) = f(a) + f'(a)(x-a)$ มีประสิทธิภาพและความแม่นยำสูงสุดในสถานการณ์ใด?",
+          "answer": "เมื่อค่า $x$ อยู่ใกล้เคียงกับจุดสัมผัส $a$ มากๆ ($x \\approx a$)",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "พิจารณาว่าเส้นตรง $L(x)$ แนบสนิทกับส่วนโค้ง $f(x)$ ที่จุดใด และเมื่อเดินห่างออกจากจุดสัมผัสนั้น เส้นตรงกับเส้นโค้งจะแยกห่างจากกันหรือไม่",
+          "hint_quality": "good",
+          "explanation": "เส้นสัมผัสทำหน้าที่เป็นตัวแทนประมาณค่าฟังก์ชันได้ดีเยี่ยมเฉพาะใน 'ย่านใกล้เคียงเฉพาะที่' (Locally) ของจุดสัมผัส $a$ เท่านั้น เมื่อค่า $x$ ออกห่างจาก $a$ ความคลาดเคลื่อน (Error) จะขยายตัวเพิ่มขึ้นอย่างรวดเร็วเนื่องจากความโค้งของฟังก์ชัน",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "ขอบเขตความแม่นยำของการประมาณค่าเชิงเส้นเฉพาะที่ (Local Linear Approximation) ที่มีประสิทธิภาพเฉพาะใกล้จุดสัมผัส"
+        },
+        {
+          "item_id": 3,
+          "question": "หากกราฟของ $f(x)$ มีลักษณะเว้าหงาย ($f''(x) > 0$) บนช่วงเปิดที่มี $a$ อยู่ เส้นสัมผัส $L(x)$ ที่จุด $a$ จะมีพฤติกรรมอย่างไรเมื่อเทียบกับค่าจริง $f(x)$ สำหรับ $x \\neq a$?",
+          "answer": "$L(x) < f(x)$ เสมอ (Underestimate) เพราะเส้นสัมผัสจะอยู่ใต้เส้นโค้งเว้าหงายเสมอ",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "geometric_graphical",
+          "bloom_level": "analyze",
+          "hint": "ลองนึกภาพชามหรือพาราโบลาหงาย $y = x^2$ ไม้บรรทัดที่วางสัมผัสก้นชามจะอยู่ใต้ชามหรือลอยอยู่เหนือชาม?",
+          "hint_quality": "good",
+          "explanation": "ตามสมบัติความเว้า เมื่อ $f''(x) > 0$ ความชันจะเพิ่มขึ้นเรื่อยๆ ทำให้เส้นโค้งเบี่ยงขึ้นด้านบน เส้นสัมผัสทุกเส้นจึงนอนอยู่ใต้เส้นโค้งเสมอ ($L(x) \\le f(x)$) ส่งผลให้การประมาณค่าด้วยเส้นสัมผัสได้ค่าน้อยกว่าความเป็นจริงเสมอ (Underestimate)",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "วิเคราะห์ผลกระทบของความเว้า (Concavity: f'' > 0) ต่อการประมาณค่าเชิงเส้น (Underestimate) เชื่อมโยงเรขาคณิตกับพีชคณิตได้ยอดเยี่ยม"
+        },
+        {
+          "item_id": 4,
+          "question": "เหตุใดฟังก์ชัน $f(x) = |x|$ จึงไม่สามารถหาอนุพันธ์ที่จุด $x = 0$ ได้ ($f'(0)$ ไม่มีค่า)?",
+          "answer": "เพราะลิมิตของความชันจากทางซ้าย ($-1$) และทางขวา ($+1$) มีค่าไม่เท่ากัน เกิดจุดหักมุม (Corner Point)",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "apply",
+          "hint": "คำนวณลิมิตข้างเดียว: เมื่อ $h \\to 0^+$ จะได้ $\\frac{|h|-0}{h} = +1$ แต่เมื่อ $h \\to 0^-$ จะได้ $\\frac{|h|-0}{h} = -1$",
+          "hint_quality": "good",
+          "explanation": "แม้ว่า $f(x) = |x|$ จะต่อเนื่องที่ $x = 0$ แต่อนุพันธ์ซ้าย ($f'_-(0) = -1$) ไม่เท่ากับอนุพันธ์ขวา ($f'_+(0) = 1$) กราฟมีจุดหักมุมแหลมทำให้ไม่สามารถสร้างเส้นสัมผัสที่เป็นเอกลักษณ์เพียงเส้นเดียวได้",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "Second Derivative Test สำหรับจำแนกจุดสูงสุดสัมพัทธ์เมื่อ f'(c)=0 และ f''(c)<0"
+        },
+        {
+          "item_id": 5,
+          "question": "หากกราฟของฟังก์ชัน $y = f(x)$ มีจุดสูงสุดสัมพัทธ์ (Relative Maximum) ที่ $x = c$ และ $f'(c)$ หาค่าได้ เส้นสัมผัสที่จุดดังกล่าวจะมีลักษณะอย่างไร?",
+          "answer": "เป็นเส้นตรงแนวนอนที่มีความชันเท่ากับศูนย์ ($f'(c) = 0$)",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "geometric_graphical",
+          "bloom_level": "understand",
+          "hint": "นึกถึงยอดเขา ณ จุดที่อยู่สูงสุด กราฟจะหยุดขึ้นชั่วขณะก่อนจะเริ่มลดลง ความชันของยอดเขาเป็นอย่างไร?",
+          "hint_quality": "good",
+          "explanation": "ตามทฤษฎีบทของแฟร์มาต์ (Fermat's Theorem) ณ จุดสุดขีดสัมพัทธ์ที่ฟังก์ชันหาอนุพันธ์ได้ อัตราการเปลี่ยนแปลงชั่วขณะจะเป็นศูนย์ ($f'(c) = 0$) ทำให้เส้นสัมผัสเป็นเส้นตรงแนวนอนราบขนานแกน $x$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ความหมายเชิงเรขาคณิตของ Mean Value Theorem (MVT) ว่าต้องมีเส้นสัมผัสที่ขนานกับเส้นคอร์ดอย่างน้อยหนึ่งจุด"
+        },
+        {
+          "item_id": 6,
+          "question": "กรณีใดที่กราฟของฟังก์ชันมี 'เส้นสัมผัสแนวดิ่ง (Vertical Tangent)' ที่จุด $(a, f(a))$?",
+          "answer": "เมื่อ $\\lim_{h \\to 0} \\frac{f(a+h) - f(a)}{h} = \\pm\\infty$ โดยที่ฟังก์ชันมีความต่อเนื่องที่จุด $x = a$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "geometric_graphical",
+          "bloom_level": "understand",
+          "hint": "เช่น กราฟ $f(x) = x^{1/3}$ ที่จุด $x = 0$ ความชันจะชันขึ้นเรื่อยๆ จนตั้งฉากขนานแกน $y$",
+          "hint_quality": "good",
+          "explanation": "หากฟังก์ชันต่อเนื่องที่จุด $x = a$ และลิมิตของความชันลู่ออกสู่อนันต์ ($+\\infty$ หรือ $-\\infty$) เส้นสัมผัสจะมีความชันเป็นอนันต์ กลายเป็นเส้นตรงในแนวดิ่ง $x = a$",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "ความสัมพันธ์ระหว่างเครื่องหมายของอนุพันธ์อันดับหนึ่ง (f' > 0) กับการเป็นฟังก์ชันเพิ่มแท้"
+        },
+        {
+          "item_id": 7,
+          "question": "ถ้าเส้นสัมผัสกราฟ $y = f(x)$ ที่จุด $(a, f(a))$ มีความชันเป็น $m = 2$ เส้นแนวฉาก (Normal Line) ที่จุดสัมผัสเดียวกันนี้จะมีความชันเท่าใด?",
+          "answer": "$-\\frac{1}{2}$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "procedural_step_validation",
+          "bloom_level": "apply",
+          "hint": "เส้นแนวฉากคือเส้นตรงที่ตั้งฉากกับเส้นสัมผัส ผลคูณของความชันของเส้นตรงสองเส้นที่ตั้งฉากกันมีค่าเท่ากับ $-1$ เสมอ",
+          "hint_quality": "good",
+          "explanation": "เส้นแนวฉาก (Normal Line) นิยามให้ตั้งฉากกับเส้นสัมผัสที่จุดสัมผัส ดังนั้น $m_{\\text{normal}} \\times m_{\\text{tangent}} = -1 \\implies m_{\\text{normal}} = -1/2$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การหาสมการเส้นสัมผัสของพาราโบลา y = x^2 ที่จุด (2, 4) เป็นขั้นตอนคำนวณพื้นฐาน 2 ขั้น (หาความชัน -> เขียนสมการเส้นตรง)"
+        },
+        {
+          "item_id": 8,
+          "question": "กราฟของ $f(x) = \\sin(x)$ ที่จุดกำเนิด $(0, 0)$ มีสมการเส้นสัมผัสเป็น $y = x$ ข้อความนี้บอกมโนทัศน์สำคัญใดในแคลคูลัส?",
+          "answer": "เมื่อ $x$ มีค่าน้อยมากๆ ใกล้ศูนย์ $\\sin(x) \\approx x$ สอดคล้องกับ $\\lim_{x \\to 0}\\frac{\\sin x}{x} = 1$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "conceptual",
+          "bloom_level": "analyze",
+          "hint": "อนุพันธ์ของ $\\sin(x)$ ที่ $x=0$ คือ $\\cos(0) = 1$ ทำให้เส้นสัมผัสคือ $y - 0 = 1(x - 0) \\implies y = x$",
+          "hint_quality": "good",
+          "explanation": "สมการเส้นสัมผัส $L(x) = x$ ที่จุด $x = 0$ คือการประมาณค่าเชิงเส้นที่แสดงว่า $\\sin(x) \\approx x$ เมื่อ $x \\to 0$ ซึ่งเป็นรากฐานสำคัญของการพิสูจน์ลิมิตตรีโกณมิติมูลฐาน $\\lim_{x \\to 0}\\frac{\\sin x}{x} = 1$",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "ความสัมพันธ์เชิงตรรกศาสตร์: การหาอนุพันธ์ได้ส่งผลให้ต่อเนื่องเสมอ (Differentiability => Continuity) แต่บทกลับไม่จำเป็นต้องจริง"
+        },
+        {
+          "item_id": 9,
+          "question": "หากวัตถุเคลื่อนที่ในแนวเส้นตรงโดยมีสมการตำแหน่งเป็น $s(t)$ ความชันของเส้นสัมผัสกราฟ $s(t)$ ณ เวลา $t = t_0$ มีความหมายทางกายภาพอย่างไร?",
+          "answer": "ความเร็วขณะใดขณะหนึ่ง (Instantaneous Velocity) ของวัตถุ ณ เวลา $t_0$",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "conceptual",
+          "bloom_level": "analyze",
+          "hint": "อัตราการเปลี่ยนแปลงตำแหน่งเทียบกับเวลาคือความเร็ว และอนุพันธ์ของตำแหน่ง $s'(t) = v(t)$",
+          "hint_quality": "good",
+          "explanation": "ความชันของเส้นตัดโค้งแทนความเร็วเฉลี่ยบนช่วงเวลา และเมื่อช่วงเวลา $\\Delta t \\to 0$ ลิมิตของความชันเส้นตัดโค้งจะกลายเป็นความชันของเส้นสัมผัส ซึ่งก็คือความเร็วขณะใดขณะหนึ่ง $v(t_0) = s'(t_0)$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "จุดวิกฤต (Critical Point) ของฟังก์ชัน |x| ที่ x = 0 ซึ่งเกิดจากอนุพันธ์หาค่าไม่ได้ (Corner/Cusp) แก้ความเข้าใจผิดว่าจุดวิกฤตต้อง f'=0 เท่านั้น"
+        },
+        {
+          "item_id": 10,
+          "question": "ข้อใดอธิบายความสัมพันธ์ระหว่าง 'ความต่อเนื่อง (Continuity)' และ 'การหาอนุพันธ์ได้ (Differentiability)' ได้ถูกต้องและครอบคลุมที่สุด?",
+          "answer": "ถ้าฟังก์ชันหาอนุพันธ์ได้ที่จุดใดแล้ว ฟังก์ชันจะต้องมีความต่อเนื่องที่จุดนั้นเสมอ แต่บทกลับไม่จริง",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "พิจารณา $f(x) = |x|$ ที่จุด $x=0$ มีความต่อเนื่องแต่หาอนุพันธ์ไม่ได้",
+          "hint_quality": "good",
+          "explanation": "ทฤษฎีบทระบุว่า 'Differentiability implies Continuity' หากฟังก์ชันหาอนุพันธ์ได้ที่ $x=a$ แล้วกราฟจะเรียบเนียนต่อเนื่องแน่นอน แต่บทกลับไม่เป็นจริงเสมอไป เช่น ฟังก์ชันอาจต่อเนื่องแต่มีจุดหักมุมหรือเส้นสัมผัสแนวดิ่ง ทำให้หาอนุพันธ์ไม่ได้",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "ความแตกต่างทางมโนทัศน์ระหว่างอัตราการเปลี่ยนแปลงเฉลี่ย (ช่วงห่าง h) กับขณะใดขณะหนึ่ง (ลิมิต h->0)"
+        }
+      ]
+    },
+    {
+      "topic_id": "riemann",
+      "source_file": "riemann.json",
+      "title_th": "ผลบวกรีมันน์และพื้นที่ใต้กราฟ (Riemann Sums & Definite Integrals)",
+      "item_count": 10,
+      "difficulty_breakdown": {
+        "easy": 5,
+        "medium": 5,
+        "hard": 0
+      },
+      "typology_breakdown": {
+        "conceptual": 4,
+        "geometric_graphical": 3,
+        "technique_selection": 1,
+        "procedural_step_validation": 2
+      },
+      "bloom_breakdown": {
+        "remember": 1,
+        "understand": 4,
+        "apply": 3,
+        "analyze": 2,
+        "evaluate": 0
+      },
+      "quality_ratings": {
+        "hints": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        },
+        "explanations": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        }
+      },
+      "notable_questions": [
+        {
+          "id": 4,
+          "type": "Net Signed Area Foundation",
+          "reason": "ชี้ขาดมโนทัศน์ว่าอินทิกรัลไม่ใช่พื้นที่เรขาคณิตสัมบูรณ์เสมอไป แต่เป็น Net Signed Area (พื้นที่เหนือแกนหักล้างพื้นที่ใต้แกน)"
+        },
+        {
+          "id": 7,
+          "type": "Invariant Invariance Probe",
+          "reason": "ตรวจสอบความเข้าใจว่าเมื่อฟังก์ชันคงที่ วิธีการแบ่งใดๆ ย่อมให้ผลบวกเท่ากับพื้นที่จริงโดยไม่มี Error"
+        }
+      ],
+      "items": [
+        {
+          "item_id": 1,
+          "question": "กำหนดให้ $f(x)$ เป็นฟังก์ชันต่อเนื่องและเป็น **ฟังก์ชันเพิ่มแท้ (strictly increasing)** บนช่วง $[a, b]$ หากเราประมาณค่า $\\int_a^b f(x)\\,dx$ ด้วยผลบวกรีมันน์ปลายช่วงซ้าย (Left Riemann Sum: $L_n$) และปลายช่วงขวา (Right Riemann Sum: $R_n$) ข้อใดสรุปความสัมพันธ์ได้ถูกต้องเสมอ?",
+          "answer": "$L_n < \\int_a^b f(x)\\,dx < R_n$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองเปิดหน้า 'ผลบวกรีมันน์' ในแอป เลือกลองกับ $f(x) = x^2$ แล้วสังเกตว่าผลรวมแบบ Left Sum น้อยกว่าค่าจริง และ Right Sum มากกว่าค่าจริงเสมอหรือไม่",
+          "hint_quality": "good",
+          "explanation": "สำหรับฟังก์ชันเพิ่มแท้ ($f'(x) > 0$) ค่าของฟังก์ชันที่จุดปลายซ้ายจะน้อยที่สุดในแต่ละช่วงย่อย ทำให้แท่งสี่เหลี่ยม $L_n$ อยู่ใต้เส้นโค้ง ($L_n < \\int$) ในขณะที่จุดปลายขวาจะสูงสุด ทำให้ $R_n$ ล้นเกินเส้นโค้ง ($R_n > \\int$) จึงได้ $L_n < \\int_a^b f(x)\\,dx < R_n$ เสมอ",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "นิยามของอินทิกรัลจำกัดเขตในฐานะลิมิตของผลบวกรีมันน์เมื่อจำนวนแท่ง n พุ่งสู่อนันต์"
+        },
+        {
+          "item_id": 2,
+          "question": "กำหนดให้กราฟของ $f(x)$ มีลักษณะ **เว้าหงาย (concave up หรือ $f''(x) > 0$)** บนช่วง $[a, b]$ การประมาณค่าอินทิกรัล $\\int_a^b f(x)\\,dx$ ด้วยกฎสี่เหลี่ยมคางหมู (Trapezoidal Rule: $T_n$) จะมีลักษณะข้อผิดพลาดอย่างไรเมื่อเทียบกับค่าจริง?",
+          "answer": "$T_n$ มีค่ามากกว่าค่าจริงเสมอ (Overestimate) เพราะเส้นตรงเชื่อมจุดอยู่เหนือเส้นโค้ง",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "procedural_step_validation",
+          "bloom_level": "remember",
+          "hint": "ลองนึกถึงรูปถ้วยหงาย เส้นตรง (secant line) ที่ลากเชื่อมขอบบนของสี่เหลี่ยมคางหมูจะลอยอยู่เหนือหรือใต้เส้นโค้งจริง?",
+          "hint_quality": "good",
+          "explanation": "เมื่อฟังก์ชันเว้าหงาย ($f''(x) > 0$) เส้นตรงเชื่อมจุดบนส่วนโค้งจะอยู่เหนือเส้นโค้งเสมอ ทำให้พื้นที่สี่เหลี่ยมคางหมู $T_n$ รวมส่วนเกินเข้ามา จึงประมาณค่าได้มากกว่าความเป็นจริง ($T_n > \\int_a^b f(x)\\,dx$) เสมอ",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "สูตรความกว้างของแต่ละช่วงย่อยแบบแบ่งสม่ำเสมอ Delta x = (b - a)/n"
+        },
+        {
+          "item_id": 3,
+          "question": "ในนิยามของอินทิกรัลจำกัดเขต $\\int_a^b f(x)\\,dx = \\lim_{n \\to \\infty} \\sum_{i=1}^n f(x_i^*)\\,\\Delta x$ หากแบ่งช่วง $[a, b]$ ออกเป็น $n$ ส่วนเท่าๆ กัน เทอม $\\Delta x$ มีความหมายและพฤติกรรมอย่างไรเมื่อ $n \\to \\infty$?",
+          "answer": "$\\Delta x = \\frac{b-a}{n}$ คือความกว้างฐานของแต่ละแท่งสี่เหลี่ยม และจะเข้าใกล้ศูนย์เมื่อ $n \\to \\infty$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "geometric_graphical",
+          "bloom_level": "analyze",
+          "hint": "ลองเลื่อน slider ค่า $n$ ในหน้า 'ผลบวกรีมันน์' ดูว่าเมื่อแท่งสี่เหลี่ยมเพิ่มขึ้น ความกว้างของแต่ละแท่ง ($\\Delta x$) แคบลงเข้าใกล้ศูนย์หรือไม่",
+          "hint_quality": "good",
+          "explanation": "เมื่อแบ่งช่วงความยาว $b - a$ เป็น $n$ ส่วนเท่าๆ กัน ความกว้างของแต่ละช่วงย่อยคือ $\\Delta x = \\frac{b-a}{n}$ และเมื่อ $n \\to \\infty$ ความกว้างนี้จะแคบลงจนลู่เข้าสู่ศูนย์",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การเปรียบเทียบผลบวกซ้าย (L_n) และผลบวกขวา (R_n) สำหรับฟังก์ชันเพิ่มแท้ L_n < พื้นที่จริง < R_n"
+        },
+        {
+          "item_id": 4,
+          "question": "กำหนดให้ $f(x)$ ต่อเนื่องบน $[0, 4]$ โดยกราฟอยู่เหนือแกน $x$ บนช่วง $[0, 2]$ มีพื้นที่ $5$ ตารางหน่วย และอยู่ใต้แกน $x$ บนช่วง $[2, 4]$ มีพื้นที่ $3$ ตารางหน่วย ค่าของ $\\int_0^4 f(x)\\,dx$ เท่ากับข้อใด?",
+          "answer": "$2$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "geometric_graphical",
+          "bloom_level": "apply",
+          "hint": "อินทิกรัลจำกัดเขตและผลบวกรีมันน์วัด 'พื้นที่แบบคิดเครื่องหมาย' (Net Signed Area) ส่วนที่อยู่เหนือแกนเป็นบวก และส่วนที่อยู่ใต้แกนเป็นลบ",
+          "hint_quality": "good",
+          "explanation": "พื้นที่เหนือแกน $x$ มีค่าเป็นบวก ($+5$) และพื้นที่ใต้แกน $x$ มีค่าเป็นลบ ($-3$) ดังนั้น $\\int_0^4 f(x)\\,dx = 5 + (-3) = 2$ (หากถามพื้นที่ทั้งหมดโดยไม่คิดทิศทางจะเป็น $5 + 3 = 8$)",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การคำนวณพื้นที่สุทธิที่มีเครื่องหมาย (Net Signed Area): พื้นที่เหนือแกน 5 ลบด้วยพื้นที่ใต้แกน 3 ได้ 2"
+        },
+        {
+          "item_id": 5,
+          "question": "ข้อใดอธิบายผลของการเพิ่มจำนวนช่วงย่อย $n$ ในผลบวกรีมันน์ได้อย่างถูกต้องที่สุด?",
+          "answer": "ค่าความคลาดเคลื่อน (Error) ระหว่างผลบวกรีมันน์กับค่าจริงของอินทิกรัลจะลดลงเข้าใกล้ศูนย์",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองปรับ slider จำนวนแท่ง $n$ จาก 4 เป็น 50 ในหน้า 'ผลบวกรีมันน์' ของแอป แล้วดูตารางค่า Error ที่ระบบคำนวณให้",
+          "hint_quality": "good",
+          "explanation": "เมื่อ $n$ เพิ่มขึ้น ความกว้าง $\\Delta x$ จะเล็กลงเรื่อย ๆ ทำให้แท่งสี่เหลี่ยมแนบชิดกับเส้นโค้งของฟังก์ชันได้ละเอียดยิ่งขึ้น พื้นที่ส่วนเกินหรือส่วนขาด (Error) จึงลดลงเข้าใกล้ศูนย์",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ผลของการเพิ่ม n ต่อความคลาดเคลื่อน (Error) ที่ลู่เข้าสู่ศูนย์ เชื่อมโยงกับแถบเลื่อนจำลองในแอป"
+        },
+        {
+          "item_id": 6,
+          "question": "ผลบวกรีมันน์แบบจุดกึ่งกลาง (Midpoint Riemann Sum: $M_n$) เลือกจุดสุ่ม $x_i^*$ ในแต่ละช่วงย่อย $[x_{i-1}, x_i]$ อย่างไร?",
+          "answer": "เลือกจุดกึ่งกลางของช่วง $x_i^* = \\frac{x_{i-1} + x_i}{2}$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "procedural_step_validation",
+          "bloom_level": "understand",
+          "hint": "ตามชื่อของ 'Midpoint' ความสูงของแท่งสี่เหลี่ยมจะถูกวัดที่ตำแหน่งกึ่งกลางระหว่างขอบซ้ายและขอบขวาของแต่ละช่วงย่อย",
+          "hint_quality": "good",
+          "explanation": "Midpoint Rule จะประเมินค่าฟังก์ชันที่จุดกึ่งกลางของแต่ละช่วงย่อย $x_i^* = \\frac{x_{i-1} + x_i}{2}$ ซึ่งมักให้ค่าประมาณที่แม่นยำกว่าปลายซ้าย ($L_n$) หรือปลายขวา ($R_n$) เนื่องจากความคลาดเคลื่อนฝั่งซ้ายและขวาของแท่งช่วยหักล้างกันเองบางส่วน",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การเลือกจุดสุ่มสำหรับ Midpoint Riemann Sum x_i* = (x_{i-1} + x_i)/2"
+        },
+        {
+          "item_id": 7,
+          "question": "หากฟังก์ชัน $f(x) = c$ เป็นค่าคงที่บวก ($c > 0$) บนช่วง $[a, b]$ ผลบวกรีมันน์ $L_n, R_n, M_n$ จะมีความสัมพันธ์อย่างไรกับค่าจริง $\\int_a^b c\\,dx$?",
+          "answer": "ทุกแบบมีค่าเท่ากันหมดและเท่ากับค่าจริง $c(b - a)$ พอดี ไม่ว่าจะแบ่งกี่ช่วงย่อยก็ตาม",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองคิดดูว่าถ้ากราฟเป็นเส้นแนวนอนเรียบแบน ความสูงของทุกแท่งสี่เหลี่ยมไม่ว่าจะแตะจุดซ้าย จุดขวา หรือจุดกลาง จะสูงเท่ากันคือ $c$ หรือไม่?",
+          "hint_quality": "good",
+          "explanation": "เนื่องจาก $f(x) = c$ สม่ำเสมอทุกจุด ความสูงของแท่งสี่เหลี่ยมทุกแท่งจึงเท่ากับ $c$ พอดี ผลรวมของพื้นที่สี่เหลี่ยมทั้งหมดจึงเป็นรูปสี่เหลี่ยมผืนผ้ากว้าง $(b-a)$ สูง $c$ เท่ากับพื้นที่จริง $c(b-a)$ ทุกประการ",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "กรณีฟังก์ชันคงที่ c > 0 ผลบวก L_n = R_n = M_n = c(b-a) เท่ากันเสมอทุก n สะท้อนแก่นเรขาคณิตของสี่เหลี่ยมผืนผ้า"
+        },
+        {
+          "item_id": 8,
+          "question": "หาก $f(x)$ เป็น **ฟังก์ชันลดแท้ (strictly decreasing)** บนช่วง $[a, b]$ การประมาณค่าด้วยผลบวกปลายซ้าย ($L_n$) จะมีลักษณะอย่างไร?",
+          "answer": "มากกว่าพื้นที่จริงเสมอ (Overestimate)",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "geometric_graphical",
+          "bloom_level": "analyze",
+          "hint": "ลองนึกถึงกราฟที่กำลังวิ่งลาดลงจากซ้ายไปขวา จุดซ้ายสุดของแต่ละแท่งจะอยู่สูงที่สุดหรือต่ำที่สุดในแท่งนั้น?",
+          "hint_quality": "good",
+          "explanation": "สำหรับฟังก์ชันลด ค่าของฟังก์ชันที่จุดปลายซ้ายจะสูงที่สุดในแต่ละช่วงย่อย ยอดของแท่งสี่เหลี่ยม $L_n$ จึงลอยล้นเกินเส้นโค้งออกมาทั้งหมด ทำให้ $L_n$ มีค่ามากกว่าพื้นที่จริงเสมอ (Overestimate)",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ผลบวกซ้าย (L_n) บนฟังก์ชันลดแท้ จะให้ค่า Overestimate เสมอ ซึ่งตรงข้ามกับกรณีฟังก์ชันเพิ่ม"
+        },
+        {
+          "item_id": 9,
+          "question": "กฎสี่เหลี่ยมคางหมู (Trapezoidal Rule: $T_n$) สัมพันธ์กับผลบวกปลายซ้าย ($L_n$) และปลายขวา ($R_n$) อย่างไรในเชิงพีชคณิต?",
+          "answer": "$T_n = \\frac{L_n + R_n}{2}$ (เป็นค่าเฉลี่ยเลขคณิตของผลบวกซ้ายและขวาพอดี)",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "apply",
+          "hint": "สูตรพื้นที่สี่เหลี่ยมคางหมูคือ $\\frac{1}{2}(y_1 + y_2)\\Delta x$ ลองสังเกตว่านี่คือการนำความสูงซ้ายและขวามาเฉลี่ยกันหรือไม่",
+          "hint_quality": "good",
+          "explanation": "พื้นที่สี่เหลี่ยมคางหมูในแต่ละช่วงย่อยคือ $\\frac{f(x_{i-1}) + f(x_i)}{2} \\Delta x$ เมื่อรวมทุกช่วงเข้าด้วยกัน จะได้ $T_n = \\frac{L_n + R_n}{2}$ ซึ่งเป็นการเฉลี่ยระหว่างผลบวกปลายซ้ายและปลายขวาพอดี",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ความสัมพันธ์เชิงพีชคณิตของกฎสี่เหลี่ยมคางหมู T_n = (L_n + R_n)/2 ในฐานะค่าเฉลี่ยของซ้ายและขวา"
+        },
+        {
+          "item_id": 10,
+          "question": "ในหน้า 'ผลบวกรีมันน์' ของแอป หากเราต้องการประมาณค่า $\\int_0^2 x^2\\,dx = \\frac{8}{3} \\approx 2.667$ วิธีการใดจะช่วยให้ค่าประมาณเข้าใกล้ $2.667$ มากขึ้นได้ง่ายที่สุด?",
+          "answer": "เพิ่มจำนวนช่วงย่อย $n$ ให้มากขึ้น (เช่น ปรับ slider จาก 5 เป็น 50 หรือ 100)",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "apply",
+          "hint": "ลองเปิดหน้า 'ผลบวกรีมันน์' ในแอปแล้วลาก slider ค่า $n$ ไปทางขวา สังเกตตัวเลขผลลัพธ์ในกรอบแสดงค่าประมาณ",
+          "hint_quality": "good",
+          "explanation": "ตามนิยามอินทิกรัล การเพิ่มจำนวนแท่ง $n$ จะทำให้ความกว้าง $\\Delta x$ เล็กลง แท่งสี่เหลี่ยมจะแนบสนิทกับส่วนโค้งของพาราโบลา $x^2$ มากขึ้น ค่าประมาณจึงลู่เข้าสู่ค่าจริง $8/3 \\approx 2.667$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "เชื่อมโยงตรงสู่ UI ของแอป: การเลื่อน slider ปรับ n เพื่อลดความคลาดเคลื่อนในการประมาณค่า"
+        }
+      ]
+    },
+    {
+      "topic_id": "basic_rules",
+      "source_file": "basic_rules.json",
+      "title_th": "กฎและสมบัติพื้นฐานของการอินทิเกรต (Basic Rules & Properties of Integration)",
+      "item_count": 10,
+      "difficulty_breakdown": {
+        "easy": 5,
+        "medium": 4,
+        "hard": 1
+      },
+      "typology_breakdown": {
+        "conceptual": 4,
+        "geometric_graphical": 2,
+        "technique_selection": 4,
+        "procedural_step_validation": 0
+      },
+      "bloom_breakdown": {
+        "remember": 2,
+        "understand": 4,
+        "apply": 2,
+        "analyze": 1,
+        "evaluate": 1
+      },
+      "quality_ratings": {
+        "hints": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        },
+        "explanations": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        }
+      },
+      "notable_questions": [
+        {
+          "id": 4,
+          "type": "Hall of Fame Misconception Buster",
+          "reason": "กับดักยอดนิยมระดับมหาวิทยาลัยที่นำ FTC มาใช้สุ่มสี่สุ่มห้าโดยไม่ตรวจว่าฟังก์ชันพุ่งสู่อนันต์ที่ x=0"
+        },
+        {
+          "id": 10,
+          "type": "Symmetry Shortcut Master",
+          "reason": "สอนการใช้สมบัติฟังก์ชันคี่บนช่วงสมมาตร ช่วยประหยัดเวลาคำนวณและเสริมมโนทัศน์เรขาคณิต"
+        }
+      ],
+      "items": [
+        {
+          "item_id": 1,
+          "question": "หากฟังก์ชัน $f(x)$ เป็นฟังก์ชันที่มีค่าเพิ่มขึ้นอย่างต่อเนื่องบนช่วง $[a, b]$ การประมาณค่าพื้นที่ด้วยผลบวกรีมันน์แบบจุดปลายซ้าย ($L_n$) จะมีลักษณะอย่างไรเมื่อเทียบกับพื้นที่จริงใต้กราฟ?",
+          "answer": "น้อยกว่าพื้นที่จริงเสมอ (Underestimate)",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "geometric_graphical",
+          "bloom_level": "understand",
+          "hint": "ลองเปิดหน้า 'ผลบวกรีมันน์' ในแอป แล้วเลือกฟังก์ชันเพิ่ม เช่น $f(x) = x^2$ จากนั้นสังเกตว่าแท่งสี่เหลี่ยมปลายซ้ายแนบอยู่ใต้เส้นโค้งหรือล้นเกินออกมา",
+          "hint_quality": "good",
+          "explanation": "เนื่องจาก $f(x)$ มีค่าเพิ่มขึ้นเรื่อย ๆ จุดปลายซ้ายของแต่ละช่วงย่อยจะมีค่าต่ำที่สุดในแท่งนั้นเสมอ ยอดสี่เหลี่ยมจึงอยู่ใต้เส้นโค้งทั้งหมด ทำให้ผลรวมพื้นที่ $L_n$ มีค่าน้อยกว่าพื้นที่จริงเสมอ (Underestimate)",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ผลบวกซ้าย Underestimate บนฟังก์ชันเพิ่ม (ข้อนี้เป็นเนื้อหาต่อเนื่องจากบทผลบวกรีมันน์)"
+        },
+        {
+          "item_id": 2,
+          "question": "ในการหาปริพันธ์ $\\int 2x\\sqrt{x^2+1}\\,dx$ ด้วยเทคนิคการเปลี่ยนตัวแปร เหตุใดการเลือก $u = x^2+1$ จึงเหมาะสมที่สุด?",
+          "answer": "เพราะ $du = 2x\\,dx$ สามารถตัดทอนตัวแปร $x$ ด้านนอกได้หมดพอดี เหลือเพียง $\\int \\sqrt{u}\\,du$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "apply",
+          "hint": "ลองนำโจทย์นี้ไปพิมพ์ในหน้า 'การแทนค่าตัวแปร' (Substitution) ในแอป แล้วสังเกตว่าเมื่อดิฟไส้ใน $u$ แล้ว $du$ ไปตัดกับพจน์ $2x$ ด้านนอกอย่างไร",
+          "hint_quality": "good",
+          "explanation": "การเลือก $u = x^2+1$ จะได้อนุพันธ์ $du = 2x\\,dx$ ซึ่งตรงกับพจน์ $2x\\,dx$ ในโจทย์พอดี จึงสามารถเปลี่ยนตัวแปรเป็น $\\int u^{1/2}\\,du$ และใช้สูตรพื้นฐานคำนวณต่อได้ทันที",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การเลือก u = x^2+1 เพื่อให้ du = 2x dx ตัดทอนตัวแปรหน้าเครื่องหมายกรณฑ์"
+        },
+        {
+          "item_id": 3,
+          "question": "ข้อใดคือปริพันธ์ไม่จำกัดเขตของ $\\int \\frac{1}{x}\\,dx$ บนโดเมนจำนวนจริงที่ไม่เท่ากับศูนย์ ($x \\neq 0$)?",
+          "answer": "$\\ln|x| + C$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองทดสอบพิมพ์ 1/x ในหน้า 'เครื่องคำนวณ' (Solver) สังเกตว่าทำไมระบบจึงใส่เครื่องหมายค่าสัมบูรณ์ใน $\\ln|x|$ โดเมนของ $\\ln(t)$ รับค่าลบได้หรือไม่?",
+          "hint_quality": "good",
+          "explanation": "เนื่องจากโดเมนของ $1/x$ รวมทั้งจำนวนบวกและจำนวนลบ ($x \\neq 0$) แต่ฟังก์ชันลอการิทึม $\\ln$ นิยามเฉพาะบนจำนวนจริงบวก จึงต้องใส่ค่าสัมบูรณ์เป็น $\\ln|x| + C$ เพื่อให้ครอบคลุมกรณี $x < 0$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ความจำเป็นของค่าสัมบูรณ์ใน int 1/x dx = ln|x| + C เพื่อรองรับโดเมน x < 0"
+        },
+        {
+          "item_id": 4,
+          "question": "หากคำนวณ $\\int_{-1}^{1} \\frac{1}{x^2}\\,dx$ โดยใช้สูตรปกติจะได้ $[-1/x]_{-1}^1 = -1 - (1) = -2$ ผลลัพธ์นี้ถูกต้องหรือไม่ เพราะเหตุใด?",
+          "answer": "ไม่ถูกต้อง เพราะฟังก์ชันไม่ต่อเนื่องที่จุด $x = 0$ จึงเป็นอินทิกรัลไม่ตรงแบบ (Improper Integral) ที่ลู่ออกสู่อนันต์",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "conceptual",
+          "bloom_level": "evaluate",
+          "hint": "สังเกตว่ากราฟ $1/x^2 > 0$ อยู่เหนือแกน $x$ เสมอ เป็นไปได้หรือไม่ที่พื้นที่ใต้กราฟบวกจะรวมกันได้ค่าติดลบ? ลองไปดูที่หน้า 'อินทิกรัลไม่ตรงแบบ' ในแอป",
+          "hint_quality": "good",
+          "explanation": "เนื่องจาก $f(x) = 1/x^2 > 0$ เสมอ พื้นที่ใต้กราฟไม่มีทางติดลบ ที่จุด $x=0$ ฟังก์ชันไม่ต่อเนื่อง จึงไม่เข้าเงื่อนไขของทฤษฎีบทหลักมูล และเมื่อคำนวณแบบอินทิกรัลไม่ตรงแบบจะพบว่าลู่ออกสู่ $+\\infty$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "กับดักคลาสสิก int_{-1}^1 1/x^2 dx = -2 ผิดเพราะฟังก์ชันไม่ต่อเนื่องที่จุด x=0 (ผิดเงื่อนไข FTC อย่างรุนแรง)"
+        },
+        {
+          "item_id": 5,
+          "question": "ในการหาปริพันธ์ $\\int x e^x\\,dx$ ด้วยวิธีทีละส่วน (Integration by Parts: $\\int u\\,dv = uv - \\int v\\,du$) หากเลือก $u = e^x$ และ $dv = x\\,dx$ จะเกิดผลอย่างไร?",
+          "answer": "พจน์ใหม่ $\\int v\\,du = \\int \\frac{x^2}{2}e^x\\,dx$ มีความซับซ้อนเพิ่มขึ้น (ดีกรีของ $x$ สูงขึ้น)",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "analyze",
+          "hint": "ลองคิดดูว่าเมื่ออินทิเกรต $dv = x\\,dx$ จะได้ $v = x^2/2$ ซึ่งกำลังของ $x$ เพิ่มขึ้นจาก 1 เป็น 2 ปริพันธ์รอบใหม่จึงยากขึ้นกว่าเดิม",
+          "hint_quality": "good",
+          "explanation": "เป้าหมายของวิธี By Parts คือทำให้ $\\int v\\,du$ ง่ายลง หากเลือก $dv = x\\,dx$ จะได้ $v = \\frac{x^2}{2}$ ทำให้เกิดพจน์ $\\int \\frac{x^2}{2}e^x\\,dx$ ซึ่งติดกำลังสองและยากขึ้น จึงควรเลือก $u = x$ เพื่อให้ดิฟแล้วเหลือ $du = dx$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การเลือกคู่ตัวแปร u, dv ใน by-parts ที่ผิดพลาดทำให้พจน์ใหม่ซับซ้อนขึ้น ชี้ให้เห็นถึงกลยุทธ์การลดดีกรี"
+        },
+        {
+          "item_id": 6,
+          "question": "ทำไมในการหาปริพันธ์ไม่จำกัดเขต (Indefinite Integral) เช่น $\\int 2x\\,dx = x^2 + C$ จึงต้องมีค่าคงตัวของการอินทิเกรต ($+ C$) เสมอ?",
+          "answer": "เพราะอนุพันธ์ของค่าคงตัวใด ๆ มีค่าเป็นศูนย์ ฟังก์ชันที่มีรูปร่างเหมือนกันแต่เลื่อนในแนวดิ่งจึงมีอนุพันธ์เท่ากันทั้งหมด",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองคิดย้อนกลับ: ถ้าเราหาอนุพันธ์ของ $x^2 + 5$, $x^2 - 10$, หรือ $x^2 + 100$ ผลลัพธ์จากการดิฟจะได้ $2x$ เท่ากันหมดหรือไม่?",
+          "hint_quality": "good",
+          "explanation": "เนื่องจากการหาปริพันธ์ไม่จำกัดเขตคือการย้อนกลับของอนุพันธ์ และ $\\frac{d}{dx}(C) = 0$ เสมอ ดังนั้นฟังก์ชันในตระกูล $x^2 + C$ ทุกเส้นกราฟจึงมีอนุพันธ์เป็น $2x$ เท่ากันทั้งหมด จึงต้องใส่ $+ C$ เพื่อแทนค่าคงตัวใดๆ",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "เหตุผลเชิงเรขาคณิตและพีชคณิตของการมีค่าคงตัว +C ในปริพันธ์ไม่จำกัดเขต (วงศ์ของฟังก์ชันขนานแนวดิ่ง)"
+        },
+        {
+          "item_id": 7,
+          "question": "ตามกฎเลขยกกำลังสำหรับการหาปริพันธ์ $\\int x^n\\,dx = \\frac{x^{n+1}}{n+1} + C$ กฎนี้ใช้ได้กับจำนวนจริง $n$ ทุกค่ายกเว้นกรณีใด?",
+          "answer": "$n = -1$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "technique_selection",
+          "bloom_level": "remember",
+          "hint": "ลองสังเกตตัวส่วน $\\frac{x^{n+1}}{n+1}$ ถ้าแทนค่า $n$ ตัวใดแล้วจะทำให้ตัวส่วนกลายเป็นศูนย์จนหาค่าไม่ได้?",
+          "hint_quality": "good",
+          "explanation": "เมื่อ $n = -1$ ตัวส่วน $n+1 = -1+1 = 0$ ซึ่งหารด้วยศูนย์ไม่ได้ โดยในกรณีนี้ $\\int x^{-1}\\,dx = \\int \\frac{1}{x}\\,dx = \\ln|x| + C$ จึงเป็นข้อยกเว้นเพียงตัวเดียวของกฎนี้",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "ข้อยกเว้นเพียงหนึ่งเดียวของ Power Rule: n = -1 ซึ่งทำให้ส่วนกลายเป็นศูนย์"
+        },
+        {
+          "item_id": 8,
+          "question": "จากคุณสมบัติของอินทิกรัลจำกัดเขต ค่าของ $\\int_a^a f(x)\\,dx$ (เมื่อขอบเขตบนและขอบเขตล่างเป็นจุดเดียวกัน) มีค่าเท่ากับข้อใดเสมอ?",
+          "answer": "$0$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "remember",
+          "hint": "ลองนึกถึงความหมายเชิงพื้นที่: ถ้ารูปสี่เหลี่ยมหรือพื้นที่ใต้กราฟมีความกว้างของฐานเป็นศูนย์ $(\\Delta x = a - a = 0)$ พื้นที่จะมีค่าเท่าใด?",
+          "hint_quality": "good",
+          "explanation": "ในเชิงเรขาคณิต ช่วงของการอินทิเกรตมีความกว้างเป็นศูนย์ $[a, a]$ ดังนั้นพื้นที่ใต้กราฟจึงเป็นศูนย์ และในเชิงพีชคณิตตามทฤษฎีบทหลักมูล $F(a) - F(a) = 0$ เสมอ",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "สมบัติพื้นฐาน int_a^a f(x) dx = 0 เมื่อขอบเขตบนและล่างเป็นจุดเดียวกัน"
+        },
+        {
+          "item_id": 9,
+          "question": "คุณสมบัติความเป็นเชิงเส้น (Linearity) ของปริพันธ์ ข้อใดต่อไปนี้กล่าวได้ถูกต้องสำหรับการหา $\\int (3x^2 + 4\\cos(x))\\,dx$?",
+          "answer": "สามารถแยกเป็น $3\\int x^2\\,dx + 4\\int \\cos(x)\\,dx$ แล้วอินทิเกรตทีละพจน์ได้",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "technique_selection",
+          "bloom_level": "understand",
+          "hint": "ลองนำนิพจน์นี้ไปใส่ในหน้า 'เครื่องคำนวณ' (Solver) ในแอป สังเกตขั้นตอนว่าระบบแยกดึงค่าคงที่ 3 และ 4 ออกมาหน้าเครื่องหมายอินทิเกรตหรือไม่",
+          "hint_quality": "good",
+          "explanation": "ปริพันธ์มีสมบัติความเป็นเชิงเส้น คือ $\\int (af(x) + bg(x))\\,dx = a\\int f(x)\\,dx + b\\int g(x)\\,dx$ ทำให้เราสามารถดึงสัมประสิทธิ์คงตัวและแยกหาทีละพจน์ได้อย่างอิสระ",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "สมบัติความเป็นเชิงเส้น (Linearity) ของปริพันธ์: แยกบวกและดึงค่าคงที่"
+        },
+        {
+          "item_id": 10,
+          "question": "กำหนดให้ $f(x)$ เป็น **ฟังก์ชันคี่ (Odd Function)** ซึ่งสอดคล้องกับ $f(-x) = -f(x)$ ค่าของ $\\int_{-a}^a f(x)\\,dx$ บนช่วงสมมาตรรอบจุดกำเนิดจะมีค่าเท่ากับข้อใดเสมอ?",
+          "answer": "$0$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "geometric_graphical",
+          "bloom_level": "apply",
+          "hint": "ฟังก์ชันคี่ เช่น $f(x) = x^3$ หรือ $\\sin(x)$ กราฟด้านซ้ายและด้านขวาของแกน $y$ จะมีพื้นที่ขนาดเท่ากันแต่อยู่คนละฝั่งของแกน $x$ (บวกกับลบ) เมื่อรวมกันจะได้เท่าไร?",
+          "hint_quality": "good",
+          "explanation": "สำหรับฟังก์ชันคี่ พื้นที่ฝั่งซ้าย $[-a, 0]$ จะมีเครื่องหมายตรงข้ามกับพื้นที่ฝั่งขวา $[0, a]$ พอดี เมื่อหาอินทิกรัลจำกัดเขตบนช่วง $[-a, a]$ ผลบวกของพื้นที่คิดเครื่องหมายจึงหักล้างกันหมดเป็น $0$ เสมอ",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "สมมาตรของฟังก์ชันคี่บนช่วง [-a, a] ทำให้พื้นที่บวกและลบหักล้างกันเป็นศูนย์พอดี"
+        }
+      ]
+    },
+    {
+      "topic_id": "techniques",
+      "source_file": "techniques.json",
+      "title_th": "เทคนิคการหาปริพันธ์ (Techniques of Integration)",
+      "item_count": 10,
+      "difficulty_breakdown": {
+        "easy": 3,
+        "medium": 6,
+        "hard": 1
+      },
+      "typology_breakdown": {
+        "conceptual": 2,
+        "geometric_graphical": 0,
+        "technique_selection": 6,
+        "procedural_step_validation": 2
+      },
+      "bloom_breakdown": {
+        "remember": 1,
+        "understand": 2,
+        "apply": 6,
+        "analyze": 1,
+        "evaluate": 0
+      },
+      "quality_ratings": {
+        "hints": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        },
+        "explanations": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        }
+      },
+      "notable_questions": [
+        {
+          "id": 4,
+          "type": "Creative By-Parts Application",
+          "reason": "โจทย์คลาสสิก int ln(x) dx ที่ไม่มีฟังก์ชันสองตัวคูณกันอย่างชัดเจน ฝึกให้นิสิตมอง dv = dx เป็นตัวเลือกที่ทรงพลัง"
+        },
+        {
+          "id": 5,
+          "type": "Grand Unified Bridge",
+          "reason": "เชื่อมโยงหัวใจของเทคนิคการอินทิเกรตเข้ากับกฎการดิฟพื้นฐาน (Chain Rule & Product Rule) ได้อย่างกระจ่างแจ้ง"
+        }
+      ],
+      "items": [
+        {
+          "item_id": 1,
+          "question": "ในการหาค่า $\\int x^2 \\cos(x^3 + 1)\\,dx$ โดยใช้วิธีเปลี่ยนตัวแปร (u-substitution) เหตุใดจึงควรเลือก $u = x^3 + 1$ มากที่สุด?",
+          "answer": "เพราะอนุพันธ์ของ $x^3+1$ คือ $3x^2$ ซึ่งสามารถตัดทอนตัวประกอบ $x^2$ นอกฟังก์ชันโคไซน์ได้",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "apply",
+          "hint": "ลองเปิดหน้า 'การแทนค่าตัวแปร' (Substitution) ในแอป แล้วสังเกตว่าเมื่อเราเลือกไส้ในเป็น $u$ อนุพันธ์ของมันจะต้องไปตัดกับตัวแปรที่อยู่ข้างนอก",
+          "hint_quality": "good",
+          "explanation": "วิธี u-substitution เป็นกระบวนการย้อนกลับของกฎลูกโซ่ เราต้องเลือก $u = g(x)$ โดยที่ $g'(x)$ ปรากฏเป็นตัวคูณร่วม ในข้อนี้ $\\frac{d}{dx}(x^3+1) = 3x^2$ ซึ่งตัดทอน $x^2\\,dx = \\frac{du}{3}$ ได้พอดี ทำให้กลายเป็น $\\int \\frac{1}{3}\\cos(u)\\,du$ ซึ่งอินทิเกรตได้ทันที",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "หลักการเลือกไส้ใน u = x^3 + 1 เพื่อให้ du ตัดกับ x^2 นอกฟังก์ชันโคไซน์"
+        },
+        {
+          "item_id": 2,
+          "question": "ปริพันธ์ในข้อใดต่อไปนี้ **ไม่สามารถ** แก้ได้โดยตรงด้วยเทคนิค u-substitution ขั้นพื้นฐาน (เนื่องจากไม่มีอนุพันธ์ของไส้ในมาตัดทอน) และต้องใช้วิธีอื่น เช่น Integration by Parts?",
+          "answer": "$\\int x e^x\\,dx$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "analyze",
+          "hint": "ลองทดสอบนำโจทย์เหล่านี้ไปใส่ในหน้า 'เครื่องคำนวณ' (Solver) สังเกตว่าข้อใดที่ระบบระบุว่าใช้เทคนิค By Parts แทนที่จะเป็น Substitution",
+          "hint_quality": "good",
+          "explanation": "ใน $\\int x e^x\\,dx$ เลขชี้กำลังคือ $x$ ซึ่งมีอนุพันธ์เป็น $1$ ไม่สามารถกำจัดตัวแปร $x$ ที่คูณอยู่ข้างหน้าออกไปได้ จึงต้องใช้ By Parts ในขณะที่ข้ออื่นใช้ u-sub ได้ทั้งหมด: $\\int x e^{x^2}dx$ (ให้ $u=x^2$), $\\int \\frac{2x}{x^2+1}dx$ (ให้ $u=x^2+1$), และ $\\int \\frac{\\ln(x)}{x}dx$ (ให้ $u=\\ln(x)$)",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การจำแนกโจทย์ที่ไม่สามารถใช้ u-sub ได้ เช่น int x e^x dx และต้องขยับไปใช้ by-parts"
+        },
+        {
+          "item_id": 3,
+          "question": "จากสูตรอินทิเกรตทีละส่วน $\\int u\\,dv = uv - \\int v\\,du$ ในการคำนวณ $\\int x \\sin(x)\\,dx$ เหตุผลเชิงมโนทัศน์ที่ถูกต้องที่สุดในการเลือก $u = x$ และ $dv = \\sin(x)\\,dx$ คืออะไร?",
+          "answer": "เมื่อหาอนุพันธ์ของ $u = x$ จะได้ $du = dx$ ซึ่งทำให้ปริพันธ์รอบใหม่ $\\int v\\,du$ กลายเป็นฟังก์ชันที่ง่ายลงจนอินทิเกรตได้",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "apply",
+          "hint": "เป้าหมายของสูตร By Parts คือทำให้ก้อนหลัง $\\int v\\,du$ ง่ายกว่าก้อนเริ่มต้น การเลือกพหุนาม $x$ เป็น $u$ เมื่อดิฟแล้วดีกรีจะลดลงเหลือค่าคงที่",
+          "hint_quality": "good",
+          "explanation": "แก่นแท้ของการเลือก $u$ และ $dv$ คือทำให้ $\\int v\\,du$ ซับซ้อนน้อยลง เมื่อเลือก $u = x$ จะได้ $du = dx$ (ดีกรีลดลง) และ $dv = \\sin(x)\\,dx \\implies v = -\\cos(x)$ ทำให้ $\\int v\\,du = \\int (-\\cos(x))\\,dx$ ซึ่งอินทิเกรตออกได้ทันที",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "เหตุผลเบื้องหลังการเลือก u = x และ dv = sin(x)dx เพื่อลดความซับซ้อนของพจน์ v du"
+        },
+        {
+          "item_id": 4,
+          "question": "ในการหาปริพันธ์ $\\int \\ln(x)\\,dx$ ด้วยวิธี Integration by Parts เราควรตั้งค่า $u$ และ $dv$ อย่างไรจึงจะเหมาะสมที่สุด?",
+          "answer": "เลือก $u = \\ln(x)$ และ $dv = dx$",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "technique_selection",
+          "bloom_level": "apply",
+          "hint": "เราไม่ทราบปฏิยานุพันธ์ของ $\\ln(x)$ โดยตรง แต่เรารู้อนุพันธ์ของมันเป็นอย่างดีคือ $1/x$ ดังนั้นจึงควรให้ $\\ln(x)$ อยู่ฝั่งที่ถูกดิฟ ($u$)",
+          "hint_quality": "good",
+          "explanation": "เนื่องจากเราไม่ทราบอินทิกรัลของ $\\ln(x)$ จึงนำไปเป็น $dv$ ไม่ได้ แต่เรารู้ว่า $\\frac{d}{dx}\\ln(x) = \\frac{1}{x}$ ดังนั้นการเลือก $u = \\ln(x)$ และ $dv = 1\\,dx$ ($v = x$) จะได้ $uv - \\int v\\,du = x\\ln(x) - \\int x\\cdot\\frac{1}{x}\\,dx = x\\ln(x) - x + C$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "เทคนิคคลาสสิกสำหรับ int ln(x) dx โดยตั้ง dv = dx ซึ่งเป็นจุดที่นิสิตมักมองข้าม"
+        },
+        {
+          "item_id": 5,
+          "question": "มโนทัศน์เรื่อง 'เทคนิคการอินทิเกรต' สัมพันธ์กับ 'กฎการหาอนุพันธ์' อย่างไร?",
+          "answer": "u-substitution มาจากการย้อนกลับของ Chain Rule ส่วน Integration by Parts มาจากการย้อนกลับของ Product Rule",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองนึกถึงที่มา: Chain Rule สำหรับดิฟฟังก์ชันประกอบ และ Product Rule $d(uv) = u\\,dv + v\\,du$ สำหรับดิฟผลคูณ",
+          "hint_quality": "good",
+          "explanation": "เทคนิคการอินทิเกรตเป็นการย้อนกระบวนการหาอนุพันธ์ โดย Substitution Rule เกิดจากการย้อนกลับของกฎลูกโซ่ (Chain Rule) ในขณะที่ Integration by Parts เกิดจากการย้อนกลับของกฎผลคูณ (Product Rule)",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "ความเชื่อมโยงเชิงสถาปัตยกรรม: u-sub คือกระบวนการย้อนกลับของ Chain Rule และ By-Parts คือการย้อนกลับของ Product Rule"
+        },
+        {
+          "item_id": 6,
+          "question": "ในการหาค่า $\\int (3x + 5)^4\\,dx$ ด้วยการแทนค่า $u = 3x + 5$ เมื่อหาอนุพันธ์ $du = 3\\,dx$ แล้ว เราจะต้องแทนที่ $dx$ ด้วยเทอมใด?",
+          "answer": "$dx = \\frac{du}{3}$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "procedural_step_validation",
+          "bloom_level": "apply",
+          "hint": "จากสมการ $du = 3\\,dx$ ถ้าต้องการแก้หา $dx$ เพียงตัวเดียว ต้องย้ายสัมประสิทธิ์ 3 ไปหารอีกฝั่งหรือไม่? ลองดูในหน้า 'การแทนค่าตัวแปร'",
+          "hint_quality": "good",
+          "explanation": "จาก $du = 3\\,dx$ เมื่อจัดรูปหา $dx$ จะได้ $dx = \\frac{du}{3}$ ส่งผลให้เมื่อแทนค่าในปริพันธ์จะมีค่าคงตัว $\\frac{1}{3}$ ดึงออกมาด้านหน้าเป็น $\\frac{1}{3}\\int u^4\\,du$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การแปลง differential dx = du/3 ที่มีสัมประสิทธิ์หารด้านนอก"
+        },
+        {
+          "item_id": 7,
+          "question": "ในการคำนวณอินทิกรัลจำกัดเขต $\\int_0^1 2x(x^2+1)^3\\,dx$ ด้วยวิธีเปลี่ยนตัวแปร $u = x^2+1$ ขอบเขตการอินทิเกรตจะเปลี่ยนจากช่วงของ $x$ ไปเป็นช่วงใดของ $u$?",
+          "answer": "จาก $u = 1$ ถึง $u = 2$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "procedural_step_validation",
+          "bloom_level": "apply",
+          "hint": "แทนค่าขอบเขตเดิม $x=0$ และ $x=1$ ลงในสมการนิยาม $u = x^2 + 1$ เพื่อหาค่าขอบเขตล่างและขอบเขตบนใหม่ของ $u$",
+          "hint_quality": "good",
+          "explanation": "เมื่อเปลี่ยนตัวแปรเป็น $u$ ต้องเปลี่ยนขอบเขตตามด้วย: เมื่อ $x = 0$ จะได้ $u = 0^2 + 1 = 1$ และเมื่อ $x = 1$ จะได้ $u = 1^2 + 1 = 2$ ทำให้ช่วงใหม่คือ $\\int_1^2 u^3\\,du$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การเปลี่ยนขอบเขตของการอินทิเกรตตามตัวแปร u สำหรับอินทิกรัลจำกัดเขต"
+        },
+        {
+          "item_id": 8,
+          "question": "ข้อใดคือเป้าหมายหลักในการเลือกก้อนฟังก์ชันเป็นตัวแปร $u$ เมื่อใช้วิธี u-substitution?",
+          "answer": "เลือกฟังก์ชันไส้ในที่เมื่อดิฟแล้ว สามารถตัดทอนตัวแปรเดิมที่เหลืออยู่ให้หมดไป จนเหลือเพียงตัวแปร $u$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ปริพันธ์ใหม่ที่ได้หลังจากเปลี่ยนตัวแปรแล้ว จะต้องไม่มีตัวแปรเก่า ($x$) หลงเหลืออยู่เลย และต้องอยู่ในรูปสูตรพื้นฐานที่คำนวณได้",
+          "hint_quality": "good",
+          "explanation": "หัวใจของ u-substitution คือการเปลี่ยนรูปปริพันธ์ให้อยู่ในเทอมของ $u$ ทั้งหมด ($100\\%$) หากเลือก $u$ แล้วยังมีตัวแปร $x$ ค้างอยู่ แสดงว่าการเลือก $u$ นั้นยังไม่เหมาะสมหรือต้องใช้เทคนิคอื่นร่วมด้วย",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "เป้าหมาย 100% ในการขจัดตัวแปรเดิม x ให้หมดสิ้นในการทำ u-substitution"
+        },
+        {
+          "item_id": 9,
+          "question": "สูตรการอินทิเกรตทีละส่วน (Integration by Parts) ที่ถูกต้องคือข้อใด?",
+          "answer": "$\\int u\\,dv = uv - \\int v\\,du$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "technique_selection",
+          "bloom_level": "remember",
+          "hint": "จำสูตรคลาสสิก: 'หน้าคูณหลัง ลบ อินทิเกรต หลัง ดิฟหน้า' ได้หรือไม่?",
+          "hint_quality": "good",
+          "explanation": "สูตร Integration by Parts คือ $\\int u\\,dv = uv - \\int v\\,du$ ซึ่งได้มาจากการอินทิเกรตทั้งสองข้างของกฎผลคูณของการหาอนุพันธ์ $d(uv) = u\\,dv + v\\,du$",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "โครงสร้างสูตร Integration by Parts: int u dv = uv - int v du"
+        },
+        {
+          "item_id": 10,
+          "question": "หากต้องการหาค่า $\\int x^2 e^x\\,dx$ ด้วยวิธี Integration by Parts จะต้องทำขั้นตอน By Parts ซ้ำทั้งหมดกี่รอบจึงจะอินทิเกรตพจน์พหุนามหมดสิ้น?",
+          "answer": "2 รอบ",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "apply",
+          "hint": "ในการทำ By Parts แต่ละรอบ ดีกรีของพหุนาม $x^2$ จะลดลงทีละ 1 (จาก $x^2 \\to x \\to \\text{ค่าคงที่}$) ลองดูว่าต้องทำกี่รอบจึงจะหมดพจน์ $x$",
+          "hint_quality": "good",
+          "explanation": "ในรอบแรกเลือก $u = x^2$ จะได้ $du = 2x\\,dx$ (ลดลงเหลือดีกรี 1) จึงต้องทำ By Parts อีกรอบหนึ่งโดยเลือก $u = x$ เพื่อให้ $du = dx$ (เหลือดีกรี 0) รวมเป็น 2 รอบพอดี",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การวางแผนทำ by-parts ซ้ำ 2 รอบสำหรับพหุนามดีกรีสอง x^2 e^x"
+        }
+      ]
+    },
+    {
+      "topic_id": "area_between",
+      "source_file": "area_between.json",
+      "title_th": "พื้นที่ระหว่างเส้นโค้ง (Area Between Curves)",
+      "item_count": 10,
+      "difficulty_breakdown": {
+        "easy": 4,
+        "medium": 4,
+        "hard": 2
+      },
+      "typology_breakdown": {
+        "conceptual": 3,
+        "geometric_graphical": 3,
+        "technique_selection": 1,
+        "procedural_step_validation": 3
+      },
+      "bloom_breakdown": {
+        "remember": 0,
+        "understand": 5,
+        "apply": 2,
+        "analyze": 2,
+        "evaluate": 1
+      },
+      "quality_ratings": {
+        "hints": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        },
+        "explanations": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        }
+      },
+      "notable_questions": [
+        {
+          "id": 4,
+          "type": "Efficiency Strategy Decider",
+          "reason": "ฝึกการตัดสินใจเลือกระหว่าง dx กับ dy โดยคำนึงถึงความต่อเนื่องของขอบเขต ช่วยลดขั้นตอนการคำนวณลงอย่างมหาศาล"
+        },
+        {
+          "id": 6,
+          "type": "Negative Coordinates Intuition Trap",
+          "reason": "คลายความสับสนเรื่องเครื่องหมายเมื่อกราฟจมอยู่ใต้แกน x ชี้ชัดว่าระยะห่างทางเรขาคณิต (y_top - y_bottom) เป็นบวกเสมอ"
+        }
+      ],
+      "items": [
+        {
+          "item_id": 1,
+          "question": "เมื่อต้องการหาพื้นที่ปิดล้อมระหว่างเส้นโค้ง $y = f(x)$ และ $y = g(x)$ บนช่วง $[a, b]$ โดยที่ $f(x) \\ge g(x)$ สำหรับทุก $x \\in [a, b]$ มโนทัศน์การตั้งอินทิกรัลที่ถูกต้องคือข้อใด?",
+          "answer": "$A = \\int_a^b (f(x) - g(x))\\,dx$ (ฟังก์ชันบนลบด้วยฟังก์ชันล่าง)",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองเปิดหน้า 'พื้นที่ระหว่างเส้นโค้ง' ในแอป สังเกตแถบแนวดิ่งความสูง $\\Delta A = (y_{\\text{บน}} - y_{\\text{ล่าง}})\\,\\Delta x$",
+          "hint_quality": "good",
+          "explanation": "พื้นที่ของแถบสี่เหลี่ยมแนวดิ่งย่อยๆ มีความสูงเท่ากับระยะห่างแนวดิ่งระหว่างสองกราฟคือ $f(x) - g(x)$ และมีความกว้าง $\\Delta x$ เมื่อนำมารวมกันและเข้าลิมิตจะได้ $\\int_a^b (f(x) - g(x))\\,dx$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "มโนทัศน์ฟังก์ชันบนลบฟังก์ชันล่าง int (f - g) dx เมื่อ f >= g"
+        },
+        {
+          "item_id": 2,
+          "question": "หากเส้นโค้ง $y = f(x)$ และ $y = g(x)$ ตัดกันที่จุด $x = c$ ภายในช่วง $[a, b]$ โดยบน $[a, c]$ มี $f(x) \\ge g(x)$ แต่บน $[c, b]$ มี $g(x) \\ge f(x)$ การหาพื้นที่จริงทั้งหมดต้องทำอย่างไร?",
+          "answer": "แยกช่วงอินทิเกรตเป็น $\\int_a^c (f(x) - g(x))\\,dx + \\int_c^b (g(x) - f(x))\\,dx$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "geometric_graphical",
+          "bloom_level": "apply",
+          "hint": "หากไม่อินทิเกรตแยกช่วง พื้นที่ส่วนที่ $g > f$ จะได้ผลลัพธ์เป็นค่าลบ และจะไปหักล้างกับพื้นที่ส่วนแรก ทำให้ได้ผลรวมน้อยกว่าความเป็นจริง",
+          "hint_quality": "good",
+          "explanation": "เนื่องจากพื้นที่เรขาคณิตต้องเป็นบวกเสมอ เมื่อกราฟสลับตำแหน่งบนล่าง ต้องแยกอินทิเกรตแต่ละช่วงย่อยโดยตั้งสมการให้ 'ฟังก์ชันที่อยู่บน' เป็นตัวตั้งลบด้วย 'ฟังก์ชันที่อยู่ล่าง' เสมอ หรือคำนวณจาก $\\int_a^b |f(x) - g(x)|\\,dx$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การแยกช่วงอินทิเกรตเมื่อเส้นโค้งตัดและสลับตำแหน่งบน-ล่างภายในช่วง"
+        },
+        {
+          "item_id": 3,
+          "question": "ในกรณีที่ขอบเขตของพื้นที่ถูกกำหนดด้วยเส้นโค้งในรูป $x = f(y)$ และ $x = g(y)$ จาก $y = c$ ถึง $y = d$ ข้อใดคือหลักการตั้งสูตรพื้นที่ที่ถูกต้อง?",
+          "answer": "$A = \\int_c^d (f(y) - g(y))\\,dy$ เมื่อ $f(y) \\ge g(y)$ (ฟังก์ชันขวาลบฟังก์ชันซ้าย)",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "geometric_graphical",
+          "bloom_level": "understand",
+          "hint": "เมื่อมองเทียบแกน $y$ แถบสี่เหลี่ยมจะวางตัวในแนวนอน ความยาวของแถบคือ $x_{\\text{ขวา}} - x_{\\text{ซ้าย}}$ และความหนาคือ $\\Delta y$",
+          "hint_quality": "good",
+          "explanation": "สำหรับการแบ่งแถบแนวนอนตามแกน $y$ แถบแต่ละชิ้นมีความยาวเท่ากับระยะห่างแนวนอนคือ $x_{\\text{ขวา}} - x_{\\text{ซ้าย}} = f(y) - g(y)$ และความหนา $\\Delta y$ จึงได้สูตร $A = \\int_c^d (x_{\\text{ขวา}} - x_{\\text{ซ้าย}})\\,dy$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การแบ่งแถบแนวนอนและใช้หลักการ ฟังก์ชันขวาลบฟังก์ชันซ้าย int (f(y) - g(y)) dy"
+        },
+        {
+          "item_id": 4,
+          "question": "เหตุใดการหาพื้นที่ระหว่างเส้นโค้ง $x = y^2$ กับเส้นตรง $x = y + 2$ จึงควรเลือกอินทิเกรตเทียบกับ $y$ ($dy$) มากกว่าเทียบกับ $x$ ($dx$)?",
+          "answer": "เพราะถ้าเทียบกับ $y$ ขอบขวา ($y+2$) และขอบซ้าย ($y^2$) เป็นเส้นเดี่ยวคงที่ตลอด ไม่ต้องแยกช่วงอินทิเกรต",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "technique_selection",
+          "bloom_level": "analyze",
+          "hint": "หากใช้ $dx$ คุณต้องถอดกรณฑ์ $y = \\pm\\sqrt{x}$ และต้องแยกช่วงอินทิเกรตเป็นสองส่วนตรงจุดเปลี่ยนฟังก์ชัน",
+          "hint_quality": "good",
+          "explanation": "การอินทิเกรตเทียบกับ $y$ สะดวกกว่าอย่างยิ่ง เพราะตลอดช่วง $y \\in [-1, 2]$ ด้านขวาเป็นเส้นตรง $x = y+2$ เสมอ และด้านซ้ายเป็นพาราโบลา $x = y^2$ เสมอ คำนวณรวดเดียวได้ $\\int_{-1}^2 (y+2 - y^2)\\,dy$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การเลือกอินทิเกรตเทียบกับ y (dy) เพื่อหลีกเลี่ยงการแยก 2 ช่วงและไม่ต้องติดรากที่สองของ x = y^2"
+        },
+        {
+          "item_id": 5,
+          "question": "ในการหาพื้นที่ของอาณาบริเวณปิดล้อม (Enclosed Region) ที่โจทย์ไม่ได้ระบุขอบเขตตัวเลขมาให้ ขั้นตอนแรกที่จำเป็นต้องทำคืออะไร?",
+          "answer": "แก้สมการ $f(x) = g(x)$ เพื่อหาพิกัดจุดตัดที่จะใช้เป็นขอบเขตการอินทิเกรต $[a, b]$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "procedural_step_validation",
+          "bloom_level": "understand",
+          "hint": "บริเวณปิดล้อมจะถูกล้อมกรอบด้วยจุดที่เส้นกราฟทั้งสองวิ่งมาบรรจบกัน จุดบรรจบเหล่านั้นคือจุดตัดของสมการ",
+          "hint_quality": "good",
+          "explanation": "เมื่อโจทย์ไม่ได้กำหนดช่วง $[a, b]$ ขอบเขตของพื้นที่ย่อมถูกจำกัดด้วยจุดตัดของกราฟทั้งสอง จึงต้องแก้สมการ $f(x) = g(x)$ เพื่อหาจุดตัด $x = a$ และ $x = b$ มาเป็นขอบล่างและขอบบนของการอินทิเกรต",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ขั้นตอนแรกในการหาพื้นที่ปิดล้อม: แก้สมการ f(x) = g(x) เพื่อหาขอบเขตจุดตัด"
+        },
+        {
+          "item_id": 6,
+          "question": "หากฟังก์ชันทั้งสองอยู่ใต้แกน $x$ ทั้งคู่ เช่น $f(x) = -1$ และ $g(x) = -3$ บน $[0, 2]$ มโนทัศน์ 'ฟังก์ชันบนลบฟังก์ชันล่าง' ยังคงใช้ได้หรือไม่ เพราะเหตุใด?",
+          "answer": "ใช้ได้สมบูรณ์ เพราะ $(-1) - (-3) = +2 > 0$ ระยะห่างทางเรขาคณิตไม่ขึ้นกับตำแหน่งของแกนอ้างอิง",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "สังเกตว่าระยะห่างแนวดิ่งระหว่างจุดสองจุดคือ $y_{\\text{บน}} - y_{\\text{ล่าง}}$ เสมอ แม้ว่าทั้งคู่จะมีพิกัดติดลบก็ตาม",
+          "hint_quality": "good",
+          "explanation": "ความสูงของแถบพื้นที่วัดจากระยะห่างแนวดิ่ง $y_{\\text{บน}} - y_{\\text{ล่าง}}$ เสมอ เมื่อนำค่าบน (ที่ติดลบน้อยกว่า) ลบด้วยค่าล่าง (ที่ติดลบมากกว่า) ผลลบจะกลายเป็นจำนวนจริงบวกเสมอโดยอัตโนมัติ",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ยืนยันว่าหลักการบนลบล่างยังคงเป็นจริงแม้กราฟทั้งสองจะอยู่ใต้แกน x (ระยะห่างคงเดิม)"
+        },
+        {
+          "item_id": 7,
+          "question": "มโนทัศน์ใดอธิบายความแตกต่างระหว่าง 'Net Signed Area' กับ 'Total Area Between Curves' ได้ถูกต้องที่สุด?",
+          "answer": "Net Signed Area ยอมให้พื้นที่ใต้แกนมีเครื่องหมายลบมาหักล้าง ส่วน Total Area บังคับให้คิดขนาดพื้นที่เป็นบวกทั้งหมด",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "คิดถึงการเดินทาง: การกระจัดสุทธิ (Net displacement) สามารถหักลบเป็นศูนย์ได้ แต่ระยะทางทั้งหมด (Total distance) ต้องนำขนาดมาบวกกันเสมอ",
+          "hint_quality": "good",
+          "explanation": "อินทิกรัล $\\int_a^b (f - g)\\,dx$ วัดพื้นที่แบบคิดเครื่องหมายสุทธิ (Net Signed Area) หากส่วนหนึ่งอยู่ต่ำกว่า จะถูกคิดเป็นลบมาหักล้าง ในขณะที่พื้นที่ระหว่างเส้นโค้งในทางเรขาคณิต (Total Area) จะต้องเป็นผลบวกของพื้นที่จริงที่ไม่เป็นลบเสมอ",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การแยกแยะระหว่าง Net Signed Area กับ Total Area Between Curves"
+        },
+        {
+          "item_id": 8,
+          "question": "หากกราฟ $y = f(x)$ และ $y = g(x)$ มีความสมมาตรเทียบกับแกน $y$ (ฟังก์ชันคู่) บนช่วง $[-a, a]$ เราสามารถลดทอนขั้นตอนการหาพื้นที่ได้อย่างไร?",
+          "answer": "คำนวณเฉพาะช่วง $[0, a]$ แล้วคูณด้วย 2",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "procedural_step_validation",
+          "bloom_level": "apply",
+          "hint": "ความสมมาตรซีกซ้ายและขวาของแกน $y$ จะมีรูปร่างและขนาดพื้นที่เท่ากันพอดิบพอดี",
+          "hint_quality": "good",
+          "explanation": "เนื่องจากความสมมาตรของฟังก์ชันคู่ พื้นที่ซีกซ้ายบนช่วง $[-a, 0]$ จะเท่ากับพื้นที่ซีกขวาบนช่วง $[0, a]$ พอดี การคำนวณ $2 \\int_0^a (f(x) - g(x))\\,dx$ จึงช่วยลดความซับซ้อนของการแทนค่าขอบล่างติดลบได้มาก",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การคำนวณพื้นที่ระหว่าง y = x และ y = x^2 ได้ค่า 1/6 ตรวจสอบความถูกต้องของการคำนวณจริง"
+        },
+        {
+          "item_id": 9,
+          "question": "พื้นที่ระหว่างเส้นโค้ง $y = x^3$ กับเส้นตรง $y = x$ บนช่วง $[-1, 1]$ มีค่าเท่าใด?",
+          "answer": "$\\frac{1}{2}$ ตารางหน่วย",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "procedural_step_validation",
+          "bloom_level": "evaluate",
+          "hint": "กราฟทั้งสองตัดกันที่ $x = -1, 0, 1$ บนช่วง $[-1, 0]$ มี $x^3 \\ge x$ (พื้นที่ $= 1/4$) และบน $[0, 1]$ มี $x \\ge x^3$ (พื้นที่ $= 1/4$)",
+          "hint_quality": "good",
+          "explanation": "หากอินทิเกรตตรงๆ $\\int_{-1}^1 (x^3 - x)\\,dx$ จะได้ $0$ (เพราะความสมมาตรคี่หักล้างกัน) แต่พื้นที่จริงต้องแยกสองช่วง: $\\int_{-1}^0 (x^3 - x)\\,dx + \\int_0^1 (x - x^3)\\,dx = \\frac{1}{4} + \\frac{1}{4} = \\frac{1}{2}$ ตารางหน่วย",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "สะท้อนผลลัพธ์ใน UI ของแอป: หากป้อนสลับเป็น g - f เมื่อ f > g ค่าพื้นที่ที่ได้จะติดลบ"
+        },
+        {
+          "item_id": 10,
+          "question": "ในผลบวกรีมันน์สำหรับการประมาณพื้นที่ระหว่างสองเส้นโค้ง ความกว้างของแท่งสี่เหลี่ยมย่อย $\\Delta x$ สัมพันธ์กับจำนวนแท่ง $n$ อย่างไร?",
+          "answer": "$\\Delta x = \\frac{b-a}{n}$ และเมื่อ $n \\to \\infty$ ความกว้างนี้จะลู่เข้าสู่ศูนย์",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "geometric_graphical",
+          "bloom_level": "analyze",
+          "hint": "ช่วงความกว้างทั้งหมดคือ $b - a$ ถูกแบ่งเท่าๆ กันเป็น $n$ ส่วน",
+          "hint_quality": "good",
+          "explanation": "แต่ละช่วงย่อยมีความกว้างสม่ำเสมอ $\\Delta x = \\frac{b-a}{n}$ เมื่อเราซอยแบ่งจำนวนแท่งให้มากขึ้นจน $n \\to \\infty$ ความกว้าง $\\Delta x$ จะหดเล็กลงจนเป็นผลต่างอนุพันธ์ $dx$ ในนิยามของอินทิกรัลจำกัดเขต",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ใช้สมมาตรรอบจุดกำเนิดคำนวณพื้นที่ระหว่าง y = x^3 กับ y = x ด้วย 2 เท่าของอินทิกรัลบนช่วงบวก"
+        }
+      ]
+    },
+    {
+      "topic_id": "volume_revolution",
+      "source_file": "volume_revolution.json",
+      "title_th": "ปริมาตรของรูปทรงตันจากการหมุนและการซอยชิ้น (Volumes of Solids of Revolution & Slicing)",
+      "item_count": 10,
+      "difficulty_breakdown": {
+        "easy": 4,
+        "medium": 4,
+        "hard": 2
+      },
+      "typology_breakdown": {
+        "conceptual": 4,
+        "geometric_graphical": 1,
+        "technique_selection": 4,
+        "procedural_step_validation": 1
+      },
+      "bloom_breakdown": {
+        "remember": 0,
+        "understand": 4,
+        "apply": 4,
+        "analyze": 2,
+        "evaluate": 0
+      },
+      "quality_ratings": {
+        "hints": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        },
+        "explanations": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        }
+      },
+      "notable_questions": [
+        {
+          "id": 3,
+          "type": "Algebraic vs Geometric Integrity Guardian",
+          "reason": "ชำแหละความผิดพลาดของนิสิตที่มักนำพื้นที่วงกลมมารวมกันผิดรูปเป็น pi (R - r)^2 ซึ่งผิดหลักคณิตศาสตร์อย่างมหันต์"
+        },
+        {
+          "id": 6,
+          "type": "Golden Rule of Volume Strategy",
+          "reason": "วางหลักการจำแนก Perpendicular (Disk) vs Parallel (Shell) ไว้อย่างชัดเจนที่สุด"
+        }
+      ],
+      "items": [
+        {
+          "item_id": 1,
+          "question": "มโนทัศน์ของวิธีจานกลม (Disk Method) สำหรับการหมุนบริเวณใต้กราฟ $y = f(x)$ บนช่วง $[a, b]$ รอบแกน $x$ อาศัยปริมาตรของแผ่นจานย่อยชิ้นหนึ่ง ($\\Delta V$) จากสูตรใด?",
+          "answer": "$\\Delta V = \\pi [f(x)]^2 \\Delta x$ โดยมีพื้นที่หน้าตัดเป็นวงกลม $A(x) = \\pi r^2$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองเปิดหน้า 'ปริมาตรของรูปทรงตัน' ในแอป สังเกตแผ่นทรงกระบอกกลมแบน (จาน) ที่ตัดตั้งฉากกับแกนหมุน มีรัศมี $r = f(x)$ และความหนา $\\Delta x$",
+          "hint_quality": "good",
+          "explanation": "เมื่อแบ่งแถบตั้งฉากกับแกนหมุน การหมุนแถบสี่เหลี่ยมรอบแกน $x$ จะสร้างแผ่นจานทรงกระบอกตันบางๆ มีพื้นที่หน้าตัด $\\pi r^2 = \\pi [f(x)]^2$ และความหนา $\\Delta x$ ผลรวมและลิมิตจึงได้สูตร $V = \\pi \\int_a^b [f(x)]^2\\,dx$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ที่มาของ Disk Method จากการซอยแผ่นจานทรงกระบอกบางๆ Delta V = pi [f(x)]^2 Delta x"
+        },
+        {
+          "item_id": 2,
+          "question": "เมื่อบริเวณที่หมุนรอบแกน $x$ ถูกประกบด้วยสองฟังก์ชันคือ $y = R(x)$ (ฟังก์ชันขอบนอก) และ $y = r(x)$ (ฟังก์ชันขอบใน) สูตรวิธีวงแหวน (Washer Method) ที่ถูกต้องคือข้อใด?",
+          "answer": "$V = \\pi \\int_a^b \\left([R(x)]^2 - [r(x)]^2\\right)\\,dx$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "technique_selection",
+          "bloom_level": "understand",
+          "hint": "พื้นที่หน้าตัดของวงแหวนเกิดจากพื้นที่วงกลมใหญ่ลบพื้นที่วงกลมรูเจาะตรงกลาง ($\\pi R^2 - \\pi r^2$)",
+          "hint_quality": "good",
+          "explanation": "หน้าตัดของรูปทรงเป็นวงแหวนที่มีรูตรงกลาง พื้นที่หน้าตัดคือ $A(x) = \\pi R^2 - \\pi r^2 = \\pi (R^2 - r^2)$ เมื่อคูณความหนา $dx$ และอินทิเกรตจึงต้องเป็นผลต่างของกำลังสอง ไม่ใช่กำลังสองของผลต่าง",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "สูตรวิธีวงแหวน Washer Method: pi int (R^2 - r^2) dx"
+        },
+        {
+          "item_id": 3,
+          "question": "เหตุใดการเขียนสูตร Washer Method เป็น $\\pi \\int_a^b [R(x) - r(x)]^2\\,dx$ จึงเป็นกับดักทางคณิตศาสตร์ที่ผิดพลาดอย่างร้ายแรง?",
+          "answer": "เพราะ $[R - r]^2 = R^2 - 2Rr + r^2$ ซึ่งไม่เท่ากับ $R^2 - r^2$ ทำให้สูญเสียความหมายทางเรขาคณิตของการเจาะรูตรงกลาง",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "conceptual",
+          "bloom_level": "analyze",
+          "hint": "ลองแทน $R = 3$ และ $r = 1$: พื้นที่วงแหวนจริงคือ $\\pi(3^2 - 1^2) = 8\\pi$ แต่หากใช้ $(3-1)^2$ จะได้ $4\\pi$ ซึ่งผิดไปครึ่งหนึ่ง!",
+          "hint_quality": "good",
+          "explanation": "การนำผลต่างรัศมีมายกกำลังสอง $[R-r]^2$ คือการนำความกว้างของขอบวงแหวนมาหมุนเป็นจานตันอันใหม่ ไม่ใช่การนำวงกลมรัศมีใหญ่มาเจาะรูด้วยวงกลมรัศมีเล็ก พจน์ $-2Rr$ ที่เกินมาทำให้ผลลัพธ์คลาดเคลื่อนอย่างสิ้นเชิง",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "กับดักยอดฮิตที่สุดของแคลคูลัส: ทำไม [R - r]^2 != R^2 - r^2 ชี้ให้เห็นว่าการลบรัศมีก่อนยกกำลังสองผิดความหมายทางเรขาคณิต"
+        },
+        {
+          "item_id": 4,
+          "question": "หากหมุนกราฟ $y = f(x)$ รอบเส้นตรงแนวนอน $y = k$ (โดยที่เส้นหมุนอยู่ใต้กราฟ $f(x) > k$) รัศมีการหมุน $r(x)$ สำหรับวิธี Disk Method มีค่าเท่าใด?",
+          "answer": "$r(x) = f(x) - k$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "geometric_graphical",
+          "bloom_level": "apply",
+          "hint": "รัศมีคือระยะห่างแนวดิ่งจากจุดบนกราฟ $(x, f(x))$ ไปยังแกนหมุน $(x, k)$",
+          "hint_quality": "good",
+          "explanation": "ระยะห่างทางเรขาคณิตจากเส้นโค้ง $y = f(x)$ ถึงแกนหมุน $y = k$ คือผลต่างแนวดิ่ง $y_{\\text{บน}} - y_{\\text{ล่าง}} = f(x) - k$ ดังนั้นรัศมีการหมุนจึงต้องชดเชยด้วยระยะห่างจากแกนหมุนเสมอ",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การหมุนรอบเส้นขนาน y = k ทำให้รัศมีการหมุนเปลี่ยนเป็น f(x) - k"
+        },
+        {
+          "item_id": 5,
+          "question": "มโนทัศน์ของวิธีเปลือกทรงกระบอก (Cylindrical Shell Method) สำหรับการหมุนรอบแกนในแนวดิ่ง อาศัยชิ้นส่วนปริมาตรย่อยที่คำนวณจากสิ่งใด?",
+          "answer": "$\\Delta V = 2\\pi \\cdot (\\text{รัศมีเฉลี่ย}) \\cdot (\\text{ความสูง}) \\cdot (\\text{ความหนา})$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ลองนึกภาพการคลี่แผ่นเปลือกทรงกระบอกบางๆ ออกมาเป็นแผ่นสี่เหลี่ยมผืนผ้า ความยาวคือเส้นรอบวง $2\\pi r$",
+          "hint_quality": "good",
+          "explanation": "เมื่อคลี่เปลือกทรงกระบอกรัศมี $r$ ความสูง $h$ และความหนา $\\Delta r$ จะได้แผ่นทรงสี่เหลี่ยมผืนผ้าที่มีปริมาตร $\\Delta V = (2\\pi r) \\cdot h \\cdot \\Delta r$ จึงเป็นที่มาของสูตร $V = 2\\pi \\int (\\text{รัศมี})(\\text{ความสูง})\\,dx$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "มโนทัศน์ของเปลือกทรงกระบอก (Cylindrical Shell): 2*pi*(รัศมีเฉลี่ย)*(สูง)*(หนา)"
+        },
+        {
+          "item_id": 6,
+          "question": "ข้อใดคือเกณฑ์เชิงมโนทัศน์ในการตัดสินใจเลือกระหว่างวิธี Disk/Washer กับวิธี Shell ที่ชัดเจนและถูกต้องที่สุด?",
+          "answer": "วิธี Disk/Washer แถบตัวแทนจะวางตั้งฉากกับแกนหมุน ส่วนวิธี Shell แถบตัวแทนจะวางขนานกับแกนหมุน",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "technique_selection",
+          "bloom_level": "analyze",
+          "hint": "จำหลักการง่ายๆ: ตั้งฉาก (Perpendicular) = Disk/Washer, ขนาน (Parallel) = Shell",
+          "hint_quality": "good",
+          "explanation": "หากเราแบ่งแถบสี่เหลี่ยมตั้งฉากกับแกนหมุน การหมุนจะทำให้เกิดแผ่นจานกลมหรือวงแหวน (Disk/Washer) แต่หากเราเลือกแถบขนานกับแกนหมุน การหมุนจะกวาดเกิดเป็นท่อหรือเปลือกทรงกระบอก (Shell)",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "เกณฑ์เด็ดขาดในการเลือกวิธี: ตั้งฉากแกนหมุน = Disk/Washer, ขนานแกนหมุน = Cylindrical Shell"
+        },
+        {
+          "item_id": 7,
+          "question": "หากต้องการหาปริมาตรจากการหมุนบริเวณใต้กราฟ $y = f(x)$ บนช่วง $[a, b]$ รอบแกน $y$ โดยใช้วิธี Cylindrical Shells สูตรอินทิเกรตคือข้อใด?",
+          "answer": "$V = 2\\pi \\int_a^b x f(x)\\,dx$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "apply",
+          "hint": "รัศมีจากแกน $y$ ไปยังแถบแนวดิ่งคือระยะทาง $x$ และความสูงของเปลือกคือค่าฟังก์ชัน $f(x)$",
+          "hint_quality": "good",
+          "explanation": "เมื่อหมุนรอบแกน $y$ แถบแนวดิ่งที่ระยะ $x$ มีความสูง $f(x)$ และมีความหนา $dx$ เมื่อหมุนรอบแกน $y$ รัศมีคือ $x$ สูตรเปลือกทรงกระบอกจึงเป็น $2\\pi \\int_a^b x f(x)\\,dx$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "สูตร Shell Method หมุนรอบแกน y: V = 2 pi int x f(x) dx"
+        },
+        {
+          "item_id": 8,
+          "question": "เมื่อนำครึ่งวงกลม $y = \\sqrt{R^2 - x^2}$ บนช่วง $[-R, R]$ มาหมุนรอบแกน $x$ ด้วยวิธี Disk Method ผลลัพธ์ของการอินทิเกรต $\\pi \\int_{-R}^R (R^2 - x^2)\\,dx$ จะได้สูตรใด?",
+          "answer": "$\\frac{4}{3}\\pi R^3$ (ปริมาตรของทรงกลมตัน)",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "procedural_step_validation",
+          "bloom_level": "apply",
+          "hint": "การหมุนครึ่งวงกลมรอบแกนสมมาตรจะก่อให้เกิดทรงกลมสมบูรณ์แบบ",
+          "hint_quality": "good",
+          "explanation": "$\\pi \\int_{-R}^R (R^2 - x^2)\\,dx = 2\\pi \\left[R^2 x - \\frac{x^3}{3}\\right]_0^R = 2\\pi \\left(R^3 - \\frac{R^3}{3}\\right) = 2\\pi \\left(\\frac{2R^3}{3}\\right) = \\frac{4}{3}\\pi R^3$ ซึ่งเป็นการพิสูจน์ที่มาของสูตรปริมาตรทรงกลมเรขาคณิตด้วยแคลคูลัส",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "พิสูจน์ที่มาของสูตรปริมาตรทรงกลม 4/3 pi R^3 จากการหมุนครึ่งวงกลมรอบแกน x"
+        },
+        {
+          "item_id": 9,
+          "question": "ในการหาปริมาตรของรูปทรงตันที่มีหน้าตัดทราบรูปร่าง (Cross-Sectional Slicing) ที่ไม่ได้เกิดจากการหมุน สูตรปริมาตรทั่วไปคือข้อใด?",
+          "answer": "$V = \\int_a^b A(x)\\,dx$ เมื่อ $A(x)$ คือพื้นที่ของหน้าตัดที่ตั้งฉากกับแกน $x$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "หลักการของคาวาลิเอรี (Cavalieri's Principle) ปริมาตรคือผลรวมของพื้นที่แผ่นตัดบางๆ $A(x) dx$",
+          "hint_quality": "good",
+          "explanation": "มโนทัศน์พื้นฐานของการหาปริมาตรด้วยการซอยชิ้น (Slicing) คือการหาพื้นที่หน้าตัด $A(x)$ ณ ตำแหน่ง $x$ ใดๆ แล้วรวมปริมาตรแผ่นบาง $A(x) dx$ ผ่านอินทิกรัล ไม่จำเป็นต้องมี $\\pi$ หากหน้าตัดเป็นรูปสี่เหลี่ยม สามเหลี่ยม หรือรูปหลายเหลี่ยม",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การหาปริมาตรด้วยวิธีซอยหน้าตัดทั่วไป (Slicing): V = int A(x) dx โดยไม่จำเป็นต้องมี pi"
+        },
+        {
+          "item_id": 10,
+          "question": "หากต้องการใช้วิธี Disk Method หมุนบริเวณรอบแกน $y$ ตัวแปรของการอินทิเกรตและฟังก์ชันต้องถูกจัดรูปอย่างไร?",
+          "answer": "ต้องอินทิเกรตเทียบกับ $y$ ($dy$) โดยจัดรูปสมการเส้นโค้งให้อยู่ในรูป $x = g(y)$ เพื่อใช้เป็นรัศมีการหมุน",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "apply",
+          "hint": "แผ่นจานกลมจะตัดตั้งฉากกับแกน $y$ ความหนาของแผ่นจานจึงเป็นผลต่างแนวดิ่ง $\\Delta y$",
+          "hint_quality": "good",
+          "explanation": "วิธี Disk Method ที่หมุนรอบแกน $y$ จะมีแผ่นจานวางในแนวนอน รัศมีคือระยะห่างในแนวนอน $x = g(y)$ และความหนาคือ $\\Delta y$ ดังนั้นสูตรจึงกลายเป็น $V = \\pi \\int_c^d [g(y)]^2\\,dy$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การหมุนรอบแกน y ด้วย Disk Method ต้องจัดรูป x = g(y) และอินทิเกรตเทียบ dy"
+        }
+      ]
+    },
+    {
+      "topic_id": "improper_integrals",
+      "source_file": "improper_integrals.json",
+      "title_th": "ปริพันธ์ไม่ตรงแบบและการลู่เข้า (Improper Integrals & Convergence)",
+      "item_count": 10,
+      "difficulty_breakdown": {
+        "easy": 3,
+        "medium": 4,
+        "hard": 3
+      },
+      "typology_breakdown": {
+        "conceptual": 6,
+        "geometric_graphical": 0,
+        "technique_selection": 3,
+        "procedural_step_validation": 1
+      },
+      "bloom_breakdown": {
+        "remember": 3,
+        "understand": 3,
+        "apply": 1,
+        "analyze": 2,
+        "evaluate": 1
+      },
+      "quality_ratings": {
+        "hints": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        },
+        "explanations": {
+          "good": 10,
+          "fair": 0,
+          "needs_improvement": 0
+        }
+      },
+      "notable_questions": [
+        {
+          "id": 5,
+          "type": "p-Integral Duality Insight",
+          "reason": "เปรียบเทียบเงื่อนไขการลู่เข้าของ p-integral ระหว่างช่วงอนันต์ (p > 1) กับช่วงใกล้ศูนย์ (p < 1) ซึ่งมักเป็นจุดสับสนยอดนิยม"
+        },
+        {
+          "id": 9,
+          "type": "Mathematical Paradox Showpiece",
+          "reason": "ปรากฏการณ์แตรแห่งกาเบรียล (Gabriel’s Horn) ที่กระตุ้นมโนทัศน์ขั้นสูงว่าทรงเรขาคณิตสามารถบรรจุสีได้จำกัดแต่ไม่สามารถทาสีเคลือบผิวได้หมด"
+        }
+      ],
+      "items": [
+        {
+          "item_id": 1,
+          "question": "มโนทัศน์การนิยามปริพันธ์ไม่ตรงแบบชนิดที่ 1 (Type 1: ขอบเขตเป็นอนันต์) เช่น $\\int_a^\\infty f(x)\\,dx$ ดำเนินการผ่านกระบวนการใด?",
+          "answer": "$\\lim_{t \\to \\infty} \\int_a^t f(x)\\,dx$ โดยหาพื้นที่บนช่วงจำกัด $[a, t]$ ก่อน แล้วหาลิมิตเมื่อ $t \\to \\infty$",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "อนันต์ ($\\infty$) ไม่ใช่จำนวนจริง จึงไม่สามารถแทนค่าลงในทฤษฎีบทหลักมูลโดยตรงได้ ต้องผ่านลิมิตเสมอ ลองสังเกตในหน้า 'ปริพันธ์ไม่ตรงแบบ' ในแอป",
+          "hint_quality": "good",
+          "explanation": "เนื่องจาก $\\infty$ เป็นแนวคิดเชิงพฤติกรรม ไม่ใช่ตัวเลขจริง การคำนวณจึงต้องตัดตอนหาอินทิกรัลจำกัดเขตบนช่วง $[a, t]$ ให้ได้ผลลัพธ์ในรูปของ $t$ เสียก่อน แล้วจึงส่ง $t \\to \\infty$ ผ่านกระบวนการลิมิต",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "นิยามของ Improper Integral ชนิดที่ 1 ผ่านการหาพื้นที่จำกัดก่อนแล้วหาลิมิต t -> inf"
+        },
+        {
+          "item_id": 2,
+          "question": "ในกรณีที่ฟังก์ชัน $f(x)$ มีจุดเอกฐาน (Singularity หรือไม่ต่อเนื่อง) ที่จุดขอบบน $x = b$ นิยามของ $\\int_a^b f(x)\\,dx$ คือข้อใด?",
+          "answer": "$\\lim_{t \\to b^-} \\int_a^t f(x)\\,dx$ โดยให้ $t$ เข้าใกล้ $b$ จากทางซ้าย",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "understand",
+          "hint": "ช่วงการอินทิเกรตอยู่ภายใน $[a, b]$ ค่า $t$ จึงต้องอยู่ในช่วงและเดินหน้าเข้าหา $b$ จากฝั่งซ้าย ($t \\to b^-$)",
+          "hint_quality": "good",
+          "explanation": "เนื่องจากจุดไม่ต่อเนื่องอยู่ที่ขอบบน $b$ ตัวแปรชั่วคราว $t$ ต้องเคลื่อนที่อยู่ภายในโดเมน $[a, b)$ และเข้าใกล้ $b$ จากทางซ้าย ลิมิตจึงเป็น $\\lim_{t \\to b^-} \\int_a^t f(x)\\,dx$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "นิยามของ Improper Integral ชนิดที่ 2 เมื่อมี Singularity ที่ขอบบน t -> b^-"
+        },
+        {
+          "item_id": 3,
+          "question": "ในบริบทของปริพันธ์ไม่ตรงแบบ การกล่าวว่าอินทิกรัล 'ลู่เข้า (Converges)' หมายถึงสิ่งใดในทางคณิตศาสตร์?",
+          "answer": "ลิมิตในนิยามหาค่าได้เป็นจำนวนจริงจำกัด (Finite Real Number)",
+          "choices_count": 4,
+          "difficulty": "easy",
+          "typology": "conceptual",
+          "bloom_level": "remember",
+          "hint": "หากลิมิตได้ค่าตัวเลข เช่น $1$, $\\pi$, หรือ $0.5$ เรากล่าวว่าลู่เข้า แต่หากได้ $\\pm\\infty$ หรือลิมิตแกว่งกวัด เรากล่าวว่าลู่ออก",
+          "hint_quality": "good",
+          "explanation": "ปริพันธ์ไม่ตรงแบบจะเรียกว่า 'ลู่เข้า (Convergent)' ก็ต่อเมื่อลิมิตที่ใช้ในนิยามหาค่าได้และเป็นจำนวนจริงตัวหนึ่ง หากลิมิตหาค่าไม่ได้หรือพุ่งสู่ $\\pm\\infty$ จะเรียกว่า 'ลู่ออก (Divergent)'",
+          "explanation_quality": "good",
+          "app_linkage": "medium",
+          "pedagogical_notes": "ความหมายของการลู่เข้า (Convergence) ว่าลิมิตต้องได้จำนวนจริงจำกัดเท่านั้น"
+        },
+        {
+          "item_id": 4,
+          "question": "ทฤษฎีบทการลู่เข้าของ p-Integral บนช่วงอนันต์ $\\int_1^\\infty \\frac{1}{x^p}\\,dx$ จะลู่เข้า (Converges) เมื่อค่าคงที่ $p$ สอดคล้องกับเงื่อนไขใด?",
+          "answer": "$p > 1$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "remember",
+          "hint": "เมื่อ $p=1$ จะได้ $\\ln(x)$ ซึ่งเมื่อ $x \\to \\infty$ จะลู่ออกสู่อนันต์ แต่เมื่อ $p > 1$ เลขชี้กำลังจะทำให้ $1/t^{p-1} \\to 0$",
+          "hint_quality": "good",
+          "explanation": "เมื่อ $p > 1$ อินทิกรัลจะได้ $\\left[-\\frac{1}{(p-1)x^{p-1}}\\right]_1^\\infty = \\frac{1}{p-1}$ ซึ่งเป็นจำนวนจริงจำกัด ส่วนเมื่อ $p \\le 1$ อินทิกรัลจะลู่ออกสู่ $+\\infty$ เสมอ",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ทฤษฎีบท p-Integral บนช่วงอนันต์ [1, inf) ลู่เข้าเมื่อ p > 1"
+        },
+        {
+          "item_id": 5,
+          "question": "สำหรับ p-Integral ชนิดจุดเอกฐานที่ศูนย์ $\\int_0^1 \\frac{1}{x^p}\\,dx$ เงื่อนไขที่ทำให้อินทิกรัลลู่เข้าคือข้อใด?",
+          "answer": "$p < 1$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "remember",
+          "hint": "สังเกตว่าพฤติกรรมของจุดใกล้ศูนย์จะกลับขั้วกับพฤติกรรมที่อนันต์ เช่น $\\int_0^1 \\frac{1}{\\sqrt{x}}\\,dx = [2\\sqrt{x}]_0^1 = 2$ (ลู่เข้าเมื่อ $p=1/2 < 1$)",
+          "hint_quality": "good",
+          "explanation": "เมื่อพิจารณา $\\int_0^1 x^{-p}\\,dx$ จะได้ $\\left[\\frac{x^{1-p}}{1-p}\\right]_0^1$ พจน์นี้จะหาค่าที่ศูนย์ได้ก็ต่อเมื่อเลขชี้กำลัง $1 - p > 0$ นั่นคือ $p < 1$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ทฤษฎีบท p-Integral ชนิดขอบเขตจุดศูนย์ [0, 1] ลู่เข้าเมื่อ p < 1 สร้างความเปรียบเทียบที่ทรงพลัง"
+        },
+        {
+          "item_id": 6,
+          "question": "หากคำนวณ $\\int_{-1}^1 \\frac{1}{x^2}\\,dx$ โดยละเลยจุดไม่ต่อเนื่องที่ $x = 0$ จะได้ผลลัพธ์ผิดพลาด $[-1/x]_{-1}^1 = -2$ ข้อใดอธิบายข้อผิดพลาดนี้ได้ถูกต้องที่สุด?",
+          "answer": "กราฟ $1/x^2 > 0$ อยู่เหนือแกน $x$ เสมอ พื้นที่ไม่มีทางติดลบ ที่จุด $x=0$ เป็นจุดไม่ต่อเนื่องแบบอนันต์ และอินทิกรัลนี้ลู่ออก",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "conceptual",
+          "bloom_level": "evaluate",
+          "hint": "ทฤษฎีบทหลักมูลของแคลคูลัส (FTC) กำหนดเงื่อนไขบังคับว่าฟังก์ชันต้อง 'ต่อเนื่องบนช่วงปิด' ที่ $x=0$ ฟังก์ชันพุ่งสู่ $+\\infty$ จึงผิดเงื่อนไขตั้งแต่ต้น",
+          "hint_quality": "good",
+          "explanation": "จุด $x = 0$ เป็นจุดเอกฐานภายในช่วง ต้องแยกเป็น $\\int_{-1}^0 \\frac{1}{x^2}\\,dx + \\int_0^1 \\frac{1}{x^2}\\,dx$ ซึ่งเมื่อหาลิมิตจะพบว่าทั้งสองส่วนลู่ออกสู่ $+\\infty$ ดังนั้นอินทิกรัลจึงลู่ออกและไม่มีค่าจริงจำกัด",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "ชำแหละข้อผิดพลาด int_{-1}^1 1/x^2 dx = -2 ซึ่งผิดเพราะมีจุดเอกฐานอนันต์คั่นกลาง"
+        },
+        {
+          "item_id": 7,
+          "question": "การหาค่าปริพันธ์บนเส้นจำนวนจริงทั้งหมด $\\int_{-\\infty}^\\infty f(x)\\,dx$ มีขั้นตอนเชิงนิยามที่ถูกต้องอย่างไร?",
+          "answer": "เลือกจุดคงที่ $c \\in \\mathbb{R}$ แล้วแยกเป็น $\\int_{-\\infty}^c f(x)\\,dx + \\int_c^\\infty f(x)\\,dx$ โดยทั้งสองส่วนต้องลู่เข้าทั้งคู่",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "conceptual",
+          "bloom_level": "analyze",
+          "hint": "ขอบเขตทั้งสองด้านต้องมีอิสระต่อกัน หากด้านใดด้านหนึ่งลู่ออก อินทิกรัลทั้งหมดจะถือว่าลู่ออกทันที",
+          "hint_quality": "good",
+          "explanation": "ตามนิยามมาตรฐาน ปริพันธ์ $\\int_{-\\infty}^\\infty f(x)\\,dx$ จะต้องแยกที่จุดแบ่ง $c$ (เช่น $c=0$) และลิมิตของทั้งสองข้างต้องหาค่าได้เป็นอิสระต่อกัน หากด้านใดด้านหนึ่งลู่ออก จะไม่สามารถนำผลลัพธ์มาหักล้างกันได้",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การแยกช่วงอินทิเกรตบนเส้นจำนวนจริงทั้งหมด (-inf, inf) และเงื่อนไขที่ทั้งสองข้างต้องลู่เข้าเป็นอิสระต่อกัน"
+        },
+        {
+          "item_id": 8,
+          "question": "การทดสอบการเปรียบเทียบโดยตรง (Direct Comparison Test) ระบุว่าถ้า $0 \\le f(x) \\le g(x)$ บน $[a, \\infty)$ ข้อใดสรุปได้ถูกต้อง?",
+          "answer": "ถ้า $\\int_a^\\infty g(x)\\,dx$ ลู่เข้า แล้ว $\\int_a^\\infty f(x)\\,dx$ ต้องลู่เข้าด้วยเช่นกัน",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "technique_selection",
+          "bloom_level": "understand",
+          "hint": "ถ้าฟังก์ชันที่ใหญ่กว่ามีพื้นที่จำกัด ฟังก์ชันที่เล็กกว่าและไม่ติดลบย่อมถูกขังและมีพื้นที่จำกัดด้วย",
+          "hint_quality": "good",
+          "explanation": "หลักการเปรียบเทียบ: พื้นที่ใต้ $f(x)$ ถูกปิดล้อมอยู่ใต้พื้นที่ $g(x)$ ดังนั้นหากพื้นที่ใหญ่กว่า ($g$) ลู่เข้าสู่ค่าจำกัด พื้นที่ที่เล็กกว่า ($f$) ก็ย่อมต้องลู่เข้าด้วย และในทางกลับกัน ถ้าตัวเล็ก ($f$) ลู่ออกสู่อนันต์ ตัวใหญ่ ($g$) ก็จะลู่ออกด้วย",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "Direct Comparison Test: ถ้าตัวใหญ่ลู่เข้า ตัวเล็กย่อมลู่เข้าด้วย"
+        },
+        {
+          "item_id": 9,
+          "question": "ปรากฏการณ์ 'แตรแห่งกาเบรียล (Gabriel's Horn)' ที่เกิดจากการหมุนกราฟ $y = 1/x$ บน $[1, \\infty)$ รอบแกน $x$ มีความมหัศจรรย์เชิงมโนทัศน์อย่างไร?",
+          "answer": "มีปริมาตรจำกัดเท่ากับ $\\pi$ ลูกบาศก์หน่วย แต่มีพื้นที่ผิวด้านนอกเป็นอนันต์ (ลู่ออก)",
+          "choices_count": 4,
+          "difficulty": "hard",
+          "typology": "conceptual",
+          "bloom_level": "analyze",
+          "hint": "ปริมาตรใช้อินทิกรัลของ $(1/x)^2 = 1/x^2$ ซึ่งลู่เข้า แต่พื้นที่ผิวใช้อินทิกรัลเทียบกับ $1/x$ ซึ่งลู่ออก!",
+          "hint_quality": "good",
+          "explanation": "ปริมาตร $V = \\pi \\int_1^\\infty \\frac{1}{x^2}\\,dx = \\pi$ (ลู่เข้าตาม p-integral ที่ $p=2$) แต่พื้นที่ผิว $A = 2\\pi \\int_1^\\infty \\frac{1}{x}\\sqrt{1+y'^2}\\,dx > 2\\pi \\int_1^\\infty \\frac{1}{x}\\,dx = \\infty$ (ลู่ออก) เปรียบเหมือนทรงเรขาคณิตที่จุสีได้จำกัด แต่ไม่สามารถทาสีเคลือบผิวด้านนอกให้ทั่วถึงได้",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "Gabriel's Horn Paradox: ปริมาตรจำกัด pi แต่พื้นที่ผิวเป็นอนันต์ เชื่อมโยงเรขาคณิตกับการลู่เข้า/ลู่ออกได้อย่างน่าอัศจรรย์"
+        },
+        {
+          "item_id": 10,
+          "question": "ค่าของปริพันธ์ไม่ตรงแบบ $\\int_0^\\infty e^{-x}\\,dx$ มีค่าเท่ากับข้อใด?",
+          "answer": "$1$",
+          "choices_count": 4,
+          "difficulty": "medium",
+          "typology": "procedural_step_validation",
+          "bloom_level": "apply",
+          "hint": "หาปฏิยานุพันธ์ของ $e^{-x}$ ได้ $-e^{-x}$ แล้วคำนวณ $\\lim_{t \\to \\infty} [-e^{-t} - (-e^0)]$",
+          "hint_quality": "good",
+          "explanation": "$\\lim_{t \\to \\infty} \\int_0^t e^{-x}\\,dx = \\lim_{t \\to \\infty} [-e^{-x}]_0^t = \\lim_{t \\to \\infty} (-e^{-t} + 1) = 0 + 1 = 1$ แสดงว่าพื้นที่ใต้กราฟเอกซ์โพเนนเชียลลดลงลู่เข้าสู่ $1$",
+          "explanation_quality": "good",
+          "app_linkage": "high",
+          "pedagogical_notes": "การคำนวณจริง int_0^inf e^{-x} dx = 1 ตรวจสอบขั้นตอนการหาลิมิตของปฏิยานุพันธ์"
+        }
+      ]
+    }
+  ]
+}

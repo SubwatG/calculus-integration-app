@@ -1,0 +1,481 @@
+{
+  "audit_metadata": {
+    "audit_date": "2026-10-19",
+    "auditor_role": "Pedagogical UX & Instructional Design Specialist (Track 3)",
+    "project": "Calculus Integration WebApp (Streamlit)",
+    "target_directory": "/home/kitti/Documents/GitHub/calculus-integration-app",
+    "review_scope": "7 Learning Modules + Calculus Solver (8 pages, 8 solvers/utils)",
+    "evaluation_standard": "Universal Step Contract (Goal/Rule, Setup/Sub, Algebra, Domain, Insight) & Undergraduate Mathematics Pedagogy"
+  },
+  "executive_summary": {
+    "status": "APPROVED_WITH_PEDAGOGICAL_RECOMMENDATIONS",
+    "total_modules_audited": 8,
+    "contract_compliance_summary": {
+      "fully_compliant_modules": [
+        "pages/limit_approach.py (utils/limit_solver.py)",
+        "pages/tangent.py (utils/tangent_solver.py)",
+        "pages/riemann.py (utils/riemann_solver.py)",
+        "pages/substitution.py (utils/substitution_solver.py)",
+        "pages/area_between.py (utils/area_solver.py)",
+        "pages/volume_revolution.py (utils/volume_solver.py)",
+        "pages/improper_integrals.py (utils/improper_solver.py)"
+      ],
+      "partially_compliant_modules": [
+        "pages/solver.py (utils/sympy_solver.py)"
+      ]
+    },
+    "key_achievements": [
+      "ครบทั้ง 5 มิติของ Universal Step Contract ในทั้ง 7 โมดูลเฉพาะเรื่องอย่างประณีต",
+      "การแจกแจงมโนทัศน์ที่ยากให้เห็นภาพชัดเจน: การวิเคราะห์จุดรูโหว่ (Hole/Removable Discontinuity) ที่ย้ำเงื่อนไข x != a ก่อนตัดทอน, การแจกแจงกฎลูกโซ่แยกฟังก์ชันนอก/ในและอนุพันธ์ย่อย, การเปรียบเทียบ Riemann 3 วิธีพร้อม Net Signed Area, การแยกกรณี Disk/Washer ตามการมีช่องว่าง, และการแยกลิมิตของจุดเอกฐานทั้งขอบเขตและภายใน",
+      "ระบบพรีวิวสมการสด (preview_math_expr) และ Keypad ลัดที่ครอบคลุมทุกหน้า 100% (8/8 หน้า) รองรับการพิมพ์ 2x และ x^2 โดยอัตโนมัติ"
+    ],
+    "primary_ux_pedagogical_gaps": [
+      "Backend Solver Error Exposure: เมื่อนิสิตพิมพ์ syntax ผิดรุนแรง เช่น วงเล็บเปิดค้าง '(x+1' ตัว solver ฝั่ง backend ส่งคืน raw Python exception tuple เช่น ('unexpected EOF in multi-line statement', (1, 0)) ทำให้กล่อง st.error แสดงข้อความดิบ แม้ว่า preview caption ด้านบนจะแสดงคำแนะนำช่วยเหลือแล้วก็ตาม",
+      "Discrepancy in General Solver: หน้า pages/solver.py ใช้ utils/sympy_solver.py ซึ่งยังใช้การแก้ปัญหาแบบ CAS เชิงสัญลักษณ์ดั้งเดิม ทำให้เมื่อโจทย์เป็น u-sub หรือ By Parts ผลลัพธ์กระโดดข้ามขั้นตอน intermediate algebra (ต่างจาก pages/substitution.py ที่แจกแจงละเอียดครบ 5 ขั้น)",
+      "Area Between Keypad Ergonomics: หน้า pages/area_between.py มี Keypad ช่วยพิมพ์เฉพาะฟังก์ชัน f(x) แต่ไม่มี Keypad สำหรับ g(x)"
+    ]
+  },
+  "universal_step_contract_matrix": {
+    "definitions": {
+      "step_1_goal_rule": "(a) ระบุเป้าหมาย ทฤษฎีบท หรือกฎที่เลือกใช้อย่างชัดเจน (เช่น Power Rule, Chain Rule, u-Sub, LIATE By Parts, Disk Method, Type 1/2 Improper)",
+      "step_2_setup_sub": "(b) แสดงการแทนค่านิพจน์จริง ไม่ใช่แค่เขียนสูตรลอย (เช่น f(a), g'(x), u=x^2, du/dx=2x, Delta x=(b-a)/n, x_i*, R(x), r(x))",
+      "step_3_algebra": "(c) แสดงการจัดรูปพีชคณิตระหว่างทาง (Intermediate Algebra) การแยกตัวประกอบ การตัดทอน การเปลี่ยนตัวแปร การหาปฏิยานุพันธ์ ไม่กระโดดข้าม",
+      "step_4_domain_check": "(d) ตรวจสอบเงื่อนไขความถูกต้องของโดเมนและขอบเขต (เช่น x!=2 ก่อนตัดทอน, ความต่อเนื่องบนช่วงปิด, R(x)>=r(x)>=0, โดเมน u>0, จุดเอกฐาน)",
+      "step_5_result_insight": "(e) ผลลัพธ์แม่นตรง (เศษส่วน/pi/e/sqrt) พร้อมการตีความเชิงมโนทัศน์ (Conceptual Insight) เช่น ความชันบอกแนวโน้มฟังก์ชัน, Riemann error direction, Net signed area, การลู่เข้า/ลู่ออก)"
+    },
+    "compliance_table": {
+      "pages/limit_approach.py": {
+        "goal_rule": "PASS",
+        "setup_sub": "PASS",
+        "algebra": "PASS",
+        "domain_check": "PASS",
+        "result_insight": "PASS",
+        "overall_score": "5/5"
+      },
+      "pages/tangent.py": {
+        "goal_rule": "PASS",
+        "setup_sub": "PASS",
+        "algebra": "PASS",
+        "domain_check": "PASS",
+        "result_insight": "PASS",
+        "overall_score": "5/5"
+      },
+      "pages/riemann.py": {
+        "goal_rule": "PASS",
+        "setup_sub": "PASS",
+        "algebra": "PASS",
+        "domain_check": "PASS",
+        "result_insight": "PASS",
+        "overall_score": "5/5"
+      },
+      "pages/substitution.py": {
+        "goal_rule": "PASS",
+        "setup_sub": "PASS",
+        "algebra": "PASS",
+        "domain_check": "PASS",
+        "result_insight": "PASS",
+        "overall_score": "5/5"
+      },
+      "pages/area_between.py": {
+        "goal_rule": "PASS",
+        "setup_sub": "PASS",
+        "algebra": "PASS",
+        "domain_check": "PASS",
+        "result_insight": "PASS",
+        "overall_score": "5/5"
+      },
+      "pages/volume_revolution.py": {
+        "goal_rule": "PASS",
+        "setup_sub": "PASS",
+        "algebra": "PASS",
+        "domain_check": "PASS",
+        "result_insight": "PASS",
+        "overall_score": "5/5"
+      },
+      "pages/improper_integrals.py": {
+        "goal_rule": "PASS",
+        "setup_sub": "PASS",
+        "algebra": "PASS",
+        "domain_check": "PASS",
+        "result_insight": "PASS",
+        "overall_score": "5/5"
+      },
+      "pages/solver.py": {
+        "goal_rule": "PARTIAL",
+        "setup_sub": "PASS",
+        "algebra": "PARTIAL",
+        "domain_check": "PARTIAL",
+        "result_insight": "PASS",
+        "overall_score": "3.5/5"
+      }
+    }
+  },
+  "detailed_module_audits": [
+    {
+      "id": "module_1_limit",
+      "page_path": "pages/limit_approach.py",
+      "solver_path": "utils/limit_solver.py",
+      "title": "ลิมิตและการเข้าใกล้ (Limits and Approach)",
+      "contract_compliance": {
+        "goal_rule": {
+          "rating": "EXEMPLARY",
+          "evidence": "ระบุชื่อเทคนิคชัดเจน เช่น 'การตรวจสอบการแทนค่าเบื้องต้น (Preliminary Substitution)', 'การจัดรูปพีชคณิต (แยกตัวประกอบ / Factoring)', 'การใช้สังยุค (Conjugate)', 'ทฤษฎีบทลิมิตตรีโกณมิติพื้นฐาน', 'การวิเคราะห์ลิมิตทางเดียว'"
+        },
+        "setup_substitution": {
+          "rating": "EXEMPLARY",
+          "evidence": "แสดงการแทนค่าจุด x = a ลงในเศษและส่วนจนได้ 0/0 (Indeterminate Form) พร้อมแสดงตัวอย่างค่าทดสอบตัวเลขทางซ้ายและขวา (เช่น x = 1.9, 1.99, 1.999 และ 2.1, 2.01, 2.001)"
+        },
+        "algebraic_execution": {
+          "rating": "EXEMPLARY",
+          "evidence": "แจกแจงการแยกตัวประกอบเศษและส่วน เช่น ((x-2)(x+2))/(x-2) และขั้นตอนการตัดทอนตัวร่วมที่เหลือ x+2 ก่อนจะทำการแทนค่ารอบใหม่"
+        },
+        "domain_boundary_check": {
+          "rating": "EXEMPLARY",
+          "evidence": "ย้ำเงื่อนไขทางคณิตศาสตร์อย่างเข้มงวด: 'เพราะการหา lim_{x->2} หมายถึง x != 2 ตัวร่วมจึงไม่เป็นศูนย์และตัดทอนได้อย่างถูกต้อง', ตรวจจับจุดแกว่งกวัด (AccumulationBounds เช่น sin(1/x)) และตรวจจับ One-sided domain boundary (เช่น sqrt(x) ที่มีเฉพาะลิมิตทางขวา)"
+        },
+        "result_insight": {
+          "rating": "EXEMPLARY",
+          "evidence": "สรุปผลค่าลิมิตพร้อมความหมายเรขาคณิต เช่น อธิบายเส้นกำกับแนวดิ่ง (Vertical Asymptote) เมื่อได้ c/0, อธิบายรอยกระโดด (Jump Discontinuity) เมื่อลิมิตซ้ายขวาไม่เท่ากัน, และอธิบายรูโหว่ (Removable Discontinuity)"
+        }
+      },
+      "pedagogical_clarity_strengths": [
+        "คำอธิบายจุดรูโหว่ (Removable Discontinuity): ป้องกันความเข้าใจผิดที่พบบ่อยในนิสิตปี 1 ที่มักคิดว่า f(a) คือค่าลิมิต โดยชี้ให้เห็นว่าฟังก์ชันไม่นิยามที่จุดนั้นแต่ลิมิตหาค่าได้",
+        "ตารางค่าตัวเลขลู่เข้า (Approximation Table) แสดงผลควบคู่กับกราฟและการจัดรูปพีชคณิต ทำให้นิสิตเห็นภาพการลู่เข้าทั้ง 3 มิติ (ตัวเลข, เรขาคณิต, สัญลักษณ์)"
+      ],
+      "pedagogical_limitations": [
+        "ยังไม่มีการสาธิตกฎของโลปีตาล (L'Hopital's Rule) ร่วมกับ 0/0 ซึ่งในระดับอุดมศึกษานิสิตมักใช้ควบคู่กัน (อย่างไรก็ดี ในบริบทแคลคูลัส 1 ช่วงต้น การเน้นการจัดรูปพีชคณิตตรงตามวัตถุประสงค์การเรียนรู้)"
+      ],
+      "student_input_ux_error_handling": {
+        "keypad_status": "มี Math Keypad แบบยุบ/ขยายได้ (kp_lim)",
+        "live_preview": "มี preview_math_expr แสดงผล LaTeX สด และแสดงคำแนะนำการป้อนสมการ",
+        "syntax_resilience": "รองรับ 2x และ x^2 โดยสมบูรณ์ผ่าน TRANSFORMATIONS",
+        "error_reporting_pitfall": "เมื่อวงเล็บไม่สมบูรณ์ เช่น '(x+1' กล่องข้อความ st.error แสดง 'ไม่สามารถคำนวณได้: ('unexpected EOF in multi-line statement', (1, 0))' ซึ่งเป็นข้อความจาก Python parser ควรสรุปเป็นคำแนะนำภาษาไทยที่เป็นมิตร"
+      }
+    },
+    {
+      "id": "module_2_tangent",
+      "page_path": "pages/tangent.py",
+      "solver_path": "utils/tangent_solver.py, utils/sympy_solver.py",
+      "title": "อนุพันธ์และเส้นสัมผัสกราฟ (Derivatives and Tangent Lines)",
+      "contract_compliance": {
+        "goal_rule": {
+          "rating": "EXEMPLARY",
+          "evidence": "ระบุเป้าหมายหาสมการเส้นตรงสัมผัส y - f(a) = f'(a)(x - a), ระบุกฎการหาอนุพันธ์ชัดเจน: กฎลูกโซ่ (Chain Rule), กฎกำลัง (Power Rule), กฎผลคูณ (Product Rule), กฎผลหาร (Quotient Rule)"
+        },
+        "setup_substitution": {
+          "rating": "EXEMPLARY",
+          "evidence": "แยกขั้นตอนคำนวณพิกัด y ของจุดสัมผัส f(a), หาฟังก์ชันความชัน f'(x), และคำนวณความชันเฉพาะจุด m = f'(a)"
+        },
+        "algebraic_execution": {
+          "rating": "EXEMPLARY",
+          "evidence": "แจกแจงกฎลูกโซ่อย่างละเอียด กำหนด u = g(x) และ du/dx = g'(x), แสดง outer derivative คูณ inner derivative เช่น cos(x^2) * (2x) = 2x cos(x^2), จากนั้นแสดงการกระจายรูปจุดและความชันสู่รูปความชัน-จุดตัดแกน y = mx + c"
+        },
+        "domain_boundary_check": {
+          "rating": "EXEMPLARY",
+          "evidence": "ตรวจจับจุดที่หาอนุพันธ์ไม่ได้อย่างรัดกุม: จุดมุมหัก (Corner point เช่น Abs(x) ที่ 0 ซึ่งลิมิตซ้าย != ขวา -1 != 1), จุดสัมผัสแนวดิ่ง (Vertical tangent เช่น x^(1/3) ที่ 0 ความชันพุ่งสู่อนันต์), และจุดนอกโดเมน (เช่น 1/(x-2) ที่ 2, sqrt(x) ที่ -1)"
+        },
+        "result_insight": {
+          "rating": "EXEMPLARY",
+          "evidence": "ให้มโนทัศน์ทางเรขาคณิต: ทิศทางความชัน (m > 0 กราฟเพิ่ม, m < 0 กราฟลด, m = 0 จุดวกกลับ/จุดเปลี่ยนเว้า), การประมาณค่าเชิงเส้น (Linear Approximation L(x)), และสมการเส้นแนวฉาก (Normal Line y - f(a) = -1/m (x - a))"
+        }
+      },
+      "pedagogical_clarity_strengths": [
+        "การแจกแจงกฎลูกโซ่ (Chain Rule Decomposition): หนึ่งในปัญหาคลาสสิกของนิสิตคือลืม 'ดิฟไส้' ระบบแสดงขั้นตอน u = g(x) และคูณ du/dx ชัดเจนมาก",
+        "การแสดงเส้นแนวฉาก (Normal Line) ควบคู่กับเส้นสัมผัส ช่วยปูพื้นฐานสู่ฟิสิกส์และแคลคูลัสเวกเตอร์"
+      ],
+      "pedagogical_limitations": [
+        "สำหรับฟังก์ชันที่ประกอบกันมากกว่า 2 ชั้น (nested composite เช่น sin(cos(x^2))) คำอธิบายจะถูกรวบเป็นกฎลูกโซ่รวม ไม่ได้แตกเป็น u, v ซ้อนกันหลายชั้น"
+      ],
+      "student_input_ux_error_handling": {
+        "keypad_status": "มี Math Keypad ครบถ้วน",
+        "live_preview": "มี preview_math_expr และการ์ดคำแนะนำไวยากรณ์",
+        "syntax_resilience": "รองรับฟังก์ชันมาตรฐานและสัญกรณ์ตรีโกณมิติ",
+        "error_reporting_pitfall": "เมื่อเกิด SyntaxError แสดง raw exception string ปรากฏใน st.error"
+      }
+    },
+    {
+      "id": "module_3_riemann",
+      "page_path": "pages/riemann.py",
+      "solver_path": "utils/riemann_solver.py",
+      "title": "ผลบวกรีมันน์ (Riemann Sums)",
+      "contract_compliance": {
+        "goal_rule": {
+          "rating": "EXEMPLARY",
+          "evidence": "ระบุสูตรแบ่งช่วงย่อย Delta x = (b - a)/n, นิยามจุดสุ่มตัวอย่าง x_i* (Left, Right, Midpoint), และสูตรผลรวมรีมันน์ในรูปซิกม่า sum_{i=1}^n f(x_i*) Delta x"
+        },
+        "setup_substitution": {
+          "rating": "EXEMPLARY",
+          "evidence": "แทนค่าขอบเขต a, b และจำนวนช่วง n ลงใน Delta x และแสดงเซตของจุดสุ่มตัวอย่างทั้งหมด (เช่น x_i in {0.5, 1.0, 1.5, 2.0})"
+        },
+        "algebraic_execution": {
+          "rating": "EXEMPLARY",
+          "evidence": "แจกแจงการประเมินความสูงของแต่ละแท่งสี่เหลี่ยม f(x_i*), นำความสูงมารวมกัน sum f(x_i*), แล้วคูณด้วย Delta x (ไม่ข้ามไปคำตอบสุดท้าย), สำหรับพหุนามดีกรี <= 3 แสดงสูตรผลรวมรูปปิด R_n(n) ผ่านสูตรกำลังสอง/สาม"
+        },
+        "domain_boundary_check": {
+          "rating": "EXEMPLARY",
+          "evidence": "ตรวจสอบจุดเอกฐานบนจุดสุ่มตัวอย่าง (ป้องกันการหารด้วยศูนย์ระหว่างช่วงย่อย), บังคับ n >= 1 และตรวจสอบ a < b"
+        },
+        "result_insight": {
+          "rating": "EXEMPLARY",
+          "evidence": "เปรียบเทียบกับปริพันธ์จำกัดเขตจริง int_a^b f(x)dx, แสดงค่าคลาดเคลื่อน (Error) และทิศทาง (Underestimate vs Overestimate เชื่อมโยงกับ f'(x)), และไฮไลต์สำคัญคือ 'พื้นที่คิดเครื่องหมาย (Net Signed Area)' เมื่อ f(x) < 0"
+        }
+      },
+      "pedagogical_clarity_strengths": [
+        "การเปรียบเทียบ 3 วิธีพร้อมกัน (Left, Midpoint, Right): ทำให้นิสิตเห็นชัดว่า Midpoint ลู่เข้าเร็วกว่าที่อัตรา O(1/n^2) เทียบกับ O(1/n) ของจุดปลาย",
+        "การอธิบาย Net Signed Area: ชี้แจงชัดเจนว่าผลรวมติดลบเกิดจากแท่งสี่เหลี่ยมอยู่ใต้แกน x ทำให้ค่าฟังก์ชันเป็นลบ ไม่ใช่ข้อผิดพลาดในการคำนวณ",
+        "ตารางแจกแจงแท่งสี่เหลี่ยม (Subinterval Breakdown Table) แสดง i, x_i*, f(x_i*), และพื้นที่แท่ง ช่วยสร้างฐานคิดรูปธรรมก่อนเข้าสู่สัญลักษณ์แอบสแตรกต์"
+      ],
+      "pedagogical_limitations": [
+        "เมื่อ n มีขนาดใหญ่มาก (เช่น n > 100) รายการแจกแจงความสูงจะยาวจนต้องถูกย่อ (...)"
+      ],
+      "student_input_ux_error_handling": {
+        "keypad_status": "มี Math Keypad ครบถ้วน",
+        "live_preview": "มี preview_math_expr และรองรับสัญกรณ์ตรีโกณ/เลขชี้กำลัง",
+        "syntax_resilience": "รองรับ 2x, x^2 ได้ดี",
+        "error_reporting_pitfall": "Syntax error ยังคงคืน string จาก Python parser"
+      }
+    },
+    {
+      "id": "module_4_substitution",
+      "page_path": "pages/substitution.py",
+      "solver_path": "utils/substitution_solver.py",
+      "title": "เทคนิคการอินทิเกรต (Integration Techniques: u-Sub & By Parts)",
+      "contract_compliance": {
+        "goal_rule": {
+          "rating": "EXEMPLARY",
+          "evidence": "ระบุเทคนิค u-Substitution โดยเลือกฟังก์ชันก้อนในที่มีอนุพันธ์คูณร่วมอยู่, หรือระบุเทคนิค By Parts ตามสูตร int u dv = uv - int v du พร้อมอ้างอิงหลักเกณฑ์ LIATE ชัดเจน"
+        },
+        "setup_substitution": {
+          "rating": "EXEMPLARY",
+          "evidence": "ใน u-Sub: แสดงการกำหนด u = g(x), คำนวณ du = g'(x)dx, และจัดรูป dx = du/g'(x); ใน By Parts: กำหนด u และ dv, คำนวณ du และ v = int dv"
+        },
+        "algebraic_execution": {
+          "rating": "EXEMPLARY",
+          "evidence": "แสดงการแทนค่า u และ dx ลงในโจทย์จนตัวแปร x ตัดทอนหมดเกลี้ยงเหลือ int f(u)du, อินทิเกรตเทียบกับ u, แล้วแสดงขั้นตอนแทนค่ากลับ (Back-substitution) สู่ตัวแปร x เดิม พร้อมบวกค่าคงที่ + C"
+        },
+        "domain_boundary_check": {
+          "rating": "EXEMPLARY",
+          "evidence": "มีขั้นตอนเฉพาะ 'เงื่อนไขโดเมน (Domain restriction)' เช่น ฟังก์ชันต่อเนื่องบน R, หรือ x > 0 เมื่อมี ln(x), x != 0 เมื่อมี 1/x"
+        },
+        "result_insight": {
+          "rating": "EXEMPLARY",
+          "evidence": "แสดงผลลัพธ์แม่นตรงในรูปพีชคณิตพร้อมค่าคงที่ของการอินทิเกรต + C และการตรวจสอบความถูกต้องด้วยการดิฟกลับ"
+        }
+      },
+      "pedagogical_clarity_strengths": [
+        "การแจกแจง By Parts ตามลำดับ LIATE (Logarithmic, Inverse trig, Algebraic, Trigonometric, Exponential) ช่วยให้นิสิตมีหลักคิดที่เป็นระบบในการเลือก u และ dv",
+        "การแสดงการตัดทอนตัวแปรเดิม (Variable Elimination) ใน u-Sub ช่วยตอกย้ำว่าอินทิกรัลใหม่ต้องไม่หลงเหลือตัวแปร x อยู่เลย"
+      ],
+      "pedagogical_limitations": [
+        "ยังไม่รองรับเทคนิค By Parts แบบทำซ้ำหลายรอบ (Repeated / Tabular By Parts) หรือกรณีวนกลับมาเป็นอินทิกรัลเดิม (Looping By Parts เช่น e^x sin(x)) ซึ่งจะตกไปเป็นวิธี standard/CAS แทน",
+        "ยังไม่มีการครอบคลุมเทคนิค Trigonometric Substitution และ Partial Fractions แบบแยกขั้นตอน"
+      ],
+      "student_input_ux_error_handling": {
+        "keypad_status": "มี Math Keypad ครบถ้วน",
+        "live_preview": "มี preview_math_expr",
+        "syntax_resilience": "รองรับ e^(2x) และฟังก์ชันมาตรฐาน",
+        "error_reporting_pitfall": "เมื่อป้อนว่างเปล่ามีข้อความไทยชัดเจน แต่เมื่อ syntax พังแสดง raw parser tuple"
+      }
+    },
+    {
+      "id": "module_5_area_between",
+      "page_path": "pages/area_between.py",
+      "solver_path": "utils/area_solver.py",
+      "title": "พื้นที่ระหว่างเส้นโค้ง (Area Between Curves)",
+      "contract_compliance": {
+        "goal_rule": {
+          "rating": "EXEMPLARY",
+          "evidence": "ระบุสูตรพื้นที่เรขาคณิต A = int_a^b |f(x) - g(x)| dx และอธิบายเหตุผลของการใช้ค่าสัมบูรณ์เพื่อไม่ให้พื้นที่หักล้างกัน"
+        },
+        "setup_substitution": {
+          "rating": "EXEMPLARY",
+          "evidence": "แสดงผลต่าง f(x) - g(x), แก้สมการหาจุดตัด f(x) - g(x) = 0 บนช่วง [a, b]"
+        },
+        "algebraic_execution": {
+          "rating": "EXEMPLARY",
+          "evidence": "เมื่อพบจุดตัดภายในช่วง (Crossings) ระบบจะแบ่งการคำนวณออกเป็นช่วงย่อย (Subintervals) พร้อมตรวจสอบว่าช่วงใด f >= g และช่วงใด g >= f แล้วปลดค่าสัมบูรณ์ออกอย่างถูกต้อง คำนวณอินทิกรัลแต่ละช่วงแล้วนำมารวมกัน A = A1 + A2"
+        },
+        "domain_boundary_check": {
+          "rating": "EXEMPLARY",
+          "evidence": "ตรวจสอบความต่อเนื่องของทั้งสองฟังก์ชันบนช่วง [a, b], ปฏิเสธจุดเอกฐานภายในช่วง (เช่น 1/(x-2) บน [0, 3]), และตรวจจับตัวแปรไม่ตรงกัน"
+        },
+        "result_insight": {
+          "rating": "EXEMPLARY",
+          "evidence": "สรุปผลลัพธ์ทั้งในรูปเศษส่วนแม่นตรงและทศนิยม พร้อมอธิบายความแตกต่างระหว่างพื้นที่เรขาคณิต (Geometric Area >= 0) กับผลลัพธ์อินทิกรัลปกติที่ไม่มีค่าสัมบูรณ์"
+        }
+      },
+      "pedagogical_clarity_strengths": [
+        "การแบ่งช่วงย่อยอัตโนมัติเมื่อเส้นโค้งตัดกัน (Handling Curve Crossings): เป็นจุดที่นิสิตมักทำผิดมากที่สุด (มักอินทิเกรตช่วงเดียวตั้งแต่ต้นจนจบทำให้พื้นที่หักล้างกัน) ระบบนี้แก้ปัญหานี้ได้อย่างสมบูรณ์",
+        "การระบุชัดเจนว่าช่วงใดยกเส้นบนลบเส้นล่าง (Upper minus Lower curve) สร้างความมั่นใจในเชิงเรขาคณิต"
+      ],
+      "pedagogical_limitations": [
+        "ปัจจุบันรองรับเฉพาะการอินทิเกรตเทียบกับแกน x (dx) ยังไม่รองรับการอินทิเกรตเทียบกับแกน y (dy) สำหรับกรณีเส้นโค้งที่เขียนในรูป x = f(y) (เช่น พาราโบลาตะแคง)"
+      ],
+      "student_input_ux_error_handling": {
+        "keypad_status": "มี Math Keypad เฉพาะช่อง f(x) แต่ขาด Keypad สำหรับช่อง g(x)",
+        "live_preview": "มี preview สดแยกช่อง f(x) และ g(x)",
+        "syntax_resilience": "ตรวจสอบตัวแปรตรงกันระหว่าง f และ g อย่างแม่นยำ",
+        "error_reporting_pitfall": "ขาด Keypad ช่อง g(x) ทำให้นิสิตบนแท็บเล็ต/มือถือพิมพ์ยากขึ้นเล็กน้อย"
+      }
+    },
+    {
+      "id": "module_6_volume_revolution",
+      "page_path": "pages/volume_revolution.py",
+      "solver_path": "utils/volume_solver.py",
+      "title": "ปริมาตรของรูปทรงตันจากการหมุน (Solids of Revolution)",
+      "contract_compliance": {
+        "goal_rule": {
+          "rating": "EXEMPLARY",
+          "evidence": "ระบุการเลือกวิธีอย่างมีหลักการ: วิธีจาน (Disk Method: pi int [R(x)]^2 dx) เมื่อพื้นที่แนบชิดแกนหมุน และวิธีวงแหวน (Washer Method: pi int ([R(x)]^2 - [r(x)]^2) dx) เมื่อมีช่องว่างรูกลวงตรงกลาง"
+        },
+        "setup_substitution": {
+          "rating": "EXEMPLARY",
+          "evidence": "ระบุแกนหมุน (แกน x), แจกแจงรัศมีนอก R(x) และรัศมีใน r(x) แยกกันชัดเจน พร้อมระบุตัวแปรการอินทิเกรต dx และช่วง [a, b]"
+        },
+        "algebraic_execution": {
+          "rating": "EXEMPLARY",
+          "evidence": "แสดงสูตรพื้นที่หน้าตัด A(x) = pi ([R(x)]^2 - [r(x)]^2), กระจายพจน์พีชคณิต, คำนวณปฏิยานุพันธ์, และแทนค่าขอบเขตตามทฤษฎีบทมูลฐานของแคลคูลัส"
+        },
+        "domain_boundary_check": {
+          "rating": "EXEMPLARY",
+          "evidence": "ตรวจสอบความต่อเนื่องบนช่วงปิด [a, b], บังคับเงื่อนไข R(x) >= r(x) >= 0, และปฏิเสธกรณี Washer ที่ไม่ได้ระบุรัศมีใน r(x)"
+        },
+        "result_insight": {
+          "rating": "EXEMPLARY",
+          "evidence": "แสดงค่าปริมาตรแม่นตรงติดค่า pi ควบคู่กับค่าทศนิยมประมาณการ (ลูกบาศก์หน่วย) พร้อมอธิบายมโนทัศน์การประกอบกันของแผ่นจานบางๆ n แผ่น"
+        }
+      },
+      "pedagogical_clarity_strengths": [
+        "การอธิบายความแตกต่างระหว่าง Disk กับ Washer โดยใช้ภาพของช่องว่าง (Hollow Core) ช่วยให้นิสิตเข้าใจว่าสูตร Washer คือการนำ Disk ใหญ่มาลบเจาะรูด้วย Disk เล็ก",
+        "ภาพจำลอง 3 มิติ (3D Mesh Visualization) ใน UI ช่วยเสริมมโนทัศน์เชิงพื้นที่ (Spatial Reasoning) ซึ่งเป็นจุดอ่อนหลักของผู้เรียนส่วนใหญ่"
+      ],
+      "pedagogical_limitations": [
+        "ปัจจุบันรองรับเฉพาะการหมุนรอบแกน x (y = 0) ยังไม่รองรับการหมุนรอบแกน y หรือเส้นตรงขนานแกน เช่น y = k หรือ x = h",
+        "ยังไม่รองรับวิธีเปลือกทรงกระบอก (Cylindrical Shell Method)"
+      ],
+      "student_input_ux_error_handling": {
+        "keypad_status": "มี Math Keypad ครบถ้วน",
+        "live_preview": "มี preview สมการรัศมี R(x) และ r(x)",
+        "syntax_resilience": "ปฏิเสธวิธีที่ไม่รู้จัก (bogus method) ด้วยข้อความภาษาไทยที่ชัดเจน",
+        "error_reporting_pitfall": "SyntaxError จาก parser ยังคงมีข้อความ error ดิบ"
+      }
+    },
+    {
+      "id": "module_7_improper_integrals",
+      "page_path": "pages/improper_integrals.py",
+      "solver_path": "utils/improper_solver.py",
+      "title": "ปริพันธ์ไม่ตรงแบบ (Improper Integrals)",
+      "contract_compliance": {
+        "goal_rule": {
+          "rating": "EXEMPLARY",
+          "evidence": "จำแนกชนิดปริพันธ์ไม่ตรงแบบชัดเจน: ชนิดที่ 1 (ช่วงอนันต์ [a, inf), (-inf, b], (-inf, inf)) และ ชนิดที่ 2 (จุดเอกฐานที่ขอบล่าง, ขอบบน, หรือจุดภายในช่วง), เขียนสัญลักษณ์ลิมิตกำกับทุกกรณี เช่น lim_{t->inf} int_a^t หรือ lim_{t->0^+} int_t^1"
+        },
+        "setup_substitution": {
+          "rating": "EXEMPLARY",
+          "evidence": "แทนค่าพารามิเตอร์ t ในขอบเขตของอินทิกรัลจำกัดเขต และระบุตำแหน่งของจุดเอกฐาน (Singularity Point)"
+        },
+        "algebraic_execution": {
+          "rating": "EXEMPLARY",
+          "evidence": "หาปฏิยานุพันธ์ F(x), แทนค่าขอบเขตติดตัวแปร t ได้ [F(x)]_a^t, แล้วคำนวณลิมิตเมื่อ t เข้าสู่เป้าหมายทีละขั้นตอน"
+        },
+        "domain_boundary_check": {
+          "rating": "EXEMPLARY",
+          "evidence": "ตรวจจับจุดเอกฐานภายในช่วง (Interior Singularity เช่น 1/(x-1) บน [0, 2]) และบังคับแยก 2 ช่วงย่อย พร้อมย้ำหลักการสำคัญ: 'หากอินทิกรัลย่อยฝั่งใดฝั่งหนึ่งลู่ออก ทั้งปริพันธ์จะลู่ออกทันที ห้ามนำ inf - inf มาหักล้างกัน'"
+        },
+        "result_insight": {
+          "rating": "EXEMPLARY",
+          "evidence": "ระบุสถานะชัดเจน (Converges ลู่เข้าสู่ค่าจำกัด vs Diverges ลู่ออก) พร้อมตีความพื้นที่ใต้เส้นโค้งที่ทอดยาวสู่อนันต์ว่าสามารถมีพื้นที่เป็นจำนวนจริงจำกัดได้ (Gabriel's Horn Paradox connection)"
+        }
+      },
+      "pedagogical_clarity_strengths": [
+        "การจัดการจุดเอกฐานภายใน (Interior Singularity) และการห้ามหักล้างอนันต์: เป็นการรักษาความรัดกุมทางคณิตศาสตร์ระดับอุดมศึกษาอย่างยอดเยี่ยม ป้องกันความผิดพลาดเรื่อง Cauchy Principal Value ปะปนกับนิยามมาตรฐาน",
+        "ความถูกต้องของทิศทางลิมิต: ใช้ lim_{t->a^+} สำหรับจุดเอกฐานที่ขอบล่าง และ lim_{t->b^-} สำหรับจุดเอกฐานที่ขอบบนอย่างถูกต้องตรงตามทฤษฎีบท"
+      ],
+      "pedagogical_limitations": [
+        "ยังไม่มีการเปรียบเทียบการลู่เข้าด้วย Direct Comparison Test หรือ Limit Comparison Test สำหรับฟังก์ชันที่หาปฏิยานุพันธ์ตรงๆ ไม่ได้"
+      ],
+      "student_input_ux_error_handling": {
+        "keypad_status": "มี Math Keypad พร้อมปุ่มลัดอนันต์ (Infinity button)",
+        "live_preview": "มี preview สดที่แสดงอินทิกรัลจำกัดเขต/อนันต์อย่างถูกต้อง",
+        "syntax_resilience": "รองรับ inf, +inf, -inf",
+        "error_reporting_pitfall": "ข้อผิดพลาดของไวยากรณ์ยังติดรูปแบบ tuple ของ Python parser"
+      }
+    },
+    {
+      "id": "module_8_solver",
+      "page_path": "pages/solver.py",
+      "solver_path": "utils/sympy_solver.py",
+      "title": "เครื่องคิดเลขแคลคูลัส (Calculus Solver)",
+      "contract_compliance": {
+        "goal_rule": {
+          "rating": "ACCEPTABLE",
+          "evidence": "ระบุการดำเนินการ (อินทิเกรต, อนุพันธ์, ลิมิต) พร้อมกฎพื้นฐาน เช่น Power Rule และ Chain Rule สำหรับอนุพันธ์ แต่ในส่วนอินทิเกรตยังระบุเพียง 'การวิเคราะห์ทางแคลคูลัสเชิงสัญลักษณ์' เมื่อเจอเทคนิคชั้นสูง"
+        },
+        "setup_substitution": {
+          "rating": "GOOD",
+          "evidence": "แสดงโจทย์ตั้งต้น f(x) และตัวแปรอิสระที่ตรวจจับได้ (detect_variable)"
+        },
+        "algebraic_execution": {
+          "rating": "ACCEPTABLE",
+          "evidence": "สำหรับอนุพันธ์แสดงขั้นตอนได้ดี (เช่น กฎลูกโซ่); แต่สำหรับอินทิเกรตแบบ u-sub หรือ By Parts ยังข้ามขั้นตอนพีชคณิตระหว่างทางไปสู่คำตอบสำเร็จของ SymPy โดยตรง"
+        },
+        "domain_boundary_check": {
+          "rating": "GOOD",
+          "evidence": "ตรวจสอบสถานะ finite, infinite, dne สำหรับลิมิตสองด้าน และตรวจสอบอนุพันธ์ที่จุด"
+        },
+        "result_insight": {
+          "rating": "EXEMPLARY",
+          "evidence": "มีกล่อง 'มโนทัศน์และข้อสรุป' ที่อธิบายความหมายของลิมิตสองด้าน, ทิศทางความชันของอนุพันธ์, และการตรวจสอบความถูกต้องด้วยการดิฟกลับสำหรับอินทิกรัล"
+        }
+      },
+      "pedagogical_clarity_strengths": [
+        "การตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ (Verification by Differentiation): เป็นกลวิธีสอนที่ดีมากที่ฝึกให้นิสิตตรวจคำตอบอินทิเกรตด้วยตนเองเสมอ",
+        "ส่วนสรุปข้อค้นพบเชิงมโนทัศน์ (Conceptual Summary) ให้คำอธิบายภาษาไทยที่เป็นธรรมชาติและเห็นภาพทางเรขาคณิต"
+      ],
+      "pedagogical_limitations": [
+        "ไม่ได้ดึงความสามารถของ substitution_solver.py มาใช้ในเมนูอินทิเกรต ทำให้ข้อสอบที่ต้องการขั้นตอน u-sub/by-parts ได้ขั้นตอนที่สั้นกว่าหน้า pages/substitution.py"
+      ],
+      "student_input_ux_error_handling": {
+        "keypad_status": "มี Math Keypad แบบกางออกเต็มรูปแบบ (expanded=True) พร้อมสัญลักษณ์อนันต์และตัวดำเนินการครบถ้วน",
+        "live_preview": "มี preview_math_expr และการ์ดคำแนะนำไวยากรณ์สำหรับผู้เริ่มต้น",
+        "syntax_resilience": "ดีที่สุดในบรรดาทุกโมดูล เพราะ utils/sympy_solver.py ดักจับ Exception แล้วแปลงเป็นข้อความภาษาไทยแนะนำรูปแบบ 'ไม่สามารถอ่านนิพจน์ได้ กรุณาตรวจสอบรูปแบบ เช่น x**2, sin(x), (x**2-4)/(x-2)'"
+      }
+    }
+  ],
+  "cross_cutting_ux_and_pedagogy_analysis": {
+    "progressive_disclosure": {
+      "evaluation": "EXEMPLARY",
+      "findings": "ทุกหน้ายึดหลัก Experiment-first ตามมาตรฐาน calculus-webapp-ux-review: แสดงส่วนควบคุมและกราฟพร้อมผลลัพธ์ย่อก่อน และซ่อนขั้นตอนละเอียดไว้ใน expander หรือ toggle ทำให้นิสิตไม่เกิด cognitive overload จากข้อความคณิตศาสตร์ที่ยาวเกินไปในแวบแรก"
+    },
+    "student_input_error_handling_audit": {
+      "evaluation": "GOOD_WITH_SPECIFIC_FIX_NEEDED",
+      "details": {
+        "implicit_multiplication": "ยอดเยี่ยม: นิสิตพิมพ์ '2x' หรือ '3x^2' ระบบแปลงเป็น '2*x' และ '3*x**2' ผ่าน implicit_multiplication_application โดยไม่ขึ้น error",
+        "caret_power_notation": "ยอดเยี่ยม: รองรับ 'x^2' ผ่าน convert_xor",
+        "live_preview_feedback": "ยอดเยี่ยม: ขณะพิมพ์ ถ้าสูตรยังไม่สมบูรณ์ เช่น 'sin(' ตัว preview จะขึ้นคำแนะนำเบาๆ (caption) ไม่แสดงสีแดงรบกวน",
+        "solver_backend_error_handling": "ต้องปรับปรุง: เมื่อกดปุ่มคำนวณขณะที่สูตรผิดพลาด (เช่น '(x+1' หรือ 'x + * 2') ตัว solver 7 โมดูลเฉพาะเรื่องโยนข้อความดิบ เช่น 'ไม่สามารถคำนวณได้: ('unexpected EOF in multi-line statement', (1, 0))' ออกมาทาง st.error ควรดักจับแล้วส่งข้อความแนะนำแบบเดียวกับ utils/sympy_solver.py"
+      }
+    },
+    "keypad_ergonomics": {
+      "evaluation": "VERY_GOOD",
+      "findings": "ทุกหน้าติดตั้ง Keypad ลัด 100% โดยวางไว้ใต้ช่องกรอก ช่วยเหลือนิสิตที่ใช้งานผ่านสมาร์ตโฟนหรือแท็บเล็ตได้ดีมาก ข้อสังเกตเดียวคือหน้า area_between มี keypad เฉพาะฟังก์ชัน f(x) ตัวแรก"
+    }
+  },
+  "prioritized_actionable_recommendations": [
+    {
+      "priority": "HIGH",
+      "category": "Error Handling UX",
+      "recommendation": "ทำ Error Normalization ในฟังก์ชัน _parse_input ของ solver ทั้ง 7 ตัว (limit, tangent, riemann, substitution, area, volume, improper) ให้แปลง SyntaxError/TokenError เป็นข้อความภาษาไทยที่อ่านเข้าใจง่าย เช่น 'รูปแบบสมการไม่ถูกต้อง กรุณาตรวจสอบวงเล็บปิดหรือเครื่องหมายการคำนวณ' แทนการแสดง Python parser tuple ดิบ"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Pedagogical Integration",
+      "recommendation": "เชื่อมโยง utils/substitution_solver.py เข้ากับเมนูอินทิเกรตใน pages/solver.py เพื่อให้เครื่องคิดเลขทั่วไปแสดงขั้นตอน u-sub และ By Parts ได้ลึกระดับเดียวกับโมดูลเฉพาะเรื่อง"
+    },
+    {
+      "priority": "LOW",
+      "category": "UI Ergonomics",
+      "recommendation": "เพิ่ม Math Keypad สำหรับช่องฟังก์ชัน g(x) ในหน้า pages/area_between.py เพื่อความสะดวกในการใช้งานบนอุปกรณ์พกพา"
+    }
+  ]
+}
