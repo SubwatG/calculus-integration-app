@@ -6,6 +6,11 @@
 [![Framework](https://img.shields.io/badge/Framework-Streamlit-red.svg)](https://streamlit.io/)
 [![Engine](https://img.shields.io/badge/CAS-SymPy-green.svg)](https://www.sympy.org/)
 [![Tests](https://img.shields.io/badge/Tests-Pytest-yellow.svg)](https://pytest.org/)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://calculus-integration-app-dwdsz8vq2omsddezfjvday.streamlit.app/)
+
+> 🚀 **เปิดใช้งานเว็บแอปพลิเคชันออนไลน์:** [https://calculus-integration-app-dwdsz8vq2omsddezfjvday.streamlit.app/](https://calculus-integration-app-dwdsz8vq2omsddezfjvday.streamlit.app/)  
+> 📱 **สแกน QR Code เพื่อเข้าเรียนรู้ผ่านสมาร์ตโฟน/แท็บเล็ต:**  
+> <img src="docs/calculus-app-qr.png" alt="QR Code สำหรับเข้าใช้งาน Calculus Learning Sandbox" width="160">
 
 ---
 

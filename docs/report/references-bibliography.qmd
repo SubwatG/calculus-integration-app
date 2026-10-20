@@ -1,0 +1,33 @@
+---
+title: "บรรณานุกรม"
+author: "โครงการพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้น"
+format:
+  docx:
+    reference-doc: reference.docx
+---
+
+# บรรณานุกรม
+
+### ภาษาไทย
+
+สุภัทรา เกิดมงคล, และ กัญญาภัค ภัยแคล้ว. (2562). ผลที่เกิดจากการใช้โปรแกรม The Geometer’s Sketchpad (GSP) ประกอบการจัดกิจกรรมการเรียนรู้แบบสืบเสาะหาความรู้ 5 ขั้นตอน เรื่อง การประยุกต์อินทิกรัลจำกัดเขต สำหรับนักศึกษาระดับปริญญาตรี. *วารสารวิจัย มหาวิทยาลัยเทคโนโลยีราชมงคลศรีวิชัย*, 11(2), 338–348.
+
+สุริยัน ขัดขันจง. (2567). ผลสัมฤทธิ์ทางการเรียนกระบวนวิชาเรขาคณิตวิเคราะห์และแคลคูลัสสำหรับครู เรื่อง ลิมิตและความต่อเนื่อง โดยใช้การสอนที่เน้นการสร้างมโนทัศน์ร่วมกับโปรแกรม GeoGebra สำหรับนักศึกษาระดับปริญญาตรี. *วารสารครุศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย*, 52(2), 1–15. https://doi.org/10.14456/educu.2024.25
+
+สมคิด สกุลเจริญ, และ นวพร ชลารักษ์. (2563). การพัฒนาบทเรียนคอมพิวเตอร์ช่วยสอนบนเครือข่ายอินเทอร์เน็ตเพื่อส่งเสริมทักษะการแก้ปัญหาทางคณิตศาสตร์ เรื่อง ลิมิตและความต่อเนื่อง. *วารสารศึกษาศาสตร์ มหาวิทยาลัยนเรศวร*, 22(4), 112–124.
+
+### ภาษาอังกฤษ
+
+Bressoud, D., Mesa, V., & Rasmussen, C. (2015). *Insights and Innovations in College Mathematics: The National Study of College Calculus*. Mathematical Association of America (MAA Press).
+
+Brooke, J. (1996). SUS: A 'quick and dirty' usability scale. In P. W. Jordan, B. Thomas, I. L. McClelland, & B. Weerdmeester (Eds.), *Usability Evaluation in Industry* (pp. 189–194). Taylor & Francis.
+
+Dubinsky, E. (1991). Reflective abstraction in advanced mathematical thinking. In D. Tall (Ed.), *Advanced Mathematical Thinking* (pp. 95–123). Kluwer Academic Publishers.
+
+Meagher, M. (2005). Students’ understanding of derivative in a computer algebra system (CAS) environment. *The Journal of Mathematical Behavior*, 24(2), 159–176. https://doi.org/10.1016/j.jmathb.2005.03.004
+
+Stewart, J., Clegg, D., & Watson, S. (2020). *Calculus: Early Transcendentals* (9th ed.). Cengage Learning.
+
+Tall, D. (2020). *How Humans Learn to Think Mathematically: Exploring the Story of Mathematics*. Cambridge University Press.
+
+Tall, D., & Vinner, S. (1981). Concept image and concept definition in mathematics with particular reference to limits and continuity. *Educational Studies in Mathematics*, 12(2), 151–169. https://doi.org/10.1007/BF00305619
