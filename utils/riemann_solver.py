@@ -20,6 +20,7 @@ from sympy.parsing.sympy_parser import (
     parse_expr,
     standard_transformations,
 )
+from utils.sympy_solver import sanitize_math_input
 
 # NOTE: ห้ามใส่ auto_symbol — พังใน sympy 1.14.0 (เหมือน sympy_solver.py)
 TRANSFORMATIONS = standard_transformations + (
@@ -47,9 +48,7 @@ METHODS = {
 
 
 def _parse_input(expr_str: str) -> sp.Expr:
-    clean = (expr_str or "").strip()
-    if not clean:
-        raise ValueError("Empty input string")
+    clean = sanitize_math_input(expr_str)
     return parse_expr(clean, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
 
 
@@ -102,6 +101,24 @@ def compute_riemann(
         dx = (b_f - a_f) / n_i
         method_latex = METHODS[method][1]
 
+        # ตรวจสอบจุดเอกฐานเชิงวิเคราะห์ (Analytic Pole Detection) บนช่วง [a, b]
+        try:
+            denom = sp.denom(sp.together(expr))
+            if denom != 1 and denom != 1.0 and var_sym in denom.free_symbols:
+                roots = sp.solve(denom, var_sym)
+                for r in roots:
+                    if r.is_real:
+                        r_f = float(r.evalf())
+                        if a_f <= r_f <= b_f:
+                            raise ValueError(
+                                f"ฟังก์ชันไม่ต่อเนื่องบนช่วง [{_fmt_num(a_f)}, {_fmt_num(b_f)}] "
+                                f"เนื่องจากมีจุดเอกฐาน (ตัวส่วนเป็นศูนย์) ที่ {v_lat} = {_fmt_num(r_f)}"
+                            )
+        except ValueError:
+            raise
+        except Exception:
+            pass
+
         # หา sample points
         if method == "left":
             xs = [a_f + i * dx for i in range(n_i)]
@@ -148,7 +165,7 @@ def compute_riemann(
                 if abs(exact_val) > 1e-12:
                     error_pct = (error_signed / exact_val) * 100.0
                 else:
-                    error_pct = 0.0
+                    error_pct = None
 
                 if abs(error_signed) < 1e-9:
                     direction = "exact"
@@ -352,9 +369,10 @@ def compute_riemann(
 
         if exact_val is not None:
             dir_text = "ประเมินต่ำกว่าจริง (Underestimate)" if direction == "underestimate" else ("ประเมินสูงกว่าจริง (Overestimate)" if direction == "overestimate" else "ตรงกับค่าจริง")
+            pct_text = f" หรือ {error_pct:+.2f}%" if error_pct is not None else " (ไม่นิยามร้อยละ เนื่องจากค่าจริงเป็น 0)"
             step5_text = (
                 f"ค่าประมาณและเทียบกับค่าจริง: ${method_latex} \\approx {total:.6f}$ โดยค่าจริงคือ ${exact_latex}$ "
-                f"(คลาดเคลื่อน {error_signed:+.6f} หรือ {error_pct:+.2f}%, {dir_text})"
+                f"(คลาดเคลื่อน {error_signed:+.6f}{pct_text}, {dir_text})"
             )
         else:
             step5_text = f"ค่าประมาณ: ${method_latex} \\approx {total:.6f}$"

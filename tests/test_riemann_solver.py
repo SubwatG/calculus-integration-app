@@ -75,6 +75,18 @@ class TestRiemannErrors:
         assert res["ok"] is False
         assert "จุดเอกฐาน" in res["error"] or "หารด้วยศูนย์" in res["error"]
 
+    def test_analytic_interior_pole_detected(self):
+        # 1/(x - sqrt(2)/2) has interior singularity at ~0.7071
+        res = compute_riemann("1/(x - sqrt(2)/2)", 0, 1, 10, "left")
+        assert res["ok"] is False
+        assert "ไม่ต่อเนื่อง" in res["error"] or "จุดเอกฐาน" in res["error"]
+
+    def test_zero_exact_integral_error_pct_is_none(self):
+        # x on [-1, 1] has exact integral = 0, error_pct should be None (undefined)
+        res = compute_riemann("x", -1, 1, 2, "left")
+        assert res["ok"] is True
+        assert res["error_pct"] is None
+
 
 class TestMethodsCatalog:
     def test_has_three_methods(self):
