@@ -13,7 +13,9 @@ format:
 เอกสารฉบับนี้จัดทำขึ้นเพื่อระบุจุดที่ต้องแก้ไขในเล่มโครงงานปริญญานิพนธ์ฉบับจริง (ไฟล์ `กินpro.docx`) ของ นางสาวขวัญเรือน สำเนียงดี และ นางสาวเบญจกัฬยาณี พิทยากูล 
 
 **คำแนะนำในการคัดลอกวาง:**
-ให้นิสิตเปิดเอกสารนี้ควบคู่กับไฟล์ `กินpro.docx` แล้วดำเนินการแก้ไขทีละจุดตามลำดับ โดยคัดลอกข้อความในหัวข้อย่อย "ข้อความที่ต้องแก้เป็น" ไปวางทับข้อความเดิม แนะนำให้คลิกขวาแล้วเลือก "วางแบบเก็บเฉพาะข้อความ (Keep Text Only)" หรือใช้ปุ่มลัด `Ctrl + Shift + V` ในโปรแกรม Microsoft Word เพื่อรักษาการจัดรูปแบบและการเยื้องหน้าเดิมของเล่มไว้
+ให้นิสิตเปิดเอกสารนี้ควบคู่กับไฟล์ `กินpro.docx` แล้วดำเนินการแก้ไขทีละจุดตามลำดับ:
+- **สำหรับข้อความทั่วไป:** ให้คลิกขวาแล้วเลือก "วางแบบเก็บเฉพาะข้อความ (Keep Text Only)" หรือใช้ปุ่มลัด `Ctrl + Shift + V` ใน Word เพื่อรักษาการจัดรูปแบบและการเยื้องหน้าเดิมของเล่ม
+- **สำหรับตารางและสมการคณิตศาสตร์:** ให้คัดลอกตารางแล้ววางแบบปกติ (Keep Source Formatting หรือ Match Destination Formatting) หรือคัดลอกเฉพาะข้อความในแต่ละเซลล์ไปวางทับ เพื่อรักษารูปแบบตารางและโครงสร้างสมการคณิตศาสตร์ไว้ให้สมบูรณ์
 
 
 # ตารางสรุปภาพรวมจุดแก้ไขในเล่ม กินpro.docx
@@ -59,9 +61,9 @@ format:
 
 **ข้อความที่ต้องแก้เป็น (คัดลอกวางทับทั้ง 2 ย่อหน้าเพื่อให้ภาษาอังกฤษเป็นระดับ B2/C1 ที่เป็นธรรมชาติ):**
 
-> This project presents the design and implementation of an interactive web application for introductory calculus, developed for undergraduate students and independent learners. The application is designed to foster conceptual understanding and geometric intuition, reducing reliance on memorised formulas while addressing common mathematical misconceptions. Built with Python and Streamlit, the platform employs SymPy for exact symbolic computation and step-by-step derivations, alongside Matplotlib for responsive graphical visualisations. The curriculum encompasses seven core topics: limits and continuity, tangent lines and derivatives, Riemann sums, integration techniques, areas between curves, volumes of solids of revolution, and improper integrals, all supported by structured explanations, interactive conceptual quizzes, and progressive hints.
+> This project describes the development of an interactive web application for introductory calculus for undergraduate students and independent learners. The application aims to support conceptual understanding and geometric intuition through visual exploration and explanations of common misconceptions. It was built with Python and Streamlit, using SymPy for symbolic computation and Matplotlib to generate graphs that update in response to user input. The application covers seven topics: limits and continuity, tangent lines and derivatives, Riemann sums, integration techniques, areas between curves, volumes of solids of revolution, and improper integrals. Guided explanations, conceptual quizzes, and progressive hints support self-directed study.
 >
-> Verification using 265 automated Pytest unit tests demonstrated that all computational modules adhere to formal mathematical principles. A usability evaluation involving 50 undergraduate learners revealed high overall satisfaction (mean = 4.63, SD = 0.58). Usability assessed via the System Usability Scale (SUS) achieved an average score of 73.53 (SD = 15.95), corresponding to a "Good" rating that comfortably exceeds the standard benchmark of 68.0. These findings confirm that the application serves as an effective, dependable digital environment for self-directed calculus learning.
+> System verification via 265 automated unit tests confirmed that the computational routines perform accurately across tested benchmark and boundary cases. A user evaluation involving 50 undergraduate learners demonstrated high overall satisfaction (mean = 4.63, SD = 0.58). Usability evaluated using the System Usability Scale (SUS) yielded an average score of 73.53 (SD = 15.95) among participants with distributed response profiles, reflecting a "Good" rating above the benchmark of 68.0. These findings indicate that the developed web application provides an effective digital environment to support self-directed learning in introductory calculus.
 
 **คำชี้แจง:** ปรับภาษาอังกฤษให้เป็นระดับวิชาการ B2/C1 ที่เป็นธรรมชาติ สละสลวย ถูกต้องตามแบบแผนสากล และตัดคำศัพท์ที่แปลตรงตัวจนขัดหูออกทั้งหมด
 
@@ -83,7 +85,7 @@ format:
 
 ## จุดที่ 4: บทที่ 3 ตารางรายละเอียดโมดูลบทเรียน
 
-**ตำแหน่งในเล่ม:** บทที่ 3 ตารางที่ 3.1 (Table 9 ในไฟล์ `กินpro.docx`)
+**ตำแหน่งในเล่ม:** บทที่ 3 ค้นหาคำว่า `ตารางที่ 3 รายละเอียดโมดูลบทเรียน` (หรือ Table 9 ในโครงสร้างไฟล์ `กินpro.docx`)
 
 **ปัญหาในเล่มเดิม:** สัญลักษณ์คณิตศาสตร์หลุดหายในแถวที่ 1 (คำว่า $\frac{0}{0}$ หายไป) และแถวที่ 4 (คำว่าตัวแปร $u$ หายไป)
 
@@ -121,7 +123,7 @@ format:
 
 ## จุดที่ 6: บทที่ 4 ตารางผลรวมรีมันน์และการลู่เข้าสู่ค่าจริง
 
-**ตำแหน่งในเล่ม:** บทที่ 4 ตารางที่ 4.1 (Table 10 ในไฟล์ `กินpro.docx`)
+**ตำแหน่งในเล่ม:** บทที่ 4 ค้นหาคำว่า `ตาราง 4 การเปรียบเทียบการลู่เข้า` (หรือ Table 10 ในโครงสร้างไฟล์ `กินpro.docx`)
 
 **ปัญหาในเล่มเดิม:** สัญลักษณ์ในหัวตารางหลุดหายกลายเป็นวงเล็บว่าง `()` และแถวสุดท้ายที่เป็นค่าจริง (Exact) เว้นว่างเปล่าในช่องตัวเลข
 
@@ -193,7 +195,7 @@ format:
 
 ## จุดที่ 9: ภาคผนวก ก ตารางข้อคำถามและสูตรการคิดคะแนน SUS (ตารางที่ ก.6)
 
-**ตำแหน่งในเล่ม:** ภาคผนวก ก ตารางที่ ก.6 (Table 17 ในไฟล์ `กินpro.docx`)
+**ตำแหน่งในเล่ม:** ภาคผนวก ก ค้นหาคำว่า `ตารางที่ 11 ข้อคำถามมาตรฐาน SUS` (หรือ Table 17 ในโครงสร้างไฟล์ `กินpro.docx`)
 
 **ปัญหาในเล่มเดิม:** ช่องสูตรในคอลัมน์ขวาสุดกลายเป็นช่องว่างเปล่าทั้งหมด (`​`)
 
@@ -267,6 +269,7 @@ format:
 | หัวข้อ 2.1.3 (ตัวอย่างที่ 2.7) | $x_i^{*}=a-\left(i+0.5\right)\Delta x$ | เครื่องหมายหน้าวงเล็บพิมพ์ผิดเป็นลบ | $x_i^{*}=a+\left(i-\frac{1}{2}\right)\Delta x$ สำหรับ $i=1, \dots, n$ |
 | หัวข้อ 2.1.3 (ภาพที่ 4) | คำบรรยายภาพที่ 4 คัดลอกซ้ำจากภาพที่ 3 | บรรยายภาพไม่ตรงกับกราฟพาราโบลา $f(x)=x^2$ | ภาพที่ 4 ผลรวมรีมันน์จุดกึ่งกลางของ $f(x)=x^2$ บน $[0, 2]$ ด้วยแท่งสี่เหลี่ยม 8 แท่ง |
 | หัวข้อ 2.1.4 (ตารางที่ 2 แถว I) | $\arctan x$ มีอนุพันธ์ $\frac{1}{(}1+x^2)$ | โครงสร้างเศษส่วนในตารางพิมพ์ผิด | $\frac{1}{1+x^2}$ |
+| หัวข้อ 2.1.5 (ตัวอย่างที่ 2.10 ขั้นที่ 1) | $2x-x^2=0\Rightarrow x^2-x=0\Rightarrow x=0,2$ | พีชคณิตขั้นกลางแยกตัวประกอบผิด | $2x-x^2=0\Rightarrow x(2-x)=0\Rightarrow x=0,2$ |
 | หัวข้อ 2.1.7 (ตัวอย่างที่ 2.14 ตัวที่สอง) | ตัวอย่างที่ 2.14 ปริพันธ์ไม่ตรงแบบชนิดที่ 2 | เลขตัวอย่างซ้ำกับตัวอย่างที่ 2.14 ตัวแรก | ตัวอย่างที่ 2.15 ปริพันธ์ไม่ตรงแบบชนิดที่ 2 |
 | หัวข้อ 2.1.7 (วิธีทำตัวอย่าง 2.14) | $\lim_{t\to\infty}\left(\int_1^t x^{-2}\right)dx$ | สัญลักษณ์ $dx$ หลุดออกนอกวงเล็บของลิมิต | $\lim_{t\to\infty}\int_1^t x^{-2}\,dx$ |
 
@@ -293,11 +296,11 @@ format:
 >
 > $$F'(x) = \frac{d}{dx}\left[\int_a^x f(t)\,dt\right] = f(x)$$
 >
-> **ทฤษฎีบทหลักมูลของแคลคูลัส ส่วนที่ 2:** กำหนดให้ $f$ เป็นฟังก์ชันต่อเนื่องบนช่วงปิด $[a, b]$ และ $F$ เป็นปฏิยานุพันธ์ใดๆ ของ $f$ บนช่วงดังกล่าว (นั่นคือ $F'(x) = f(x)$ ทุก $x \in [a, b]$) แล้ว
+> **ทฤษฎีบทหลักมูลของแคลคูลัส ส่วนที่ 2:** กำหนดให้ $f$ เป็นฟังก์ชันต่อเนื่องบนช่วงปิด $[a, b]$ และ $F$ มีความต่อเนื่องบน $[a, b]$ โดยสามารถหาอนุพันธ์ได้บนช่วงเปิด $(a, b)$ และเป็นปฏิยานุพันธ์ของ $f$ (นั่นคือ $F'(x) = f(x)$ สำหรับทุก $x \in (a, b)$) แล้ว
 >
 > $$\int_a^b f(x)\,dx = F(b) - F(a) = \left[ F(x) \right]_a^b$$
 >
-> ทฤษฎีบทส่วนที่ 2 นี้มีความสำคัญอย่างยิ่งต่อการพัฒนาระบบคำนวณของโครงงาน เนื่องจากเป็นหลักการทางคณิตศาสตร์ที่ทำให้ระบบสามารถคำนวณค่าจริงของปริพันธ์จำกัดเขตได้อย่างแม่นตรงผ่านการหาปฏิยานุพันธ์เชิงสัญลักษณ์ โดยไม่ต้องพึ่งพาการคำนวณลิมิตของผลรวมรีมันน์
+> ทฤษฎีบทส่วนที่ 2 นี้มีความสำคัญอย่างยิ่งต่อการพัฒนาระบบคำนวณของโครงงาน เนื่องจากเป็นหลักการทางคณิตศาสตร์ที่ทำให้ระบบสามารถคำนวณค่าจริงของปริพันธ์จำกัดเขตได้อย่างแม่นตรงผ่านการหาปฏิยานุพันธ์เชิงสัญลักษณ์ โดยไม่ต้องพึ่งพาการคำนวณลิมิตของผลรวมรีมันน์ ทั้งนี้การแทนค่าปลายช่วงโดยตรงจะใช้ได้เฉพาะเมื่อฟังก์ชันมีความต่อเนื่องตลอดช่วง หากมีจุดเอกฐานคั่นกลางจะต้องใช้วิธีปริพันธ์ไม่ตรงแบบแยกช่วงเสมอ
 
 
 ### จุดแทรกที่ 2.2: รูปแบบไม่กำหนดและกฎของโลปิตาล (L'Hôpital's Rule)
@@ -312,7 +315,7 @@ format:
 >
 > ในกรณีที่การหาลิมิตของผลหารนำไปสู่รูปแบบไม่กำหนด $\frac{0}{0}$ หรือ $\frac{\infty}{\infty}$ และฟังก์ชันไม่สามารถจัดรูปด้วยการแยกตัวประกอบทางพีชคณิตทั่วไปได้ สามารถประยุกต์ใช้อนุพันธ์ในการหาค่าลิมิตตามกฎของโลปิตาลดังนี้
 >
-> **ทฤษฎีบท:** กำหนดให้ $f$ และ $g$ เป็นฟังก์ชันที่หาอนุพันธ์ได้บนช่วงเปิดที่บรรจุจุด $a$ (ยกเว้นอาจไม่จำเป็นต้องหาอนุพันธ์ได้ที่จุด $a$) โดยที่ $g'(x) \neq 0$ ในย่านใกล้เคียงจุด $a$ ถ้า
+> **ทฤษฎีบท:** กำหนดให้ $f$ และ $g$ เป็นฟังก์ชันที่หาอนุพันธ์ได้บนช่วงเปิดที่บรรจุจุด $a$ (ยกเว้นอาจไม่จำเป็นต้องหาอนุพันธ์ได้ที่จุด $a$) โดยที่ $g'(x) \neq 0$ ในย่านใกล้เคียงจุด $a$ ที่เจาะจุด $a$ ออก ถ้า
 >
 > $$\lim_{x \to a} f(x) = 0 \quad \text{และ} \quad \lim_{x \to a} g(x) = 0$$
 >
@@ -352,13 +355,13 @@ format:
 
 **ข้อความที่ต้องแทรกเพิ่ม:**
 
-> **การแทนค่าตัวแปรในปริพันธ์จำกัดเขต:** เมื่อประยุกต์ใช้วิธีแทนค่าตัวแปรกับปริพันธ์จำกัดเขต หากกำหนดให้ $u = g(x)$ จะต้องเปลี่ยนขอบเขตของการอินทิเกรตตามค่าของตัวแปรใหม่ดังนี้:
+> **การแทนค่าตัวแปรในปริพันธ์จำกัดเขต:** เมื่อประยุกต์ใช้วิธีแทนค่าตัวแปรกับปริพันธ์จำกัดเขต โดยกำหนดให้ $g \in C^1([a, b])$ และ $f$ มีความต่อเนื่องบนช่วงค่าของ $g$ หากให้ $u = g(x)$ จะต้องเปลี่ยนขอบเขตของการอินทิเกรตตามค่าของตัวแปรใหม่ดังนี้:
 >
 > $$\int_a^b f(g(x))g'(x)\,dx = \int_{g(a)}^{g(b)} f(u)\,du$$
 >
 > ซึ่งช่วยให้สามารถคำนวณผลลัพธ์สุดท้ายได้โดยไม่จำเป็นต้องแปลงตัวแปร $u$ กลับคืนเป็นตัวแปร $x$
 >
-> **ข้อพึงระวังเกี่ยวกับลำดับ LIATE:** ลำดับ LIATE เป็นเพียงหลักการช่วยเลือก (Heuristic) ที่มีประโยชน์ในโจทย์ส่วนใหญ่ ไม่ใช่ทฤษฎีบททางคณิตศาสตร์ ในบางกรณีการเลือก $u$ ตามลำดับ LIATE อาจทำให้การอินทิเกรตยุ่งยากขึ้น หรือจำเป็นต้องจัดรูปฟังก์ชันก่อน เช่น การอินทิเกรต $\int x^3 e^{x^2}\,dx$ จำเป็นต้องแยกรูปเป็น $\int x^2 (x e^{x^2})\,dx$ แล้วจึงเลือก $u = x^2$ และ $dv = x e^{x^2}\,dx$
+> **ข้อพึงระวังเกี่ยวกับลำดับ LIATE:** ลำดับ LIATE เป็นเพียงหลักการช่วยเลือก (Heuristic) ที่มีประโยชน์ในโจทย์ส่วนใหญ่ ไม่ใช่ทฤษฎีบททางคณิตศาสตร์ ในบางกรณีการเลือก $u$ ตามลำดับ LIATE อาจทำให้การอินทิเกรตยุ่งยากขึ้น หรืออาจต้องจัดรูปฟังก์ชันก่อน เช่น การอินทิเกรต $\int x^3 e^{x^2}\,dx$ อาจจัดรูปเป็น $\int x^2 (x e^{x^2})\,dx$ แล้วจึงเลือก $u = x^2$ และ $dv = x e^{x^2}\,dx$ หรืออาจเริ่มต้นด้วยการแทนค่าตัวแปร $t = x^2$ ก่อน
 
 
 ### จุดแทรกที่ 2.5: เกณฑ์กำลัง (p-test) และการแยกช่วงปริพันธ์ไม่ตรงแบบ
@@ -376,9 +379,10 @@ format:
 > 1. **กรณีช่วงอนันต์:** $\int_1^\infty \frac{1}{x^p}\,dx$ จะลู่เข้า ก็ต่อเมื่อ $p > 1$ (หาก $p \le 1$ ปริพันธ์จะลู่ออก)
 > 2. **กรณีจุดเอกฐานที่จุดศูนย์:** $\int_0^1 \frac{1}{x^p}\,dx$ จะลู่เข้า ก็ต่อเมื่อ $p < 1$ (หาก $p \ge 1$ ปริพันธ์จะลู่ออก)
 >
-> **ข้อควรระวังในการแยกช่วงบน $(-\infty, \infty)$:** สำหรับปริพันธ์ไม่ตรงแบบที่มีขอบเขตเป็นอนันต์ทั้งสองด้าน นิยามกำหนดให้ต้องแยกจุด $c$ (เช่น $c = 0$) เป็นสองส่วนที่เป็นอิสระต่อกัน:
+> **ข้อกำหนดการแยกจุดเอกฐานภายในช่วง:** หากฟังก์ชันมีจุดเอกฐานที่จุด $c \in (a, b)$ นิยามกำหนดให้ต้องแยกช่วงที่จุด $c$ ออกเป็นสองส่วนที่เป็นอิสระต่อกัน:
 >
-> $$\int_{-\infty}^\infty f(x)\,dx = \int_{-\infty}^c f(x)\,dx + \int_c^\infty f(x)\,dx$$
+> $$\int_a^b f(x)\,dx = \lim_{u \to c^-} \int_a^u f(x)\,dx + \lim_{v \to c^+} \int_v^b f(x)\,dx$$
 >
-> โดยปริพันธ์จะลู่เข้าก็ต่อเมื่อทั้งสองส่วนลู่เข้าพร้อมกัน ไม่สามารถคำนวณผ่านลิมิตสมมาตร $\lim_{t \to \infty} \int_{-t}^t f(x)\,dx$ ซึ่งเรียกว่าค่าหลักโคชี (Cauchy Principal Value) ได้ เนื่องจากการรวมแบบสมมาตรอาจให้ค่าเป็นศูนย์จากการหักล้างกัน ทั้งที่ปริพันธ์จริงลู่ออก
+> โดยปริพันธ์จะลู่เข้าก็ต่อเมื่อลิมิตทั้งสองส่วนหาค่าเป็นจำนวนจริงได้พร้อมกัน ตัวอย่างเช่น $\int_{-1}^1 \frac{1}{x}\,dx$ เป็นปริพันธ์ที่ลู่ออก แม้ว่าค่าลิมิตสมมาตรหรือค่าหลักโคชี (Cauchy Principal Value) $\lim_{t \to 0^+} \left[\int_{-1}^{-t}\frac{1}{x}dx + \int_t^1\frac{1}{x}dx\right]$ จะมีค่าเท่ากับศูนย์ก็ตาม ระบบจึงต้องแยกคำนวณสองข้างอย่างเด็ดขาดตามนิยามมาตรฐานเพื่อความถูกต้องทางคณิตศาสตร์
+
 
