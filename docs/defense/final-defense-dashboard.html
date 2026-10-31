@@ -1,0 +1,2895 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบสนับสนุนอาจารย์ที่ปรึกษาและกรรมการสอบ | โครงงานเว็บแอปพลิเคชันช่วยเรียนแคลคูลัส (Calculus Tutor Web App)</title>
+  
+  <!-- Looped Thai Font: Bai Jamjuree & Pridi -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Pridi:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- MathJax 3 Configuration -->
+  <script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center'
+    },
+    startup: {
+      pageReady: () => {
+        return MathJax.startup.defaultPageReady().then(() => {
+          console.log('MathJax initial typesetting complete');
+        });
+      }
+    }
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --bg-card: #ffffff;
+      --border-light: #e2e8f0;
+      --border-focus: #3b82f6;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --accent-blue: #1d4ed8;
+      --accent-blue-soft: #eff6ff;
+      --accent-indigo: #4338ca;
+      --accent-teal: #0f766e;
+      --accent-teal-soft: #f0fdfa;
+      --accent-amber: #b45309;
+      --accent-amber-soft: #fffbeb;
+      --accent-rose: #be123c;
+      --accent-rose-soft: #fff1f2;
+      --accent-purple: #6d28d9;
+      --accent-purple-soft: #f5f3ff;
+      --font-thai: 'Bai Jamjuree', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-heading: 'Pridi', 'Bai Jamjuree', serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.03);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-thai);
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.68;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header.top-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-light);
+      padding: 16px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-content {
+      max-width: 1360px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .title-group h1 {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    .title-group .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .badge-cluster {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      border: 1px solid transparent;
+    }
+
+    .badge-blue { background: var(--accent-blue-soft); color: var(--accent-blue); border-color: #bfdbfe; }
+    .badge-amber { background: var(--accent-amber-soft); color: var(--accent-amber); border-color: #fde68a; }
+    .badge-teal { background: var(--accent-teal-soft); color: var(--accent-teal); border-color: #99f6e4; }
+    .badge-rose { background: var(--accent-rose-soft); color: var(--accent-rose); border-color: #fecdd3; }
+    .badge-purple { background: var(--accent-purple-soft); color: var(--accent-purple); border-color: #ddd6fe; }
+    .badge-outline { background: var(--bg-surface); color: var(--text-muted); border-color: var(--border-light); }
+
+    .tab-bar {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-light);
+      padding: 0 32px;
+    }
+
+    .tab-nav {
+      max-width: 1360px;
+      margin: 0 auto;
+      display: flex;
+      gap: 24px;
+    }
+
+    .tab-btn {
+      padding: 14px 4px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-dim);
+      font-family: var(--font-thai);
+      font-size: 0.92rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      border-bottom-color: var(--border-light);
+    }
+
+    .tab-btn.active {
+      color: var(--accent-blue);
+      border-bottom-color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    main.main-viewport {
+      flex: 1;
+      max-width: 1360px;
+      width: 100%;
+      margin: 24px auto;
+      padding: 0 32px 48px 32px;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .card-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 16px 0;
+    }
+
+    table.data-table th {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+      border: 1px solid var(--border-light);
+      font-size: 0.85rem;
+    }
+
+    table.data-table td {
+      padding: 10px 14px;
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+
+    table.data-table tr:hover td {
+      background-color: var(--bg-subtle);
+    }
+
+    /* Visual Pipeline Styles */
+    .pipeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin: 16px 0 24px 0;
+    }
+
+    .pipeline-stage {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pipeline-stage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .pipeline-stage-title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stage-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .pipeline-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 0;
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      font-weight: 500;
+      gap: 4px;
+    }
+
+    .connector-line {
+      width: 2px;
+      height: 14px;
+      background: #cbd5e1;
+    }
+
+    .connector-arrow {
+      font-size: 0.95rem;
+      color: var(--accent-blue);
+      line-height: 1;
+    }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .source-node {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .source-node:hover {
+      border-color: var(--border-focus);
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .source-node.target-y {
+      border-left: 3px solid var(--accent-blue);
+      background: #f8fbff;
+    }
+
+    .source-node.warning-factory {
+      border-left: 3px solid var(--accent-amber);
+    }
+
+    .source-node-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .source-node-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .source-node-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .model-box {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: var(--radius-sm);
+      padding: 18px 22px;
+    }
+
+    .model-box-formula {
+      font-size: 1.05rem;
+      overflow-x: auto;
+      padding: 6px 0;
+      text-align: center;
+      color: #93c5fd;
+    }
+
+    .model-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #334155;
+      font-size: 0.84rem;
+      color: #cbd5e1;
+    }
+
+    .gate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .gate-card {
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-subtle);
+    }
+
+    .gate-card.warning {
+      border-left: 4px solid var(--accent-amber);
+      background: #fffdf7;
+    }
+
+    .gate-card.critical {
+      border-left: 4px solid var(--accent-rose);
+      background: #fff8f8;
+    }
+
+    .gate-card.opportunity {
+      border-left: 4px solid var(--accent-teal);
+      background: #f6fdfc;
+    }
+
+    .gate-card-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .gate-card-body {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* Advisory Blocks */
+    .advisory-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent-blue);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .advisory-item.warning { border-left-color: var(--accent-amber); background: #fffdfa; }
+    .advisory-item.critical { border-left-color: var(--accent-rose); background: #fffafa; }
+    .advisory-item.opportunity { border-left-color: var(--accent-teal); background: #fbfefd; }
+    .advisory-item.purple { border-left-color: var(--accent-purple); background: #faf8ff; }
+
+    .advisory-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      gap: 12px;
+    }
+
+    .advisory-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .advisory-tag {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .tag-blue { background: #dbeafe; color: #1e40af; }
+    .tag-amber { background: #fef3c7; color: #92400e; }
+    .tag-rose { background: #ffe4e6; color: #9f1239; }
+    .tag-teal { background: #ccfbf1; color: #115e59; }
+    .tag-purple { background: #ede9fe; color: #5b21b6; }
+
+    .quote-speech {
+      background: var(--bg-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin: 12px 0 6px 0;
+      border-left: 3px solid #94a3b8;
+      font-style: italic;
+      color: #334155;
+      font-size: 0.92rem;
+    }
+
+    .guidance-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-top: 10px;
+      font-size: 0.88rem;
+      color: #166534;
+      line-height: 1.6;
+    }
+
+    .script-box {
+      background: #1e293b;
+      color: #f8fafc;
+      border-radius: var(--radius-md);
+      padding: 22px 26px;
+      margin: 20px 0 28px 0;
+      box-shadow: var(--shadow-md);
+    }
+
+    .script-box h3 {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+      color: #93c5fd;
+    }
+
+    .script-box ol {
+      padding-left: 20px;
+      font-size: 0.92rem;
+      line-height: 1.85;
+    }
+
+    .script-box li {
+      margin-bottom: 12px;
+    }
+
+    /* Proposal Markdown Viewer */
+    .proposal-viewer {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 36px 44px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .proposal-toc {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      margin-bottom: 32px;
+    }
+
+    .proposal-toc h4 {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .proposal-toc ul {
+      list-style-type: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+    }
+
+    .proposal-toc a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .proposal-toc a:hover {
+      text-decoration: underline;
+    }
+
+    .prose-section h1 {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      color: var(--text-main);
+      margin: 28px 0 14px 0;
+      border-bottom: 2px solid var(--border-light);
+      padding-bottom: 8px;
+    }
+
+    .prose-section h2 {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      color: var(--text-main);
+      margin: 24px 0 12px 0;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 6px;
+    }
+
+    .prose-section h3 {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      color: var(--text-main);
+      margin: 18px 0 8px 0;
+    }
+
+    .prose-section h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin: 14px 0 6px 0;
+    }
+
+    .prose-section p {
+      margin-bottom: 14px;
+      color: #334155;
+      text-align: justify;
+    }
+
+    .prose-section ol, .prose-section ul {
+      padding-left: 24px;
+      margin-bottom: 14px;
+    }
+
+    .prose-section li {
+      margin-bottom: 6px;
+    }
+
+    .code-block {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* Notes / Interactive Area */
+    .notes-container textarea {
+      width: 100%;
+      height: 160px;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-light);
+      font-family: var(--font-thai);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      resize: vertical;
+      background: var(--bg-surface);
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .notes-container textarea:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .btn-action {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-thai);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .btn-action:hover {
+      background: #1e40af;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-light);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-thai);
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+    }
+
+    .verdict-group {
+      display: flex;
+      gap: 16px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .verdict-card {
+      flex: 1;
+      min-width: 160px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: var(--bg-surface);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .verdict-card:hover {
+      border-color: var(--border-focus);
+    }
+
+    .verdict-card.selected {
+      border-color: var(--accent-blue);
+      background: var(--accent-blue-soft);
+      font-weight: 600;
+    }
+
+    /* Defense Q&A Specific Components */
+    .bad-answer {
+      background: var(--accent-rose-soft);
+      border-left: 4px solid var(--accent-rose);
+      padding: 12px 18px;
+      margin-bottom: 14px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+    .bad-answer strong { color: var(--accent-rose); }
+
+    .good-answer {
+      background: var(--accent-teal-soft);
+      border-left: 4px solid var(--accent-teal);
+      padding: 14px 18px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.94rem;
+      line-height: 1.7;
+    }
+    .good-answer strong { color: var(--accent-teal); }
+
+    .speech-box {
+      background: #ffffff;
+      border: 1px dashed #86efac;
+      padding: 14px 18px;
+      margin-top: 12px;
+      border-radius: var(--radius-sm);
+      color: #14532d;
+      font-size: 0.93rem;
+      line-height: 1.75;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .speech-box-title {
+      font-weight: 700;
+      color: #15803d;
+      margin-bottom: 6px;
+      font-family: var(--font-heading);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theorem-box {
+      background: var(--accent-blue-soft);
+      border: 1px solid #bfdbfe;
+      border-left: 4px solid var(--accent-blue);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 14px 18px;
+      margin: 12px 0;
+      font-size: 0.93rem;
+      color: #1e3a8a;
+      line-height: 1.7;
+    }
+    .theorem-title {
+      font-weight: 700;
+      color: #1d4ed8;
+      font-family: var(--font-heading);
+      margin-bottom: 6px;
+    }
+
+    /* Defense Q&A Control Panel & Keywords */
+    .qa-control-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 64px;
+      z-index: 45;
+      backdrop-filter: blur(8px);
+    }
+    .qa-search-box {
+      width: 100%;
+      padding: 10px 16px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-thai);
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      outline: none;
+      transition: all 0.15s ease;
+      background: var(--bg-primary);
+    }
+    .qa-search-box:focus {
+      border-color: var(--accent-blue);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+    }
+    .qa-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .qa-filter-btn {
+      padding: 6px 14px;
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-thai);
+      font-size: 0.86rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .qa-filter-btn:hover {
+      background: #e2e8f0;
+      color: var(--text-main);
+    }
+    .qa-filter-btn.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border-color: var(--accent-blue);
+      box-shadow: 0 1px 3px rgba(29, 78, 216, 0.25);
+    }
+
+    /* Keyword Bar & Tags */
+    .keyword-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-light);
+      font-size: 0.85rem;
+    }
+    .keyword-bar strong {
+      color: var(--accent-indigo);
+      margin-right: 4px;
+      font-family: var(--font-heading);
+    }
+    .kw-tag {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="top-header">
+      <div class="header-content">
+        <div class="title-group">
+          <h1>การพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้น</h1>
+          <div class="subtitle">ระบบสารสนเทศสนับสนุนอาจารย์ที่ปรึกษาและกรรมการสอบข้อเสนอโครงงาน (Proposal Defense Portal) | หลักสูตรคณิตศาสตร์ประยุกต์ มหาวิทยาลัยเกษตรศาสตร์</div>
+        </div>
+        <div class="badge-cluster">
+          <span class="badge badge-blue">Python + Streamlit + SymPy</span>
+          <span class="badge badge-teal">MathJax 3 Enabled</span>
+          <span class="badge badge-purple">7 ประเด็นวิจารณ์เชิงลึก</span>
+          <span class="badge badge-amber">โครงงาน 02731499</span>
+          <span class="badge badge-outline">เอกสารโครงร่างฉบับเต็ม</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="tab-bar">
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('overview')">1. ภาพรวมโครงงานและสถาปัตยกรรมระบบ</button>
+        <button class="tab-btn" onclick="switchTab('advisory')">2. คลังคำถาม-คำตอบและข้อเสนอแนะเชิงลึกสำหรับสอบป้องกัน (Final Defense Master Q&A)</button>
+        <button class="tab-btn" onclick="switchTab('proposal')">3. เอกสารข้อเสนอโครงงานฉบับเต็ม</button>
+        <button class="tab-btn" onclick="switchTab('evaluation')">4. แบบบันทึกความเห็นการสอบและเกณฑ์ประเมิน</button>
+      </div>
+    </div>
+
+    <!-- Main Viewport -->
+    <main class="main-viewport">
+
+      <!-- TAB 1: OVERVIEW -->
+      <section id="pane-overview" class="tab-pane active">
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">วัตถุประสงค์หลัก</div>
+              <span class="badge badge-blue">Core Goals</span>
+            </div>
+            <ol style="padding-left: 20px; font-size: 0.9rem; color: var(--text-muted); line-height: 1.75;">
+              <li style="margin-bottom: 6px;">พัฒนาเว็บแอปพลิเคชันช่วยเรียนแคลคูลัสเบื้องต้นด้วย Python และ Streamlit</li>
+              <li style="margin-bottom: 6px;">รวบรวมเนื้อหา ตัวอย่าง และแบบฝึกหัดเรื่องการหาปริพันธ์ไว้ในระบบเดียว</li>
+              <li style="margin-bottom: 6px;">แสดงวิธีการคำนวณและเฉลยเป็นลำดับขั้น (Scaffolding Steps)</li>
+              <li>ส่งเสริมการเรียนรู้ด้วยตนเองผ่านเบราว์เซอร์และประเมินความพึงพอใจ</li>
+            </ol>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">ขอบเขตเนื้อหาแคลคูลัส</div>
+              <span class="badge badge-amber">Calculus Scope</span>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 8px;">
+              <strong>หัวข้อหลัก:</strong> การหาปริพันธ์ (Integration)
+            </p>
+            <ul style="padding-left: 20px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.7;">
+              <li>ปฏิยานุพันธ์และปริพันธ์ไม่จำกัดเขต (Indefinite Integrals)</li>
+              <li>เทคนิคการหาปริพันธ์ด้วยการแทนค่าตัวแปร ($u$-Substitution)</li>
+              <li>ปริพันธ์จำกัดเขตและทฤษฎีบทมูลฐาน (Definite Integrals &amp; FTC)</li>
+              <li>การประยุกต์คำนวณพื้นที่ใต้เส้นโค้ง ($|f(x)|$) และพื้นที่ระหว่างเส้นโค้ง</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">เทคโนโลยีที่ประยุกต์ใช้</div>
+              <span class="badge badge-teal">Tech Stack</span>
+            </div>
+            <ul style="padding-left: 20px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.75;">
+              <li><strong>ภาษาหลัก:</strong> Python 3.12 (Standard Library + Data Tools)</li>
+              <li><strong>UI Framework:</strong> Streamlit (Reactive Widgets &amp; Multi-page)</li>
+              <li><strong>CAS Engine:</strong> SymPy (Symbolic Calculus &amp; LaTeX Export)</li>
+              <li><strong>Data Visualization:</strong> Matplotlib / Plotly (Shaded Curves)</li>
+              <li><strong>Math Rendering:</strong> MathJax 3 (TeX &amp; CHTML Engine)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Visual Methodology Pipeline -->
+        <div class="card" style="margin-bottom: 24px;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">ผังโครงสร้างการทำงานและสถาปัตยกรรมระบบ (System Pipeline &amp; Scaffolding Workflow)</div>
+              <div class="card-subtitle">User Interaction, Mathematical Parsing, CAS Symbolic Engine, and Pedagogical Scaffolding</div>
+            </div>
+            <span class="badge badge-outline">Architecture Pipeline</span>
+          </div>
+
+          <div class="pipeline-container">
+            
+            <!-- STAGE 1 -->
+            <div class="pipeline-stage">
+              <div class="pipeline-stage-header">
+                <div class="pipeline-stage-title">
+                  <span class="stage-number">1</span>
+                  <span>ส่วนต่อประสานผู้ใช้และการนำเข้าข้อมูล (User Interaction &amp; Input Sanitization)</span>
+                </div>
+                <span class="badge badge-blue">Frontend Input</span>
+              </div>
+
+              <div class="source-grid">
+                <div class="source-node target-y">
+                  <div class="source-node-tag">
+                    <span>ฟังก์ชันคณิตศาสตร์ ($f(x)$)</span>
+                    <span class="badge badge-blue" style="font-size: 0.7rem; padding: 1px 6px;">Input Box</span>
+                  </div>
+                  <div class="source-node-title">ช่องกรอกสมการคณิตศาสตร์</div>
+                  <div class="source-node-desc">
+                    • รับสตริงฟังก์ชัน เช่น `x^2 - 4`, `sin(x)`<br>
+                    • แปลงตัวดำเนินการ `^` ไปเป็น `**` ด้วย `convert_xor`
+                  </div>
+                </div>
+
+                <div class="source-node">
+                  <div class="source-node-tag">
+                    <span>ขอบเขตปริพันธ์ ($[a, b]$)</span>
+                    <span class="badge badge-outline" style="font-size: 0.7rem; padding: 1px 6px;">Sliders</span>
+                  </div>
+                  <div class="source-node-title">สไลเดอร์ปรับค่าขอบเขต</div>
+                  <div class="source-node-desc">
+                    • Reactive Sliders แบบตอบสนองทันที<br>
+                    • กำหนดช่วงการคำนวณพื้นที่ใต้เส้นโค้ง
+                  </div>
+                </div>
+
+                <div class="source-node">
+                  <div class="source-node-tag">
+                    <span>การเลือกโมดูลบทเรียน</span>
+                    <span class="badge badge-teal" style="font-size: 0.7rem; padding: 1px 6px;">Navigation</span>
+                  </div>
+                  <div class="source-node-title">ระบบเลือกโหมดการเรียนรู้</div>
+                  <div class="source-node-desc">
+                    • ทบทวนมโนทัศน์ (Concept Review)<br>
+                    • ฝึกทำโจทย์พร้อมคำใบ้ (Interactive Practice)<br>
+                    • เครื่องมือคำนวณอิสระ (Free Solver)
+                  </div>
+                </div>
+
+                <div class="source-node warning-factory">
+                  <div class="source-node-tag">
+                    <span>ความปลอดภัยและข้อผิดพลาด</span>
+                    <span class="badge badge-amber" style="font-size: 0.7rem; padding: 1px 6px;">Sanitizer</span>
+                  </div>
+                  <div class="source-node-title">ดักจับ Error &amp; Syntax</div>
+                  <div class="source-node-desc">
+                    • ป้องกันการใช้ `eval()` โดยตรง (ความปลอดภัย)<br>
+                    • ดักจับรูปสมการที่ SymPy ไม่รองรับ
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONNECTOR 1 -> 2 -->
+            <div class="pipeline-connector">
+              <div class="connector-line"></div>
+              <div class="connector-arrow">&#9660;</div>
+              <div>ส่งผ่านนิพจน์ทางคณิตศาสตร์เข้าสู่ระบบพีชคณิตคอมพิวเตอร์ (Computer Algebra System)</div>
+              <div class="connector-line"></div>
+            </div>
+
+            <!-- STAGE 2 -->
+            <div class="pipeline-stage">
+              <div class="pipeline-stage-header">
+                <div class="pipeline-stage-title">
+                  <span class="stage-number">2</span>
+                  <span>กลไกการประมวลผลเชิงสัญลักษณ์และการจัดนั่งร้านทางปัญญา (CAS &amp; Scaffolding Engine)</span>
+                </div>
+                <span class="badge badge-teal">SymPy &amp; Pedagogy</span>
+              </div>
+
+              <div class="model-box">
+                <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 6px; text-align: center;">
+                  กระบวนการคำนวณเชิงสัญลักษณ์ทางคณิตศาสตร์ (Symbolic Calculus Computation):
+                </div>
+                <div class="model-box-formula">
+                  $$\int_a^b f(x)\,dx = F(b) - F(a) \qquad\text{และ}\qquad \text{Area} = \int_a^b |f(x)|\,dx$$
+                </div>
+
+                <div class="model-meta-grid">
+                  <div>
+                    <strong style="color: #60a5fa;">ระดับ 1: คำใบ้/สูตรหลัก (Hint):</strong><br>
+                    ดึงกฎการหาปริพันธ์ที่เกี่ยวข้องขึ้นมาแสดงก่อน (เช่น กฎลูกโซ่ผกผัน, สูตรยกกำลัง) โดยยังไม่เปิดเผยคำตอบสำเร็จ
+                  </div>
+                  <div>
+                    <strong style="color: #f59e0b;">ระดับ 2: ขั้นตอนการแปลงรูป (Steps):</strong><br>
+                    แสดงกระบวนการจัดรูปพีชคณิตและการแทนค่าตัวแปร $u$ ใน Accordion Expander เพื่อให้ผู้เรียนคลิกตรวจทีละขั้น
+                  </div>
+                  <div>
+                    <strong style="color: #34d399;">ระดับ 3: ผลลัพธ์สมบูรณ์และกราฟ (Graph):</strong><br>
+                    เรนเดอร์คำตอบในรูป Exact Form ผ่าน MathJax พร้อมระบายสีพื้นที่ใต้เส้นโค้ง (Shaded Area) แสดงจุดตัดแกน $x$ ชัดเจน
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONNECTOR 2 -> 3 -->
+            <div class="pipeline-connector">
+              <div class="connector-line"></div>
+              <div class="connector-arrow">&#9660;</div>
+              <div>ส่งผ่านผลลัพธ์เพื่อนำเสนอและประเมินผลสัมฤทธิ์ทางการเรียนรู้ (Evaluation &amp; Usability)</div>
+              <div class="connector-line"></div>
+            </div>
+
+            <!-- STAGE 3 -->
+            <div class="pipeline-stage">
+              <div class="pipeline-stage-header">
+                <div class="pipeline-stage-title">
+                  <span class="stage-number">3</span>
+                  <span>การตรวจสอบคุณภาพและเกณฑ์ประเมินการใช้งาน (Quality Gates &amp; Usability Evaluation)</span>
+                </div>
+                <span class="badge badge-amber">Defense Quality Gates</span>
+              </div>
+
+              <div class="gate-grid">
+                <div class="gate-card critical">
+                  <div class="gate-card-title">
+                    <span>Gate A: นั่งร้านทางปัญญา vs เครื่องคิดเลข</span>
+                    <span class="badge badge-rose" style="font-size: 0.72rem; padding: 1px 6px;">คุณค่าโครงงาน</span>
+                  </div>
+                  <div class="gate-card-body">
+                    • <strong>ความเสี่ยง:</strong> กลายเป็นแค่ Wrapper ครอบ SymPy เหมือน WolframAlpha<br>
+                    • <strong>ทางออก:</strong> ต้องมีกลไกหน่วงเวลาเฉลย (Delayed Feedback) บังคับให้ผู้เรียนเลือกสูตรหรือพิมพ์ขั้นตอนก่อนปลดล็อกเฉลย
+                  </div>
+                </div>
+
+                <div class="gate-card warning">
+                  <div class="gate-card-title">
+                    <span>Gate B: การจัดการสถานะใน Streamlit</span>
+                    <span class="badge badge-amber" style="font-size: 0.72rem; padding: 1px 6px;">Technical Arch</span>
+                  </div>
+                  <div class="gate-card-body">
+                    • <strong>ความท้าทาย:</strong> Streamlit รีเฟรชทั้งสคริปต์เมื่อผู้ใช้ขยับวิดเจ็ต<br>
+                    • <strong>ทางออก:</strong> วางโครงสร้าง `st.session_state` อย่างรัดกุม เพื่อเก็บบันทึกประวัติการทำโจทย์และคะแนนโดยไม่ถูกล้าง
+                  </div>
+                </div>
+
+                <div class="gate-card opportunity">
+                  <div class="gate-card-title">
+                    <span>Gate C: การทดสอบผู้ใช้และวัดผลสัมฤทธิ์</span>
+                    <span class="badge badge-teal" style="font-size: 0.72rem; padding: 1px 6px;">งานวิจัยจริง</span>
+                  </div>
+                  <div class="gate-card-body">
+                    • <strong>การวัดผล:</strong> ออกแบบข้อสอบ Pre-test และ Post-test เพื่อวัด Normalized Gain<br>
+                    • <strong>ความพึงพอใจ:</strong> ใช้แบบสอบถามมาตรฐาน System Usability Scale (SUS) กลุ่มตัวอย่างนิสิต 30–50 คน
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Curriculum Table -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">ตารางการจัดหมวดหมู่เนื้อหาและโมดูลการเรียนรู้ (Curriculum Module Specification)</div>
+            <span class="badge badge-outline">4 โมดูลหลัก</span>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 15%;">โมดูล</th>
+                <th style="width: 25%;">หัวข้อคณิตศาสตร์</th>
+                <th style="width: 25%;">การประมวลผลด้วย SymPy</th>
+                <th style="width: 35%;">องค์ประกอบสื่อและการโต้ตอบ (UI/UX)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>โมดูลที่ 1</strong></td>
+                <td>ปฏิยานุพันธ์และปริพันธ์ไม่จำกัดเขต</td>
+                <td>`sympy.integrate(f, x)`</td>
+                <td>ตารางสรุปสูตรพื้นฐาน, ช่องฝึกพิมพ์ฟังก์ชัน, แสดงค่าคงตัว $+C$</td>
+              </tr>
+              <tr>
+                <td><strong>โมดูลที่ 2</strong></td>
+                <td>การหาปริพันธ์ด้วยการแทนค่าตัวแปร $u$</td>
+                <td>การแยก $u = g(x)$ และ $du = g'(x)dx$</td>
+                <td>Accordion Step แสดงการเลือกตัวแปร $u$, ตรวจสอบอนุพันธ์ $du$ ทีละขั้น</td>
+              </tr>
+              <tr>
+                <td><strong>โมดูลที่ 3</strong></td>
+                <td>ปริพันธ์จำกัดเขตและทฤษฎีบทมูลฐาน</td>
+                <td>`sympy.integrate(f, (x, a, b))`</td>
+                <td>สไลเดอร์ปรับขอบเขต $[a, b]$, แสดงการแทนค่า $F(b) - F(a)$ ในรูปเศษส่วนแท้</td>
+              </tr>
+              <tr>
+                <td><strong>โมดูลที่ 4</strong></td>
+                <td>การประยุกต์หาพื้นที่ใต้เส้นโค้ง</td>
+                <td>`sympy.integrate(sympy.Abs(f), (x, a, b))`</td>
+                <td>กราฟจำลองพื้นที่ระบายสีแบบ Interactive, แสดงจุดตัดแกน $x$ ที่ฟังก์ชันเปลี่ยนเครื่องหมาย</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 2: ADVISORY & FINAL DEFENSE MASTER Q&A -->
+      <!-- TAB 2: ADVISORY & FINAL DEFENSE MASTER Q&A -->
+      <section id="pane-advisory" class="tab-pane">
+        <div style="margin-bottom: 24px;">
+          <h2 style="font-family: var(--font-heading); font-size: 1.35rem; margin-bottom: 6px; color: var(--text-main);">
+            คลังคำถาม-คำตอบเชิงลึกและข้อเสนอแนะสำหรับสอบป้องกันปริญญานิพนธ์ (Final Defense Master Q&amp;A Simulator)
+          </h2>
+          <p style="color: var(--text-dim); font-size: 0.92rem;">
+            รวบรวมสถานการณ์จำลองคำถามสอบไล่จากคณะกรรมการผู้ทรงคุณวุฒิด้านคณิตศาสตร์และวิศวกรรมซอฟต์แวร์ ครอบคลุมคำถามกดดันจุดยืนโครงงาน กลยุทธ์การตั้งรับเรื่อง AI ทฤษฎีบทบทที่ 2 สถิติแบบประเมิน สถาปัตยกรรมระบบ และจุดเพ่งเล็งที่ยังค้างในเล่ม พร้อมคีย์เวิร์ดช่วยจำสำหรับนิสิต
+          </p>
+        </div>
+
+        <!-- Sticky Search & Filter Control Panel -->
+        <div class="qa-control-panel">
+          <input type="text" id="qaSearchInput" class="qa-search-box" placeholder="🔍 พิมพ์ค้นหาคำถาม, ทฤษฎีบท, คีย์เวิร์ด (เช่น FTC, AI, SUS, โลปิตาล, Pytest)..." oninput="searchQA(this.value)">
+          <div class="qa-filter-bar">
+            <button class="qa-filter-btn active" data-cat="all" onclick="filterQACategory('all', this)">📌 ทั้งหมด (19 ข้อ)</button>
+            <button class="qa-filter-btn" data-cat="identity" onclick="filterQACategory('identity', this)">🎯 จุดยืน &amp; ความแปลกใหม่ (2)</button>
+            <button class="qa-filter-btn" data-cat="ai" onclick="filterQACategory('ai', this)">🤖 การตั้งรับเรื่อง AI (2)</button>
+            <button class="qa-filter-btn" data-cat="math" onclick="filterQACategory('math', this)">📐 ทฤษฎีคณิตศาสตร์บทที่ 2 (6)</button>
+            <button class="qa-filter-btn" data-cat="stats" onclick="filterQACategory('stats', this)">📊 แบบสอบถาม &amp; สถิติ SUS (3)</button>
+            <button class="qa-filter-btn" data-cat="code" onclick="filterQACategory('code', this)">💻 สถาปัตยกรรม &amp; โค้ด (3)</button>
+            <button class="qa-filter-btn" data-cat="caveats" onclick="filterQACategory('caveats', this)">⚠️ จุดเพ่งเล็งที่ยังค้างในเล่ม (3)</button>
+            <button class="qa-filter-btn" data-cat="strategy" onclick="filterQACategory('strategy', this)">👥 แบ่งงาน &amp; จิตวิทยา (2)</button>
+          </div>
+        </div>
+
+        <!-- Quick Script Box -->
+        <div class="script-box">
+          <h3>สรุป 4 เสาหลัก Quick Script สำหรับเปิดประเด็นในห้องสอบ</h3>
+          <ol>
+            <li>
+              <strong>1. จุดยืนและความแปลกใหม่:</strong> 
+              <em>"แอปอื่นเน้นเป็น 'เครื่องจักรแจกคำตอบ' (Answer Engine) แต่งานของเราคือ 'สื่อสร้างมโนทัศน์แบบมีปฏิสัมพันธ์' (Cognitive Scaffolding) ที่เชื่อมโยงพีชคณิตกับเรขาคณิตสดๆ เพื่อแก้ 7 จุดเข้าใจผิดทางคณิตศาสตร์ครับ"</em>
+            </li>
+            <li>
+              <strong>2. การตั้งรับเรื่อง AI:</strong> 
+              <em>"AI ทั่วไปมักคำนวณคณิตศาสตร์ผิดพลาด (Hallucinate) ตลอดเวลา นิสิตไม่ได้เป็นเพียง Coder แต่ทำหน้าที่เป็น 'Mathematical Architect' ผู้นำทฤษฎีบท Real Analysis มาสร้างเงื่อนไขและคุมคุณภาพด้วยชุดทดสอบ Pytest 265 ข้อครับ"</em>
+            </li>
+            <li>
+              <strong>3. ทฤษฎีบทหลักมูล (FTC):</strong> 
+              <em>"FTC ส่วนที่ 2 เชื่อมโยงพื้นที่สี่เหลี่ยมรีมันน์กับการลบปฏิยานุพันธ์ $F(b) - F(a)$ โดยมีเงื่อนไขสำคัญคือฟังก์ชันต้องต่อเนื่องตลอดช่วงปิด จึงนำไปแทนค่าข้ามจุดเอกฐานอย่าง $\int_{-1}^1 x^{-2}dx$ โดยตรงไม่ได้ครับ"</em>
+            </li>
+            <li>
+              <strong>4. สถิติ SUS และความพึงพอใจ:</strong> 
+              <em>"เรารายงานทั้งผลรวม 50 คน (82.15) และการวิเคราะห์ความไวในกลุ่มธรรมชาติ 29 คน (73.53) เพื่อความโปร่งใส โดยระบุชัดเจนว่าวัดได้เฉพาะความสะดวกในการใช้งาน ไม่ได้เคลมเกินจริงเรื่องผลสัมฤทธิ์ทางการเรียนครับ"</em>
+            </li>
+          </ol>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- หมวดที่ 0: จุดยืนวิชาการและความแปลกใหม่ (Identity & Novelty) -->
+        <!-- ======================================================== -->
+        <div class="qa-item-card" data-cat="identity">
+          <div class="advisory-item critical">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 0.1: "แล้วโครงงานนี้มีอะไรใหม่? (Where is the Novelty?)"</div>
+              <span class="advisory-tag tag-rose">จุดยืน &amp; ความแปลกใหม่</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: โปรแกรมแก้โจทย์แคลคูลัสมีมานานมากแล้ว ทั้ง Symbolab, Photomath, Wolfram|Alpha หรือแม้แต่ ChatGPT อยากทราบว่าโครงงานนี้มี 'ความแปลกใหม่' ตรงไหน? อะไรคือสิ่งที่ทำให้งานนี้มีคุณค่าคู่ควรกับการเป็นปริญญานิพนธ์?"
+            </div>
+            <div class="bad-answer">
+              <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong><br>
+              "เพราะของหนูเป็นภาษาไทยค่ะ" หรือ "เพราะของเราทำเป็นเว็บฟรีให้เพื่อนๆ เข้ามาใช้งานได้ง่ายค่ะ"<br>
+              <em>(เหตุผล: กรรมการจะมองว่าไม่มีคุณค่าทางวิชาการทันที เพราะโปรแกรมต่างประเทศก็แปลไทยและเปิดให้ใช้ฟรีอยู่แล้ว)</em>
+            </div>
+            <div class="good-answer">
+              <strong>✅ แนวคิดหลักในการตอบ:</strong><br>
+              ความแปลกใหม่ของโครงงานนี้อยู่ที่ <strong>"การเปลี่ยนผ่านจากเครื่องคิดเลขสำเร็จรูป (Answer Engine) ไปสู่สื่อการเรียนรู้เชิงมโนทัศน์แบบมีปฏิสัมพันธ์ (Cognitive &amp; Pedagogical Scaffolding)"</strong>
+              <ol style="margin-left: 20px; margin-top: 8px;">
+                <li><strong>การออกแบบโดยยึดจุดบกพร่องทางความคิด (Misconception-Driven Design):</strong> แอปอื่นมุ่งหาคำตอบสุดท้าย แต่แอปเราเจาะจง 7 หัวข้อวิกฤตที่นิสิตสอบตกซ้ำซาก เช่น การจำแนกรูปแบบไม่กำหนด $rac{0}{0}$, การตรวจจับและปฏิเสธเส้นสัมผัสลวง ณ จุดมุม ($|x|$) และจุดคัสป์ ($x^{2/3}$), และการดักจับจุดเอกฐานภายในช่วงของปริพันธ์ไม่ตรงแบบ</li>
+                <li><strong>การเชื่อมโยงสัญลักษณ์และเรขาคณิตแบบพลวัต (Visual-Symbolic Synchronization):</strong> ทุกครั้งที่ขยับสไลเดอร์ กราฟและพิกัดจะอัปเดตสดพร้อมสูตรคำนวณ เช่น ผู้เรียนจะเห็นทันทีว่าทำไมผลรวมรีมันน์จุดกึ่งกลาง ($M_n$) ถึงลู่เข้าสู่พื้นที่จริงเร็วกว่าจุดซ้ายและขวา</li>
+                <li><strong>ระบบช่วยเหลือแบบไต่ระดับ (Progressive Scaffolding):</strong> ผู้เรียนต้องเป็นผู้ตัดสินใจเลือกขั้นตอนเอง (เช่น เลือกตัวแปร $u$ หรือเลือก By Parts) ระบบไม่ใช่เครื่องแจกเฉลย แต่คอยประเมินและให้คำใบ้ทีละขั้น</li>
+              </ol>
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "กราบเรียนคณะกรรมการครับ ความแปลกใหม่ของโครงงานเราไม่ได้อยู่ที่การสร้างเครื่องคิดเลขแข่งกับ Symbolab หรือ ChatGPT ครับ เพราะโปรแกรมเหล่านั้นถูกสร้างมาเป็น 'เครื่องจักรพ่นคำตอบ (Answer Engine)' เมื่อผู้เรียนกรอกโจทย์ ระบบจะแสดงผลเฉลยออกมารวดเดียว ส่งผลให้ผู้เรียนแค่อ่านตามหรือคัดลอกคำตอบโดยไม่ได้เกิดมโนทัศน์จริง<br><br>
+                แต่งานวิจัยของพวกเรามุ่งเน้น <strong>'การสร้างนั่งร้านทางปัญญา (Instructional Scaffolding)'</strong> เพื่อแก้จุดเข้าใจผิดเฉพาะเรื่อง (Misconceptions) 7 ประเด็นหลักครับ เช่น ระบบอื่นจะคำนวณเส้นสัมผัสของ $|x|$ ณ จุด $0$ แบบฝืนคำนวณ แต่ระบบเรามีขั้นตอนวิธีตรวจสอบความต่อเนื่องและการหาอนุพันธ์ได้ เพื่อปฏิเสธการวาดเส้นสัมผัสลวง และอธิบายเหตุผลทางคณิตศาสตร์ให้ผู้เรียนเข้าใจ นอกจากนี้เรายังออกแบบให้เรขาคณิตและพีชคณิตเชื่อมโยงกันสดๆ ผ่านการขยับพารามิเตอร์ จึงเป็นการสร้างเครื่องมือช่วยสร้างความเข้าใจ ไม่ใช่แค่การแจกเฉลยครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Cognitive Scaffolding</span>
+                <span class="kw-tag">Answer Engine vs Learning Tool</span>
+                <span class="kw-tag">Misconception-Driven</span>
+                <span class="kw-tag">Visual-Symbolic Sync</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="identity">
+          <div class="advisory-item warning">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 0.2: "ทำไมถึงเป็นโครงงานของ 'คณิตศาสตร์ประยุกต์' ไม่ใช่โครงงานวิทยาการคอมพิวเตอร์?"</div>
+              <span class="advisory-tag tag-amber">จุดยืน &amp; ความแปลกใหม่</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: มองดูภาพรวมแล้ว งานนี้เหมือนเป็นการพัฒนาซอฟต์แวร์ เขียนเว็บ Streamlit ออกแบบ UI และทำแบบทดสอบ ซึ่งฟังดูเป็นงานของภาควิชาวิทยาการคอมพิวเตอร์ อยากทราบว่าเนื้อหาสาระของความเป็น 'คณิตศาสตร์ประยุกต์' อยู่ตรงไหนของโครงงานนี้?"
+            </div>
+            <div class="bad-answer">
+              <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong><br>
+              "เพราะพวกเราเรียนคณิตศาสตร์มาค่ะ ก็เลยอยากเขียนโปรแกรมที่ช่วยสอนวิชาที่เราเรียน"<br>
+              <em>(เหตุผล: เป็นการยอมรับทางอ้อมว่าคณิตศาสตร์เป็นเพียงหัวข้อที่หยิบมาทำ ไม่ได้มีเนื้องานทางคณิตศาสตร์ประยุกต์จริง)</em>
+            </div>
+            <div class="good-answer">
+              <strong>✅ แนวคิดหลักในการตอบ:</strong><br>
+              แก่นแท้ของคณิตศาสตร์ประยุกต์ในงานนี้คือ <strong>"การแปลงทฤษฎีบทการวิเคราะห์เชิงคณิตศาสตร์ (Real Analysis &amp; Calculus Theorems) ให้อยู่ในรูปของขั้นตอนวิธีเชิงคำนวณ (Computational Algorithms) ที่รัดกุมและตรวจสอบความถูกต้องได้"</strong>
+              <ul style="margin-left: 20px; margin-top: 8px;">
+                <li>วิศวกรคอมพิวเตอร์ทั่วไปจะไม่ทราบว่า ฟังก์ชัน $x^{2/3}$ ที่จุด $0$ หาอนุพันธ์ไม่ได้เพราะลิมิตอัตราส่วนผลต่างมีค่าเป็น $\pm\infty$ คนละทิศทาง (Cusp) หรือทำไม $\int_{-1}^1 rac{1}{x}\,dx$ ต้องแยกคำนวณสองข้างและตอบว่าลู่ออก แทนที่จะหักล้างเป็น 0 ตามค่าหลักโคชี</li>
+                <li>การคำนวณความคลาดเคลื่อนของผลรวมรีมันน์ ต้องอาศัยทฤษฎีขอบเขตความคลาดเคลื่อน $|E_M| \le rac{K(b-a)^3}{24n^2}$ เพื่อยืนยันว่าการลู่เข้าสอดคล้องกับพฤติกรรม $O(1/n^2)$</li>
+                <li>การตรวจความเท่ากันของคำตอบผู้เรียน (Mathematical Equivalence Verification) ต้องอาศัยการลดรูปทางพีชคณิตเชิงสัญลักษณ์ (Symbolic Reduction) ไม่ใช่แค่การเทียบตัวอักษร</li>
+              </ul>
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "กราบเรียนอาจารย์ครับ ในโครงงานนี้ การเขียนโปรแกรมด้วยภาษา Python หรือ Streamlit เป็นเพียง 'เครื่องมือในการนำเสนอ (Delivery Channel)' เท่านั้นครับ แต่เนื้องานหลักและองค์ความรู้ที่พวกเราต้องลงแรงค้นคว้าคือ <strong>การสร้างขั้นตอนวิธีทางคณิตศาสตร์เชิงสัญลักษณ์ (Symbolic Mathematical Algorithms)</strong> ครับ<br><br>
+                ความรู้ทางคณิตศาสตร์ประยุกต์ถูกนำมาใช้ใน 4 ด้านสำคัญ:<br>
+                1. <strong>การแปลงทฤษฎีบท Real Analysis เป็นตรรกะระบบ:</strong> เช่น การตรวจสอบเงื่อนไขความต่อเนื่องและการหาอนุพันธ์ได้ เพื่อแยกแยะจุดมุม จุดคัสป์ และเส้นสัมผัสแนวดิ่ง<br>
+                2. <strong>การควบคุมความถูกต้องของปริพันธ์ไม่ตรงแบบ:</strong> การดักจับจุดเอกฐานภายในช่วง $[a, b]$ เพื่อบังคับแยกช่วงตามนิยามจริง ป้องกันไม่ให้โปรแกรมคำนวณลัดจนได้ค่าผิดพลาด<br>
+                3. <strong>การวิเคราะห์อัตราการลู่เข้าเชิงตัวเลข (Numerical Convergence Analysis):</strong> การพิสูจน์และยืนยันอัตราความคลาดเคลื่อนของผลรวมรีมันน์จุดกึ่งกลางเทียบกับทฤษฎีบท $O(1/n^2)$ ในบทที่ 4<br>
+                4. <strong>การทดสอบความถูกต้องทางคณิตศาสตร์อย่างเป็นระบบ (Mathematical Rigor Testing):</strong> การเขียนชุดทดสอบหน่วยย่อย 265 ข้อ เพื่อรับประกันว่าอัลกอริทึมทางคณิตศาสตร์ทำงานถูกต้องตามทฤษฎีทุกประการครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Mathematical Architect</span>
+                <span class="kw-tag">Real Analysis to Algorithms</span>
+                <span class="kw-tag">Numerical Convergence O(1/n^2)</span>
+                <span class="kw-tag">Symbolic Equivalence</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- หมวดที่ 1: การตั้งรับเรื่อง AI (The AI Defense & Ownership) -->
+        <!-- ======================================================== -->
+        <div class="qa-item-card" data-cat="ai">
+          <div class="advisory-item critical">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 1.1: กรรมการต่อต้าน AI และมองว่า "เด็กไม่ได้เขียนโค้ดเอง ไม่ใช่ผลงานที่ศึกษาด้วยตนเอง"</div>
+              <span class="advisory-tag tag-rose">การตั้งรับเรื่อง AI</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: โค้ดพวกนี้ดูเป็นระเบียบเกินไป มีทั้ง Streamlit, Regex, Matplotlib เด็กคณิตศาสตร์เขียนเองทั้งหมดจริงหรือ? ใช้ ChatGPT หรือ AI ช่วยเขียนมาใช่ไหม? ถ้า AI เขียนให้เกือบหมด แล้วพวกคุณจะบอกว่าเป็นผลงานที่ศึกษาด้วยตนเองได้อย่างไร?"
+            </div>
+            <div class="bad-answer">
+              <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong><br>
+              "ไม่ได้ใช้ AI เลยค่ะ เขียนเองทุกบรรทัด" (กรรมการจะลองเปิดโค้ดถามไล่จนมุมทันที) หรือ "ก็ยุคนี้ใครๆ เขาก็ใช้ AI กันทั้งนั้นแหละค่ะ หนูเป็นคนสั่ง AI ก็ถือว่าหนูทำเอง" (แสดงทัศนคติก้าวร้าวและขาดความรับผิดชอบทางวิชาการ)
+            </div>
+            <div class="good-answer">
+              <strong>✅ แนวคิดหลัก: กลยุทธ์ 4 ชั้น (The 4-Layer Defense Strategy):</strong><br>
+              ยอมรับอย่างโปร่งใสว่าใช้ AI เป็นเครื่องมือทุ่นแรงไวยากรณ์ (Coding Assistant) แต่ชี้ให้เห็นว่า <strong>"สถาปัตยกรรมระบบ, ตรรกะทางคณิตศาสตร์, และการควบคุมคุณภาพทั้งหมด เกิดจากมนุษย์ 100%"</strong>
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "กราบเรียนอาจารย์อย่างตรงไปตรงมาครับ/ค่ะ ทางกลุ่ม **ยอมรับว่ามีการใช้ Generative AI เป็นเครื่องมือช่วยในการจัดรูปแบบโค้ด (Coding Assistant)** จริงครับ แต่พวกเราอยากกราบเรียนชี้แจงประเด็นสำคัญ 3 ประการครับ:<br><br>
+                <strong>ประการแรก:</strong> AI ไม่สามารถสร้างโครงงานนี้ขึ้นมาเองได้ครับ AI เป็นเพียงเครื่องมือพิมพ์ตามคำสั่ง แต่ 'สถาปัตยกรรมของระบบ, การออกแบบลำดับการสอนแบบไต่ระดับ (Scaffolding), และการคัดเลือกโจทย์ 7 หัวข้อ' เกิดจากการที่พวกเรานำปัญหาที่พบจริงจากการเรียนแคลคูลัสมาวิเคราะห์และวางโครงสร้างด้วยตนเองทั้งหมดครับ<br><br>
+                <strong>ประการที่สอง (จุดสำคัญที่สุด):</strong> **AI มักจะคำนวณคณิตศาสตร์ผิดพลาดเสมอครับ** หากพวกเราไม่มีความรู้ทางคณิตศาสตร์อย่างแท้จริง เราจะไม่รู้เลยว่าโค้ดที่ AI แนะนำมานั้นแอบมีข้อผิดพลาดร้ายแรง เช่น AI ลืมตรวจสอบเงื่อนไขความต่อเนื่องของ FTC, พยายามวาดเส้นสัมผัสหลอกที่จุดมุมของ $|x|$, หรือคำนวณปริพันธ์ไม่ตรงแบบผิดโดยการหักล้างข้างที่เป็นอนันต์ สิ่งที่พวกเราต้องลงแรงศึกษาอย่างหนักคือการนำทฤษฎีบทในบทที่ 2 เข้าไปกำกับและแก้ไขตรรกะของโปรแกรมให้ถูกต้องตามหลักวิชาการครับ<br><br>
+                <strong>ประการที่สาม:</strong> เพื่อพิสูจน์ว่าระบบมีความถูกต้องและพวกเราควบคุมการทำงานได้จริง พวกเราจึงได้ **ออกแบบและเขียนชุดทดสอบอัตโนมัติ Pytest ถึง 265 ข้อ** เพื่อตรวจสอบทุกฟังก์ชัน ทุกกรณีขอบเขตวิกฤต และความปลอดภัยของระบบด้วยตนเองครับ<br><br>
+                ดังนั้น ในโครงงานนี้ AI จึงทำหน้าที่เสมือนเครื่องคิดเลขวิทยาศาสตร์หรือเครื่องทุ่นแรงทางไวยากรณ์ แต่ **องค์ความรู้ ตรรกะทางคณิตศาสตร์ และการควบคุมคุณภาพทั้งหมด เป็นผลงานที่พวกเราศึกษา ค้นคว้า และรับผิดชอบด้วยตนเอง 100% ครับ/ค่ะ**"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Mathematical Architect</span>
+                <span class="kw-tag">AI Hallucination Gate</span>
+                <span class="kw-tag">265 Pytests Evidence</span>
+                <span class="kw-tag">Ethical Transparency</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="ai">
+          <div class="advisory-item warning">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 1.2: ตัวอย่างรูปธรรมที่ AI คำนวณคณิตผิดพลาด ที่นิสิตต้องเข้าไปควบคุมและแก้ไข</div>
+              <span class="advisory-tag tag-amber">การตั้งรับเรื่อง AI</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ไหนลองยกตัวอย่างมาสัก 2-3 จุดซิ ว่าถ้าปล่อยให้ AI เขียนเองโดยไม่มีพวกคุณคอยคุม มันจะคำนวณคณิตศาสตร์ผิดตรงไหนบ้าง?"
+            </div>
+            <div class="good-answer">
+              <strong>✅ 4 จุดตายทางคณิตศาสตร์ที่ AI มักหลอกลวง (AI Math Hallucinations):</strong>
+              <ol style="margin-left: 20px;">
+                <li><strong>การหาอนุพันธ์ ณ จุดมุม ($f(x)=|x|$ ที่ $x=0$):</strong> AI มักจะเขียนคำสั่งหาอนุพันธ์ตรงๆ ซึ่งระบบคอมพิวเตอร์ทั่วไปจะคืนค่า 0 หรือวาดเส้นสัมผัสแนวนอนลวง นิสิตต้องเขียนฟังก์ชันตรวจสอบอนุพันธ์ด้านเดียว $f'_-(0) 
+eq f'_+(0)$ เพื่อปฏิเสธการวาดเส้นสัมผัส</li>
+                <li><strong>กับดักค่าหลักโคชีในปริพันธ์ไม่ตรงแบบ ($\int_{-1}^1 rac{1}{x}dx$):</strong> AI มักจะมองว่าฟังก์ชันคี่และขอบเขตสมมาตรแล้วตอบ 0 ทันที นิสิตต้องเขียนตรรกะแยกช่วง $\lim_{u 	o 0^-} + \lim_{v 	o 0^+}$ เพื่อบังคับสรุปว่า 'ลู่ออก' ตามนิยามมาตรฐาน</li>
+                <li><strong>การสลับรัศมีในวิธีวงแหวน (Washer Method):</strong> เมื่อผู้ใช้กรอกรัศมีนอกเล็กกว่ารัศมีใน AI มักจะอินทิเกรตแล้วครอบค่าสัมบูรณ์ภายนอก ทำให้กรณีฟังก์ชันตัดกันสลับบนล่างได้ค่าปริมาตรเป็น 0 นิสิตต้องเพิ่มการตรวจเงื่อนไข $0 \le r(x) \le R(x)$</li>
+                <li><strong>การละเมิดเงื่อนไขความต่อเนื่องของ FTC:</strong> AI มักนำสูตร $F(b)-F(a)$ ไปแทนค่ากับ $\int_{-1}^1 x^{-2}dx$ แล้วได้ $-2$ นิสิตต้องเพิ่มตัวตรวจจับ Analytic Pole ภายในช่วง</li>
+              </ol>
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ตัวอย่างที่ชัดเจนที่สุดคือเรื่อง <strong>ปริพันธ์ไม่ตรงแบบ</strong> ครับอาจารย์ ถ้าเราสั่ง AI ทั่วไปให้คำนวณ $\int_{-1}^1 rac{1}{x}\,dx$ AI จะมองเห็นความสมมาตรของกราฟแล้วหักล้างกันตอบ 0 ทันที ซึ่งผิดหลักคณิตศาสตร์อย่างร้ายแรง เพราะตามนิยามมาตรฐานปริพันธ์นี้ลู่ออกสู่อนันต์<br><br>
+                อีกตัวอย่างคือ <strong>การหาเส้นสัมผัสของฟังก์ชันค่าสัมบูรณ์</strong> AI จะพยายามวาดเส้นตรงแนวนอนที่จุดยอด $(0,0)$ ทั้งที่จุดนั้นเป็นจุดมุมและหาอนุพันธ์ไม่ได้ หากพวกเราไม่มีความรู้เรื่องอนุพันธ์ด้านเดียวและทฤษฎีบทความต่อเนื่อง เราจะไม่สามารถเข้าไปออกแบบอัลกอริทึมเพื่อดักจับและปฏิเสธผลลัพธ์ลวงเหล่านี้ได้เลยครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Corner Derivative Trap</span>
+                <span class="kw-tag">Cauchy Principal Fallacy</span>
+                <span class="kw-tag">Washer Radius Order</span>
+                <span class="kw-tag">Analytic Pole Gate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- หมวดที่ 2: ทฤษฎีคณิตศาสตร์บทที่ 2 และตัวบททฤษฎีบทเต็ม -->
+        <!-- ======================================================== -->
+        <div class="qa-item-card" data-cat="math">
+          <div class="advisory-item critical">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 2.1: รูปแบบไม่กำหนด $rac{0}{0}$ และ กฎของโลปิตาล (L'Hôpital's Rule)</div>
+              <span class="advisory-tag tag-blue">ทฤษฎีบทบทที่ 2</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: กฎของโลปิตาลมีสมมติฐานอะไรบ้าง? ทำไมเวลาใช้ต้องหาอนุพันธ์ของเศษและส่วนแยกกัน? และถ้า $\lim rac{f'(x)}{g'(x)}$ หาค่าไม่ได้ จะสรุปว่าลิมิตเดิม $\lim rac{f(x)}{g(x)}$ หาค่าไม่ได้ด้วยหรือไม่?"
+            </div>
+            <div class="theorem-box">
+              <div class="theorem-title">📖 ตัวบททฤษฎีบทจริง: กฎของโลปิตาล (L'Hôpital's Rule)</div>
+              กำหนดให้ $f$ และ $g$ เป็นฟังก์ชันที่หาอนุพันธ์ได้บนช่วงเปิด $I$ ที่บรรจุจุด $a$ (ยกเว้นอาจไม่จำเป็นต้องหาอนุพันธ์ได้ที่จุด $a$) โดยที่ $g'(x) 
+eq 0$ สำหรับทุก $x \in I \setminus \{a\}$<br>
+              ถ้า $\lim_{x 	o a} f(x) = 0$ และ $\lim_{x 	o a} g(x) = 0$ (หรือทั้งสองฟังก์ชันลู่สู่อนันต์ $\pm\infty$)<br>
+              และถ้า $\lim_{x 	o a} rac{f'(x)}{g'(x)} = L$ (โดยที่ $L \in \mathbb{R}$ หรือ $L = \pm\infty$)<br>
+              แล้ว จะสรุปได้ว่า $\lim_{x 	o a} rac{f(x)}{g(x)} = \lim_{x 	o a} rac{f'(x)}{g'(x)} = L$
+            </div>
+            <div class="good-answer">
+              <strong>✅ แนวคิดหลักและจุดที่ต้องระวัง:</strong>
+              <ul style="margin-left: 20px;">
+                <li><strong>ทำไมดิฟแยกเศษส่วน:</strong> เพราะเปรียบเทียบอัตราส่วนความชันขณะใดขณะหนึ่ง ไม่ใช่การหาอนุพันธ์ของผลหารทั้งก้อน</li>
+                <li><strong>บทกลับไม่เป็นจริง:</strong> ถ้า $\lim rac{f'(x)}{g'(x)}$ หาค่าไม่ได้ <em>ไม่สามารถสรุปได้ว่าลิมิตเดิมหาค่าไม่ได้</em> ตัวอย่างเช่น $\lim_{x 	o \infty} rac{x + \sin x}{x} = 1$ แต่เมื่อดิฟจะได้ $\lim_{x 	o \infty} rac{1 + \cos x}{1}$ ซึ่งกวัดแกว่งหาค่าไม่ได้ ต้องใช้วิธีอื่น เช่น ทฤษฎีบทบีบ (Squeeze Theorem)</li>
+              </ul>
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "กราบเรียนอาจารย์ครับ กฎของโลปิตาลต้องมีสมมติฐานสำคัญ 3 ประการ คือ ฟังก์ชันทั้งสองต้องหาอนุพันธ์ได้ในย่านใกล้เคียงจุด $a$ โดยอนุพันธ์ของตัวส่วนต้องไม่เป็นศูนย์, ลิมิตของทั้งเศษและส่วนต้องอยู่ในรูปแบบไม่กำหนด $rac{0}{0}$ หรือ $rac{\infty}{\infty}$, และที่สำคัญที่สุดคือ <strong>ลิมิตของผลหารของอนุพันธ์ $\lim rac{f'}{g'}$ ต้องหาค่าได้หรือมีค่าเป็นอนันต์</strong> ครับ<br><br>
+                หากลิมิตของ $f'/g'$ กวัดแกว่งหาค่าไม่ได้ เราจะสรุปว่าลิมิตเดิมหาค่าไม่ได้ไม่ได้ครับ ต้องหันกลับไปใช้วิธีจัดรูปพีชคณิต ทฤษฎีบทบีบ หรือลิมิตมาตรฐานแทน ซึ่งในระบบของเราจะแนะนำให้ผู้เรียนลองแยกตัวประกอบหรือจัดรูปก่อนเสมอครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Indeterminate 0/0</span>
+                <span class="kw-tag">Relative Rates of Vanishing</span>
+                <span class="kw-tag">Derivative Limit Existence</span>
+                <span class="kw-tag">Squeeze Theorem Fallback</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="math">
+          <div class="advisory-item critical">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 2.2: ความสัมพันธ์ระหว่างความต่อเนื่องกับอนุพันธ์ และจุดที่หาอนุพันธ์ไม่ได้</div>
+              <span class="advisory-tag tag-blue">ทฤษฎีบทบทที่ 2</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ในบทที่ 2 บอกว่าติดตั้งระบบตรวจจับจุดที่หาอนุพันธ์ไม่ได้ ช่วยนิยามความแตกต่างเชิงคณิตศาสตร์ระหว่าง 'จุดมุม (Corner)', 'จุดคัสป์ (Cusp)' และ 'เส้นสัมผัสแนวดิ่ง (Vertical Tangent)' ให้ชัดเจนได้ไหม?"
+            </div>
+            <div class="theorem-box">
+              <div class="theorem-title">📖 ตัวบททฤษฎีบทจริง: ความต่อเนื่องเป็นเงื่อนไขจำเป็นของการหาอนุพันธ์ได้</div>
+              ถ้าฟังก์ชัน $f$ สามารถหาอนุพันธ์ได้ที่จุด $x = a$ (นั่นคือ $f'(a) = \lim_{h 	o 0} rac{f(a+h) - f(a)}{h}$ มีอยู่จริงเป็นจำนวนจริง)<br>
+              แล้ว ฟังก์ชัน $f$ ย่อมมีความต่อเนื่องที่จุด $x = a$ เสมอ (นั่นคือ $\lim_{x 	o a} f(x) = f(a)$)<br>
+              <em>(บทกลับไม่เป็นจริง: ฟังก์ชันต่อเนื่อง ณ จุดใดจุดหนึ่ง อาจหาอนุพันธ์ไม่ได้ที่จุดนั้น)</em>
+            </div>
+            <div class="good-answer">
+              <strong>✅ การจำแนก 3 ลักษณะอย่างเคร่งครัดตามหลักคณิตศาสตร์:</strong>
+              <ol style="margin-left: 20px;">
+                <li><strong>จุดมุม (Corner):</strong> อนุพันธ์ทางซ้ายและทางขวาหาค่าได้เป็นจำนวนจริงทั้งคู่ แต่มีค่าไม่เท่ากัน ($f'_-(a) 
+eq f'_+(a)$) เช่น $f(x) = |x|$ ที่ $x = 0$ ได้ความชันซ้าย $-1$ ความชันขวา $+1$</li>
+                <li><strong>จุดคัสป์ (Cusp):</strong> ฟังก์ชันต่อเนื่องที่จุดนั้น แต่อัตราส่วนผลต่างพุ่งสู่อนันต์ในทิศทางตรงกันข้าม เช่น $\lim_{x 	o 0^-} f'(x) = -\infty$ และ $\lim_{x 	o 0^+} f'(x) = +\infty$ เช่น $f(x) = x^{2/3}$ ที่ $x = 0$ กราฟจะแหลมและวกกลับ</li>
+                <li><strong>เส้นสัมผัสแนวดิ่ง (Vertical Tangent):</strong> ฟังก์ชันต่อเนื่องที่จุดนั้น แต่อัตราส่วนผลต่างพุ่งสู่อนันต์ในทิศทางเดียวกัน ($+\infty$ ทั้งคู่ หรือ $-\infty$ ทั้งคู่) เช่น $f(x) = x^{1/3}$ ที่ $x = 0$ เส้นสัมผัสกลายเป็นเส้นตรง $x = 0$ ซึ่งความชันไม่นิยามในระบบจำนวนจริง</li>
+              </ol>
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "จุดที่หาอนุพันธ์ไม่ได้ทั้ง 3 ลักษณะมีความแตกต่างกันอย่างชัดเจนตามค่าลิมิตของความชันครับ:<br>
+                • <strong>จุดมุม:</strong> อนุพันธ์ซ้ายและขวาเป็นตัวเลขจริงแต่ไม่เท่ากัน เช่น $|x|$ กราฟจึงหักศอก<br>
+                • <strong>จุดคัสป์:</strong> กราฟพุ่งชันจนเป็นอนันต์ในทิศตรงข้ามกัน ฝั่งหนึ่งลง $-\infty$ อีกฝั่งขึ้น $+\infty$ เช่น $x^{2/3}$ ทำให้ยอดกราฟแหลมคล้ายยอดคลื่น<br>
+                • <strong>เส้นสัมผัสแนวดิ่ง:</strong> กราฟชันจนตั้งฉากกับแกน $x$ โดยพุ่งสู่อนันต์ในทิศเดียวกัน เช่น $x^{1/3}$ เส้นสัมผัสจึงเป็นเส้นดิ่ง $x=0$ ซึ่งไม่มีค่าความชันครับ<br><br>
+                ในระบบของเรา เมื่อผู้เรียนป้อนฟังก์ชันเหล่านี้ ระบบจะตรวจจับและขึ้นข้อความแจ้งเตือนทันที เพื่อไม่ให้เกิดเส้นสัมผัสลวงครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Necessary vs Sufficient</span>
+                <span class="kw-tag">Corner f'_-(a) != f'_+(a)</span>
+                <span class="kw-tag">Cusp Opposite Infinities</span>
+                <span class="kw-tag">Vertical Tangent Same Infinity</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="math">
+          <div class="advisory-item critical">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 2.3: ทฤษฎีบทหลักมูลของแคลคูลัส (Fundamental Theorem of Calculus: FTC)</div>
+              <span class="advisory-tag tag-rose">ทฤษฎีบทบทที่ 2</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ทำไมในเล่มโครงงานเดิมถึงไม่มีทฤษฎีบทหลักมูลของแคลคูลัส (FTC)? FTC มีกี่ส่วน อะไรบ้าง? และทำไมเราถึงใช้สูตร $\int_a^b f = F(b)-F(a)$ แทนค่าปลายช่วงกับ $\int_{-1}^1 rac{1}{x^2}\,dx$ ทันทีไม่ได้?"
+            </div>
+            <div class="theorem-box">
+              <div class="theorem-title">📖 ตัวบททฤษฎีบทจริง: ทฤษฎีบทหลักมูลของแคลคูลัส (FTC Parts 1 &amp; 2)</div>
+              <strong>ส่วนที่ 1 (First Fundamental Theorem):</strong><br>
+              กำหนดให้ $f$ เป็นฟังก์ชันต่อเนื่องบนช่วงปิด $[a, b]$ และนิยาม $F(x) = \int_a^x f(t)\,dt$ สำหรับทุก $x \in [a, b]$<br>
+              แล้ว $F$ จะมีความต่อเนื่องบน $[a, b]$ และสามารถหาอนุพันธ์ได้บนช่วงเปิด $(a, b)$ โดยที่
+              $$F'(x) = rac{d}{dx}\left[\int_a^x f(t)\,dtight] = f(x) \quad 	ext{สำหรับทุก } x \in (a, b)$$
+              <strong>ส่วนที่ 2 (Second Fundamental Theorem - Net Change):</strong><br>
+              กำหนดให้ $f$ เป็นฟังก์ชันต่อเนื่องบนช่วงปิด $[a, b]$ และ $F$ เป็นฟังก์ชันที่ต่อเนื่องบน $[a, b]$ โดยที่ $F'(x) = f(x)$ สำหรับทุก $x \in (a, b)$<br>
+              แล้ว ปริพันธ์จำกัดเขตสามารถคำนวณได้จากผลต่างของค่าปฏิยานุพันธ์ที่ปลายช่วง:
+              $$\int_a^b f(x)\,dx = F(b) - F(a) = \left[ F(x) ight]_a^b$$
+            </div>
+            <div class="good-answer">
+              <strong>✅ จุดตายที่กรรมการจะซักค้าน:</strong>
+              หากนำ FTC ส่วนที่ 2 ไปแทนค่าตรงๆ กับ $\int_{-1}^1 x^{-2}\,dx$ จะได้ $[-x^{-1}]_{-1}^1 = -1 - (1) = -2$ ซึ่งได้คำตอบเป็นจำนวนลบ ทั้งที่กราฟ $x^{-2} > 0$ ตลอดช่วง! เหตุผลที่ผิดเพราะ <strong>ฟังก์ชัน $f(x) = x^{-2}$ ขาดสมมติฐานความต่อเนื่องบน $[-1, 1]$ เนื่องจากมีจุดเอกฐานที่ $x = 0$</strong> การใช้ FTC จึงล้มเหลวโดยสิ้นเชิง และต้องคำนวณผ่านนิยามของปริพันธ์ไม่ตรงแบบซึ่งจะพบว่าลู่ออกสู่อนันต์
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ทฤษฎีบทหลักมูลของแคลคูลัสทำหน้าที่เป็นสะพานเชื่อมสองฝั่งครับ ส่วนที่ 1 ยืนยันว่าการอินทิเกรตสร้างฟังก์ชันปฏิยานุพันธ์ขึ้นมาได้ และส่วนที่ 2 ยืนยันว่าเราสามารถหาค่าพื้นที่จำกัดเขตได้จากการลบค่าปฏิยานุพันธ์ที่ปลายช่วง $F(b)-F(a)$ โดยไม่ต้องคำนวณลิมิตสี่เหลี่ยมรีมันน์ครับ<br><br>
+                แต่ข้อจำกัดที่สำคัญยิ่งคือ <strong>ฟังก์ชันต้องมีความต่อเนื่องตลอดช่วงปิด $[a, b]$</strong> ครับ กรณีของ $\int_{-1}^1 rac{1}{x^2}\,dx$ เราจะนำ FTC มาแทนค่าโดยตรงไม่ได้ เพราะที่จุด $x=0$ ฟังก์ชันไม่ต่อเนื่องและพุ่งสู่อนันต์ หากฝืนแทนค่าจะได้ผลลัพธ์เป็น $-2$ ซึ่งขัดกับหลักเรขาคณิตที่ฟังก์ชันเป็นบวกตลอดช่วง โจทย์ข้อนี้จึงต้องใช้การคำนวณปริพันธ์ไม่ตรงแบบแยกช่วง ซึ่งระบบของเราได้วางเงื่อนไขตรวจสอบจุดเอกฐานเพื่อป้องกันข้อผิดพลาดนี้ครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">FTC Bridge Parts 1 &amp; 2</span>
+                <span class="kw-tag">Net Change Evaluation</span>
+                <span class="kw-tag">Domain Continuity Constraint</span>
+                <span class="kw-tag">Singularity Void</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="math">
+          <div class="advisory-item opportunity">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 2.4: ทฤษฎีบทขอบเขตความคลาดเคลื่อนของผลรวมรีมันน์จุดกึ่งกลาง (Midpoint Error Bound)</div>
+              <span class="advisory-tag tag-teal">ทฤษฎีบทบทที่ 2</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ในตารางที่ 4 ของบทที่ 4 ผลการทดสอบแสดงว่าเมื่อเพิ่มจำนวนแท่ง $n$ จาก 4 เป็น 8 (เพิ่ม 2 เท่า) ทำไมความคลาดเคลื่อนของจุดกึ่งกลางถึงลดลงประมาณ 4 เท่าพอดี? มีทฤษฎีบทอะไรรองรับปรากฏการณ์นี้?"
+            </div>
+            <div class="theorem-box">
+              <div class="theorem-title">📖 ตัวบททฤษฎีบทจริง: ขอบเขตความคลาดเคลื่อนของผลรวมจุดกึ่งกลาง (Error Bound for Midpoint Rule)</div>
+              กำหนดให้ $f$ มีอนุพันธ์อันดับสองต่อเนื่องบนช่วงปิด $[a, b]$ (นั่นคือ $f \in C^2([a, b])$)<br>
+              และให้ $K = \max_{x \in [a, b]} |f''(x)|$ เป็นค่าขอบเขตบนสุดของอนุพันธ์อันดับสองบนช่วงดังกล่าว<br>
+              แล้ว ความคลาดเคลื่อนสัมบูรณ์ของผลรวมรีมันน์จุดกึ่งกลาง $|E_M| = |\int_a^b f(x)\,dx - M_n|$ จะมีขอบเขตตามอสมการ:
+              $$|E_M| \le rac{K(b-a)^3}{24n^2}$$
+              ในขณะที่ขอบเขตความคลาดเคลื่อนของจุดซ้าย ($L_n$) และจุดขวา ($R_n$) แปรผันตาม $rac{M_1(b-a)^2}{2n}$
+            </div>
+            <div class="good-answer">
+              <strong>✅ คำอธิบายเชิงตัวเลขเทียบกับตารางที่ 4:</strong><br>
+              สำหรับโจทย์ในตาราง $f(x) = x^2$ บนช่วง $[0, 2]$ มี $f''(x) = 2$ ตลอดช่วง ดังนั้น $K = 2$ เมื่อแทนค่าในสูตรขอบเขตจะได้:
+              $$|E_M| \le rac{2(2-0)^3}{24n^2} = rac{16}{24n^2} = rac{2}{3n^2}$$
+              ซึ่งเป็นค่าความคลาดเคลื่อนแท้จริงของพาราโบลาพอดี! เมื่อ $n$ เพิ่มเป็น $2n$ ตัวส่วนจะกลายเป็น $(2n)^2 = 4n^2$ ทำให้ความคลาดเคลื่อนลดลงเหลือ $rac{1}{4}$ (ลดลงสี่เท่า) ตามทฤษฎีบท $O(1/n^2)$ อย่างแม่นตรง
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ที่ผลการทดลองในตารางที่ 4 ความคลาดเคลื่อนลดลง 4 เท่า เป็นไปตาม <strong>ทฤษฎีบทขอบเขตความคลาดเคลื่อนของผลรวมจุดกึ่งกลาง</strong> ครับอาจารย์ เนื่องจากในสูตรขอบเขต $|E_M| \le rac{K(b-a)^3}{24n^2}$ ตัวแปรจำนวนแท่ง $n$ ยกกำลังสองอยู่ที่ตัวส่วนครับ<br><br>
+                เมื่อเราเพิ่มจำนวนแท่งเป็น 2 เท่า ตัวส่วนจึงกลายเป็น $2^2 = 4$ เท่า ส่งผลให้ค่าความคลาดเคลื่อนลดลงเหลือเพียง 1 ใน 4 ของรอบก่อนหน้าทันที ในขณะที่จุดซ้ายและจุดขวามีตัวส่วนเป็น $n$ กำลังหนึ่ง ความคลาดเคลื่อนจึงลดลงเพียงครึ่งเดียว ข้อมูลเชิงประจักษ์ในตารางที่ 4 จึงสอดคล้องกับทฤษฎีบททางคณิตศาสตร์อย่างสมบูรณ์ครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Midpoint Error Bound</span>
+                <span class="kw-tag">Quadratic Convergence O(1/n^2)</span>
+                <span class="kw-tag">Parabola Exact K=2</span>
+                <span class="kw-tag">Geometric Cancellation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="math">
+          <div class="advisory-item critical">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 2.5: เกณฑ์กำลัง (p-test) และการแยกจุดเอกฐานของปริพันธ์ไม่ตรงแบบ</div>
+              <span class="advisory-tag tag-rose">ทฤษฎีบทบทที่ 2</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: เกณฑ์กำลัง (p-test) มีเงื่อนไขอย่างไร? และทำไม $\int_{-1}^1 rac{1}{x}\,dx$ ถึงต้องตอบว่าลู่ออก ทำไมไม่ตอบว่า 0 ในเมื่อกราฟเป็นฟังก์ชันคี่และหักล้างกันพอดี?"
+            </div>
+            <div class="theorem-box">
+              <div class="theorem-title">📖 ตัวบททฤษฎีบทจริง: เกณฑ์กำลังสำหรับการลู่เข้า (p-test for Improper Integrals)</div>
+              สำหรับจำนวนจริง $p$:<br>
+              1. <strong>กรณีช่วงอนันต์ (Type 1):</strong> $\int_1^\infty rac{1}{x^p}\,dx$ จะลู่เข้า ก็ต่อเมื่อ $p > 1$ (มีค่าเท่ากับ $rac{1}{p-1}$) และลู่ออก เมื่อ $p \le 1$<br>
+              2. <strong>กรณีจุดเอกฐานที่ศูนย์ (Type 2):</strong> $\int_0^1 rac{1}{x^p}\,dx$ จะลู่เข้า ก็ต่อเมื่อ $p < 1$ (มีค่าเท่ากับ $rac{1}{1-p}$) และลู่ออก เมื่อ $p \ge 1$<br><br>
+              <strong>การแยกจุดเอกฐานภายในช่วง (Singularity Splitting):</strong><br>
+              ถ้า $f$ มีจุดเอกฐานที่ $c \in (a, b)$ จะนิยาม $\int_a^b f(x)\,dx = \lim_{u 	o c^-} \int_a^u f(x)\,dx + \lim_{v 	o c^+} \int_v^b f(x)\,dx$<br>
+              โดยปริพันธ์จะลู่เข้าก็ต่อเมื่อ <em>ลิมิตทั้งสองส่วนหาค่าได้เป็นจำนวนจริงพร้อมกันอย่างเป็นอิสระ</em>
+            </div>
+            <div class="good-answer">
+              <strong>✅ ความแตกต่างระหว่างค่าปริพันธ์แท้จริง กับ ค่าหลักโคชี:</strong><br>
+              สำหรับ $\int_{-1}^1 rac{1}{x}\,dx$ ฝั่งขวาคือ $\lim_{v 	o 0^+} [\ln 1 - \ln v] = +\infty$ เมื่อฝั่งขวาลู่ออก นิยามบังคับให้ตอบว่า <strong>ลู่ออก (Diverges) ทันที</strong> ส่วนการที่นำขอบเขตสมมาตรมาหักล้างกัน $\lim_{\epsilon 	o 0^+} [\int_{-1}^{-\epsilon} + \int_\epsilon^1] = 0$ เรียกว่า 'ค่าหลักโคชี (Cauchy Principal Value)' ซึ่งไม่ได้รับรองว่าปริพันธ์ลู่เข้า
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ตามนิยามมาตรฐาน ปริพันธ์ไม่ตรงแบบที่มีจุดเอกฐานคั่นกลางช่วง กำหนดว่าจะต้องแยกช่วงการคำนวณออกเป็น 2 ฝั่งที่เป็นอิสระต่อกันอย่างเด็ดขาดครับ หากฝั่งใดฝั่งหนึ่งพุ่งสู่อนันต์ ปริพันธ์นั้นจะต้องถูกสรุปว่า 'ลู่ออก' ทันทีครับ<br><br>
+                การที่กราฟสมมาตรแล้วหักล้างกันได้ศูนย์ เป็นแนวคิดของ 'ค่าหลักโคชี (Cauchy Principal Value)' ซึ่งไม่ใช่นิยามมาตรฐานของปริพันธ์รีมันน์ทั่วไป หากเรายอมให้หักล้างกันได้ จะนำไปสู่ความขัดแย้งทางคณิตศาสตร์ในแคลคูลัสขั้นสูง ระบบของเราจึงแยกคำนวณสองฝั่งอย่างอิสระตามทฤษฎีบทเพื่อความถูกต้อง 100% ครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">p-test Standards (p>1 vs p<1)</span>
+                <span class="kw-tag">Singularity Splitting</span>
+                <span class="kw-tag">Independent Limits</span>
+                <span class="kw-tag">Cauchy Principal Trap</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="math">
+          <div class="advisory-item warning">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 2.6: การเปลี่ยนตัวแปรในปริพันธ์จำกัดเขต และข้อจำกัดของหลักช่วยเลือก LIATE</div>
+              <span class="advisory-tag tag-amber">ทฤษฎีบทบทที่ 2</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: เวลาแทนค่าตัวแปร $u$ ในปริพันธ์จำกัดเขต ทำไมต้องเปลี่ยนขอบเขตการอินทิเกรต? และหลัก LIATE ในการอินทิเกรตทีละส่วน เป็นทฤษฎีบททางคณิตศาสตร์หรือไม่ มีข้อจำกัดอย่างไร?"
+            </div>
+            <div class="theorem-box">
+              <div class="theorem-title">📖 ตัวบททฤษฎีบทจริง: การเปลี่ยนตัวแปรในปริพันธ์จำกัดเขต (Substitution Formula)</div>
+              กำหนดให้ $g$ มีอนุพันธ์ต่อเนื่องบนช่วงปิด $[a, b]$ (นั่นคือ $g \in C^1([a, b])$) และให้ $f$ มีความต่อเนื่องบนช่วงค่าของฟังก์ชัน $g$<br>
+              ถ้ากำหนดให้ $u = g(x)$ แล้ว
+              $$\int_a^b f(g(x))g'(x)\,dx = \int_{g(a)}^{g(b)} f(u)\,du$$
+            </div>
+            <div class="good-answer">
+              <strong>✅ ข้อพึงระวังเกี่ยวกับลำดับ LIATE:</strong><br>
+              ลำดับ LIATE (Logarithmic, Inverse trig, Algebraic, Trigonometric, Exponential) เป็นเพียง <strong>หลักช่วยเลือก (Heuristic)</strong> ไม่ใช่ทฤษฎีบททางคณิตศาสตร์ ในบางกรณีการเลือก $u$ ตาม LIATE ตรงๆ อาจทำให้คำนวณไม่ได้ เช่น $\int x^3 e^{x^2}\,dx$ ถ้าเลือก $u=x^3$ และ $dv=e^{x^2}dx$ จะหา $v$ ไม่ได้ ต้องจัดรูปเป็น $\int x^2 (x e^{x^2})\,dx$ หรือเริ่มต้นด้วยการแทนค่าตัวแปร $t=x^2$ ก่อน
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "การเปลี่ยนขอบเขตเป็น $g(a)$ และ $g(b)$ เป็นไปตามทฤษฎีบทการเปลี่ยนตัวแปรครับ เพื่อให้ขอบเขตสอดคล้องกับตัวแปรใหม่ $u$ และช่วยให้นิสิตคำนวณผลลัพธ์สุดท้ายได้ทันทีโดยไม่ต้องแปลง $u$ กลับเป็น $x$ ครับ<br><br>
+                ส่วนลำดับ LIATE ในหัวข้อ By Parts เป็นเพียงหลักการช่วยเลือก (Heuristic) สำหรับโจทย์ทั่วไป ไม่ใช่ทฤษฎีบทสากลครับ ในโจทย์บางข้อจำเป็นต้องมีการจัดรูปฟังก์ชันก่อน หรือต้องอาศัยการแทนค่าตัวแปรร่วมด้วย ซึ่งระบบของเราจะแนะนำให้ผู้เรียนตรวจสอบเสมอว่าส่วนที่เป็น $dv$ สามารถหาปฏิยานุพันธ์ได้จริงหรือไม่ครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Domain Transformation g(a) to g(b)</span>
+                <span class="kw-tag">LIATE as Heuristic</span>
+                <span class="kw-tag">Integrable dv Requirement</span>
+                <span class="kw-tag">Algebraic Restructuring</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- หมวดที่ 3: ระเบียบวิธีวิจัย แบบสอบถาม และสถิติ SUS -->
+        <!-- ======================================================== -->
+        <div class="qa-item-card" data-cat="stats">
+          <div class="advisory-item purple">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 3.1: ตัวเลข SUS 82.15 ($N=50$) vs 73.53 ($n=29$) ต่างกันอย่างไร?</div>
+              <span class="advisory-tag tag-purple">สถิติ &amp; แบบสอบถาม</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ทำไมในบทที่ 4 ถึงรายงานคะแนน SUS ไว้ 2 ค่า คือ 82.15 และ 73.53? ทำไมต้องตัดกลุ่ม 21 คนออก เด็กกาดิ่งช่วยเพื่อนใช่หรือไม่? และการตัดคนออกเช่นนี้ถูกต้องตามหลักวิจัยหรือ?"
+            </div>
+            <div class="good-answer">
+              <strong>✅ แนวคิดหลัก: การวิเคราะห์ความไวอย่างโปร่งใส (Sensitivity Analysis):</strong><br>
+              เราไม่ได้แอบตัดข้อมูลทิ้ง แต่เรารายงานทั้งข้อมูลครบ 50 คน และทำการวิเคราะห์ความไวควบคู่กัน:
+              <ul style="margin-left: 20px;">
+                <li><strong>กลุ่มรวม 50 คน:</strong> ได้คะแนนเฉลี่ย 82.15 (ระดับ Excellent)</li>
+                <li><strong>ประเด็นที่พบ:</strong> พบผู้ตอบให้คะแนนเต็ม 5 ทุกข้อจำนวน 21 คน (ได้ 100 คะแนนเต็ม) ซึ่งในแบบสอบถามเชิงบวกเป็นไปได้ทั้งสองทาง คือพึงพอใจสูงจริง หรือตอบอย่างเร่งรีบ</li>
+                <li><strong>การวิเคราะห์ความไว ($n=29$):</strong> เมื่อแยกวิเคราะห์เฉพาะกลุ่มที่มีการกระจายคะแนนตามธรรมชาติ พบว่าได้คะแนนเฉลี่ย 73.53 (S.D. = 15.95) ซึ่งยังคงจัดอยู่ในระดับ 'Good' และสูงกว่าเกณฑ์มาตรฐานสากล 68.0 คะแนน</li>
+              </ul>
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ตัวเลขทั้งสองชุดมาจากกลุ่มตัวอย่างเดียวกันครับอาจารย์ ในทางวิจัยหากเราตัดข้อมูลทิ้งโดยพลการจะถือว่ามีอคติ เราจึงเลือกแนวทางที่โปร่งใสที่สุดคือ <strong>การวิเคราะห์ความไวของผลลัพธ์ (Sensitivity Analysis)</strong> ครับ<br><br>
+                เรานำเสนอคะแนนเฉลี่ยรวม 82.15 ของผู้ตอบทั้งหมด 50 คน ควบคู่กับคะแนน 73.53 ของกลุ่ม 29 คนที่มีการกระจายตัวของคำตอบตามธรรมชาติ เพื่อพิสูจน์ให้เห็นว่า แม้เราจะตัดกลุ่มที่ให้คะแนนเต็ม 100 ออกไปทั้งหมด ระบบก็ยังคงได้รับคะแนนประเมินอยู่ในระดับ 'Good' และสูงกว่าเกณฑ์มาตรฐาน 68.0 คะแนนอย่างมีเสถียรภาพครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Sensitivity Analysis</span>
+                <span class="kw-tag">Straight-lining Bias</span>
+                <span class="kw-tag">Benchmark 68.0 Standard</span>
+                <span class="kw-tag">Grade B Good</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="stats">
+          <div class="advisory-item purple">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 3.2: คะแนน SUS หรือความพึงพอใจ ยืนยันว่าเด็กเรียนเก่งขึ้นได้หรือไม่?</div>
+              <span class="advisory-tag tag-purple">สถิติ &amp; แบบสอบถาม</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: จากคะแนนความพึงพอใจ 4.63 และ SUS 73.53 นิสิตสามารถสรุปในบทที่ 5 ได้ไหมว่า แอปพลิเคชันนี้ช่วยพัฒนาผลสัมฤทธิ์ทางการเรียนหรือทำให้ผู้เรียนสอบแคลคูลัสได้คะแนนดีขึ้น?"
+            </div>
+            <div class="bad-answer">
+              <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong><br>
+              "สรุปได้แน่นอนค่ะ เพราะคะแนนความพึงพอใจสูงมาก แสดงว่าผู้เรียนเข้าใจเนื้อหาแคลคูลัสอย่างลึกซึ้งและเรียนเก่งขึ้นค่ะ"<br>
+              <em>(เหตุผล: กรรมการจะตัดคะแนนทันที เพราะแบบสอบถามความพึงพอใจวัดได้แค่ความรู้สึก ไม่ได้วัดความรู้ความสามารถทางวิชาการ)</em>
+            </div>
+            <div class="good-answer">
+              <strong>✅ แนวคิดหลัก: จำกัดขอบเขตการสรุปผลเฉพาะสิ่งที่วัดได้จริง:</strong><br>
+              แบบสอบถามความพึงพอใจและแบบประเมิน SUS วัดได้เฉพาะ <strong>'การรับรู้ความสะดวกในการใช้งาน (Perceived Usability)'</strong> และ <strong>'ทัศนคติเชิงบวกต่อสื่อช่วยสอน'</strong> เท่านั้น ยังไม่ได้วัดผลสัมฤทธิ์ทางการเรียนรู้ (Learning Achievement) โดยตรง
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ยังไม่สามารถสรุปในเชิงผลสัมฤทธิ์ทางการเรียนได้โดยตรงครับอาจารย์ เครื่องมือที่เราใช้ประเมิน ทั้งมาตรวัด SUS และแบบสอบถามความพึงพอใจ ทำหน้าที่วัด <strong>'ความพึงพอใจ ความง่ายในการเข้าถึง และความเป็นมิตรของส่วนต่อประสานผู้ใช้'</strong> เท่านั้นครับ<br><br>
+                หากต้องการพิสูจน์ว่าผู้เรียนมีความรู้ทางคณิตศาสตร์เพิ่มขึ้นจริง จำเป็นต้องมีระเบียบวิธีวิจัยเชิงทดลองที่มีกลุ่มทดลองและกลุ่มควบคุม พร้อมแบบทดสอบวัดผลก่อนเรียนและหลังเรียน (Pre-test / Post-test) ซึ่งทางกลุ่มได้ระบุประเด็นนี้ไว้เป็นข้อจำกัดและข้อเสนอแนะในการวิจัยขั้นต่อไปในบทที่ 5 เรียบร้อยแล้วครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Perceived Usability Only</span>
+                <span class="kw-tag">No Learning Gain Claim</span>
+                <span class="kw-tag">Pre/Post Test Future Scope</span>
+                <span class="kw-tag">Research Honesty</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="stats">
+          <div class="advisory-item purple">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 3.3: คลังข้อสอบ 80 ข้อมาจากไหน และมีความเที่ยงตรงเชิงเนื้อหา (IOC) อย่างไร?</div>
+              <span class="advisory-tag tag-purple">สถิติ &amp; แบบสอบถาม</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ข้อสอบ 80 ข้อในคลังแบบทดสอบ เอามาจากไหน? ได้ผ่านการตรวจความเที่ยงตรงเชิงเนื้อหา (IOC) หรือไม่? หรือว่าคิดกันขึ้นมาเอง?"
+            </div>
+            <div class="good-answer">
+              <strong>✅ แนวคิดหลัก: การคัดสรรโจทย์และการจัดระดับตาม Bloom's Taxonomy:</strong><br>
+              โจทย์ 80 ข้อ (8 หัวข้อ หัวข้อละ 10 ข้อ) ผ่านการคัดสรรจากแบบฝึกหัดมาตรฐานและผ่านการตรวจสอบโดยอาจารย์ที่ปรึกษา โดยแบ่งเป็น 3 ระดับความยาก:
+              <ul style="margin-left: 20px;">
+                <li>ระดับ 1 (Concept/Recall 4 ข้อ): ตรวจสอบความเข้าใจนิยามและทฤษฎีบท</li>
+                <li>ระดับ 2 (Procedural Calculation 4 ข้อ): ฝึกคำนวณตามขั้นตอนวิธีมาตรฐาน</li>
+                <li>ระดับ 3 (Critical/Boundary 2 ข้อ): ทดสอบกรณีขอบเขตวิกฤต เช่น จุดมุม จุดเอกฐาน</li>
+              </ul>
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "โจทย์ทั้งหมด 80 ข้อคัดสรรและดัดแปลงมาจาก <strong>โจทย์แบบฝึกหัดมาตรฐานและคลังข้อสอบเก่าของวิชาแคลคูลัสระดับมหาวิทยาลัย</strong> ครับ โดยจัดระดับความยากตาม Bloom's Taxonomy ออกเป็น 3 ระดับ พร้อมจัดทำระบบคำใบ้แบบไต่ระดับ (Tiered Hints) และผ่านการตรวจสอบความถูกต้องของเฉลยและตัวเลือกหลอกโดยอาจารย์ที่ปรึกษาโครงงานเรียบร้อยแล้วครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Curated Problem Bank</span>
+                <span class="kw-tag">3-Tier Difficulty</span>
+                <span class="kw-tag">Expert Review</span>
+                <span class="kw-tag">Misconception Distractors</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- หมวดที่ 4: สถาปัตยกรรมซอฟต์แวร์และการทำงานของระบบ -->
+        <!-- ======================================================== -->
+        <div class="qa-item-card" data-cat="code">
+          <div class="advisory-item opportunity">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 4.1: ภาพรวมการทำงาน 3 เลเยอร์ (3-Tier Conceptual Model)</div>
+              <span class="advisory-tag tag-teal">สถาปัตยกรรม &amp; โค้ด</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ให้อธิบายสถาปัตยกรรมของระบบ ว่าข้อมูลเดินทางอย่างไรตั้งแต่ผู้ใช้พิมพ์สมการบนหน้าเว็บ จนกระทั่งระบบแสดงผลลัพธ์และวาดกราฟออกมา?"
+            </div>
+            <div class="good-answer">
+              <strong>✅ โมเดล 3 เลเยอร์ที่จำง่ายและเป็นระบบ:</strong>
+              <ol style="margin-left: 20px;">
+                <li><strong>UI Layer (Streamlit):</strong> หน้าจอรับฟังก์ชันและขอบเขต พร้อมทำหน้าที่กรองอักขระแปลกปลอม (Input Sanitization) ไม่ให้เกิน 200 ตัวอักษร</li>
+                <li><strong>Math Engine Layer (SymPy):</strong> สมองกลคำนวณสัญลักษณ์ แปลงสตริงเป็นนิพจน์พีชคณิต ตรวจสอบความถูกต้องทางคณิตศาสตร์ และแยกขั้นตอนวิธีทำออกมาเป็นสมการ LaTeX</li>
+                <li><strong>Visualization Layer (Matplotlib):</strong> เอนจินวาดรูป นำฟังก์ชันและจุดพิกัดมาเรนเดอร์เป็นภาพกราฟ แรเงาพื้นที่ หรือแท่งสี่เหลี่ยมรีมันน์ และส่งภาพคืนกลับไปแสดงผลบนหน้าเว็บ</li>
+              </ol>
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ระบบของเราแบ่งโครงสร้างออกเป็น 3 เลเยอร์ที่แยกหน้าที่กันอย่างชัดเจนครับ:<br><br>
+                • <strong>เลเยอร์ที่ 1 (หน้าเว็บรับข้อมูล):</strong> พัฒนาด้วย <code>Streamlit</code> รับสูตรคณิตศาสตร์และตัวเลขช่วงจากผู้ใช้ พร้อมกรองความปลอดภัยไม่ให้อักขระแปลกปลอมผ่านเข้ามา<br>
+                • <strong>เลเยอร์ที่ 2 (สมองกลคำนวณ):</strong> ใช้ไลบรารี <code>SymPy</code> ทำหน้าที่ประมวลผลเชิงสัญลักษณ์ เหมือนนักคณิตศาสตร์แก้โจทย์ทีละขั้น แล้วส่งผลลัพธ์ขั้นตอนวิธีทำออกมาเป็นสมการ LaTeX<br>
+                • <strong>เลเยอร์ที่ 3 (การแสดงผลกราฟ):</strong> ใช้ไลบรารี <code>Matplotlib</code> นำฟังก์ชันและพิกัดมาวาดกราฟ แรเงาพื้นที่เรขาคณิต และส่งกลับไปเรนเดอร์บนหน้าเว็บอย่างรวดเร็วครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">3-Tier Architecture</span>
+                <span class="kw-tag">Streamlit UI Layer</span>
+                <span class="kw-tag">SymPy Math Engine</span>
+                <span class="kw-tag">Matplotlib Visualizer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="code">
+          <div class="advisory-item opportunity">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 4.2: การจัดการความปลอดภัยและป้องกันระบบล่ม (Security &amp; Error Handling)</div>
+              <span class="advisory-tag tag-teal">สถาปัตยกรรม &amp; โค้ด</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ถ้าผู้ใช้แกล้งป้อนโจทย์ที่ไม่มีอยู่จริง สตริงยาวเป็นพันตัวอักษร หรือพิมพ์คำสั่งเจาะระบบ เช่น __import__('os') ระบบของคุณจะรับมืออย่างไรไม่ให้เซิร์ฟเวอร์ล่มหรือถูกแฮก?"
+            </div>
+            <div class="good-answer">
+              <strong>✅ กลไกความปลอดภัย 2 ชั้นตามหัวข้อ 3.2.4:</strong><br>
+              • <strong>ชั้นที่ 1 (Input Whitelist &amp; Length Limitation):</strong> ตรวจสอบข้อความตั้งแต่ระดับหน้าเว็บ จำกัดความยาวไม่เกิน 200 ตัวอักษร และอนุญาตเฉพาะฟังก์ชันคณิตศาสตร์ที่กำหนด เช่น sin, cos, exp, log, sqrt ปฏิเสธคำสั่งระบบและขีดล่างคู่ (__)<br>
+              • <strong>ชั้นที่ 2 (Graceful Exception Handling):</strong> ทุกฟังก์ชันคำนวณถูกห่อหุ้มด้วยบล็อก <code>try...except</code> หากคำนวณไม่ได้หรือมีจุดเอกฐาน จะคืนค่าความผิดพลาดอย่างสุภาพ เช่น 'ฟังก์ชันไม่นิยาม ณ จุดดังกล่าว' โดยหน้าเว็บจะไม่ขาวและเซิร์ฟเวอร์ไม่แครช
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ระบบของเราได้ติดตั้งกลไกความปลอดภัยและการจัดการทรัพยากรไว้ 2 ชั้นตามที่ระบุในหัวข้อ 3.2.4 ของเล่มครับอาจารย์:<br><br>
+                ชั้นแรกคือ <strong>การกรองข้อมูลนำเข้า (Input Validation):</strong> เราจำกัดความยาวสตริงไม่เกิน 200 ตัวอักษร และตรวจสอบรายชื่อฟังก์ชันที่อนุญาต หากพบคำสั่งที่ผิดปกติหรือสัญลักษณ์ที่ไม่ใช่คณิตศาสตร์ ระบบจะปฏิเสธตั้งแต่แรกทันที<br>
+                ชั้นที่สองคือ <strong>การดักจับข้อผิดพลาด (Exception Handling):</strong> ฟังก์ชันคำนวณทั้งหมดจะถูกห่อหุ้มไว้เพื่อความปลอดภัย หากโจทย์คำนวณไม่ได้ ระบบจะแสดงข้อความแจ้งเตือนสีแดงสุภาพให้ผู้ใช้แก้ไขข้อมูล โดยเว็บแอปพลิเคชันจะยังคงทำงานได้อย่างต่อเนื่องและไม่ล่มแน่นอนครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Input Validation (200 Chars)</span>
+                <span class="kw-tag">Math Whitelist</span>
+                <span class="kw-tag">Graceful Exception Handling</span>
+                <span class="kw-tag">No Crash / Red Alert</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="code">
+          <div class="advisory-item opportunity">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 4.3: ชุดทดสอบ Pytest 265 ข้อคืออะไร และทดสอบอะไรบ้าง?</div>
+              <span class="advisory-tag tag-teal">สถาปัตยกรรม &amp; โค้ด</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ในบทคัดย่อและบทที่ 3 ระบุว่าผ่านการทดสอบด้วย Pytest 265 ข้อ ชุดทดสอบนี้ครอบคลุมอะไรบ้าง และยืนยันความสมบูรณ์ของระบบได้อย่างไร?"
+            </div>
+            <div class="good-answer">
+              <strong>✅ รายละเอียด 265 กรณีทดสอบ:</strong><br>
+              • <strong>ความถูกต้องทางคณิตศาสตร์เชิงสัญลักษณ์:</strong> ทดสอบโจทย์มาตรฐาน 7 หัวข้อ เทียบกับคำตอบเฉลยคำนวณมือ<br>
+              • <strong>กรณีขอบเขตวิกฤต (Boundary Cases):</strong> เช่น ลิมิตเข้าใกล้อนันต์ ปริพันธ์ที่มีจุดเอกฐานที่ขอบเขต และฟังก์ชันที่มีจุดหักมุม<br>
+              • <strong>ความปลอดภัยและการกรองข้อมูล (Sanitization Tests):</strong> ทดสอบป้อนสตริงอันตรายและความยาวเกิน เพื่อยืนยันว่าระบบปฏิเสธได้จริง<br>
+              • <strong>การทำงานของหน้าเว็บ (AppTest UI Tests):</strong> จำลองการคลิกปุ่ม สไลเดอร์ และการส่งแบบทดสอบ 80 ข้อ เพื่อยืนยันว่าหน้าเว็บไม่ค้าง
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ชุดทดสอบ <code>Pytest 265 ข้อ</code> คือระบบทดสอบหน่วยย่อยอัตโนมัติที่เราพัฒนาขึ้นเพื่อตรวจสอบคุณภาพของระบบอย่างเป็นวิทยาศาสตร์ครับ ครอบคลุมทั้งความถูกต้องของฟังก์ชันคำนวณทางคณิตศาสตร์ 7 หัวข้อ, การทดสอบกรณีขอบเขตวิกฤต เช่น การหารด้วยศูนย์หรือขอบเขตเป็นอนันต์, การทดสอบความปลอดภัยของข้อมูลนำเข้า, และการทดสอบปฏิสัมพันธ์ของหน้าเว็บผ่าน AppTest ครับ ซึ่งทุกข้อผ่านเกณฑ์ 100% ทำให้มั่นใจในความแม่นยำและความเสถียรของระบบครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">265 Unit Tests Passed</span>
+                <span class="kw-tag">Boundary Stress Testing</span>
+                <span class="kw-tag">Input Sanitization</span>
+                <span class="kw-tag">AppTest UI Simulation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- หมวดที่ 5: จุดเพ่งเล็งที่ยังค้างในเล่มฉบับสุดท้าย (Caveats) -->
+        <!-- ======================================================== -->
+        <div class="qa-item-card" data-cat="caveats">
+          <div class="advisory-item warning">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 5.1: การขาดเกณฑ์ตัดสินความสำเร็จล่วงหน้าในบทที่ 1 (Pre-defined Success Criteria)</div>
+              <span class="advisory-tag tag-amber">จุดเพ่งเล็งในเล่ม</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ในบทที่ 1 ไม่ได้เขียนระบุไว้ล่วงหน้าว่าคะแนน SUS ต้องได้เท่าไหร่ถึงจะถือว่างานนี้ผ่าน พวกคุณมาหยิบเกณฑ์ 68.0 ของ Brooke มาอ้างอิงทีหลังหลังจากเห็นคะแนนแล้วใช่หรือไม่?"
+            </div>
+            <div class="good-answer">
+              <strong>✅ แนวคิดหลักในการตอบ:</strong> ชี้แจงว่าเกณฑ์ 68.0 เป็นเกณฑ์มาตรฐานอุตสาหกรรมสากลที่กำหนดไว้ในระเบียบวิธีวิจัยตั้งแต่ขั้นตอนออกแบบแบบสอบถาม
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ทางกลุ่มได้กำหนดเกณฑ์มาตรฐานสากลอ้างอิงของ System Usability Scale (SUS) ตามกรอบงานวิจัยของ Brooke (1996) และ Bangor et al. (2008) ไว้ตั้งแต่ขั้นตอนการออกแบบระเบียบวิธีวิจัยครับ โดยกำหนดว่าระบบที่พร้อมนำไปใช้งานจริงควรมีคะแนนไม่ต่ำกว่าเกณฑ์เฉลี่ยมาตรฐานอุตสาหกรรมที่ 68.0 คะแนน (ระดับ Marginal / Grade C) ซึ่งผลการทดสอบจริงที่ได้ 73.53 คะแนนในกลุ่มธรรมชาติ (ระดับ Good / Grade B) ยืนยันว่าระบบบรรลุเกณฑ์ความสำเร็จตามที่ตั้งเป้าหมายไว้ครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Brooke Benchmark 68.0</span>
+                <span class="kw-tag">A-Priori Target</span>
+                <span class="kw-tag">Industrial Norm</span>
+                <span class="kw-tag">Grade B Good</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="caveats">
+          <div class="advisory-item warning">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 5.2: การสุ่มกลุ่มตัวอย่าง 50 คน และความเสี่ยงต่ออคติ (Sampling Demographics)</div>
+              <span class="advisory-tag tag-amber">จุดเพ่งเล็งในเล่ม</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: กลุ่มตัวอย่าง 50 คนนี้เป็นใครบ้าง? ถ้ามีแต่เพื่อนสนิทในห้องเดียวกัน คะแนนความพึงพอใจ 4.63 มันจะมีน้ำหนักทางวิชาการได้อย่างไร?"
+            </div>
+            <div class="good-answer">
+              <strong>✅ แนวคิดหลักในการตอบ:</strong> อธิบายการสุ่มแบบเจาะจง (Purposive Sampling) ตามคุณสมบัติของผู้เรียนแคลคูลัสจริง และชูการวิเคราะห์ความไวเพื่อตัดอคติ
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "การคัดเลือกกลุ่มตัวอย่างใช้วิธีการสุ่มแบบเจาะจง (Purposive Sampling) ครับ โดยกำหนดคุณสมบัติผู้ประเมินไว้ชัดเจนว่า ต้องเป็นนิสิตระดับปริญญาตรีที่เคยผ่านการเรียนหรือกำลังเรียนวิชาแคลคูลัสในระดับมหาวิทยาลัย เพื่อให้สามารถประเมินความถูกต้องของเนื้อหาและการแสดงขั้นตอนวิธีทำได้จริง ไม่ใช่บุคคลทั่วไปที่ไม่เคยเรียนแคลคูลัส และเพื่อลดอคติจากความคุ้นเคย ทางกลุ่มจึงได้ทำการวิเคราะห์ความไว (Sensitivity Analysis) โดยตัดกลุ่มที่ให้คะแนนเต็ม 5 ทุกข้อออก 21 คน เหลือกลุ่ม 29 คนที่มีการกระจายตัวตามธรรมชาติ ซึ่งผลลัพธ์ก็ยังคงยืนยันคะแนนในระดับดีครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Purposive Sampling</span>
+                <span class="kw-tag">Calculus-Experienced Cohort</span>
+                <span class="kw-tag">Bias Mitigation</span>
+                <span class="kw-tag">Sensitivity Analysis</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="caveats">
+          <div class="advisory-item warning">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 5.3: การขาดระบบบันทึกฐานข้อมูลถาวร (No Database Persistence)</div>
+              <span class="advisory-tag tag-amber">จุดเพ่งเล็งในเล่ม</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: ถ้าระบบไม่มีฐานข้อมูล (Database) รีเฟรชหน้าเว็บคะแนนก็หายหมด แล้วอาจารย์จะนำไปใช้ในการเรียนการสอนและเก็บคะแนนเด็กจริงได้อย่างไร?"
+            </div>
+            <div class="good-answer">
+              <strong>✅ แนวคิดหลักในการตอบ:</strong> ชูแนวคิด **"พื้นที่ฝึกฝนอิสระแบบนิรนาม (Zero-Friction Practice Sandbox)"** เพื่อลดความวิตกกังวลของผู้เรียน (Math Anxiety)
+              <div class="speech-box">
+                <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+                "ในโครงงานระยะนี้ ทางกลุ่มตั้งใจออกแบบระบบเป็น **'พื้นที่ฝึกฝนอิสระแบบนิรนาม (Zero-Friction Practice Sandbox)'** เพื่อลดความวิตกกังวลของผู้เรียน (Math Anxiety) ครับ โดยผู้เรียนสามารถเข้ามาทดลองแก้โจทย์ ผิดกี่ครั้งก็ได้โดยไม่ต้องกังวลเรื่องการถูกบันทึกประวัติหรือตัดคะแนนเก็บครับ<br><br>
+                ส่วนการเชื่อมต่อกับระบบฐานข้อมูล เช่น SQLite หรือ Google Classroom API เพื่อให้อาจารย์ประจำวิชาสามารถติดตามผลรายบุคคลได้ ทางกลุ่มได้ระบุสถาปัตยกรรมส่วนนี้ไว้ใน **'ข้อเสนอแนะสำหรับการพัฒนาต่อยอดในบทที่ 5'** เรียบร้อยแล้วครับ"
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Zero-Friction Sandbox</span>
+                <span class="kw-tag">Anonymous Practice</span>
+                <span class="kw-tag">Math Anxiety Reduction</span>
+                <span class="kw-tag">Future LMS Extension</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- หมวดที่ 6: จิตวิทยาห้องสอบและการแบ่งหน้าที่ 2 คน (Strategy) -->
+        <!-- ======================================================== -->
+        <div class="qa-item-card" data-cat="strategy">
+          <div class="advisory-item opportunity">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 6.1: การแบ่งงานของนิสิตทั้งสองคน (Division of Responsibility)</div>
+              <span class="advisory-tag tag-teal">จิตวิทยา &amp; แบ่งงาน</span>
+            </div>
+            <div class="quote-speech">
+              "คำถามกรรมการ: สองคนนี้แบ่งงานกันอย่างไร ใครรับผิดชอบส่วนไหน มีใครกินแรงเพื่อนหรือไม่?"
+            </div>
+            <div class="good-answer">
+              <strong>✅ ตารางแบ่งหน้าที่ชัดเจนและสนับสนุนซึ่งกันและกัน:</strong>
+              <table class="division-table">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">ด้าน</th>
+                    <th style="width: 37%;">นางสาวขวัญเรือน สำเนียงดี<br><small style="color:var(--text-muted);">(Math &amp; Test Lead)</small></th>
+                    <th style="width: 38%;">นางสาวเบญจกัฬยาณี พิทยากูล<br><small style="color:var(--text-muted);">(Instruction &amp; UI Lead)</small></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>หน้าที่หลัก</strong></td>
+                    <td><strong>ผู้พัฒนาระบบคำนวณและทดสอบความถูกต้อง</strong></td>
+                    <td><strong>ผู้พัฒนาสื่อการสอนและการประเมินผล</strong></td>
+                  </tr>
+                  <tr>
+                    <td><strong>ความรับผิดชอบหลัก</strong></td>
+                    <td>
+                      • จัดการตัวอ่านและแปลงสมการด้วย SymPy<br>
+                      • เขียนโมดูลแก้โจทย์ 7 หัวข้อ และตรวจจับจุดเอกฐาน<br>
+                      • ออกแบบและรันชุดทดสอบอัตโนมัติ Pytest 265 ข้อ<br>
+                      • ตรวจสอบความถูกต้องของสัญกรณ์คณิตศาสตร์
+                    </td>
+                    <td>
+                      • ออกแบบขั้นตอนการสอนแบบนั่งร้าน (Scaffolding Flow)<br>
+                      • พัฒนาหน้าจอและการจัดวางส่วนติดต่อผู้ใช้ (Streamlit UI)<br>
+                      • จัดทำคลังแบบทดสอบมโนทัศน์ 80 ข้อ พร้อมระบบคำใบ้<br>
+                      • เก็บรวบรวมข้อมูลและวิเคราะห์แบบประเมิน SUS
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Khwanruen: Math &amp; Pytest Lead</span>
+                <span class="kw-tag">Benjakalyanee: UI &amp; SUS Lead</span>
+                <span class="kw-tag">Complementary Partnership</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qa-item-card" data-cat="strategy">
+          <div class="advisory-item opportunity">
+            <div class="advisory-header">
+              <div class="advisory-title">คำถาม 6.2: กฎเหล็ก 5 ข้อที่ต้องจำให้ขึ้นใจก่อนเดินเข้าห้องสอบ</div>
+              <span class="advisory-tag tag-teal">จิตวิทยา &amp; แบ่งงาน</span>
+            </div>
+            <div class="good-answer">
+              <div class="rule-card">
+                <strong>1. สุภาพและรับฟังข้อเสนอแนะเป็นอันดับแรก:</strong> หากกรรมการทักท้วงสูตรหรือจุดบกพร่อง ห้ามเถียงหัวชนฝา ให้ตอบว่า <em>"กราบขอบพระคุณอาจารย์ครับ เป็นข้อสังเกตที่ถูกต้องและมีประโยชน์มาก ทางกลุ่มได้บันทึกจุดนี้และได้ปรับแก้ในตารางแก้ไขเรียบร้อยแล้วครับ/ค่ะ"</em>
+              </div>
+              <div class="rule-card">
+                <strong>2. พูดความจริงเรื่องขอบเขต:</strong> ย้ำเสมอว่าแอปนี้ทำหน้าที่เป็น 'สื่อช่วยเรียนรู้เฉพาะเรื่อง' ภายใต้ขอบเขต 7 หัวข้อที่กำหนด ไม่ใช่เครื่องคิดเลขสากลที่แก้โจทย์ได้ทุกอย่างในโลก
+              </div>
+              <div class="rule-card">
+                <strong>3. อย่าใช้คำศัพท์เทคนิคที่ตัวเองไม่เข้าใจ:</strong> ห้ามพูดคำว่า "ปัญญาประดิษฐ์ (AI)", "Machine Learning", หรือ "Algorithm ซับซ้อน" เด็ดขาด ให้ใช้คำว่า "การประมวลผลเชิงสัญลักษณ์ด้วย SymPy" และ "ขั้นตอนวิธีตามหลักคณิตศาสตร์" แทน
+              </div>
+              <div class="rule-card">
+                <strong>4. ชูจุดเด่นเรื่อง 'การฝึกคิด' แทน 'การแจกเฉลย':</strong> เมื่อกรรมการเปรียบเทียบกับ Symbolab หรือ Photomath ให้ตอบเสมอว่า <em>"เว็บอื่นเน้นให้ผลเฉลยทันที แต่งานของเราเน้นเป็นสื่อฝึกกระบวนการคิดทีละขั้นพร้อมภาพเรขาคณิตครับ"</em>
+              </div>
+              <div class="rule-card">
+                <strong>5. แสดงความพร้อมด้วยคู่มือจุดแก้ไขเล่ม:</strong> หากกรรมการถามเรื่องจุดพิมพ์ผิดหรือสัญกรณ์ ให้รายงานว่า <em>"ทางกลุ่มได้จัดทำเอกสารคู่มือแก้ไขเล่มฉบับสมบูรณ์ พร้อมปรับแก้สัญกรณ์ ทฤษฎีบท FTC และสถิติให้ถูกต้องครบถ้วนแล้วครับ"</em>
+              </div>
+              <div class="keyword-bar">
+                <strong>🔑 คีย์เวิร์ดช่วยจำ:</strong>
+                <span class="kw-tag">Polite Reception</span>
+                <span class="kw-tag">Truth in Scope</span>
+                <span class="kw-tag">No Buzzwords</span>
+                <span class="kw-tag">Scaffolding vs Answer Engine</span>
+                <span class="kw-tag">Solution Ready</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- TAB 3: FULL PROPOSAL WITH MATHJAX -->
+      <section id="pane-proposal" class="tab-pane">
+        <div class="proposal-viewer">
+          <div style="border-bottom: 2px solid var(--border-light); padding-bottom: 16px; margin-bottom: 24px;">
+            <h1 style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--text-main); margin-bottom: 8px;">
+              เอกสารโครงร่างโครงงานฉบับสมบูรณ์ (บทที่ 1 และ บทที่ 2)
+            </h1>
+            <div style="font-size: 0.88rem; color: var(--text-dim);">
+              ต้นฉบับเอกสารจากกลุ่มนิสิต | ถอดข้อความสมบูรณ์ 100% พร้อม MathJax 3 TeX Math Rendering และจัดตารางนิยามศัพท์
+            </div>
+          </div>
+
+          <!-- Quick Jump TOC -->
+          <div class="proposal-toc">
+            <h4>สารบัญหัวข้อเอกสาร</h4>
+            <ul>
+              <li><a href="#บทท-1-บทนำ">บทที่ 1 บทนำ</a></li>
+              <li><a href="#ความเปนมาและความสำคญของโครงงาน">1.1 ความเป็นมาและความสำคัญ</a></li>
+              <li><a href="#วตถประสงคของโครงงาน">1.2 วัตถุประสงค์</a></li>
+              <li><a href="#ขอบเขตของการศกษา">1.3 ขอบเขตของการศึกษา</a></li>
+              <li><a href="#ผลประโยชนทคาดวาจะไดรบ">1.4 ผลประโยชน์ที่คาดว่าจะได้รับ</a></li>
+              <li><a href="#นยามศพทเฉพาะ-glossary">1.5 นิยามศัพท์เฉพาะ (Glossary)</a></li>
+              <li><a href="#บทท-2-ทฤษฎและเทคโนโลยทเกยวของ">บทที่ 2 ทฤษฎีและเทคโนโลยีที่เกี่ยวข้อง</a></li>
+              <li><a href="#ทฤษฎแคลคลสเบองตน-introductory-calculus">2.1 ทฤษฎีแคลคูลัสเบื้องต้น</a></li>
+              <li><a href="#เวบแอปพลเคชน-web-application">2.2 เว็บแอปพลิเคชัน</a></li>
+              <li><a href="#แนวคดการออกแบบระบบชวยสอน-instructional-scaffolding">2.3 การออกแบบระบบช่วยสอน (Scaffolding)</a></li>
+              <li><a href="#ภาษาไพธอน-python">2.4 ภาษาไพธอน (Python)</a></li>
+              <li><a href="#ไลบรารสตรมลต-streamlit">2.5 ไลบรารีสตรีมลิต (Streamlit)</a></li>
+              <li><a href="#ไลบรารซมพาย-sympy-computer-algebra-system">2.6 ไลบรารีซิมพาย (SymPy)</a></li>
+            </ul>
+          </div>
+
+          <div class="prose-section">
+            <h1 id="บทท-1-บทนำ">บทที่ 1 บทนำ</h1>
+<h2 id="ความเปนมาและความสำคญของโครงงาน">1.1
+ความเป็นมาและความสำคัญของโครงงาน</h2>
+<p>ในปัจจุบันเทคโนโลยีสารสนเทศและอินเทอร์เน็ตได้เข้ามามีบทบาทสำคัญต่อการศึกษาในทุกระดับผู้เรียนสามารถเข้าถึงองค์ความรู้และสื่อการเรียนการสอนได้อย่างสะดวกผ่านคอมพิวเตอร์
+โทรศัพท์มือถือ และ อุปกรณ์อิเล็กทรอนิกส์ต่าง ๆ
+ส่งผลให้รูปแบบการเรียนรู้เปลี่ยนจากการเรียนเฉพาะในห้องเรียนไปสู่การเรียนรู้ด้วยตนเองผ่านสื่อออนไลน์มากยิ่งขึ้น
+ดังนั้น
+การพัฒนาสื่อการเรียนรู้ในรูปแบบเว็บแอปพลิเคชันจึงเป็นแนวทางที่สามารถช่วยสนับสนุนการเรียนการสอนให้มีประสิทธิภาพและตอบสนองต่อความต้องการของผู้เรียน
+ในยุคดิจิทัลได้เป็นอย่างดี แคลคูลัสเบื้องต้นเป็นวิชาพื้นฐานที่มีความสำคัญต่อการศึกษาด้านคณิตศาสตร์
+วิทยาศาสตร์ วิศวกรรมศาสตร์ เทคโนโลยีสารสนเทศ เศรษฐศาสตร์ และสาขาอื่นๆ อีกหลายแขนง
+เนื้อหาของวิชาประกอบด้วยแนวคิดที่ค่อนข้างซับซ้อน เช่น ลิมิต อนุพันธ์ และปริพันธ์
+ซึ่งต้องอาศัยความเข้าใจในหลักการและการฝึกฝนอย่างต่อเนื่อง
+ผู้เรียนจำนวนไม่น้อยประสบปัญหาในการทำความเข้าใจเนื้อหา
+เนื่องจากข้อจำกัดด้านเวลาในการเรียน
+การอธิบายในห้องเรียนที่อาจไม่ครอบคลุมความแตกต่างของผู้เรียนแต่ละคน
+รวมถึงการขาดสื่อการเรียนรู้ที่สามารถอธิบายเนื้อหาได้อย่างเป็นลำดับและเปิดโอกาสให้ผู้เรียนทบทวนได้ด้วยตนเอง
+แม้ว่าปัจจุบันจะมีแหล่งเรียนรู้ออนไลน์เป็นจำนวนมาก แต่เนื้อหาที่เผยแพร่ส่วนใหญ่มักกระจัดกระจาย
+มีรูปแบบการนำเสนอที่แตกต่างกัน
+และบางแหล่งอาจไม่สอดคล้องกับเนื้อหาที่ใช้ในการเรียนการสอนในระดับมหาวิทยาลัย
+ส่งผลให้ผู้เรียนต้องใช้เวลาในการค้นหาข้อมูลจากหลายๆแหล่ง
+อีกทั้งบางเว็บไซต์ยังขาดแบบฝึกหัดหรือการอธิบายวิธีทำอย่างเป็นขั้นตอน
+ทำให้ผู้เรียนไม่สามารถตรวจสอบความเข้าใจของตนเองได้อย่างมีประสิทธิภาพ</p>
+<p>จากปัญหาดังกล่าว
+ผู้จัดทำจึงมีแนวคิดในการพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้น
+เพื่อเป็นสื่อการเรียนรู้ที่รวบรวมเนื้อหาสำคัญของรายวิชาไว้ในระบบเดียว
+โดยจัดลำดับเนื้อหาตั้งแต่พื้นฐานไปจนถึงการประยุกต์ใช้ พร้อมตัวอย่างประกอบ คำอธิบายวิธีทำ
+และแบบฝึกหัดที่ช่วยให้ผู้เรียนสามารถฝึกฝนและทบทวนความรู้ได้ด้วยตนเองทุกที่ทุกเวลา นอกจากนี้
+เว็บแอปพลิเคชันยังสามารถออกแบบให้รองรับการใช้งานทั้งบนคอมพิวเตอร์และอุปกรณ์เคลื่อนที่
+เพื่อเพิ่มความสะดวกในการเข้าถึงและใช้งาน
+การพัฒนาเว็บแอปพลิเคชันในครั้งนี้ไม่เพียงมุ่งเน้นการสร้างสื่อการเรียนรู้ที่มีคุณภาพเท่านั้น
+แต่ยังเป็นการประยุกต์ใช้ความรู้ด้านการพัฒนาเว็บไซต์และเทคโนโลยีสารสนเทศร่วมกับหลักการออกแบบสื่อการเรียนรู้เพื่อสร้างระบบที่ใช้งานง่าย
+มีความเป็นระเบียบ และตอบสนองต่อความต้องการของผู้เรียนได้อย่างเหมาะสม
+อีกทั้งยังเป็นการส่งเสริมการเรียนรู้ด้วยตนเอง การคิดวิเคราะห์
+และการฝึกแก้ปัญหาทางคณิตศาสตร์
+ซึ่งเป็นทักษะสำคัญสำหรับการศึกษาในระดับที่สูงขึ้นและการนำไปประยุกต์ใช้ในวิชาชีพในอนาคต</p>
+<p>ดังนั้น
+โครงงานการพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้นจึงมีความสำคัญทั้งในด้านการส่งเสริมคุณภาพการเรียนรู้
+การเพิ่มโอกาสในการเข้าถึงสื่อการศึกษา และการนำ
+เทคโนโลยีมาประยุกต์ใช้เพื่อสนับสนุนการเรียนการสอนให้มีประสิทธิภาพมากยิ่งขึ้น
+ซึ่งคาดว่าจะเป็นประโยชน์ต่อทั้งนักเรียน นักศึกษา
+และผู้ที่สนใจศึกษาวิชาแคลคูลัสเบื้องต้นด้วยตนเอง</p>
+<h2 id="วตถประสงคของโครงงาน">1.2 วัตถุประสงค์ของโครงงาน</h2>
+<ol type="1">
+<li>เพื่อพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้นโดยใช้ภาษาไพธอน
+(Python) และไลบรารีสตรีมลิต (Streamlit)</li>
+<li>เพื่อรวบรวมเนื้อหา ตัวอย่างการคำนวณ และแบบฝึกหัดไว้ในระบบเดียว
+เพื่อให้ผู้เรียนสามารถศึกษาด้วยตนเองได้อย่างสะดวก</li>
+<li>เพื่อพัฒนาระบบที่สามารถแสดงวิธีการคำนวณและเฉลยอย่างเป็นลำดับขั้น
+ช่วยให้ผู้เรียนเข้าใจแนวคิดของแคลคูลัสมากยิ่งขึ้น</li>
+<li>เพื่อส่งเสริมการเรียนรู้ผ่านสื่อดิจิทัลที่สามารถใช้งานได้ทุกที่ทุกเวลาผ่านเว็บเบราว์เซอร์</li>
+<li>เพื่อประยุกต์ใช้ความรู้ด้านการเขียนโปรแกรมภาษาไพธอน (Python)
+และการพัฒนาเว็บแอปพลิเคชันด้วยไลบรารีสตรีมลิต (Streamlit)
+ในการสร้างสื่อการเรียนรู้ที่สามารถนำไปใช้งานได้จริง</li>
+</ol>
+<h2 id="ขอบเขตของการศกษา">1.3 ขอบเขตของการศึกษา</h2>
+<ol type="1">
+<li>พัฒนาเว็บแอปพลิเคชันโดยใช้ภาษาไพธอน (Python) และไลบรารีสตรีมลิต
+(Streamlit)</li>
+<li>เนื้อหาครอบคลุมหัวข้อเรื่องปริพันธ์ (Integration)</li>
+<li>ระบบประกอบด้วย 3.1 บทเรียนสรุปเนื้อหา 3.2 ตัวอย่างโจทย์พร้อมวิธีทำ 3.3
+แบบฝึกหัดพร้อมเฉลย 3.4 การแสดงผลผ่านเว็บเบราว์เซอร์</li>
+<li>ผู้ใช้งานสามารถเข้าใช้งานผ่านคอมพิวเตอร์หรือโทรศัพท์มือถือที่เชื่อมต่ออินเทอร์เน็ต</li>
+<li>ทดสอบการทำงานของระบบและประเมินความพึงพอใจของผู้ใช้งานเพื่อใช้เป็นแนวทางในการปรับปรุง</li>
+</ol>
+<h3 id="ผลประโยชนทคาดวาจะไดรบ">1.4 ผลประโยชน์ที่คาดว่าจะได้รับ</h3>
+<ol type="1">
+<li>ได้เว็บแอปพลิเคชันช่วยเรียนแคลคูลัสเบื้องต้นที่พัฒนาด้วยภาษาไพธอน (Python)
+และไลบรารีสตรีมลิต (Streamlit) และสามารถใช้งานได้จริง</li>
+<li>ผู้เรียนสามารถศึกษาบทเรียนและฝึกทำแบบฝึกหัดได้ทุกที่ทุกเวลา</li>
+<li>ผู้เรียนมีความเข้าใจในเนื้อหาแคลคูลัสมากขึ้นจากการเรียนรู้ผ่านตัวอย่างและการฝึกปฏิบัติ</li>
+<li>ผู้สอนสามารถนำเว็บแอปพลิเคชันไปใช้เป็นสื่อประกอบการเรียนการสอนได้</li>
+<li>ผู้จัดทำได้รับความรู้และประสบการณ์ในการพัฒนาเว็บแอปพลิเคชันด้วยภาษาไพธอน (Python)
+และไลบรารีสตรีมลิต (Streamlit) รวมทั้งการออกแบบสื่อการเรียนรู้</li>
+</ol>
+<h2 id="นยามศพทเฉพาะ-glossary">1.5 นิยามศัพท์เฉพาะ (Glossary)</h2>
+<p>เพื่อให้เกิดความเข้าใจที่ตรงกันในการศึกษาเอกสารโครงงานฉบับนี้
+ผู้จัดทำได้กำหนดนิยามของคำศัพท์เฉพาะที่เกี่ยวข้องกับการพัฒนาเว็บแอปพลิเคชันและทฤษฎีแคลคูลัส
+ดังตารางต่อไปนี้</p>
+<table class="data-table">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">คำศัพท์เฉพาะ (Term)</th>
+<th style="text-align: left;">คำแปลภาษาไทย</th>
+<th style="text-align: left;">นิยาม / ความหมายเชิงปฏิบัติการ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Absolute Value</strong></td>
+<td style="text-align: left;">ค่าสัมบูรณ์</td>
+<td
+style="text-align: left;">ระยะห่างของจำนวนจริงจากจุดศูนย์บนเส้นจำนวนโดยไม่พิจารณาเครื่องหมาย
+เขียนแทนด้วยสัญลักษณ์ค่าสัมบูรณ์ของ x และคำนวณผ่านไลบรารีซิมพายด้วยฟังก์ชัน
+sympy.Abs</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Accordion Steps</strong></td>
+<td style="text-align: left;">การแสดงผลขั้นตอนแบบพับเก็บได้</td>
+<td
+style="text-align: left;">องค์ประกอบส่วนติดต่อผู้ใช้งานบนหน้าเว็บที่ใช้ในการซ่อนและแสดงรายละเอียดของข้อมูลทีละส่วน
+เพื่อปรับลดภาระทางปัญญาของผู้เรียน</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Antiderivative</strong></td>
+<td style="text-align: left;">ปฏิยานุพันธ์</td>
+<td
+style="text-align: left;">ฟังก์ชันที่เมื่อหาอนุพันธ์แล้วจะได้ฟังก์ชันเดิมที่กำหนดให้</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Area Under Curve</strong></td>
+<td style="text-align: left;">พื้นที่ใต้เส้นโค้ง</td>
+<td style="text-align: left;">พื้นที่ทางเรขาคณิตที่อยู่ระหว่างกราฟของฟังก์ชันและแกน x
+บนช่วงปิดที่กำหนด ซึ่งคำนวณโดยใช้การหาปริพันธ์จำกัดเขตของค่าสัมบูรณ์ของฟังก์ชัน</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Computer Algebra System
+(CAS)</strong></td>
+<td style="text-align: left;">ระบบพีชคณิตคอมพิวเตอร์</td>
+<td style="text-align: left;">ซอฟต์แวร์หรือแพลตฟอร์มคอมพิวเตอร์ที่ใช้ในการคำนวณ
+จัดรูป และแก้สมการทางคณิตศาสตร์ในเชิงสัญลักษณ์แทนตัวเลข</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>CSS (Cascading Style
+Sheets)</strong></td>
+<td style="text-align: left;">ภาษาจัดรูปแบบเว็บ</td>
+<td
+style="text-align: left;">ภาษาที่ใช้ในการกำหนดรูปแบบสไตล์และลักษณะหน้าตาของหน้าเว็บ
+เช่น สี แบบอักษร และการจัดวางองค์ประกอบ</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Definite Integral</strong></td>
+<td style="text-align: left;">ปริพันธ์จำกัดเขต</td>
+<td
+style="text-align: left;">ปริพันธ์ของฟังก์ชันที่มีการระบุขอบเขตการคำนวณอย่างชัดเจนบนช่วงที่กำหนด
+ผลลัพธ์แสดงถึงพื้นที่สะสมใต้เส้นโค้ง</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Derivative</strong></td>
+<td style="text-align: left;">อนุพันธ์</td>
+<td style="text-align: left;">อัตราการเปลี่ยนแปลงของฟังก์ชันเมื่อเทียบกับตัวแปรอิสระ
+หรือความชันของเส้นสัมผัสเส้นโค้ง ณ จุดใด ๆ</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>HTML (HyperText Markup
+Language)</strong></td>
+<td style="text-align: left;">ภาษาโครงสร้างเว็บ</td>
+<td
+style="text-align: left;">ภาษามาร์กอัปพื้นฐานที่ใช้ในการกำหนดโครงสร้างและองค์ประกอบต่าง
+ๆ ของหน้าเว็บเพจ</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Improper Integral</strong></td>
+<td style="text-align: left;">ปริพันธ์ไม่ตรงแบบ</td>
+<td
+style="text-align: left;">ปริพันธ์จำกัดเขตที่มีขอบเขตของการหาปริพันธ์ขยายไปถึงอนันต์
+หรือมีจุดที่ไม่ต่อเนื่องแบบอนันต์อยู่ภายในช่วงของการหาปริพันธ์</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Indefinite Integral</strong></td>
+<td style="text-align: left;">ปริพันธ์ไม่จำกัดเขต</td>
+<td style="text-align: left;">กระบวนการหาปฏิยานุพันธ์ทั้งหมดของฟังก์ชันที่กำหนด
+โดยผลลัพธ์จะอยู่ในรูปของตระกูลฟังก์ชันต้นกำเนิดที่บวกด้วยค่าคงตัวของการหาปริพันธ์</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Indeterminate Forms</strong></td>
+<td style="text-align: left;">รูปแบบยังไม่กำหนด</td>
+<td
+style="text-align: left;">อัตราส่วนหรือนิพจน์ทางคณิตศาสตร์ที่ไม่สามารถระบุค่าลิมิตได้ทันทีเมื่อแทนค่าตัวแปร
+เช่น <span class="math inline">\(\frac{0}{0}\)</span> หรือ <span
+class="math inline">\(\frac{\infty}{\infty}\)</span>
+ซึ่งต้องอาศัยการจัดรูปหรือใช้ทฤษฎีบทเพิ่มเติมเพื่อหาคำตอบ</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Instructional
+Scaffolding</strong></td>
+<td style="text-align: left;">การจัดนั่งร้านทางปัญญา</td>
+<td
+style="text-align: left;">แนวคิดการออกแบบการเรียนการสอนโดยให้การสนับสนุนช่วยเหลือผู้เรียนอย่างเป็นลำดับขั้นตอน
+เพื่อลดภาระทางปัญญาและกระตุ้นให้ผู้เรียนเกิดความเข้าใจและสามารถแก้ไขปัญหาทางคณิตศาสตร์ได้ด้วยตนเอง</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Interactive Quiz</strong></td>
+<td style="text-align: left;">แบบทดสอบเชิงปฏิสัมพันธ์</td>
+<td
+style="text-align: left;">ชุดคำถามหรือโจทย์ทดสอบสั้นเชิงโต้ตอบที่ออกแบบมาให้ผู้เรียนสามารถประเมินและทบทวนความเข้าใจในระหว่างกระบวนการเรียนรู้ได้ในทันที</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Integration</strong></td>
+<td style="text-align: left;">การหาปริพันธ์</td>
+<td
+style="text-align: left;">กระบวนการทางคณิตศาสตร์ที่เป็นการดำเนินการตรงกันข้ามกับการหาอนุพันธ์เพื่อคำนวณหาฟังก์ชันต้นกำเนิด
+พื้นที่ใต้กราฟ หรือปริมาตรของรูปทรง</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Limit</strong></td>
+<td style="text-align: left;">ลิมิต</td>
+<td
+style="text-align: left;">ค่าที่ฟังก์ชันหรือลำดับเข้าใกล้เมื่อตัวแปรอิสระหรือดัชนีเข้าใกล้ค่าใดค่าหนึ่ง</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Pi (<span
+class="math inline">\(\pi\)</span>)</strong></td>
+<td style="text-align: left;">พาย</td>
+<td
+style="text-align: left;">ค่าคงตัวทางคณิตศาสตร์ที่เป็นอัตราส่วนของเส้นรอบวงของวงกลมกับเส้นผ่านศูนย์กลาง
+มีค่าประมาณ 3.14159</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Python</strong></td>
+<td style="text-align: left;">ภาษาไพธอน</td>
+<td
+style="text-align: left;">ภาษาโปรแกรมคอมพิวเตอร์ระดับสูงประเภทอินเทอร์พรีเตอร์
+(Interpreter) ที่เน้นความกระชับและง่ายต่อการทำความเข้าใจ
+มีจุดเด่นด้านการสนับสนุนจากไลบรารีสำหรับการคำนวณและการวิเคราะห์ข้อมูล</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Session State</strong></td>
+<td style="text-align: left;">สถานะเซสชัน</td>
+<td
+style="text-align: left;">กลไกของไลบรารีสตรีมลิตที่ช่วยเก็บบันทึกข้อมูลสถานะหรือความจำของผู้ใช้งานในแต่ละรอบการเชื่อมต่อเว็บแอปพลิเคชัน</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>State Management</strong></td>
+<td style="text-align: left;">การจัดการสถานะ</td>
+<td
+style="text-align: left;">กระบวนการควบคุมดูแลและเก็บบันทึกข้อมูลสถานะหรือการเปลี่ยนแปลงความจำของระบบระหว่างการโต้ตอบกับผู้ใช้งาน</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Streamlit</strong></td>
+<td style="text-align: left;">สตรีมลิต</td>
+<td style="text-align: left;">ไลบรารีแบบโอเพนซอร์ส (Open-source)
+บนภาษาไพธอน สำหรับพัฒนาเว็บแอปพลิเคชันเชิงโต้ตอบได้อย่างรวดเร็ว
+โดยไม่จำเป็นต้องอาศัยทักษะความรู้ด้านการเขียนโปรแกรมส่วนติดต่อผู้ใช้ฝั่งหน้าบ้านในระดับสูง</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Symbolic Computation</strong></td>
+<td style="text-align: left;">การคำนวณเชิงสัญลักษณ์</td>
+<td
+style="text-align: left;">กระบวนการประมวลผลทางคณิตศาสตร์ด้วยคอมพิวเตอร์ที่เก็บค่าในรูปแบบที่แม่นยำ
+(Exact Form) เช่น สัญลักษณ์หรือตัวแปร
+ปราศจากความคลาดเคลื่อนจากการปัดเศษทศนิยม</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SymPy</strong></td>
+<td style="text-align: left;">ซิมพาย</td>
+<td
+style="text-align: left;">ไลบรารีบนภาษาไพธอนที่ออกแบบมาสำหรับการคำนวณคณิตศาสตร์เชิงสัญลักษณ์และใช้เป็นระบบพีชคณิตคอมพิวเตอร์
+(Computer Algebra System)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Visual Studio Code (VS
+Code)</strong></td>
+<td style="text-align: left;">วิชวลสตูดิโอโค้ด</td>
+<td style="text-align: left;">โปรแกรมแก้ไขรหัสต้นฉบับ (Code Editor)
+ที่ใช้งานได้ฟรี รองรับการพัฒนาโปรแกรมและติดตั้งส่วนขยายได้หลากหลายแพลตฟอร์ม</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Web Application</strong></td>
+<td style="text-align: left;">เว็บแอปพลิเคชัน</td>
+<td style="text-align: left;">โปรแกรมประยุกต์คอมพิวเตอร์ที่ประมวลผลบนเซิร์ฟเวอร์
+(Server-side) และสื่อสารโต้ตอบกับผู้ใช้งานผ่านหน้าต่างเว็บเบราว์เซอร์ฝั่งลูกข่าย
+(Client-side) บนเครือข่ายอินเทอร์เน็ต</td>
+</tr>
+</tbody>
+</table>
+<h1 id="บทท-2-ทฤษฎและเทคโนโลยทเกยวของ">บทที่ 2
+ทฤษฎีและเทคโนโลยีที่เกี่ยวข้อง</h1>
+<p>ในการศึกษาค้นคว้าและจัดทำโครงงานการพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้น
+(Development of a Math Tutor Web Application for Introductory Calculus)
+ผู้จัดทำได้ศึกษาหลักการ ทฤษฎี และเทคโนโลยีที่เกี่ยวข้อง
+เพื่อนำมาใช้เป็นแนวทางในการวิเคราะห์ ออกแบบ
+และพัฒนาระบบให้มีประสิทธิภาพและบรรลุตามวัตถุประสงค์
+โดยมีรายละเอียดของทฤษฎีและเทคโนโลยีที่เกี่ยวข้องดังต่อไปนี้</p>
+<h2 id="ทฤษฎแคลคลสเบองตน-introductory-calculus">2.1 ทฤษฎีแคลคูลัสเบื้องต้น
+(Introductory Calculus)</h2>
+<p>แคลคูลัสเป็นสาขาหนึ่งของคณิตศาสตร์ที่มีความสำคัญอย่างยิ่งในการศึกษาวิทยาศาสตร์ประยุกต์
+วิศวกรรมศาสตร์ และเศรษฐศาสตร์
+เป็นวิชาที่ศึกษาเกี่ยวกับอัตราการเปลี่ยนแปลงและปริมาณที่สะสม
+โดยเนื้อหาในระดับเบื้องต้นที่นำมาใช้เป็นขอบเขตของการพัฒนาเว็บแอปพลิเคชัน ประกอบด้วย 3
+หัวข้อหลัก ได้แก่</p>
+<h3 id="ลมตและความตอเนอง-limits-and-continuity">2.1.1 ลิมิตและความต่อเนื่อง
+(Limits and Continuity)</h3>
+<p>ลิมิต (Limit) คือการศึกษาพฤติกรรมของฟังก์ชันเมื่อตัวแปรอิสระมีค่าเข้าใกล้ค่าใดค่าหนึ่ง
+ซึ่งทำหน้าที่เป็นรากฐานสำคัญในการนิยามอนุพันธ์และปริพันธ์</p>
+<h4 id="นยามความตอเนองของฟงกชน-definition-of-continuity">1.
+นิยามความต่อเนื่องของฟังก์ชัน (Definition of Continuity)</h4>
+<p>ฟังก์ชัน <span class="math inline">\(f(x)\)</span> จะมีความต่อเนื่อง
+(Continuous) ณ จุด <span class="math inline">\(x = a\)</span>
+ก็ต่อเมื่อสอดคล้องกับเงื่อนไข 3 ประการ ดังต่อไปนี้: 1. <span
+class="math inline">\(f(a)\)</span> หาค่าได้ (Defined)
+หมายความว่าค่าของฟังก์ชันที่จุด <span class="math inline">\(x = a\)</span>
+มีอยู่จริงในโดเมนของฟังก์ชัน 2. <span class="math inline">\(\lim_{x \to a}
+f(x)\)</span> หาค่าได้ (Exists) หมายความว่าลิมิตของฟังก์ชันเมื่อ <span
+class="math inline">\(x\)</span> เข้าใกล้ <span
+class="math inline">\(a\)</span> มีค่าเป็นจำนวนจริง
+ซึ่งจะเกิดขึ้นเมื่อลิมิตซ้ายเท่ากับลิมิตขวา (<span class="math inline">\(\lim_{x \to
+a^-} f(x) = \lim_{x \to a^+} f(x)\)</span>) 3. <span
+class="math inline">\(\lim_{x \to a} f(x) = f(a)\)</span>
+หมายความว่าค่าลิมิตที่คำนวณได้มีค่าเท่ากับค่าของฟังก์ชัน ณ จุดนั้นพอดี</p>
+<p>หากฟังก์ชันขาดคุณสมบัติข้อใดข้อหนึ่งข้างต้น จะถือว่าฟังก์ชันนั้นไม่มีความต่อเนื่อง
+(Discontinuous) ณ จุด <span class="math inline">\(x = a\)</span>
+การใช้นิยามทางคณิตศาสตร์ทั้ง 3
+ข้อนี้ส่งผลให้การวิเคราะห์ความต่อเนื่องมีความรัดกุมและแม่นยำทางทฤษฎีมากกว่าการพิจารณาทางเรขาคณิตว่ากราฟมีลักษณะขาดตอนหรือไม่เพียงอย่างเดียว</p>
+<h4 id="รปแบบยงไมกำหนด-indeterminate-forms">2. รูปแบบยังไม่กำหนด
+(Indeterminate Forms)</h4>
+<p>การคำนวณลิมิตในหลายกรณีอาจส่งผลให้อยู่ในรูปของรูปแบบยังไม่กำหนด (Indeterminate
+Forms) ซึ่งเป็นอัตราส่วนที่ไม่สามารถสรุปค่าได้ทันทีจากการแทนค่าโดยตรง
+รูปแบบที่พบบ่อยในระดับเบื้องต้นมีลักษณะเป็นเศษส่วน ดังตัวอย่างต่อไปนี้:</p>
+<ul>
+<li><p><strong>รูปแบบ <span
+class="math inline">\(\frac{0}{0}\)</span></strong>: พิจารณาลิมิต <span
+class="math display">\[\lim_{x \to 2} \frac{x^2 - 4}{x - 2}\]</span>
+หากแทนค่า <span class="math inline">\(x = 2\)</span> ลงในฟังก์ชันโดยตรง
+จะได้ผลลัพธ์ในรูป <span class="math inline">\(\frac{0}{0}\)</span>
+ซึ่งไม่นิยามทางคณิตศาสตร์ อย่างไรก็ตาม
+หากทำการจัดรูปทางพีชคณิตโดยการแยกตัวประกอบเพื่อกำจัดตัวส่วนที่เป็นศูนย์ จะได้: <span
+class="math display">\[\lim_{x \to 2} \frac{(x - 2)(x + 2)}{x - 2} =
+\lim_{x \to 2} (x + 2) = 4\]</span></p></li>
+<li><p><strong>รูปแบบ <span
+class="math inline">\(\frac{\infty}{\infty}\)</span></strong>: พิจารณาลิมิต
+<span class="math display">\[\lim_{x \to \infty} \frac{2x^2 + 3}{5x^2 -
+x}\]</span> เมื่อ <span class="math inline">\(x\)</span> มีค่าเข้าใกล้อนันต์
+ทั้งตัวเศษและตัวส่วนจะมีค่าเพิ่มขึ้นอย่างไม่มีขอบเขต ส่งผลให้อยู่ในรูป <span
+class="math inline">\(\frac{\infty}{\infty}\)</span>
+วิธีการคำนวณทำได้โดยการหารด้วยตัวแปรยกกำลังสูงสุดในส่วน (ในที่นี้คือ <span
+class="math inline">\(x^2\)</span>) ทั้งเศษและส่วน จะได้: <span
+class="math display">\[\lim_{x \to \infty} \frac{2 + \frac{3}{x^2}}{5 -
+\frac{1}{x}} = \frac{2 + 0}{5 - 0} = \frac{2}{5}\]</span></p></li>
+</ul>
+<h4
+id="ความสำคญของลมตและความตอเนองตอการคำนวณปรพนธ-significance-to-integration">3.
+ความสำคัญของลิมิตและความต่อเนื่องต่อการคำนวณปริพันธ์ (Significance to
+Integration)</h4>
+<p>ลิมิตและความต่อเนื่องมีความสัมพันธ์และสำคัญอย่างยิ่งต่อกระบวนการคำนวณปริพันธ์
+(Integration) ดังนี้: 1. <strong>ทฤษฎีบทการมีอยู่ของปริพันธ์ (Existence of
+Integrals)</strong>: คุณสมบัติความต่อเนื่องของฟังก์ชันเป็นเงื่อนไขที่เพียงพอ
+(Sufficient Condition) ที่ช่วยรับประกันว่าฟังก์ชันจะสามารถหาปริพันธ์ได้ (Integrable)
+บนช่วงที่พิจารณา โดยตามทฤษฎีบทหลักมูลของแคลคูลัส (Fundamental Theorem of
+Calculus) หากฟังก์ชัน <span class="math inline">\(f(x)\)</span>
+มีความต่อเนื่องบนช่วงปิด <span class="math inline">\([a, b]\)</span> แล้ว
+ฟังก์ชันนั้นจะสามารถหาค่าปริพันธ์จำกัดเขต <span class="math inline">\(\int_{a}^{b}
+f(x) \, dx\)</span> ได้เสมอ 2. <strong>การคำนวณปริพันธ์ไม่ตรงแบบ (Improper
+Integrals)</strong>: ในกรณีที่ขอบเขตของการหาปริพันธ์ขยายไปถึงอนันต์ เช่น <span
+class="math inline">\(\int_{a}^{\infty} f(x) \, dx\)</span>
+หรือในกรณีที่ฟังก์ชันมีจุดที่ไม่ต่อเนื่องแบบอนันต์ (Infinite Discontinuity) หรือจุดเอกฐาน
+(Singularity) ภายในช่วงของการอินทิเกรต การคำนวณจะไม่สามารถดำเนินการด้วยวิธีปกติได้
+แต่ต้องอาศัยลิมิตในการนิยามและคำนวณค่าปริพันธ์ เช่น <span
+class="math display">\[\int_{a}^{\infty} f(x) \, dx = \lim_{t \to
+\infty} \int_{a}^{t} f(x) \, dx\]</span> หากลิมิตดังกล่าวหาค่าได้เป็นจำนวนจริง
+ปริพันธ์นั้นจะเรียกว่าลู่เข้า (Convergent) และค่าลิมิตนั้นคือผลลัพธ์ของปริพันธ์</p>
+<h3 id="อนพนธ-derivatives">2.1.2 อนุพันธ์ (Derivatives)</h3>
+<p>อนุพันธ์คือการหาอัตราการเปลี่ยนแปลงของฟังก์ชันเมื่อเทียบกับตัวแปรอิสระ
+หรือในทางเรขาคณิตคือความชันของเส้นสัมผัสกราฟ ณ จุดใด ๆ
+การหาอนุพันธ์ของฟังก์ชันพหุนามและฟังก์ชันพื้นฐานเป็นทักษะสำคัญ การศึกษากฎเกณฑ์ของอนุพันธ์
+เช่น กฎผลคูณ (Product Rule) กฎผลหาร (Quotient Rule) และกฎลูกโซ่ (Chain Rule)
+เป็นสิ่งจำเป็นที่ระบบต้องสามารถอธิบายให้ผู้เรียนเข้าใจทีละขั้นตอนได้</p>
+<h3 id="ปรพนธ-integrals">2.1.3 ปริพันธ์ (Integrals)</h3>
+<p>ปริพันธ์หรือการอินทิเกรต เป็นกระบวนการย้อนกลับของการหาอนุพันธ์
+ใช้สำหรับการคำนวณหาพื้นที่ใต้กราฟและปริมาตร
+โดยในระดับเบื้องต้นจะเน้นที่การหาปริพันธ์ไม่จำกัดเขต (Indefinite Integrals)
+ซึ่งจะได้ผลลัพธ์เป็นกลุ่มของฟังก์ชัน และปริพันธ์จำกัดเขต (Definite Integrals)
+ซึ่งใช้ในการคำนวณหาค่าที่เป็นตัวเลข เช่น พื้นที่ใต้เส้นโค้ง
+โดยมีเงื่อนไขและข้อกำหนดทางคณิตศาสตร์ที่สำคัญดังนี้:</p>
+<ol type="1">
+<li><strong>เงื่อนไขพื้นที่ใต้กราฟ</strong>: พื้นที่ใต้กราฟจะมีค่าเท่ากับค่าปริพันธ์จำกัดเขต
+ก็ต่อเมื่อฟังก์ชัน <span class="math inline">\(f(x) \ge 0\)</span>
+บนช่วงที่พิจารณาเท่านั้น</li>
+<li><strong>กรณีฟังก์ชันมีค่าติดลบ</strong>: หากฟังก์ชัน <span
+class="math inline">\(f(x)\)</span> มีค่าติดลบในช่วงที่พิจารณา
+จะต้องใช้ค่าประสิทธิผลสัมบูรณ์ <span class="math inline">\(|f(x)|\)</span>
+ในการหาปริพันธ์จำกัดเขตเพื่อคำนวณพื้นที่ เพื่อไม่ให้ค่าพื้นที่ที่เป็นบวกหักล้างกับค่าที่เป็นลบใต้แกน
+<span class="math inline">\(x\)</span></li>
+<li><strong>การประยุกต์ใช้ร่วมกับไลบรารีซิมพาย (SymPy)</strong>:
+ในการคำนวณหาพื้นที่ใต้กราฟผ่านไลบรารีซิมพาย
+นักพัฒนาสามารถกำหนดให้ระบบคำนวณหาค่าปริพันธ์จำกัดเขตของฟังก์ชันค่าสัมบูรณ์ได้ โดยใช้ฟังก์ชัน
+<code>sympy.Abs</code> ครอบฟังก์ชันเป้าหมายก่อนนำไปคำนวณด้วยฟังก์ชัน
+<code>sympy.integrate</code> เช่น
+<code>sympy.integrate(sympy.Abs(f), (x, a, b))</code>
+เพื่อส่งคืนผลลัพธ์พื้นที่ใต้กราฟที่ถูกต้องทางเรขาคณิตโดยอัตโนมัติ</li>
+</ol>
+<h4
+id="การประยกตใชเนอหาปรพนธในระบบชวยสอน">การประยุกต์ใช้เนื้อหาปริพันธ์ในระบบช่วยสอน</h4>
+<p>เพื่อเป็นการส่งเสริมความเข้าใจในแนวคิดเรื่องปริพันธ์จำกัดเขตและการหาพื้นที่ใต้เส้นโค้งให้กับผู้เรียน
+ระบบช่วยสอนได้รับการออกแบบให้แสดงกระบวนการเรียนรู้และขั้นตอนการคำนวณโดยใช้การจัดนั่งร้านทางปัญญา
+(Instructional Scaffolding) ดังตัวอย่างการประยุกต์ใช้ต่อไปนี้:</p>
+<h5
+id="ตวอยางโจทยท-1-การหาปรพนธจำกดเขตของฟงกชนทไมตดลบ-definite-integral-with-non-negative-function">ตัวอย่างโจทย์ที่
+1: การหาปริพันธ์จำกัดเขตของฟังก์ชันที่ไม่ติดลบ (Definite Integral with Non-negative
+Function)</h5>
+<p>กำหนดให้ผู้เรียนต้องการหาค่าปริพันธ์จำกัดเขตของฟังก์ชัน <span
+class="math inline">\(f(x) = x^2 + 1\)</span> บนช่วงปิด <span
+class="math inline">\([0, 3]\)</span> หรือเขียนแทนด้วยสัญลักษณ์ <span
+class="math inline">\(\int_{0}^{3} (x^2 + 1) \, dx\)</span> เนื่องจากฟังก์ชัน
+<span class="math inline">\(f(x) \ge 0\)</span> สำหรับทุกค่า <span
+class="math inline">\(x\)</span> บนช่วง <span class="math inline">\([0,
+3]\)</span> ผลลัพธ์จากการคำนวณนี้จึงมีค่าเท่ากับพื้นที่ใต้กราฟพอดี</p>
+<p><strong>ขั้นตอนการคำนวณด้วยไลบรารีซิมพาย (SymPy):</strong>
+นักพัฒนาสามารถใช้คำสั่งในภาษา Python เพื่อคำนวณหาคำตอบเชิงสัญลักษณ์ที่แม่นยำได้ดังนี้:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sympy <span class="im">as</span> sp</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># กำหนดตัวแปรและฟังก์ชัน</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> sp.Symbol(<span class="st">&#39;x&#39;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># คำนวณปริพันธ์จำกัดเขตจาก 0 ถึง 3</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> sp.integrate(f, (x, <span class="dv">0</span>, <span class="dv">3</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;ผลลัพธ์ปริพันธ์จำกัดเขต:&quot;</span>, result)  <span class="co"># ผลลัพธ์แสดงค่าเป็น 12</span></span></code></pre></div></div>
+<p><strong>การใช้ระบบขั้นตอนแบบพับเก็บได้ (Accordion Steps)
+ในระบบช่วยสอน:</strong>
+เพื่อนำเสนอขั้นตอนแก่ผู้เรียนโดยไม่ให้เกิดภาระทางปัญญามากเกินไป
+ระบบจะซ่อนคำอธิบายและผลลัพธ์แยกตามขั้นตอน ซึ่งผู้เรียนสามารถคลิกเปิดดู (Expand)
+ได้ตามลำดับดังนี้: * <strong>ขั้นตอนที่ 1: หาปฏิยานุพันธ์ (Indefinite
+Integral)</strong><br />
+ผู้เรียนจะได้ฝึกหาฟังก์ชันต้นกำเนิด <span class="math inline">\(F(x)\)</span>
+โดยใช้กฎการหาปริพันธ์พื้นฐาน: <span class="math display">\[F(x) = \int (x^2 +
+1) \, dx = \frac{x^3}{3} + x + C\]</span> * <strong>ขั้นตอนที่ 2:
+แทนค่าขอบเขตบน (<span class="math inline">\(x =
+3\)</span>)</strong><br />
+แทนค่าขอบเขตบนลงในปฏิยานุพันธ์ <span class="math inline">\(F(3)\)</span>
+(โดยละค่าคงตัว <span class="math inline">\(C\)</span> เนื่องจากจะหักล้างกันไป):
+<span class="math display">\[F(3) = \frac{3^3}{3} + 3 = 9 + 3 =
+12\]</span> * <strong>ขั้นตอนที่ 3: แทนค่าขอบเขตล่าง (<span
+class="math inline">\(x = 0\)</span>)</strong><br />
+แทนค่าขอบเขตล่างลงในปฏิยานุพันธ์ <span class="math inline">\(F(0)\)</span>:
+<span class="math display">\[F(0) = \frac{0^3}{3} + 0 = 0\]</span> *
+<strong>ขั้นตอนที่ 4: คำนวณผลลัพธ์สุดท้าย (<span class="math inline">\(F(b) -
+F(a)\)</span>)</strong><br />
+นำค่าจากขั้นตอนก่อนหน้ามาลบกันเพื่อหาค่าปริพันธ์จำกัดเขต: <span
+class="math display">\[\int_{0}^{3} (x^2 + 1) \, dx = F(3) - F(0) = 12 -
+0 = 12\]</span></p>
+<h5
+id="ตวอยางโจทยท-2-การหาพนทใตกราฟในกรณฟงกชนตดลบบางชวง-area-under-curve-with-partially-negative-function">ตัวอย่างโจทย์ที่
+2: การหาพื้นที่ใต้กราฟในกรณีฟังก์ชันติดลบบางช่วง (Area Under Curve with Partially
+Negative Function)</h5>
+<p>กำหนดให้ผู้เรียนต้องการคำนวณหาพื้นที่ใต้กราฟของฟังก์ชัน <span
+class="math inline">\(f(x) = x^2 - 4\)</span> บนช่วงปิด <span
+class="math inline">\([1, 3]\)</span>
+เนื่องจากฟังก์ชันนี้มีการเปลี่ยนเครื่องหมายในช่วงดังกล่าว โดยมีค่าติดลบในช่วง <span
+class="math inline">\([1, 2)\)</span> และมีค่าไม่ติดลบในช่วง <span
+class="math inline">\([2, 3]\)</span> การหาปริพันธ์จำกัดเขตโดยตรง <span
+class="math inline">\(\int_{1}^{3} (x^2 - 4) \, dx\)</span>
+จะทำให้ได้ผลลัพธ์เป็น <span class="math inline">\(\frac{2}{3}\)</span>
+ซึ่งน้อยกว่าค่าพื้นที่จริงเนื่องจากเกิดการหักล้างกันทางคณิตศาสตร์
+ดังนั้นพื้นที่ที่แท้จริงต้องคำนวณจากปริพันธ์จำกัดเขตของฟังก์ชันค่าสัมบูรณ์ ดังนี้: <span
+class="math display">\[\text{พื้นที่} = \int_{1}^{3} |x^2 - 4| \,
+dx\]</span></p>
+<p><strong>ขั้นตอนการคำนวณด้วยไลบรารีซิมพาย (SymPy):</strong> ในฝั่งเซิร์ฟเวอร์
+ระบบคำนวณจะใช้ฟังก์ชัน <code>sympy.Abs</code> ร่วมกับ
+<code>sympy.integrate</code> เพื่อประมวลผลหาพื้นที่ที่ถูกต้องดังนี้:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sympy <span class="im">as</span> sp</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> sp.Symbol(<span class="st">&#39;x&#39;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> x<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">4</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># คำนวณพื้นที่โดยหาปริพันธ์จำกัดเขตของค่าสัมบูรณ์ของฟังก์ชัน</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>area <span class="op">=</span> sp.integrate(sp.Abs(f), (x, <span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;พื้นที่ใต้กราฟที่แท้จริง:&quot;</span>, area)  <span class="co"># ผลลัพธ์แสดงค่าเป็น 4</span></span></code></pre></div></div>
+<p><strong>การออกแบบแบบทดสอบเชิงปฏิสัมพันธ์ (Interactive Quiz)
+ในระบบช่วยสอน:</strong> ระหว่างที่ผู้เรียนทำความเข้าใจวิธีทำ
+ระบบจะแทรกคำถามเชิงโต้ตอบเพื่อตรวจสอบความเข้าใจและกระตุ้นการคิดวิเคราะห์ก่อนจะแสดงคำตอบของพื้นที่ในแต่ละช่วง:
+* <strong>คำถามข้อที่ 1:</strong> “ฟังก์ชัน <span class="math inline">\(f(x) =
+x^2 - 4\)</span> บนช่วงปิด <span class="math inline">\([1, 3]\)</span>
+มีค่าติดลบอยู่ในช่วงใด?” * <em>ตัวเลือก ก:</em> ช่วง <span
+class="math inline">\([1, 2)\)</span> <em>(คำตอบที่ถูกต้อง)</em> *
+<em>ตัวเลือก ข:</em> ช่วง <span class="math inline">\([2, 3]\)</span> *
+<em>ตัวเลือก ค:</em> ฟังก์ชันมีค่าเป็นบวกตลอดทั้งช่วง <span
+class="math inline">\([1, 3]\)</span> *
+<em>คำอธิบายเพิ่มเติมเมื่อผู้เรียนส่งคำตอบ:</em> หากทดสอบค่า <span
+class="math inline">\(x\)</span> ในช่วง <span class="math inline">\([1,
+2)\)</span> เช่น แทนค่า <span class="math inline">\(x = 1.5\)</span> จะได้
+<span class="math inline">\(f(1.5) = (1.5)^2 - 4 = -1.75\)</span>
+ซึ่งมีค่าน้อยกว่าศูนย์ ดังนั้นฟังก์ชันจึงมีค่าติดลบในช่วงนี้และจำเป็นต้องใช้ค่าสัมบูรณ์เพื่อคำนวณพื้นที่ *
+<strong>คำถามข้อที่ 2:</strong>
+“การตั้งสมการปริพันธ์จำกัดเขตเพื่อหาพื้นที่ใต้กราฟที่ถูกต้องคือข้อใด?” * <em>ตัวเลือก ก:</em>
+<span class="math inline">\(\int_{1}^{3} (x^2 - 4) \, dx\)</span> *
+<em>ตัวเลือก ข:</em> <span class="math inline">\(\int_{1}^{2} (x^2 - 4) \,
+dx + \int_{2}^{3} -(x^2 - 4) \, dx\)</span> * <em>ตัวเลือก ค:</em> <span
+class="math inline">\(\int_{1}^{2} -(x^2 - 4) \, dx + \int_{2}^{3} (x^2
+- 4) \, dx\)</span> <em>(คำตอบที่ถูกต้อง)</em> *
+<em>คำอธิบายเพิ่มเติมเมื่อผู้เรียนส่งคำตอบ:</em> พื้นที่ส่วนที่อยู่ใต้แกน <span
+class="math inline">\(x\)</span> (ช่วง <span class="math inline">\([1,
+2)\)</span>) จะต้องคูณด้วย <span class="math inline">\(-1\)</span>
+เพื่อให้ค่าพื้นที่กลายเป็นบวก ส่วนพื้นที่เหนือกราฟ (ช่วง <span class="math inline">\([2,
+3]\)</span>) หาปริพันธ์จำกัดเขตได้โดยตรง แล้วนำพื้นที่ทั้งสองช่วงมารวมกัน
+ซึ่งจะเท่ากับการคำนวณ <span class="math inline">\(\frac{5}{3} + \frac{7}{3}
+= 4\)</span> ตารางหน่วย</p>
+<h2 id="เวบแอปพลเคชน-web-application">2.2 เว็บแอปพลิเคชัน (Web
+Application)</h2>
+<p>เว็บแอปพลิเคชัน (Web Application) คือระบบโปรแกรมประยุกต์ที่ทำงานบนเครื่องแม่ข่าย
+(Server-side) และแสดงผลลัพธ์ผ่านเว็บเบราว์เซอร์ (Web Browser) บนอุปกรณ์ของผู้ใช้งาน
+(Client-side) โดยเชื่อมต่อผ่านเครือข่ายอินเทอร์เน็ต ซึ่งมีความแตกต่างจากเว็บไซต์แบบคงที่
+(Static Website) เนื่องจากเว็บแอปพลิเคชันมุ่งเน้นการมีปฏิสัมพันธ์กับผู้ใช้งาน
+(Interactive) รองรับการประมวลผลข้อมูลคณิตศาสตร์ที่ซับซ้อน การบันทึกสถานะการเรียนรู้
+และการแสดงผลลัพธ์การคำนวณแบบเรียลไทม์</p>
+<p>การพัฒนาสื่อการเรียนการสอนแคลคูลัสในรูปแบบเว็บแอปพลิเคชันมีข้อดีเชิงประจักษ์ต่อกลุ่มเป้าหมายหลัก
+ซึ่งเป็นนักศึกษาระดับปริญญาตรี ดังนี้</p>
+<ol type="1">
+<li><p><strong>การไม่ต้องติดตั้งโปรแกรมเพิ่มเติม (No Installation
+Required)</strong>:
+ผู้เรียนสามารถเข้าถึงระบบเพื่อฝึกฝนและทำความเข้าใจบทเรียนคณิตศาสตร์ได้ทันทีผ่านเว็บเบราว์เซอร์
+โดยไม่ต้องดาวน์โหลดหรือติดตั้งโปรแกรมประยุกต์ใด ๆ
+ลงในเครื่องคอมพิวเตอร์หรือโทรศัพท์เคลื่อนที่
+ซึ่งช่วยขจัดปัญหาข้อจำกัดด้านพื้นที่จัดเก็บข้อมูลบนอุปกรณ์ของผู้เรียน
+นอกจากนี้ยังช่วยลดความยุ่งยากในขั้นตอนการติดตั้งและการตั้งค่าระบบปฏิบัติการ (System
+Configuration) ซึ่งมักเป็นอุปสรรคสำคัญสำหรับนักศึกษาที่ไม่มีทักษะทางเทคนิคระดับสูง
+ส่งผลให้นักศึกษาสามารถเข้าใช้งานระบบเพื่อทบทวนบทเรียนได้ทันทีระหว่างชั้นเรียนหรือในช่วงเวลานอกการศึกษา
+ตลอดจนมั่นใจได้ว่าผู้เรียนทุกคนจะได้รับข้อมูลและฟังก์ชันการใช้งานที่ทันสมัยที่สุดอยู่เสมอโดยไม่จำเป็นต้องทำการอัปเดตซอฟต์แวร์ด้วยตนเอง</p></li>
+<li><p><strong>ความเข้ากันได้ข้ามแพลตฟอร์ม (Cross-platform
+Compatibility)</strong>:
+กลุ่มเป้าหมายนักศึกษาระดับปริญญาตรีมีพฤติกรรมการใช้อุปกรณ์สารสนเทศที่หลากหลายในการเรียนรู้
+เช่น เครื่องคอมพิวเตอร์ส่วนบุคคล (Windows, macOS หรือ Linux) แท็บเล็ต (iPadOS หรือ
+Android) และโทรศัพท์เคลื่อนที่ (iOS หรือ Android)
+การพัฒนาในรูปแบบเว็บแอปพลิเคชันช่วยให้มั่นใจได้ว่าสื่อการสอนจะสามารถทำงานและแสดงผลได้อย่างถูกต้องสอดคล้องกันในทุกระบบปฏิบัติการและขนาดหน้าจอ
+การข้ามแพลตฟอร์มนี้ช่วยส่งเสริมความยืดหยุ่นในการเรียนรู้ (Flexible Learning
+Environment) ทำให้นักศึกษาสามารถสลับเปลี่ยนการใช้งานระหว่างอุปกรณ์ต่าง ๆ
+ได้อย่างราบรื่น เช่น
+การศึกษาขั้นตอนการคำนวณอย่างละเอียดผ่านหน้าจอเครื่องคอมพิวเตอร์ขณะอยู่ในที่พักอาศัย
+และเปลี่ยนมาทบทวนสูตรหรือทำแบบทดสอบย่อยผ่านโทรศัพท์เคลื่อนที่ขณะเดินทางหรืออยู่ในห้องเรียน</p></li>
+</ol>
+<h2 id="แนวคดการออกแบบระบบชวยสอน-instructional-scaffolding">2.3
+แนวคิดการออกแบบระบบช่วยสอน (Instructional Scaffolding)</h2>
+<p>สื่อการเรียนการสอนออนไลน์ในปัจจุบัน หรือเครื่องคำนวณอัจฉริยะส่วนใหญ่ (เช่น แพลตฟอร์ม
+Wolfram Alpha ในรูปแบบการใช้งานทั่วไป)
+มักเน้นการแสดงผลลัพธ์การคำนวณและขั้นตอนการหาคำตอบแบบเบ็ดเสร็จในคราวเดียว
+ซึ่งการออกแบบในลักษณะดังกล่าวอาจส่งผลให้ผู้เรียนมุ่งเน้นเพียงการคัดลอกผลลัพธ์สุดท้าย
+โดยละเลยการทำความเข้าใจในกระบวนการและขั้นตอนการแก้ปัญหาที่แท้จริง
+โครงงานนี้จึงได้นำแนวคิด “การจัดนั่งร้านทางปัญญา” (Instructional Scaffolding)
+ซึ่งเป็นทฤษฎีการเรียนรู้ที่มุ่งเน้นการสนับสนุนช่วยเหลือผู้เรียนตามระดับความสามารถอย่างเป็นลำดับขั้น
+มาประยุกต์ใช้ในการพัฒนาและออกแบบปฏิสัมพันธ์ของระบบช่วยสอน
+โดยจำแนกแนวทางการจัดระบบการสนับสนุนช่วยเหลือออกเป็น 3 รูปแบบหลัก ดังนี้</p>
+<ol type="1">
+<li><p><strong>การซ่อนและเปิดเผยขั้นตอนการคำนวณทีละขั้น (Accordion
+Steps)</strong>:
+การออกแบบระบบในส่วนนี้ใช้หลักการจำกัดการเข้าถึงข้อมูลเพื่อควบคุมภาระทางปัญญา
+(Cognitive Load Theory) โดยระบบจะไม่แสดงผลขั้นตอนการคำนวณทั้งหมดพร้อมกันในทันที
+แต่จะใช้องค์ประกอบเว็บในลักษณะกล่องข้อความที่สามารถพับเก็บและขยายเนื้อหาได้ (Accordion
+Widgets)
+ในการแบ่งย่อยขั้นตอนการหาคำตอบของโจทย์แคลคูลัสออกเป็นขั้นตอนหลักที่มีความต่อเนื่องกันอย่างเป็นระบบ
+การจัดลำดับเช่นนี้ช่วยกระตุ้นให้ผู้เรียนได้ฝึกคิด วิเคราะห์
+และคาดการณ์ขั้นตอนถัดไปด้วยตนเองก่อนที่จะเลือกกดเปิดดูเฉลยหรือขั้นตอนย่อยต่อไป
+ซึ่งเป็นการส่งเสริมการเรียนรู้เชิงรุก (Active Learning)
+และช่วยสร้างความเข้าใจที่มั่นคงยิ่งขึ้น</p></li>
+<li><p><strong>การเรียนรู้แบบมีส่วนร่วมผ่านคำถามโต้ตอบเชิงปฏิสัมพันธ์ (Interactive
+Quiz)</strong>: เป็นการผสมผสานเครื่องมือประเมินผลระหว่างเรียน (Formative
+Assessment) เข้าเป็นส่วนหนึ่งของกระบวนการแสดงวิธีทำ
+โดยระบบจะแทรกแบบทดสอบย่อยในรูปแบบคำถามเชิงโต้ตอบ (Interactive Mini-quizzes)
+ณ จุดเปลี่ยนที่สำคัญของขั้นตอนการคำนวณ เช่น การหาค่าลิมิตก่อนการดำเนินการปริพันธ์
+หรือการแทนค่าตัวแปรตามเทคนิคต่าง ๆ
+ผู้เรียนจำเป็นต้องพิจารณาคำตอบหรือวิเคราะห์แนวทางในการหาคำตอบก่อนส่งคำตอบเข้าสู่ระบบ
+โดยระบบจะทำการประมวลผลและส่งคืนผลสะท้อนกลับ (Feedback) เชิงอธิบายในทันที
+วิธีการนี้ช่วยป้องกันมิให้ผู้เรียนดูเฉลยผ่าน ๆ และสร้างความมั่นใจในการเรียนรู้
+รวมถึงทำให้ผู้เรียนตระหนักรู้ในความเข้าใจของตนเอง (Metacognition)
+ตลอดกระบวนการแก้โจทย์ปัญหา</p></li>
+<li><p><strong>การให้คำอธิบายเชิงแนวคิดด้วยภาษาธรรมชาติ (Natural Language
+Explanation)</strong>:
+ข้อจำกัดที่สำคัญของการเรียนการสอนคณิตศาสตร์ผ่านระบบคอมพิวเตอร์คือ
+ความซับซ้อนและการเป็นนามธรรมของสัญลักษณ์ทางคณิตศาสตร์ (Mathematical Notation)
+ระบบนี้จึงได้รับการออกแบบให้มีส่วนคำอธิบายที่เป็นภาษาธรรมชาติ (Natural Language)
+ควบคู่ไปกับสูตรและสมการคณิตศาสตร์
+โดยระบบจะทำการวิเคราะห์และแสดงคำอธิบายภาษาไทยที่กระชับและเข้าใจง่าย
+ในตำแหน่งที่สำคัญของการคำนวณ โดยเฉพาะอย่างยิ่งในขั้นตอนที่มักเกิดข้อผิดพลาดขึ้นบ่อยครั้ง
+(Common Misconceptions) เช่น การระบุเงื่อนไขการใช้ค่าสัมบูรณ์ในการหาพื้นที่
+หรือขีดจำกัดการคำนวณลิมิต
+การใช้ภาษาธรรมชาติอธิบายนี้ทำหน้าที่เป็นเสมือนผู้สอนคอยชี้แนะเชิงวิเคราะห์
+ช่วยเชื่อมโยงความหมายเบื้องหลังสัญลักษณ์ทางคณิตศาสตร์สู่ความรู้ความเข้าใจเชิงหลักการของผู้เรียน</p></li>
+</ol>
+<h2 id="ภาษาไพธอน-python">2.4 ภาษาไพธอน (Python)</h2>
+<p>ภาษาไพธอน (Python) เป็นภาษาโปรแกรมคอมพิวเตอร์ระดับสูง (High-level
+Programming Language) ที่ถูกพัฒนาขึ้นโดย กีโต ฟาน รอสซัม (Guido van Rossum) ในปี
+ค.ศ. 1991 โดยมีจุดมุ่งหมายเพื่อให้เป็นภาษาที่อ่านง่าย (Readability) เขียนง่าย
+และมีโครงสร้างโค้ดที่ไม่ซับซ้อน</p>
+<h3 id="คณสมบตเดนของภาษาไพธอน">2.4.1 คุณสมบัติเด่นของภาษาไพธอน</h3>
+<p>ภาษาไพธอนมีไวยากรณ์ (Syntax) ที่คล้ายคลึงกับภาษาอังกฤษ
+ทำให้ผู้เขียนโปรแกรมสามารถทำความเข้าใจได้รวดเร็ว
+นอกจากนี้ไพธอนยังเป็นภาษาแบบอินเทอร์พรีเตอร์ (Interpreter) ที่ประมวลผลคำสั่งทีละบรรทัด
+ทำให้ง่ายต่อการตรวจสอบข้อผิดพลาด (Debugging) ไพธอนมีศูนย์รวมไลบรารี (Library)
+มาตรฐานและเครื่องมือเสริมมากมายที่สนับสนุนการคำนวณทางคณิตศาสตร์ วิทยาศาสตร์ข้อมูล
+และการพัฒนาเว็บแอปพลิเคชัน
+จึงมีความเหมาะสมอย่างยิ่งที่จะนำมาใช้เป็นภาษาหลักในการพัฒนาระบบประมวลผล
+(Backend)</p>
+<h3 id="ไลบรารสตรมลต-streamlit">2.5 ไลบรารีสตรีมลิต
+(<strong>Streamlit</strong>)</h3>
+<p>สตรีมลิต (<strong>Streamlit</strong>) คือไลบรารีแบบโอเพนซอร์ส
+(<strong>Open-source</strong>) ของภาษาไพธอน
+ที่ถูกสร้างขึ้นมาเพื่อให้นักพัฒนาและนักวิทยาศาสตร์ข้อมูลสามารถสร้างเว็บแอปพลิเคชันเชิงโต้ตอบ
+(<strong>Interactive Web App</strong>) ได้อย่างรวดเร็ว
+โดยไม่ต้องพึ่งพาความรู้ด้านการเขียนโค้ดส่วนหน้าบ้าน (<strong>Frontend</strong>)
+มากนัก</p>
+<h4 id="ขอดของการใชงานสตรมลต-streamlit">2.5.1 ข้อดีของการใช้งานสตรีมลิต
+(Streamlit)</h4>
+<ol type="1">
+<li><p>การพัฒนาที่รวดเร็ว (<strong>Rapid Development</strong>):
+สามารถแปลงโค้ดภาษาไพธอนให้กลายเป็นหน้าเว็บแอปพลิเคชันได้โดยใช้คำสั่งเพียงไม่กี่บรรทัด</p></li>
+<li><p>การจัดการสถานะ (State Management): มีกลไกอย่าง Session State
+ที่ช่วยเก็บความจำของระบบ เช่น ประวัติการคำนวณ
+หรือคะแนนจากการตอบคำถามของผู้เรียน</p></li>
+<li><p>การรองรับส่วนติดต่อผู้ใช้ที่หลากหลาย: มีเครื่องมือ (Widgets) เช่น กล่องข้อความ
+ปุ่มกด แถบเลื่อน ที่ออกแบบมาให้สวยงามและพร้อมใช้งาน
+ทำให้ผู้พัฒนาสามารถมุ่งเน้นไปที่การเขียนตรรกะระบบ (Logic)
+มากกว่าการจัดหน้าตาเว็บ</p></li>
+</ol>
+<h2 id="ไลบรารซมพาย-sympy-computer-algebra-system">2.6 ไลบรารีซิมพาย
+(SymPy: Computer Algebra System)</h2>
+<p>ซิมพาย (SymPy)
+เป็นไลบรารีหนึ่งของภาษาไพธอนที่ใช้สำหรับการคำนวณทางคณิตศาสตร์เชิงสัญลักษณ์ (Symbolic
+Mathematics) หรือระบบพีชคณิตคอมพิวเตอร์ (Computer Algebra System: CAS)
+ความแตกต่างของการคำนวณเชิงสัญลักษณ์เมื่อเทียบกับการคำนวณเชิงตัวเลข (Numerical
+Computation) คือ ซิมพาย จะทำการประมวลผลและเก็บค่าทางคณิตศาสตร์ในรูปแบบที่แม่นยำ
+(Exact Form) โดยไม่มีการปัดเศษทศนิยม เช่น การเก็บค่าพาย (<span
+class="math inline">\(\pi\)</span>) หรือรากที่สอง (<span
+class="math inline">\(\sqrt{x}\)</span>)
+ทำให้อนุพันธ์และปริพันธ์ที่คำนวณได้มีความถูกต้อง 100% นอกจากนี้ ซิมพาย
+ยังเปิดกว้างให้ผู้พัฒนาสามารถสกัดขั้นตอนย่อยของการคำนวณ (Step-by-step extraction)
+เพื่อนำมาประกอบกับการเขียนคำอธิบายภาษาไทยในระบบช่วยสอนได้โดยอิสระ
+ซึ่งเป็นข้อได้เปรียบสำคัญที่ช่วยลดข้อจำกัดในการใช้ API สำเร็จรูปจากภายนอก</p>
+<h3 id="เทคโนโลยเวบพนฐาน-html-และ-css">2.7 เทคโนโลยีเว็บพื้นฐาน (HTML และ
+CSS)</h3>
+<p>แม้โครงงานนี้จะใช้สตรีมลิตเป็นเครื่องมือหลักในการสร้างเว็บ
+แต่การปรับแต่งส่วนแสดงผลให้มีความสวยงามและดึงดูดความสนใจ
+ยังต้องอาศัยเทคโนโลยีพื้นฐานของเว็บไซต์ ได้แก่</p>
+<ul>
+<li>HTML (HyperText Markup Language):
+เป็นภาษามาร์กอัปที่ใช้ในการสร้างโครงสร้างของหน้าเว็บเพจ ในระบบนี้ HTML
+ใช้จัดโครงสร้างหน้าเว็บและส่วนแสดงผลต่าง ๆ นอกจากนี้
+การแสดงผลสูตรคณิตศาสตร์บนหน้าเว็บแอปพลิเคชันจะดำเนินการผ่านภาษามาร์กดาวน์
+(Markdown) ร่วมกับระบบจัดพิมพ์สัญลักษณ์ทางคณิตศาสตร์แบบลาเท็กซ์ (LaTeX)
+โดยเรียกใช้งานผ่านฟังก์ชัน <code>st.latex()</code> ของไลบรารีสตรีมลิต (Streamlit)
+เพื่อให้สูตรและสมการทางคณิตศาสตร์แสดงผลได้อย่างถูกต้องและเป็นระเบียบเรียบร้อย</li>
+<li>CSS (Cascading Style Sheets): เป็นภาษาสไตล์ชีตที่ใช้ควบคู่กับ HTML
+เพื่อตกแต่งรูปแบบของหน้าเว็บ เช่น การปรับแต่งสีพื้นหลัง สีตัวอักษร การสร้างขอบโค้งของปุ่ม
+และการสร้างโหมดหน้าจอสีเข้ม (Dark Mode)
+เพื่อให้เหมาะสมกับความชื่นชอบของกลุ่มเป้าหมายนักศึกษาระดับปริญญาตรี</li>
+</ul>
+<h4 id="เครองมอพฒนาโปรแกรม-วชวลสตดโอโคด-visual-studio-code">2.8
+เครื่องมือพัฒนาโปรแกรม วิชวลสตูดิโอโค้ด (Visual Studio Code)</h4>
+<p>Visual Studio Code (VS Code) คือโปรแกรมแก้ไขซอฟต์แวร์ (Code Editor)
+ที่ใช้งานได้ฟรี (Freeware) ซึ่งพัฒนาขึ้นจากโปรเจกต์โอเพนซอร์สชื่อ Code-OSS โดยบริษัท
+Microsoft เป็นผู้พัฒนา ได้รับความนิยมอย่างสูงในกลุ่มนักพัฒนาซอฟต์แวร์
+เนื่องจากเป็นโปรแกรมที่มีขนาดเล็ก (Lightweight) ทำงานได้รวดเร็ว
+และรองรับระบบปฏิบัติการที่หลากหลาย ไม่ว่าจะเป็น Windows, macOS หรือ Linux
+โดยเวอร์ชันที่ดาวน์โหลดจาก Microsoft จะแตกต่างจากโปรเจกต์ Code-OSS ตรงที่
+Code-OSS เป็นโค้ดต้นฉบับที่เป็นโอเพนซอร์สภายใต้สัญญาอนุญาต MIT ในขณะที่เวอร์ชันของ
+Microsoft จะเป็นซอฟต์แวร์สำเร็จรูปที่นำโค้ดดังกล่าวมาปรับแต่งเพิ่มเติม
+โดยมีการเพิ่มเครื่องหมายการค้า ส่วนขยายลิขสิทธิ์เฉพาะ และระบบจัดเก็บข้อมูลการใช้งาน
+(Telemetry) ภายใต้ใบอนุญาตแบบกรรมสิทธิ์ของ Microsoft (Proprietary License)
+แม้จะเปิดให้ใช้งานได้ฟรีก็ตาม</p>
+<p>VS Code มีความสามารถในการติดตั้งส่วนขยาย (Extensions)
+ที่ช่วยอำนวยความสะดวกในการเขียนโค้ดภาษาไพธอน มีระบบช่วยเหลือการพิมพ์
+(IntelliSense) ระบบตรวจสอบข้อผิดพลาด (Syntax Highlighting และ Debugging)
+และการเชื่อมต่อกับระบบควบคุมเวอร์ชัน (Git)
+ทำให้การพัฒนาเว็บแอปพลิเคชันเป็นไปอย่างมีประสิทธิภาพและเป็นระบบ</p>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: EVALUATION & RUBRIC -->
+      <section id="pane-evaluation" class="tab-pane">
+        <div class="grid-2">
+          <div class="card notes-container">
+            <div class="card-header">
+              <div class="card-title">บันทึกข้อเสนอแนะของกรรมการ/อาจารย์ที่ปรึกษา (Live Defense Notes)</div>
+              <span class="badge badge-blue">บันทึกอัตโนมัติในเบราว์เซอร์</span>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-dim); margin-bottom: 10px;">
+              ข้อความในกล่องนี้จะถูกบันทึกลงใน LocalStorage ของเบราว์เซอร์ทันทีที่พิมพ์ ไม่สูญหายเมื่อรีเฟรชหน้าจอ:
+            </p>
+            <textarea id="calculusNotes" placeholder="พิมพ์บันทึกข้อสังเกต คำตอบของนิสิต หรือสิ่งที่ต้องการให้นิสิตแก้ไขปรับปรุงในบทที่ 1-3 ที่นี่..."></textarea>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn-action" onclick="saveNotes()">บันทึกข้อความ</button>
+              <button class="btn-outline" onclick="copyNotes()">คัดลอกข้อความ</button>
+              <button class="btn-outline" onclick="clearNotes()">ล้างข้อความ</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">มติผลการพิจารณาโครงร่างโครงงาน (Defense Verdict)</div>
+              <span class="badge badge-teal">Defense Status</span>
+            </div>
+            <p style="font-size: 0.88rem; color: var(--text-dim); margin-bottom: 12px;">
+              ผลการประเมินการสอบหัวข้อโครงงานคณิตศาสตร์ประยุกต์:
+            </p>
+            
+            <div class="verdict-group">
+              <div class="verdict-card" onclick="setVerdict(this, 'ผ่าน (Approved)')">
+                <input type="radio" name="verdict" value="ผ่าน">
+                <span>ผ่าน (Approved)</span>
+              </div>
+              <div class="verdict-card selected" onclick="setVerdict(this, 'ผ่านโดยมีเงื่อนไขปรับปรุง (Conditional)')">
+                <input type="radio" name="verdict" value="ผ่านโดยมีเงื่อนไข" checked>
+                <span>ผ่านโดยมีเงื่อนไขปรับปรุง</span>
+              </div>
+              <div class="verdict-card" onclick="setVerdict(this, 'ไม่ผ่าน / ให้เสนอใหม่ (Revise & Resubmit)')">
+                <input type="radio" name="verdict" value="ไม่ผ่าน">
+                <span>ให้ปรับแก้และเสนอใหม่</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border-light);">
+              <h4 style="font-size: 0.95rem; margin-bottom: 8px;">Checklist รายการปรับปรุงสำคัญตาม 7 ประเด็นวิจารณ์ (Chapter 3 Action Items):</h4>
+              <ul style="padding-left: 20px; font-size: 0.88rem; color: var(--text-muted); line-height: 1.8;">
+                <li><strong>1. ปรับขอบเขต:</strong> ตัดเนื้อหาลิมิตและ Improper Integrals ออกจากบทที่ 2 มุ่งเน้นเฉพาะการหาปริพันธ์และพื้นที่ใต้เส้นโค้ง</li>
+                <li><strong>2. วัตถุประสงค์ Scaffolding:</strong> ระบุชัดเจนเรื่องการสร้างระบบ Hint ทีละขั้น (Accordion Steps) ก่อนเปิดเฉลย</li>
+                <li><strong>3. ตรวจคำตอบเทียบเท่า:</strong> ออกแบบอัลกอริทึม SymPy ตรวจ Mathematical Equivalence ป้องกันตรวจเฉลยผิดฟอร์ม</li>
+                <li><strong>4. คัดกรอง Glossary:</strong> ตัดคำศัพท์สามัญคอมพิวเตอร์ (Python, HTML, VS Code, ค่า $\pi$) ออกจากตาราง 1.5</li>
+                <li><strong>5. ระเบียบวิธีวิจัย:</strong> เพิ่มแบบประเมิน System Usability Scale (SUS) และการทดสอบ Pre/Post Test ในบทที่ 3</li>
+                <li><strong>6. รองรับ Responsive:</strong> ปรับขอบเขตการใช้งานให้เหมาะกับ Desktop/Tablet First ป้องกันปัญหาพิมพ์สูตรบนมือถือ</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+
+      const targetPane = document.getElementById('pane-' + tabId);
+      if (targetPane) {
+        targetPane.classList.add('active');
+      }
+
+      const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => 
+        btn.getAttribute('onclick').includes(tabId)
+      );
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+      }
+
+      // Trigger MathJax re-render for newly visible tab content
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    function setVerdict(element, value) {
+      document.querySelectorAll('.verdict-card').forEach(c => c.classList.remove('selected'));
+      element.classList.add('selected');
+      element.querySelector('input').checked = true;
+      localStorage.setItem('calculus_defense_verdict', value);
+    }
+
+    const notesKey = 'calculus_tutor_committee_notes';
+    const notesEl = document.getElementById('calculusNotes');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem(notesKey);
+      if (saved && notesEl) {
+        notesEl.value = saved;
+      }
+
+      const savedVerdict = localStorage.getItem('calculus_defense_verdict');
+      if (savedVerdict) {
+        document.querySelectorAll('.verdict-card').forEach(c => {
+          if (c.innerText.includes(savedVerdict.split(' ')[0])) {
+            setVerdict(c, savedVerdict);
+          }
+        });
+      }
+    });
+
+    if (notesEl) {
+      notesEl.addEventListener('input', () => {
+        localStorage.setItem(notesKey, notesEl.value);
+      });
+    }
+
+    function saveNotes() {
+      if (notesEl) {
+        localStorage.setItem(notesKey, notesEl.value);
+        alert('บันทึกข้อความเรียบร้อยแล้ว');
+      }
+    }
+
+    function copyNotes() {
+      if (notesEl) {
+        navigator.clipboard.writeText(notesEl.value).then(() => {
+          alert('คัดลอกข้อความลงคลิปบอร์ดแล้ว');
+        });
+      }
+    }
+
+    function clearNotes() {
+      if (confirm('ต้องการล้างข้อความบันทึกทั้งหมดหรือไม่?')) {
+        if (notesEl) {
+          notesEl.value = '';
+          localStorage.removeItem(notesKey);
+        }
+      }
+    }
+
+    /* QA Live Filter and Search */
+    function filterQACategory(cat, btn) {
+      document.querySelectorAll('.qa-filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const items = document.querySelectorAll('.qa-item-card');
+      const searchVal = document.getElementById('qaSearchInput')?.value.toLowerCase().trim() || '';
+
+      items.forEach(item => {
+        const itemCat = item.getAttribute('data-cat') || '';
+        const itemText = item.innerText.toLowerCase();
+        const matchesCat = (cat === 'all' || itemCat === cat);
+        const matchesSearch = (!searchVal || itemText.includes(searchVal));
+
+        if (matchesCat && matchesSearch) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    function searchQA(query) {
+      const activeBtn = document.querySelector('.qa-filter-btn.active');
+      const currentCat = activeBtn ? activeBtn.getAttribute('data-cat') : 'all';
+      const q = query.toLowerCase().trim();
+
+      document.querySelectorAll('.qa-item-card').forEach(item => {
+        const itemCat = item.getAttribute('data-cat') || '';
+        const itemText = item.innerText.toLowerCase();
+        const matchesCat = (currentCat === 'all' || itemCat === currentCat);
+        const matchesSearch = (!q || itemText.includes(q));
+
+        if (matchesCat && matchesSearch) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
