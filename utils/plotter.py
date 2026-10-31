@@ -6,10 +6,12 @@ label ในกราฟเป็นภาษาอังกฤษ เพื่�
 สีอ้างอิงจาก stat-distribution-solver/modules/theme.py (KU green palette)
 """
 
+from typing import Any
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle
 import numpy as np
 import sympy as sp
@@ -24,6 +26,13 @@ RECT = "#FDE047"       # Bauhaus Sunny Yellow for Riemann blocks
 RECT_EDGE = "#18181B"  # Crisp Black Geometric Edge
 GRID = "#E2E8F0"       # Subtle structural grid
 TEXT = "#18181B"       # Stark Charcoal Black
+
+
+def _create_figure(figsize: tuple[float, float] = (8, 4.5)) -> tuple[Figure, Any]:
+    """สร้าง Figure และ Axes แบบ Object-Oriented ป้องกัน Matplotlib Memory Leak"""
+    fig = Figure(figsize=figsize)
+    ax = fig.add_subplot(111)
+    return fig, ax
 
 
 def _as_curve(values, xs: np.ndarray) -> np.ndarray:
@@ -89,7 +98,7 @@ def plot_riemann(
     with np.errstate(all="ignore"):
         ys_rect = _as_curve(f(xs_rect), xs_rect)
 
-    fig, ax = plt.subplots(figsize=(8, 4.5))
+    fig, ax = _create_figure()
     ax.plot(xs_smooth, ys_smooth, color=CURVE, lw=2, label=f"y = f({var_name})")
     ax.axhline(0, color="#999", lw=0.8)
 
@@ -147,7 +156,7 @@ def plot_riemann(
 
 def _stub_figure(title: str) -> tuple:
     """สร้าง fig เปล่าที่มี title ระบุ TODO (กันหน้าเว็บพังก่อน implement)"""
-    fig, ax = plt.subplots(figsize=(8, 4.5))
+    fig, ax = _create_figure()
     ax.text(
         0.5, 0.5,
         f"{title}\n(TODO: ยังไม่ implement กราฟนี้)",
@@ -200,7 +209,7 @@ def plot_tangent(
         ys = _as_curve(f(xs), xs)
         ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
 
-    fig, ax = plt.subplots(figsize=(8, 4.5))
+    fig, ax = _create_figure()
     ax.plot(xs, ys, color=CURVE, lw=2.5, label=f"y = f({var_name})")
 
     if status == "vertical":
@@ -288,7 +297,7 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
             ys = _as_curve(f(xs), xs)
             ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
 
-        fig, ax = plt.subplots(figsize=(8, 4.5))
+        fig, ax = _create_figure()
         ax.plot(xs, ys, color=CURVE, lw=2.5, label=f"y = f({var_name})")
         ax.axhline(0, color="#999", lw=0.8, linestyle=":")
 
@@ -342,7 +351,7 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
         ys = _as_curve(f(xs), xs)
         ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
 
-    fig, ax = plt.subplots(figsize=(8, 4.5))
+    fig, ax = _create_figure()
     ax.plot(xs, ys, color=CURVE, lw=2.5, label=f"y = f({var_name})")
 
     # เส้นแนวดิ่งที่ var = a
@@ -448,7 +457,7 @@ def plot_volume(
         if is_washer and f_in is not None:
             ys_inner = _as_curve(f_in(xs_solid), xs_solid)
 
-    fig, ax = plt.subplots(figsize=(8, 4.5))
+    fig, ax = _create_figure()
 
     if is_washer:
         # เส้นขอบนอกและเส้นขอบใน
@@ -544,7 +553,7 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
         ys_f_area = _as_curve(f(xs_area), xs_area)
         ys_g_area = _as_curve(g(xs_area), xs_area)
 
-    fig, ax = plt.subplots(figsize=(8, 4.5))
+    fig, ax = _create_figure()
     ax.plot(xs_full, ys_f_full, color=CURVE, lw=2.2, label=f"y = f({var_name})")
     ax.plot(xs_full, ys_g_full, color="#2563EB", lw=2.2, linestyle="--", label=f"y = g({var_name})")
 
@@ -635,7 +644,7 @@ def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | s
     with np.errstate(all="ignore"):
         ys = _as_curve(f(xs), xs)
 
-    fig, ax = plt.subplots(figsize=(8, 4.5))
+    fig, ax = _create_figure()
     ax.plot(xs, ys, color=CURVE, lw=2.2, label=f"y = f({var_name})")
 
     xs_shade = np.linspace(shade_start, shade_end, 300)
