@@ -1,0 +1,515 @@
+/* ============================================================================
+   CCS Defense Deck Theme — Bauhaus Pop (mirror of utils/theme.py)
+   Tokens ดึงจากเว็บแอปจริง: #FFF0F5 canvas, #FBCFE8 dots, #18181B ink,
+   #FEF08A/#FDE047 yellow, #BAE6FD sky, #F43F5E/#FB7185 rose, #FED7AA peach
+   Fonts: Fredoka (หัวเรื่อง), Mali (เนื้อหาไทย), Outfit (ตัวเลข/UI)
+   ========================================================================== */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --canvas: #FFF0F5;
+  --canvas-dot: #FBCFE8;
+  --ink: #18181B;
+  --paper: #FFFFFF;
+  --yellow: #FEF08A;
+  --yellow-deep: #FDE047;
+  --amber: #FBBF24;
+  --sky: #BAE6FD;
+  --sky-deep: #38BDF8;
+  --rose: #F43F5E;
+  --rose-soft: #FB7185;
+  --peach: #FED7AA;
+  --blush: #FFE4E6;
+  --gray: #4B5563;
+
+  --bw: 2.5px;
+  --radius: 14px;
+  --push: 4px 4px 0 var(--ink);
+  --push-sm: 2px 2px 0 var(--ink);
+  --push-lg: 8px 8px 0 var(--ink);
+
+  /* aliases: รองรับ inline style ที่สไลด์เขียนไว้ตั้งแต่ต้น (ไม่ต้องแก้ markup 20 หน้า) */
+  --text-primary: #18181B;
+  --text-secondary: #4B5563;
+  --text-muted: #71717A;
+  --primary-blue: #18181B;
+  --accent-blue-light: rgba(186, 230, 253, 0.55);
+  --border-medium: #18181B;
+  --border-subtle: rgba(24, 24, 27, 0.25);
+}
+
+body {
+  font-family: 'Mali', 'Outfit', sans-serif;
+  background-color: var(--canvas);
+  background-image: radial-gradient(var(--canvas-dot) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------------------------------------------- top chrome */
+
+.top-nav {
+  height: 56px;
+  background: var(--yellow);
+  border-bottom: 3px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.6rem;
+  z-index: 50;
+}
+
+.nav-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.ku-badge {
+  background: var(--ink);
+  color: var(--yellow);
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  padding: 0.18rem 0.5rem;
+  border-radius: 6px;
+}
+
+.nav-actions { display: flex; align-items: center; gap: 0.55rem; }
+
+.btn-action,
+.btn-primary-action {
+  font-family: 'Fredoka', 'Mali', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.85rem;
+  border: var(--bw) solid var(--ink);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s;
+}
+
+.btn-action {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--push-sm);
+}
+
+.btn-primary-action {
+  background: var(--rose-soft);
+  color: var(--ink);
+  box-shadow: var(--push-sm);
+}
+
+.btn-action:hover,
+.btn-primary-action:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+  background: var(--yellow-deep);
+}
+
+.btn-action:active,
+.btn-primary-action:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+/* progress */
+.progress-rail {
+  height: 6px;
+  background: var(--paper);
+  border-bottom: 2px solid var(--ink);
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 5%;
+  background: var(--rose);
+  transition: width 0.25s ease-out;
+}
+
+/* ------------------------------------------------------------------- canvas */
+
+.deck-canvas {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.4rem 1.8rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  width: 100%;
+  max-width: 1240px;
+  height: 92%;
+  max-height: 740px;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: var(--push-lg);
+  padding: 2rem 2.6rem;
+  display: none;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+}
+
+.slide.active { display: flex; animation: popIn 0.22s ease-out; }
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.995); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* -------------------------------------------------------------- slide parts */
+
+.slide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 3px dashed var(--ink);
+  padding-bottom: 0.85rem;
+  margin-bottom: 1.15rem;
+  gap: 1rem;
+}
+
+.section-label {
+  display: inline-block;
+  background: var(--sky);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.16rem 0.7rem;
+  font-family: 'Fredoka', 'Mali', sans-serif;
+  font-weight: 600;
+  font-size: 0.76rem;
+  color: var(--ink);
+  margin-bottom: 0.55rem;
+}
+
+.main-title {
+  font-family: 'Fredoka', 'Mali', sans-serif;
+  font-weight: 700;
+  font-size: 1.72rem;
+  line-height: 1.32;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.slide-counter-chip {
+  flex-shrink: 0;
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  box-shadow: var(--push-sm);
+  padding: 0.18rem 0.55rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.slide-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.9rem;
+}
+
+.slide-body p {
+  font-family: 'Mali', sans-serif;
+  font-weight: 500;
+  line-height: 1.62;
+  color: var(--ink);
+}
+
+.slide-body li { line-height: 1.6; }
+
+/* -------------------------------------------------------------------- grids */
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; align-items: start; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; align-items: start; }
+
+/* -------------------------------------------------------------------- cards */
+
+.academic-card {
+  background: var(--paper);
+  border: var(--bw) solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--push);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.academic-card.highlight {
+  background: var(--yellow);
+}
+
+.academic-card p,
+.academic-card li,
+.academic-card ol,
+.academic-card ul { color: var(--ink); }
+
+.card-heading {
+  font-family: 'Fredoka', 'Mali', sans-serif;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+/* -------------------------------------------------------------------- table */
+
+.table-academic {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: var(--bw) solid var(--ink);
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'Mali', 'Outfit', sans-serif;
+  font-size: 0.86rem;
+  box-shadow: var(--push);
+  background: var(--paper);
+}
+
+.table-academic thead th {
+  background: var(--yellow-deep);
+  color: var(--ink);
+  font-family: 'Fredoka', 'Mali', sans-serif;
+  font-weight: 600;
+  font-size: 0.86rem;
+  text-align: left;
+  padding: 0.6rem 0.7rem;
+  border-bottom: var(--bw) solid var(--ink);
+}
+
+.table-academic tbody td {
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1.5px solid rgba(24, 24, 27, 0.22);
+  color: var(--ink);
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.table-academic tbody tr:last-child td { border-bottom: none; }
+.table-academic tbody tr:nth-child(even) { background: rgba(186, 230, 253, 0.28); }
+
+/* --------------------------------------------------------------- math boxes */
+
+.math-box {
+  background: rgba(186, 230, 253, 0.45);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 0.55rem 0.75rem;
+  margin: 0.4rem 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.math-box .katex { color: var(--ink); }
+
+/* ------------------------------------------------------------------- badges */
+
+.key-badge {
+  display: inline-block;
+  background: var(--amber);
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  padding: 0.05rem 0.35rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: var(--ink);
+}
+
+.defense-tag {
+  display: inline-block;
+  background: var(--sky);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.74rem;
+}
+
+.backup-badge {
+  display: inline-block;
+  background: var(--blush);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+}
+
+.code-pill {
+  display: inline-block;
+  background: var(--peach);
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  padding: 0.05rem 0.4rem;
+  font-family: 'Outfit', monospace;
+  font-weight: 600;
+  font-size: 0.76rem;
+}
+
+.code-snippet {
+  background: var(--ink);
+  color: var(--yellow);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  font-family: 'Outfit', monospace;
+  font-size: 0.76rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+/* ------------------------------------------------------------------ figures */
+
+.slide-body figure img {
+  display: block;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--paper);
+}
+
+.slide-body figcaption {
+  font-family: 'Mali', sans-serif;
+  font-weight: 500;
+  color: var(--gray);
+}
+
+.slide-body details summary {
+  font-family: 'Fredoka', 'Mali', sans-serif;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------- footer */
+
+.bottom-footer {
+  height: 34px;
+  background: var(--paper);
+  border-top: 3px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.6rem;
+  font-family: 'Fredoka', 'Mali', sans-serif;
+  font-weight: 500;
+  font-size: 0.76rem;
+  color: var(--ink);
+}
+
+.brand-meta { display: flex; align-items: center; gap: 0.45rem; }
+
+/* -------------------------------------------------------------------- modal */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 24, 27, 0.55);
+  backdrop-filter: blur(3px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  z-index: 100;
+}
+
+.modal-overlay.active { display: flex; }
+
+.grid-thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.9rem;
+  width: 100%;
+  max-width: 1150px;
+  max-height: 78vh;
+  overflow-y: auto;
+  background: var(--canvas);
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: var(--push-lg);
+  padding: 1.4rem;
+}
+
+.thumb-item {
+  background: var(--paper);
+  border: var(--bw) solid var(--ink);
+  border-radius: 12px;
+  box-shadow: var(--push-sm);
+  padding: 0.7rem 0.8rem;
+  cursor: pointer;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+  height: 132px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.thumb-item:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--push);
+  background: var(--yellow);
+}
+
+.thumb-num {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.74rem;
+  color: var(--rose);
+}
+
+.thumb-title {
+  font-family: 'Mali', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+/* -------------------------------------------------------------- misc / KaTeX */
+
+a { color: var(--ink); }
+a:hover { color: var(--rose); }
+
+.slide ::-webkit-scrollbar { width: 10px; height: 10px; }
+.slide ::-webkit-scrollbar-track { background: var(--canvas); border-radius: 8px; }
+.slide ::-webkit-scrollbar-thumb {
+  background: var(--ink);
+  border-radius: 8px;
+  border: 2px solid var(--paper);
+}
+
+.katex { font-size: 1.02em; }
+
+@media print {
+  body { background: #fff; }
+  .top-nav, .bottom-footer, .progress-rail, .modal-overlay { display: none !important; }
+  .deck-canvas { padding: 0; }
+  .slide { display: flex !important; page-break-after: always; box-shadow: none; height: auto; max-height: none; }
+}

@@ -1,0 +1,31 @@
+---
+title: "บทคัดย่อ (Abstract)"
+author: "โครงการพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้น"
+format:
+  docx:
+    reference-doc: reference.docx
+---
+
+## บทคัดย่อ
+
+โครงงานนี้มีวัตถุประสงค์เพื่อออกแบบและพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้น (Calculus Learning Sandbox) เพื่อสนับสนุนการจัดการเรียนรู้ของนิสิตนักศึกษาระดับอุดมศึกษาและผู้สนใจศึกษาแคลคูลัส โดยมุ่งเน้นการส่งเสริมความเข้าใจเชิงมโนทัศน์และการมองภาพทางเรขาคณิต ลดการพึ่งพาการท่องจำสูตร และช่วยให้ผู้เรียนตระหนักถึงแนวคิดที่คลาดเคลื่อน (Misconceptions) ซึ่งพบบ่อยในวิชาแคลคูลัส
+
+ระบบได้รับการพัฒนาด้วยภาษาไพธอน (Python) และสตรีมลิต (Streamlit) โดยใช้ไลบรารีซิมไพ (SymPy) สำหรับการคำนวณเชิงสัญลักษณ์และการแสดงขั้นตอนวิธีทำอย่างละเอียด และใช้ไลบรารีแมตพลอตลิบ (Matplotlib) ร่วมกับเคเท็ก (KaTeX) ในการสร้างภาพกราฟเรขาคณิตพลวัตที่ปรับเปลี่ยนตามการป้อนข้อมูลของผู้เรียน เนื้อหาครอบคลุม 7 โมดูลหลัก ได้แก่ ลิมิตและความต่อเนื่อง เส้นสัมผัสและอนุพันธ์ ผลรวมรีมันน์ เทคนิคการอินทิเกรต พื้นที่ระหว่างเส้นโค้ง ปริมาตรทรงตันที่เกิดจากการหมุน และปริพันธ์ไม่ตรงแบบ พร้อมเครื่องคำนวณแคลคูลัสขั้นสูงและคลังแบบทดสอบมโนทัศน์ 80 ข้อ ที่มีระบบคำใบ้และกลไกการจัดนั่งร้านทางปัญญา
+
+ผลการตรวจสอบความถูกต้องทางเทคนิคผ่านการทดสอบหน่วยย่อยอัตโนมัติด้วยเฟรมเวิร์ก Pytest ผ่านการทดสอบทั้งหมด 265 กรณีทดสอบ (อัตราผ่าน 100% ครอบคลุมร้อยละ 73 ของคำสั่งทั้งระบบ) สำหรับผลการประเมินจากกลุ่มผู้เรียนระดับอุดมศึกษาที่มีประสบการณ์การเรียนแคลคูลัส (รวม 50 คน) พบว่าผู้เรียนมีความพึงพอใจต่อคุณลักษณะของระบบในภาพรวม 4 ด้าน อยู่ในระดับมากที่สุด (ค่าเฉลี่ย x̄ = 4.63, S.D. = 0.58) และเมื่อประเมินความสะดวกในการใช้งานตามเกณฑ์มาตรฐานสากล System Usability Scale (SUS) และคัดกรองความลำเอียงจากการกาดิ่ง (Non-straight-liners, n = 29 คน) พบว่ามีคะแนนเฉลี่ย 73.53 คะแนน (S.D. = 15.95, ช่วงความเชื่อมั่น 95% อยู่ที่ [67.7, 79.3]) ซึ่งจัดอยู่ในเกณฑ์ระดับดี (Grade B / Good) สูงกว่าเกณฑ์มาตรฐานสากล 68.0 คะแนน แสดงให้เห็นว่าเว็บแอปพลิเคชันมีความสะดวกในการใช้งานและพร้อมสนับสนุนกระบวนการเรียนรู้แคลคูลัสเบื้องต้นด้วยตนเองได้อย่างมีประสิทธิภาพ
+
+\noindent
+**คำสำคัญ:** แคลคูลัสเบื้องต้น, เว็บแอปพลิเคชันช่วยเรียนรู้, พีชคณิตคอมพิวเตอร์, การจำลองทางเรขาคณิต, สตรีมลิต, มาตรวัดความสะดวกในการใช้งาน
+
+\newpage
+
+## Abstract
+
+This project aimed to design and develop an interactive web application to support the learning of introductory calculus, titled *Calculus Learning Sandbox*, for undergraduate students and independent learners. The application is designed to enhance conceptual understanding and geometric intuition, reduce rote memorization, and help learners identify common mathematical misconceptions.
+
+The application was built using Python and Streamlit, incorporating SymPy for rigorous symbolic computation and step-by-step mathematical derivations, alongside Matplotlib and KaTeX for dynamic geometric plots and mathematical typography. The learning system encompasses seven interactive modules: Limits and Continuity, Tangent Lines and Derivatives, Riemann Sums, Integration Techniques, Area Between Curves, Volumes of Solids of Revolution, and Improper Integrals, complemented by an advanced symbolic solver and an 80-item concept quiz bank with hint-based scaffolding.
+
+Technical verification demonstrated a 100% pass rate across 265 automated Pytest unit tests (with 73% overall code coverage) alongside 144 boundary stress test cases. User evaluation conducted with 50 undergraduate learners revealed a highly positive reception, with an overall satisfaction score of 4.63 out of 5.00 (SD = 0.58). Usability evaluated via the System Usability Scale (SUS), following screening for straight-lining acquiescence bias (n = 29), yielded a defensible mean score of 73.53 (SD = 15.95, 95% CI [67.7, 79.3]), corresponding to a "Good" rating (Grade B) above the global benchmark of 68.0. These findings indicate that the application serves as a robust, accessible digital sandbox for self-directed calculus learning.
+
+\noindent
+**Keywords:** Introductory Calculus, Learning Web Application, Computer Algebra System, Geometric Simulation, Streamlit, System Usability Scale

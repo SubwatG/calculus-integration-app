@@ -26,6 +26,10 @@ Dubinsky, E. (1991). Reflective abstraction in advanced mathematical thinking. I
 
 Meagher, M. (2005). Students’ understanding of derivative in a computer algebra system (CAS) environment. *The Journal of Mathematical Behavior*, 24(2), 159–176. https://doi.org/10.1016/j.jmathb.2005.03.004
 
+Lewis, J. R., & Sauro, J. (2017). Revisiting the factor structure of the System Usability Scale. *Journal of Usability Studies*, 12(4), 183–192.
+
+Sauro, J., & Lewis, J. R. (2011). When designing usability questionnaires, does it hurt to be positive?. In *Proceedings of the SIGCHI Conference on Human Factors in Computing Systems* (CHI '11), pp. 2215–2224. Association for Computing Machinery. https://doi.org/10.1145/1978942.1979266
+
 Stewart, J., Clegg, D., & Watson, S. (2020). *Calculus: Early Transcendentals* (9th ed.). Cengage Learning.
 
 Tall, D. (2020). *How Humans Learn to Think Mathematically: Exploring the Story of Mathematics*. Cambridge University Press.
