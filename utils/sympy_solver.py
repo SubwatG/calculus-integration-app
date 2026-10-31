@@ -61,10 +61,38 @@ def _clean_calculus_input(expr_str: str) -> tuple[str, str | None]:
     return clean, detected_diff_var
 
 
-def _parse_input(expr_str: str) -> sp.Expr:
-    clean_str = expr_str.strip()
-    if not clean_str:
+def sanitize_math_input(expr_str: str, max_length: int = 500) -> str:
+    """ตรวจสอบความปลอดภัยของข้อความสูตรคณิตศาสตร์ ป้องกัน RCE และ Denial-of-Service"""
+    clean = (expr_str or "").strip()
+    if not clean:
         raise ValueError("Empty input string")
+    if len(clean) > max_length:
+        raise ValueError(f"ข้อความสูตรยาวเกินกำหนด (สูงสุด {max_length} ตัวอักษร)")
+
+    # นิพจน์คณิตศาสตร์ต้องไม่มี quotes, backticks, หรือ semicolons
+    if any(c in clean for c in ('"', "'", '`', ';')):
+        raise ValueError("ไม่อนุญาตให้ใส่เครื่องหมายคำพูด (quotes) หรือเซมิโคลอนในสูตรคณิตศาสตร์")
+
+    # กรองคีย์เวิร์ดอันตรายระดับซับสตริง
+    dangerous_substrings = (
+        "__", "import", "exec", "eval", "open", "print", "system", "builtins",
+        "globals", "locals", "subprocess", "shutil", "lambda", "compile",
+        "getattr", "setattr", "delattr", "socket", "requests", "urllib", "pty", "breakpoint"
+    )
+    for sub in dangerous_substrings:
+        if sub in clean:
+            raise ValueError(f"ตรวจพบคีย์เวิร์ดที่ไม่ได้รับอนุญาต: '{sub}'")
+
+    # กรองคำเฉพาะที่เป็นโมดูลหรือคำสั่งสั้นๆ (ใช้ word boundary เพื่อไม่ให้ชนคำเช่น cos, sinh)
+    for word in ("os", "sys", "io", "re", "sh"):
+        if re.search(r"\b" + word + r"\b", clean):
+            raise ValueError(f"ตรวจพบตัวระบุที่ไม่ได้รับอนุญาต: '{word}'")
+
+    return clean
+
+
+def _parse_input(expr_str: str) -> sp.Expr:
+    clean_str = sanitize_math_input(expr_str)
     return parse_expr(clean_str, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
 
 
