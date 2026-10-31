@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>คู่มือเตรียมสอบหัวข้อโครงงาน: เว็บแอปช่วยเรียนรู้แคลคูลัส</title>
+  <title>คู่มือเตรียมตัวสอบป้องกันโครงงานปริญญานิพนธ์ (Final Defense Q&A Guide)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Noto+Sans+Thai:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
   <style>
     :root {
       --bg: #f8fafc;
@@ -22,6 +25,10 @@
       --success-light: #f0fdf4;
       --warning: #b45309;
       --warning-light: #fffbeb;
+      --purple: #6d28d9;
+      --purple-light: #f5f3ff;
+      --indigo: #4338ca;
+      --indigo-light: #eef2ff;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,22 +37,22 @@
       font-family: 'Noto Sans Thai', sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      line-height: 1.75;
+      line-height: 1.8;
       padding: 32px 16px;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
     }
 
     header {
       background: white;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 32px;
       margin-bottom: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
     }
 
     h1, h2, h3 {
@@ -54,74 +61,135 @@
       color: #0f172a;
     }
 
-    h1 { font-size: 1.75rem; margin-bottom: 8px; color: var(--primary); }
-    .subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 16px; }
+    h1 { font-size: 1.85rem; margin-bottom: 8px; color: var(--primary); }
+    .subtitle { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 16px; }
 
-    .toc {
-      background: var(--primary-light);
-      border: 1px solid #bfdbfe;
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-top: 16px;
+    .committee-box {
+      background: #f1f5f9;
+      border-left: 4px solid #0284c7;
+      padding: 12px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 0.95rem;
     }
-    .toc ul { margin-left: 20px; }
-    .toc a { color: var(--primary); text-decoration: none; font-weight: 600; }
-    .toc a:hover { text-decoration: underline; }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 20px 0 10px 0;
+      position: sticky;
+      top: 12px;
+      z-index: 100;
+      background: rgba(248, 250, 252, 0.95);
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: white;
+      color: var(--text);
+      font-family: 'Chakra Petch', sans-serif;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 600;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
 
     .section-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 28px;
-      margin-bottom: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      margin-bottom: 28px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
     }
 
     .section-title {
-      font-size: 1.35rem;
+      font-size: 1.4rem;
       padding-bottom: 12px;
       margin-bottom: 20px;
       border-bottom: 2px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
+
+    .persona-badge {
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-family: 'Chakra Petch', sans-serif;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .badge-deepseek { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+    .badge-haiku { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .badge-luna { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; }
 
     .qa-box {
       margin-bottom: 24px;
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
+      background: white;
+      transition: border-color 0.2s;
+    }
+    .qa-box:hover {
+      border-color: #cbd5e1;
     }
 
     .q-header {
-      background: #f1f5f9;
-      padding: 14px 18px;
+      background: #f8fafc;
+      padding: 16px 20px;
       font-weight: 600;
       color: #0f172a;
       border-bottom: 1px solid var(--border);
       display: flex;
-      gap: 10px;
-    }
-    .q-badge {
-      background: var(--danger);
-      color: white;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-family: 'Chakra Petch', sans-serif;
-      white-space: nowrap;
-      height: fit-content;
+      gap: 12px;
+      align-items: flex-start;
     }
 
-    .q-body { padding: 18px; }
+    .q-number {
+      background: #e2e8f0;
+      color: #334155;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .q-text {
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .q-body { padding: 20px; }
 
     .bad-answer {
       background: var(--danger-light);
       border-left: 4px solid var(--danger);
-      padding: 12px 16px;
-      margin-bottom: 14px;
-      border-radius: 0 6px 6px 0;
+      padding: 12px 18px;
+      margin-bottom: 16px;
+      border-radius: 0 8px 8px 0;
       font-size: 0.95rem;
     }
     .bad-answer strong { color: var(--danger); }
@@ -129,8 +197,8 @@
     .good-answer {
       background: var(--success-light);
       border-left: 4px solid var(--success);
-      padding: 14px 18px;
-      border-radius: 0 6px 6px 0;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
       font-size: 1rem;
     }
     .good-answer strong { color: var(--success); }
@@ -138,19 +206,28 @@
     .speech-box {
       background: white;
       border: 1px dashed #86efac;
-      padding: 12px 16px;
-      margin-top: 10px;
-      border-radius: 6px;
+      padding: 14px 18px;
+      margin-top: 12px;
+      border-radius: 8px;
       color: #14532d;
       font-style: normal;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .speech-box-title {
+      font-weight: 700;
+      color: #15803d;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .tip-box {
       background: var(--warning-light);
       border-left: 4px solid var(--warning);
-      padding: 14px 18px;
+      padding: 12px 18px;
       margin-top: 14px;
-      border-radius: 0 6px 6px 0;
+      border-radius: 0 8px 8px 0;
       font-size: 0.92rem;
       color: #78350f;
     }
@@ -158,12 +235,12 @@
     .division-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 14px;
+      margin-top: 16px;
       font-size: 0.95rem;
     }
     .division-table th, .division-table td {
       border: 1px solid var(--border);
-      padding: 10px 14px;
+      padding: 12px 16px;
       text-align: left;
     }
     .division-table th {
@@ -180,11 +257,21 @@
       color: #0f172a;
     }
 
+    .rule-card {
+      padding: 14px 18px;
+      background: #f8fafc;
+      border-left: 4px solid #3b82f6;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 12px;
+    }
+
     footer {
       text-align: center;
       color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-top: 40px;
+      font-size: 0.9rem;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
     }
   </style>
 </head>
@@ -193,184 +280,437 @@
 <div class="container">
 
   <header>
-    <h1>คู่มือเตรียมตัวสอบข้อเสนอโครงงาน (Proposal Defense)</h1>
-    <p class="subtitle">หัวข้อ: การพัฒนาเว็บแอปพลิเคชันช่วยเรียนรู้แคลคูลัสเฉพาะเรื่อง (Interactive Calculus Learning App)</p>
-    <p>รวบรวมคำถามที่คณะกรรมการมักจะใช้สอบถาม ข้อควรระวัง คำตอบที่ไม่ควรตอบ และแนวทางการตอบภาษาไทยที่ชัดเจน ตรงประเด็น และเข้าใจง่าย สำหรับอาจารย์ที่ปรึกษาและนิสิต</p>
+    <h1>คู่มือเตรียมตัวสอบป้องกันโครงงานปริญญานิพนธ์ (Final Defense Q&A)</h1>
+    <p class="subtitle">โครงงาน: การพัฒนาเว็บแอปพลิเคชันช่วยเรียนคณิตศาสตร์สำหรับแคลคูลัสเบื้องต้น</p>
+    <p>รวบรวมคำถามสอบไล่ที่คณะกรรมการสายคณิตศาสตร์และวิศวกรรมซอฟต์แวร์มักใช้สอบถาม เจาะลึกตั้งแต่ทฤษฎีบทพื้นฐานในบทที่ 2 สถิติแบบสอบถาม ไปจนถึงแนวการอธิบายโค้ดสำหรับนิสิตที่ไม่ถนัดโปรแกรมมิ่ง</p>
 
-    <div class="toc">
-      <strong>สารบัญหัวข้อสำคัญ:</strong>
-      <ul>
-        <li><a href="#section-1">1. ประเด็นความซ้ำซ้อน: ทำไมไม่ใช้เว็บสำเร็จรูปอย่าง Symbolab หรือ ChatGPT?</a></li>
-        <li><a href="#section-2">2. ประเด็นขอบเขตและปริมาณงาน: งานน้อยไปไหมสำหรับนิสิต 2 คน?</a></li>
-        <li><a href="#section-3">3. ประเด็นระเบียบวิธีวิจัย: รู้ได้อย่างไรว่าแอปนี้ช่วยให้เด็กเรียนเข้าใจจริง?</a></li>
-        <li><a href="#section-4">4. การแบ่งหน้าที่รับผิดชอบของนิสิตทั้งสองคน</a></li>
-        <li><a href="#section-5">5. กฎเหล็ก 4 ข้อที่นิสิตต้องจำให้ขึ้นใจก่อนเดินเข้าห้องสอบ</a></li>
-      </ul>
+    <div class="committee-box">
+      <strong>คณะกรรมการสอบโครงงาน:</strong><br>
+      • ผศ.ดร.ทิพวรรณ พุทธรักษา (ประธานกรรมการ — เชี่ยวชาญคณิตศาสตร์บริสุทธิ์และการสอน)<br>
+      • ผศ.ดร.วัชรินทร กลองเงิน (กรรมการ — เชี่ยวชาญแคลคูลัสและการวิเคราะห์เชิงคณิตศาสตร์)<br>
+      • ผศ.ดร.เอกชัย รังสิกรรพุม (กรรมการ — เชี่ยวชาญการประยุกต์และระเบียบวิธีวิจัย)<br>
+      • อ.กิตติพงษ์ ทรัพย์วัฒนชัย (อาจารย์ที่ปรึกษา)
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterCategory('all')">📌 คำถามทั้งหมด</button>
+      <button class="filter-btn" onclick="filterCategory('math')">📐 คณิตศาสตร์บทที่ 2 (เน้นพิเศษ)</button>
+      <button class="filter-btn" onclick="filterCategory('stats')">📊 แบบสอบถาม & สถิติ SUS</button>
+      <button class="filter-btn" onclick="filterCategory('coding')">💻 โค้ด & การทำงานระบบ</button>
+      <button class="filter-btn" onclick="filterCategory('strategy')">👥 การแบ่งงาน & กฎเหล็กห้องสอบ</button>
     </div>
   </header>
 
-  <!-- หมวดที่ 1 -->
-  <section id="section-1" class="section-card">
-    <h2 class="section-title">1. ประเด็นความซ้ำซ้อน: "ต่างจากโปรแกรมคิดเลขที่มีอยู่แล้วอย่างไร?"</h2>
+  <!-- ========================================== -->
+  <!-- หมวดที่ 1: คณิตศาสตร์พื้นฐานบทที่ 2 -->
+  <!-- ========================================== -->
+  <section id="sec-math" class="section-card category-section" data-cat="math">
+    <div class="section-title">
+      <span>1. ทฤษฎีคณิตศาสตร์และความรู้พื้นฐานในบทที่ 2</span>
+      <span class="persona-badge badge-deepseek">Deep Math Perspective</span>
+    </div>
+    <p style="color: var(--text-muted); margin-bottom: 20px;">
+      กรรมการสายคณิตศาสตร์จะเริ่มจากคำถามมโนทัศน์พื้นฐาน เพื่อดูว่าเด็กท่องจำสูตรมาทำแอป หรือเข้าใจสาระสำคัญของแคลคูลัสจริงๆ ให้นิสิตซ้อมตอบตามหลักการนี้:
+    </p>
 
+    <!-- Q 1.1 -->
     <div class="qa-box">
       <div class="q-header">
-        <span class="q-badge">คำถามกรรมการ</span>
-        <div>"โปรแกรมอย่าง Symbolab, Photomath หรือแม้แต่ ChatGPT ก็แก้โจทย์แคลคูลัสได้ มีขั้นตอนภาษาไทยครบ แล้วนิสิตจะมาทำซ้ำทำไม งานนี้มีประโยชน์ตรงไหน?"</div>
+        <span class="q-number">MATH-01</span>
+        <div class="q-text">"รูปแบบไม่กำหนด $\frac{0}{0}$ หมายความว่าอย่างไร? ทำไมถึงไม่ตอบว่าเท่ากับ 0 หรือ 1 หรือหาค่าไม่ได้ทันที?"</div>
       </div>
       <div class="q-body">
-        
         <div class="bad-answer">
-          <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong><br>
-          "เพราะแอปของเราเป็นภาษาไทยครับ" หรือ "เพราะของเราทำเป็นเว็บให้เพื่อนเข้ามาใช้ฟรีครับ"<br>
-          <em>(เหตุผล: กรรมการจะมองว่างานไม่มีคุณค่าทางวิชาการ เพราะโปรแกรมอื่นเขาก็แปลไทยและเปิดให้ใช้ฟรีอยู่แล้ว)</em>
+          <strong>❌ สิ่งที่ห้ามตอบ:</strong> "เพราะตัวส่วนเป็นศูนย์ครับ ตัวส่วนเป็นศูนย์ในคณิตศาสตร์ห้ามหาร เลยตอบไม่ได้" (แสดงว่าสับสนระหว่างค่าของฟังก์ชัน $f(a)$ กับลิมิต $\lim_{x \to a} f(x)$)
         </div>
-
         <div class="good-answer">
-          <strong>✅ แนวคิดหลักในการตอบ (ภาษาไทยเข้าใจง่าย):</strong><br>
-          โปรแกรมเหล่านั้นเป็น <strong>"เครื่องคิดเลขสำเร็จรูป"</strong> ที่เน้นป้อนโจทย์แล้วแสดงเฉลยทันที ทำให้ผู้เรียนกลายเป็นเพียง <strong>"ผู้อ่านเฉลยตาม"</strong> แต่แอปของเราออกแบบให้เป็น <strong>"เครื่องมือช่วยฝึกคิดทีละขั้น"</strong> ที่ผู้เรียนต้องมีส่วนร่วมในการแก้ปัญหาจริง
-
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> ลิมิตไม่ได้หมายถึงการแทนค่าลงไปจนเกิด $\frac{0}{0}$ แต่หมายถึงการที่ทั้งตัวเศษและตัวส่วนต่างก็ <strong>ลู่เข้าใกล้ศูนย์พร้อมๆ กัน</strong> อัตราส่วนของสองสิ่งนี้จึงขึ้นอยู่กับว่าใครเข้าใกล้ศูนย์เร็วกว่ากัน ค่าลิมิตจริงจึงเป็นได้ทั้งจำนวนจริงบวก ลบ ศูนย์ หรือลู่ออกสู่อนันต์ จึงเรียกว่า 'รูปแบบยังไม่กำหนด'
           <div class="speech-box">
-            <strong>คำพูดแนะนำสำหรับนิสิต:</strong><br>
-            "กราบเรียนคณะกรรมการครับ เว็บทั่วไปอย่าง Symbolab หรือ ChatGPT ถูกสร้างมาเพื่อเป็นเครื่องมือหาคำตอบสุดท้าย เมื่อผู้เรียนกรอกโจทย์ ระบบจะพ่นเฉลยออกมารวดเดียว ทำให้นิสิตมักจะก๊อปปี้คำตอบหรือแค่อ่านผ่านๆ โดยไม่ได้เข้าใจวิธีคิดจริง<br><br>
-            แต่งานของเราออกแบบให้เป็น <strong>สื่อการเรียนรู้แบบมีปฏิสัมพันธ์ (Interactive Learning)</strong> ครับ ตัวระบบจะบังคับให้ผู้เรียนต้องเลือกวิธีแก้ปัญหาก่อน เช่น ในเรื่องลิมิตที่แทนค่าแล้วได้ ศูนย์ส่วนศูนย์ ผู้เรียนต้องเป็นคนตัดสินใจเองว่าจะใช้วิธีแยกตัวประกอบ หรือวิธีคูณด้วยสังยุค จากนั้นระบบจะคอยตรวจสอบว่าแต่ละขั้นตอนที่ผู้เรียนทำนั้นถูกต้องหรือไม่ หากผิดพลาดระบบจะมีคำใบ้ชี้จุดผิดให้เห็นทันที จึงเป็นการฝึกกระบวนการคิด ไม่ใช่แค่การแจกเฉลยครับ"
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "กราบเรียนอาจารย์ครับ สัญลักษณ์ $\frac{0}{0}$ ไม่ใช่การเอาศูนย์มาหารด้วยศูนย์จริงครับ แต่หมายถึงการที่ค่าของตัวเศษและตัวส่วนต่างวิ่งเข้าใกล้ศูนย์ทั้งคู่เมื่อ $x$ วิ่งเข้าใกล้จุด $a$<br><br>
+            เนื่องจากเรายังไม่ทราบว่าตัวเศษหรือตัวส่วนวิ่งเข้าใกล้ศูนย์ด้วยอัตราที่เร็วกว่ากัน ผลลัพธ์สุดท้ายจึงยังสรุปไม่ได้ในทันที อาจมีค่าเป็น $2$, เป็น $0$, หรือหาค่าไม่ได้ก็ได้ เราจึงเรียกว่า 'รูปแบบไม่กำหนด (Indeterminate Form)' ซึ่งในแอปพลิเคชันของเราจะสอนให้ผู้เรียนจัดรูปทางพีชคณิตเพื่อตัดทอนตัวประกอบที่เป็นศูนย์ออกไปก่อน หรือประยุกต์ใช้กฎของโลปิตาลครับ"
           </div>
         </div>
-
       </div>
     </div>
-  </section>
 
-  <!-- หมวดที่ 2 -->
-  <section id="section-2" class="section-card">
-    <h2 class="section-title">2. ประเด็นขอบเขตและปริมาณงาน: "งานแค่นี้ พอสำหรับ ป.ตรี 2 คนหรือ?"</h2>
-
+    <!-- Q 1.2 -->
     <div class="qa-box">
       <div class="q-header">
-        <span class="q-badge">คำถามกรรมการ</span>
-        <div>"ถ้าทำแค่เรื่อง ลิมิต กับ ผลรวมรีมันน์ นิดหน่อย งานมันดูเบาไปไหม? เขียนโค้ดสูตรคำนวณไม่กี่บรรทัดก็เสร็จ ปริญญาตรีทำกัน 2 คนทั้งเทอม ทำไมทำแค่นี้?"</div>
+        <span class="q-number">MATH-02</span>
+        <div class="q-text">"กฎของโลปิตาล (L'Hôpital's Rule) คืออะไร? และทำไมเวลาใช้ถึงต้องหาอนุพันธ์ของเศษและอนุพันธ์ของส่วนแยกกัน ทำไมไม่ใช้สูตรดิฟผลหาร?"</div>
       </div>
       <div class="q-body">
-
         <div class="bad-answer">
-          <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong><br>
-          "คิดว่ายากพอดีแล้วครับ เดี๋ยวจะลองเพิ่มหัวข้ออื่นเข้าไปเรื่อยๆ ถ้าเวลาเหลือ"<br>
-          <em>(เหตุผล: แสดงถึงการวางแผนที่ลอยตัว ไม่มีหลักยึด และควบคุมขอบเขตไม่เป็น)</em>
+          <strong>❌ สิ่งที่ห้ามตอบ:</strong> "เป็นสูตรลัดครับ อาจารย์สอนให้ดิฟบนแล้วดิฟล่าง"
         </div>
-
         <div class="good-answer">
-          <strong>✅ แนวคิดหลักในการตอบ:</strong><br>
-          งานชิ้นนี้เน้น <strong>"ความลึกในการอธิบายขั้นตอนและการตรวจสอบความถูกต้อง"</strong> ไม่ใช่การเขียนสูตรผิวเผิน ความยากไม่ได้อยู่ที่การหาคำตอบ แต่อยู่ที่การเขียนระบบให้แยกแยะรูปแบบทางคณิตศาสตร์และดึงขั้นตอนระหว่างทางออกมาแสดงผลอย่างถูกต้อง
-
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> กฎของโลปิตาลเปรียบเทียบอัตราการเปลี่ยนแปลง (ความชัน) ของฟังก์ชันเศษและฟังก์ชันส่วนที่จุดนั้น ไม่ใช่การหาอนุพันธ์ของฟังก์ชันผลหาร $\frac{d}{dx}[\frac{f(x)}{g(x)}]$
           <div class="speech-box">
-            <strong>คำพูดแนะนำสำหรับนิสิต:</strong><br>
-            "กราบเรียนอาจารย์ครับ หากเป็นการคำนวณหาตัวเลขตัวเดียว โค้ดจะมีเพียงไม่กี่บรรทัดจริงครับ แต่เนื้องานหลักของพวกเราคือ <strong>การสร้างระบบแจกแจงขั้นตอนทางคณิตศาสตร์</strong> ซึ่งมีความซับซ้อนสูงมาก เช่น:<br>
-            1. ระบบต้องอ่านสมการที่ผู้ใช้พิมพ์เข้ามา แล้วแยกแยะรูปแบบว่าเป็นพหุนาม หรือเป็นกรณฑ์ (Square root)<br>
-            2. ต้องคุมให้ระบบค่อยๆ แสดงขั้นตอนระหว่างทางทีละบรรทัด พร้อมแปลงเป็นสูตรคณิตศาสตร์ที่สวยงามและถูกต้อง<br>
-            3. ต้องเขียนชุดทดสอบอัตโนมัติครอบคลุมโจทย์รูปแบบต่างๆ เพื่อให้แน่ใจว่าระบบจะไม่คำนวณผิดพลาด<br>
-            ดังนั้น การจำกัดขอบเขตไว้ที่หัวข้อหลักที่นิสิตมักมีปัญหา จึงเป็นขนาดของงานที่เหมาะสมและทำให้เราสามารถลงลึกในรายละเอียดของระบบได้อย่างสมบูรณ์ภายในเวลาที่กำหนดครับ"
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "กฎของโลปิตาลเป็นทฤษฎีบทที่ใช้หาลิมิตของผลหารในรูปแบบ $\frac{0}{0}$ หรือ $\frac{\infty}{\infty}$ ครับ โดยหลักการคือ เมื่อทั้ง $f(x)$ และ $g(x)$ เข้าใกล้ศูนย์ อัตราส่วนของฟังก์ชันทั้งสองจะแปรผันตาม 'อัตราการเปลี่ยนแปลงขณะใดขณะหนึ่ง' ของพวกมัน นั่นคือเปรียบเทียบความชัน $f'(x)$ กับ $g'(x)$ ครับ<br><br>
+            ที่เราดิฟแยกเศษและส่วน ไม่ได้ใช้สูตรดิฟผลหาร เพราะเราไม่ได้ต้องการหาอนุพันธ์ของฟังก์ชันทั้งก้อน แต่เรากำลังนำอนุพันธ์ของแต่ละตัวมาช่วยหาค่าลิมิตของอัตราส่วนเดิมครับ"
           </div>
         </div>
-
       </div>
     </div>
-  </section>
 
-  <!-- หมวดที่ 3 -->
-  <section id="section-3" class="section-card">
-    <h2 class="section-title">3. ประเด็นระเบียบวิธีวิจัย: "รู้ได้อย่างไรว่าแอปนี้ช่วยให้เด็กเข้าใจจริง?"</h2>
-
+    <!-- Q 1.3 -->
     <div class="qa-box">
       <div class="q-header">
-        <span class="q-badge">คำถามกรรมการ</span>
-        <div>"สร้างเว็บเสร็จแล้ว ถ้าแค่เอาไปให้เพื่อนลองเล่นแล้วแจกแบบสอบถามความพึงพอใจ 5 ระดับ มันไม่ใช่งานวิจัย คุณจะพิสูจน์ทางวิชาการอย่างไรว่าแอปของคุณมีประโยชน์จริง?"</div>
+        <span class="q-number">MATH-03</span>
+        <div class="q-text">"ฟังก์ชันที่มีความต่อเนื่อง จำเป็นต้องหาอนุพันธ์ได้เสมอไปหรือไม่? ช่วยยกตัวอย่างจุดที่ต่อเนื่องแต่หาอนุพันธ์ไม่ได้มาสัก 1 ตัวอย่าง"</div>
       </div>
       <div class="q-body">
-
         <div class="bad-answer">
-          <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong><br>
-          "ตั้งใจว่าจะแจกแบบสอบถามความพึงพอใจให้เพื่อนในสาขาช่วยทำสัก 30 คนครับ"<br>
-          <em>(เหตุผล: แบบสอบถามความพึงพอใจวัดแค่ว่าเว็บสวยไหม ใช้ง่ายไหม แต่วัดไม่ได้เลยว่าเด็กเรียนเก่งขึ้นหรือเข้าใจคณิตศาสตร์จริงหรือไม่)</em>
+          <strong>❌ สิ่งที่ห้ามตอบ:</strong> "ถ้าต่อเนื่องก็ต้องหาอนุพันธ์ได้สิครับ เพราะเส้นกราฟมันเชื่อมต่อกันไม่ขาดตอน" (ผิดหลักทฤษฎีพื้นฐานอย่างร้ายแรง)
         </div>
-
         <div class="good-answer">
-          <strong>✅ แนวคิดหลักในการตอบ:</strong><br>
-          เราวางแผนการประเมินผลไว้ <strong>2 ด้านอย่างชัดเจน</strong> คือ ด้านความถูกต้องของโปรแกรมทางคณิตศาสตร์ และ ด้านผลลัพธ์การเรียนรู้ของผู้ใช้งาน
-
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> 'ความต่อเนื่อง' เป็นเงื่อนไขจำเป็นแต่ไม่เพียงพอ ฟังก์ชันที่ต่อเนื่องอาจมีจุดหักมุม (Corner) จุดคัสป์ (Cusp) หรือเส้นสัมผัสแนวดิ่ง ซึ่งทำให้อัตราการเปลี่ยนแปลงหาค่าไม่ได้
           <div class="speech-box">
-            <strong>คำพูดแนะนำสำหรับนิสิต:</strong><br>
-            "ทางกลุ่มได้วางแผนการประเมินผลออกเป็น 2 ส่วนหลักครับ:<br><br>
-            <strong>ส่วนที่ 1: การทดสอบความถูกต้องของระบบ (System Rigor):</strong><br>
-            เราใช้การเขียนชุดทดสอบคำนวณอัตโนมัติ (Automated Test) ด้วยโจทย์มาตรฐานมากกว่า 30-50 ข้อ ทั้งโจทย์ปกติและกรณีพิเศษ เพื่อยืนยันว่าขั้นตอนและคำตอบถูกต้องตรงตามหลักคณิตศาสตร์ 100%<br><br>
-            <strong>ส่วนที่ 2: การประเมินผลการเรียนรู้ของผู้ใช้ (Learning Assessment):</strong><br>
-            เราไม่ได้วัดแค่ความพึงพอใจครับ แต่เราจะทดลองกับกลุ่มนิสิตที่กำลังเรียนวิชาแคลคูลัส โดยมีการทำ <strong>แบบทดสอบวัดความเข้าใจก่อนใช้และหลังใช้งาน (Pre-test / Post-test)</strong> ในจุดที่นิสิตมักจะเข้าใจผิดบ่อยๆ เพื่อดูว่าหลังจากได้ลองฝึกแก้โจทย์ผ่านขั้นตอนในแอปแล้ว อัตราความเข้าใจผิดเหล่านั้นลดลงจริงหรือไม่ครับ"
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "ไม่จำเป็นครับ ความต่อเนื่องเป็นเพียงเงื่อนไขจำเป็น แต่ไม่เพียงพอสำหรับการหาอนุพันธ์ได้ครับ<br><br>
+            ตัวอย่างคลาสสิกคือ ฟังก์ชันค่าสัมบูรณ์ $f(x) = |x|$ ณ จุด $x = 0$ ครับ เส้นกราฟมีความต่อเนื่องลากผ่านได้โดยไม่ยกดินสอ แต่ ณ จุด $x = 0$ กราฟมีลักษณะเป็น 'จุดมุม (Corner)' โดยความชันจากทางซ้ายเป็น $-1$ แต่ความชันจากทางขวาเป็น $+1$ อนุพันธ์ทางซ้ายและทางขวาไม่เท่ากัน จึงไม่สามารถหาอนุพันธ์ได้ที่จุดนั้น ซึ่งระบบของเราจะตรวจจับจุดนี้และปฏิเสธไม่วาดเส้นสัมผัสลวงครับ"
           </div>
         </div>
-
       </div>
     </div>
+
+    <!-- Q 1.4 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">MATH-04</span>
+        <div class="q-text">"ผลรวมรีมันน์ (Riemann Sums) จุดซ้าย (Left), จุดขวา (Right) และจุดกึ่งกลาง (Midpoint) มีความแตกต่างกันอย่างไร? และทำไมจุดกึ่งกลางถึงให้ค่าประมาณพื้นที่ได้แม่นยำที่สุด?"</div>
+      </div>
+      <div class="q-body">
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> ทั้ง 3 แบบต่างกันที่การเลือกจุดตัวแทน $x_i^*$ บนแต่ละช่วงย่อยเพื่อนำไปหาความสูงของแท่งสี่เหลี่ยม ส่วนที่จุดกึ่งกลางแม่นยำที่สุดเพราะพื้นที่ส่วนที่ขาดและส่วนที่เกินของสี่เหลี่ยมจะหักล้างกันตามธรรมชาติ
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "ทั้ง 3 รูปแบบแตกต่างกันที่การเลือกจุดอ้างอิงความสูงของแท่งสี่เหลี่ยมครับ:<br>
+            • จุดซ้าย ใช้จุดเริ่มต้นของช่วงย่อย $x_{i-1}$<br>
+            • จุดขวา ใช้จุดสิ้นสุดของช่วงย่อย $x_i$<br>
+            • จุดกึ่งกลาง ใช้ค่าเฉลี่ยกึ่งกลางช่วง $x_i^* = \frac{x_{i-1} + x_i}{2}$<br><br>
+            เหตุผลที่จุดกึ่งกลางมีความแม่นยำสูงสุด เพราะว่าส่วนบนของแท่งสี่เหลี่ยมที่ตัดผ่านเส้นโค้ง จะมีส่วนหนึ่งที่เกินเส้นโค้งออกมา และอีกส่วนหนึ่งที่ขาดหายไปใต้เส้นโค้ง ซึ่งพื้นที่ส่วนเกินและส่วนขาดนี้จะหักล้างกันเองเกือบพอดี ทำให้อัตราความคลาดเคลื่อนลดลงเร็วกว่า โดยมีความคลาดเคลื่อนแปรผันตาม $\frac{1}{n^2}$ ในขณะที่จุดซ้ายและขวาแปรผันตาม $\frac{1}{n}$ ครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q 1.5 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">MATH-05</span>
+        <div class="q-text">"ทฤษฎีบทหลักมูลของแคลคูลัส (Fundamental Theorem of Calculus: FTC) มีความสำคัญอย่างไรในโครงงานนี้? ทำไมการคำนวณปริพันธ์จำกัดเขตถึงไม่ต้องใช้ผลรวมรีมันน์เสมอไป?"</div>
+      </div>
+      <div class="q-body">
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> FTC คือสะพานเชื่อมระหว่าง 'พื้นที่ใต้กราฟ (ผลรวมรีมันน์)' กับ 'การหาอนุพันธ์ย้อนกลับ (ปฏิยานุพันธ์)' ทำให้คำนวณค่าจริงได้โดยการแทนค่าปลายช่วง $F(b) - F(a)$
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "ทฤษฎีบทหลักมูลของแคลคูลัสเป็นสะพานเชื่อมที่ยิ่งใหญ่ที่สุดในวิชานี้ครับ เดิมทีนิยามของปริพันธ์จำกัดเขตคือลิมิตของผลรวมพื้นที่สี่เหลี่ยมรีมันน์ ซึ่งถ้าคำนวณตรงๆ จะยุ่งยากและเสียเวลามาก แต่ FTC ส่วนที่ 2 พิสูจน์ให้เราเห็นว่า หากเราสามารถหาฟังก์ชันปฏิยานุพันธ์ $F(x)$ ที่มี $F'(x) = f(x)$ ได้ เราจะสามารถหาค่าปริพันธ์จำกัดเขตได้ทันทีจากผลต่างที่ปลายช่วง นั่นคือ $\int_a^b f(x)\,dx = F(b) - F(a)$<br><br>
+            ทฤษฎีบทนี้จึงเป็นหัวใจที่ระบบของเราใช้ในการหาค่าจริง (Exact Value) ด้วยเอนจิน SymPy เพื่อนำมาเปรียบเทียบกับค่าประมาณเชิงตัวเลขจากผลรวมรีมันน์ในบทที่ 4 ครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q 1.6 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">MATH-06</span>
+        <div class="q-text">"เวลาใช้วิธีแทนค่าตัวแปร $u$ ในปริพันธ์จำกัดเขต ทำไมต้องเปลี่ยนขอบเขตการอินทิเกรต? ถ้าไม่เปลี่ยนขอบเขตแต่แก้ตัวแปร $u$ กลับเป็น $x$ ตอนท้ายจะได้ผลเท่ากันไหม?"</div>
+      </div>
+      <div class="q-body">
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> ขอบเขตเดิม $a$ และ $b$ เป็นค่าของตัวแปร $x$ เมื่อเปลี่ยนตัวแปรในสมการเป็น $u$ ขอบเขตก็ต้องเปลี่ยนเป็น $g(a)$ และ $g(b)$ ให้สอดคล้องกัน แม้ว่าการแปลงกลับเป็น $x$ จะได้คำตอบเท่ากัน แต่การเปลี่ยนขอบเขตตั้งแต่แรกจะรัดกุมกว่าและลดขั้นตอนการคิด
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "ได้ผลลัพธ์เท่ากันครับอาจารย์ แต่เหตุผลที่ต้องสอนให้เปลี่ยนขอบเขตเป็น $g(a)$ และ $g(b)$ ตามสูตร $\int_a^b f(g(x))g'(x)\,dx = \int_{g(a)}^{g(b)} f(u)\,du$ เพราะว่า:<br>
+            1. เป็นการทำงานที่ถูกต้องตามทฤษฎีบทการเปลี่ยนตัวแปร เพราะตัวแปรของการอินทิเกรตเปลี่ยนเป็น $u$ แล้ว ขอบเขตก็ต้องเป็นโดเมนของ $u$<br>
+            2. ช่วยลดความผิดพลาดในการคำนวณ เพราะนิสิตสามารถแทนค่าตัวเลข $g(b)$ และ $g(a)$ ลงใน $u$ ได้ทันทีโดยไม่ต้องเสียเวลาแปลงฟังก์ชัน $u$ ซับซ้อนกลับเป็น $x$ อีกรอบครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q 1.7 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">MATH-07</span>
+        <div class="q-text">"ทำไมปริพันธ์ไม่ตรงแบบ $\int_{-1}^1 \frac{1}{x}\,dx$ ถึงตอบว่าหาค่าไม่ได้ (ลู่ออก)? ในเมื่อกราฟของ $\frac{1}{x}$ เป็นฟังก์ชันคี่ ฝั่งซ้ายกับฝั่งขวามันสมมาตรกันก็น่าจะหักล้างกันเป็น 0 พอดีไม่ใช่หรือ?"</div>
+      </div>
+      <div class="q-body">
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> นิยามของปริพันธ์ไม่ตรงแบบที่มีจุดเอกฐานคั่นกลางช่วง กำหนดให้ต้องแยกลิมิตของทั้งสองฝั่งเป็นอิสระต่อกัน ถ้ามีฝั่งใดฝั่งหนึ่งลู่ออก ปริพันธ์นั้นจะถือว่าลู่ออกทันที การหักล้างกันแบบสมมาตรเป็นเพียง 'ค่าหลักโคชี' ไม่ใช่นิยามมาตรฐาน
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "เป็นประเด็นที่น่าสนใจมากครับอาจารย์ ในทางคณิตศาสตร์ตามนิยามมาตรฐาน ปริพันธ์ไม่ตรงแบบที่มีจุดเอกฐานภายในช่วง เช่น จุด $x = 0$ กำหนดว่าต้องแยกคำนวณออกเป็น 2 ช่วงอิสระ คือ $\lim_{u \to 0^-} \int_{-1}^u \frac{1}{x}\,dx + \lim_{v \to 0^+} \int_v^1 \frac{1}{x}\,dx$<br><br>
+            ซึ่งเมื่อคำนวณแต่ละฝั่ง จะได้ $\lim_{v \to 0^+} [\ln(1) - \ln(v)] = -(-\infty) = +\infty$ ซึ่งลู่ออกทั้งคู่ เมื่อฝั่งใดฝั่งหนึ่งลู่ออก ตามนิยามถือว่าปริพันธ์นี้ 'ลู่ออก (Diverges)' ครับ ส่วนการที่ฝั่งซ้ายกับขวาหักล้างกันได้ศูนย์ เรียกว่า 'ค่าหลักโคชี (Cauchy Principal Value)' ซึ่งไม่ใช่นิยามปริพันธ์มาตรฐาน ระบบของเราจึงแยกคำนวณสองฝั่งเพื่อความรัดกุมตามหลักวิชาการครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
   </section>
 
-  <!-- หมวดที่ 4 -->
-  <section id="section-4" class="section-card">
-    <h2 class="section-title">4. การแบ่งงานของนิสิต 2 คน (ให้ชัดเจน ไม่ทับซ้อน)</h2>
-    <p>กรรมการมักจะถามว่า <em>"ใครทำอะไรบ้าง?"</em> หากตอบไม่ชัด จะถูกมองว่ามีคนใดคนหนึ่งกินแรงเพื่อน ให้ตอบแบ่งหน้าที่ตามตารางนี้:</p>
+  <!-- ========================================== -->
+  <!-- หมวดที่ 2: แบบสอบถาม & สถิติ SUS -->
+  <!-- ========================================== -->
+  <section id="sec-stats" class="section-card category-section" data-cat="stats">
+    <div class="section-title">
+      <span>2. แบบสอบถามและการวิเคราะห์สถิติ SUS</span>
+      <span class="persona-badge badge-haiku">Evaluation & Stats Perspective</span>
+    </div>
+    <p style="color: var(--text-muted); margin-bottom: 20px;">
+      กรรมการจะซักถามเรื่องความน่าเชื่อถือของแบบประเมิน คะแนน SUS และการแปลผล ห้ามอวดอ้างว่าระบบทำให้เด็กเรียนเก่งขึ้นโดยไม่มีข้อสอบวัดผล ให้ตอบอย่างระมัดระวังตามนี้:
+    </p>
+
+    <!-- Q 2.1 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">STAT-01</span>
+        <div class="q-text">"ทำไมในเล่มโครงงานถึงมีทั้งคะแนน SUS 82.15 และ 73.53? ตัวเลขไหนคือตัวเลขจริงกันแน่ และทำไมต้องแบ่งเป็น 29 คน กับ 50 คน?"</div>
+      </div>
+      <div class="q-body">
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> ตัวเลขทั้งสองเป็นผลจากกลุ่มตัวอย่างเดียวกัน โดย 82.15 คือคะแนนรวมของผู้ตอบทั้งหมด 50 คน ส่วน 73.53 เป็นการวิเคราะห์ความไว (Sensitivity Analysis) เพื่อดูเฉพาะกลุ่มที่มีการกระจายคำตอบตามธรรมชาติ
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "ทั้งสองค่าเป็นตัวเลขจริงจากกลุ่มตัวอย่างเดียวกันครับอาจารย์ โดยกลุ่มตัวอย่างทั้งหมดมี 50 คน มีคะแนน SUS เฉลี่ยรวมอยู่ที่ 82.15 คะแนน<br><br>
+            แต่เนื่องจากแบบประเมินของเราใช้ข้อคำถามเชิงบวกทั้งหมด ทำให้เราพบผู้ตอบจำนวน 21 คนที่ให้คะแนนเต็ม 5 ทุกข้อ (ได้ 100 คะแนนเต็ม) เพื่อความโปร่งใสและหลักวิชาการที่รัดกุม เราจึงทำ 'การวิเคราะห์ความไว (Sensitivity Analysis)' ควบคู่กัน โดยตัดกลุ่มที่ตอบ 5 ทุกข้อออก เหลือผู้ตอบ 29 คนที่มีการกระจายคะแนนตามธรรมชาติ ซึ่งยังคงได้คะแนน SUS เฉลี่ย 73.53 คะแนน (S.D. = 15.95) อยู่ในระดับ 'Good' และสูงกว่าเกณฑ์มาตรฐาน 68.0 คะแนนอย่างชัดเจนครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q 2.2 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">STAT-02</span>
+        <div class="q-text">"คนที่ตอบ 5 ทุกข้อ 21 คน แปลว่าเด็กกาดิ่งช่วยเพื่อนหรือเปล่า? ทำไมไม่ตัดทิ้งไปตั้งแต่แรก?"</div>
+      </div>
+      <div class="q-body">
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> การตอบ 5 ทุกข้อในแบบสอบถามเชิงบวกอาจเกิดจากความพึงพอใจสูงจริง หรืออาจเกิดจากความรีบเร่ง ในทางสถิติเราไม่สามารถตัดสินเจตนาได้ จึงไม่ควรแอบตัดทิ้ง แต่ต้องรายงานข้อมูลทั้งสองชุดอย่างเปิดเผย
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "ทางกลุ่มได้พิจารณาประเด็นนี้อย่างรอบคอบครับ เนื่องจากการตอบ 5 ทุกข้อในแบบฟอร์มเชิงบวก เป็นไปได้ทั้ง 2 สาเหตุ คือ ผู้ใช้อาจจะประทับใจระบบจริงๆ หรืออาจตอบโดยเร่งรีบ ในทางระเบียบวิธีวิจัย การตัดข้อมูลทิ้งโดยพลการโดยไม่มีหลักฐานยืนยันจะทำให้สูญเสียข้อมูลจริงไป เราจึงเลือกแนวทางที่โปร่งใสที่สุด คือรายงานทั้งผลรวมของผู้ตอบทั้งหมด 50 คน และรายงานผลของกลุ่ม 29 คนควบคู่กัน เพื่อให้คณะกรรมการเห็นภาพที่แท้จริงครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q 2.3 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">STAT-03</span>
+        <div class="q-text">"คะแนน SUS 73.53 หรือความพึงพอใจ 4.63 นี้ สามารถสรุปได้หรือไม่ว่าเว็บแอปพลิเคชันของคุณทำให้ผู้เรียนเข้าใจแคลคูลัสดีขึ้น?"</div>
+      </div>
+      <div class="q-body">
+        <div class="bad-answer">
+          <strong>❌ สิ่งที่ห้ามตอบเด็ดขาด:</strong> "สรุปได้แน่นอนครับ เพราะคะแนนความพึงพอใจสูงมาก แปลว่าเด็กเข้าใจบทเรียนดีขึ้นอย่างมีนัยสำคัญ" (กรรมการจะซักทันทีว่า มีผลสอบก่อนเรียน-หลังเรียนมายืนยันไหม?)
+        </div>
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> ยอมรับตามตรงว่าแบบประเมิน SUS และแบบสอบถามความพึงพอใจ วัดได้เฉพาะ 'การรับรู้ความสะดวกในการใช้งาน (Usability)' และ 'ความพึงพอใจต่อสื่อ' เท่านั้น ยังไม่ได้วัดผลสัมฤทธิ์ทางการเรียนรู้ (Learning Outcome) โดยตรง
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "ยังไม่สามารถสรุปเชิงผลสัมฤทธิ์ทางการเรียนรู้ได้โดยตรงครับอาจารย์ แบบสอบถามความพึงพอใจและมาตรวัด SUS วัดได้เฉพาะ 'ความง่ายในการเข้าถึง ความสะดวกในการใช้งาน และความพึงพอใจของผู้เรียนต่อการมีสื่อช่วยสอนแบบเห็นภาพ' เท่านั้นครับ<br><br>
+            หากจะพิสูจน์ว่าผู้เรียนมีความเข้าใจทางคณิตศาสตร์ดีขึ้นจริง จำเป็นต้องมีงานวิจัยระยะยาวที่ใช้การทดสอบก่อนเรียนและหลังเรียน (Pre-test/Post-test) ควบคู่กับกลุ่มควบคุม ซึ่งทางกลุ่มได้ระบุประเด็นนี้ไว้เป็น 'ข้อเสนอแนะในการพัฒนาโครงงานขั้นต่อไป' ในบทที่ 5 ครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ========================================== -->
+  <!-- หมวดที่ 3: โค้ด & การทำงานระบบ (สำหรับเด็กไม่ถนัดโค้ด) -->
+  <!-- ========================================== -->
+  <section id="sec-coding" class="section-card category-section" data-cat="coding">
+    <div class="section-title">
+      <span>3. การทำงานของระบบและโครงสร้างโปรแกรม (High-Level Explanation)</span>
+      <span class="persona-badge badge-luna">Architecture & Code Perspective</span>
+    </div>
+    <p style="color: var(--text-muted); margin-bottom: 20px;">
+      สำหรับนิสิตที่ไม่ได้เชี่ยวชาญการเขียนโปรแกรมเชิงลึก ให้ใช้ <strong>"แนวคิด 3 เลเยอร์ (3-Tier Architecture)"</strong> ในการตอบคำถามอย่างมั่นใจและเป็นมืออาชีพ โดยไม่ต้องพูดถึงโค้ดทีละบรรทัด:
+    </p>
+
+    <!-- Q 3.1 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">CODE-01</span>
+        <div class="q-text">"โปรแกรมทำงานอย่างไร? อธิบายภาพรวมการทำงานตั้งแต่ผู้ใช้พิมพ์สมการลงไปในเว็บ จนกระทั่งระบบแสดงกราฟและวิธีทำออกมา"</div>
+      </div>
+      <div class="q-body">
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> แบ่งระบบเป็น 3 ส่วนชัดเจน: (1) ส่วนหน้าจอรับข้อมูล (Streamlit) -> (2) ส่วนสมองกลคำนวณเชิงสัญลักษณ์ (SymPy) -> (3) ส่วนวาดภาพกราฟิก (Matplotlib)
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "ระบบของเราออกแบบเป็น 3 ส่วนหลักที่ทำงานประสานกันครับอาจารย์:<br><br>
+            • <strong>ส่วนที่ 1: ส่วนต่อประสานผู้ใช้ (User Interface):</strong> สร้างด้วย <code>Streamlit</code> ทำหน้าที่รับฟังก์ชันคณิตศาสตร์ ขอบเขต และพารามิเตอร์จากผู้ใช้ พร้อมทั้งตรวจกรองความปลอดภัยไม่ให้อักขระแปลกปลอมผ่านเข้ามา<br>
+            • <strong>ส่วนที่ 2: เอนจินคำนวณเชิงสัญลักษณ์ (Math Engine):</strong> พัฒนาโดยใช้ไลบรารี <code>SymPy</code> ทำหน้าที่เหมือนนักคณิตศาสตร์ โดยแปลงสตริงเป็นนิพจน์พีชคณิต ตรวจสอบความถูกต้อง และคำนวณขั้นตอนวิธีทำทีละบรรทัด พร้อมส่งผลลัพธ์เป็นสมการ LaTeX ออกมา<br>
+            • <strong>ส่วนที่ 3: เอนจินแสดงผลกราฟิก (Visualization Engine):</strong> ใช้ไลบรารี <code>Matplotlib</code> นำฟังก์ชันและจุดพิกัดมาเรนเดอร์เป็นภาพกราฟ แรเงาพื้นที่ หรือแท่งสี่เหลี่ยมรีมันน์ เพื่อส่งกลับไปแสดงผลบนหน้าจออย่างสวยงามครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q 3.2 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">CODE-02</span>
+        <div class="q-text">"ทำไมถึงเลือกใช้ Python และ Streamlit ในการพัฒนา? ทำไมไม่ใช้ภาษาอื่นหรือเว็บสำเร็จรูป?"</div>
+      </div>
+      <div class="q-body">
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> จุดเด่นคือความสามารถในการทำงานร่วมกับเครื่องมือคำนวณคณิตศาสตร์ขั้นสูง (SymPy) ได้อย่างไร้รอยต่อ และสร้างสื่อแบบ Interactive ที่อัปเดตกราฟได้ทันที
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "เหตุผลสำคัญที่สุดคือ <strong>ระบบประมวลผลเชิงสัญลักษณ์ (Computer Algebra System)</strong> ครับ ภาษา Python มีไลบรารี <code>SymPy</code> ซึ่งมีความสามารถระดับแนวหน้าในการแก้โจทย์อนุพันธ์ ปริพันธ์ และลิมิตแบบแม่นตรงและแสดงขั้นตอนได้<br><br>
+            ส่วน <code>Streamlit</code> ช่วยให้เราสร้างเว็บแอปพลิเคชันเชิงโต้ตอบได้อย่างรวดเร็ว โดยมีระบบจัดการสถานะ (Session State) ที่ทำให้ทุกครั้งที่ผู้เรียนขยับสไลเดอร์ กราฟและตัวเลขจะอัปเดตให้เห็นการเปลี่ยนแปลงทางเรขาคณิตทันที ซึ่งสอดคล้องกับวัตถุประสงค์ของโครงงานที่ต้องการเน้นการเรียนรู้แบบเห็นภาพครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q 3.3 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">CODE-03</span>
+        <div class="q-text">"ที่เขียนในเล่มว่าทดสอบระบบด้วย Pytest 265 ข้อ มันคืออะไร? คุณทดสอบอะไรบ้างใน 265 ข้อนี้?"</div>
+      </div>
+      <div class="q-body">
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> คือการเขียนโค้ดทดสอบอัตโนมัติเพื่อตรวจสอบความถูกต้องของระบบ โดยครอบคลุมทั้งความถูกต้องทางคณิตศาสตร์ กรณีขอบเขตวิกฤต และความปลอดภัยของหน้าเว็บ
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "<code>Pytest</code> คือระบบการทดสอบซอฟต์แวร์แบบอัตโนมัติครับ โดยทางกลุ่มได้เขียนชุดทดสอบขึ้นมารวม 265 กรณีทดสอบ ครอบคลุม 4 ด้านสำคัญ:<br><br>
+            1. <strong>ความถูกต้องทางคณิตศาสตร์:</strong> ทดสอบโจทย์ทั้ง 7 หัวข้อ เทียบกับคำตอบมาตรฐานที่คำนวณด้วยมือ<br>
+            2. <strong>กรณีขอบเขตวิกฤต (Boundary Cases):</strong> เช่น การหารด้วยศูนย์ ลิมิตที่ลู่ออกสู่อนันต์ หรือฟังก์ชันที่มีจุดหักมุม<br>
+            3. <strong>ความปลอดภัยและการกรองข้อมูล (Sanitization):</strong> ป้องกันไม่ให้ผู้ใช้พิมพ์คำสั่งแปลกปลอมเข้ามากวนระบบประมวลผล<br>
+            4. <strong>การทำงานของหน้าเว็บ (AppTest):</strong> ตรวจสอบว่าปุ่มกด เมนู และหน้าแบบทดสอบทำงานได้ถูกต้องไม่ค้างครับ<br><br>
+            ซึ่งผลการรันชุดทดสอบผ่านครบถ้วนทั้ง 265 ข้อ ทำให้มั่นใจได้ว่าระบบมีความเสถียรและแม่นยำตามหลักการครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q 3.4 -->
+    <div class="qa-box">
+      <div class="q-header">
+        <span class="q-number">CODE-04</span>
+        <div class="q-text">"ถ้าผู้ใช้แกล้งพิมพ์โจทย์แปลกๆ เช่น สตริงยาวเป็นพันตัวอักษร หรือพิมพ์สูตรที่คำนวณไม่ได้ ระบบของคุณจะล่มไหม?"</div>
+      </div>
+      <div class="q-body">
+        <div class="good-answer">
+          <strong>✅ แนวคิดหลักในการตอบ:</strong> ระบบมีระบบป้องกันข้อมูลนำเข้า (Input Validation) และห่อหุ้มการคำนวณด้วยกลไกดักจับข้อผิดพลาด (Exception Handling) ทำให้เว็บไม่แครชแน่นอน
+          <div class="speech-box">
+            <div class="speech-box-title">🗣️ คำพูดแนะนำสำหรับนิสิต:</div>
+            "ระบบไม่ล่มครับอาจารย์ เพราะเราได้ออกแบบสถาปัตยกรรมความปลอดภัยไว้ 2 ชั้นตามที่ระบุในหัวข้อ 3.2.4 ครับ:<br><br>
+            • <strong>ชั้นที่ 1 (การกรองข้อมูล):</strong> ระบบจะจำกัดความยาวของข้อความ และยอมรับเฉพาะฟังก์ชันคณิตศาสตร์ที่กำหนด หากพบสัญลักษณ์ที่ผิดปกติ ระบบจะปฏิเสธตั้งแต่แรก<br>
+            • <strong>ชั้นที่ 2 (การดักจับข้อผิดพลาด):</strong> ทุกฟังก์ชันคำนวณจะถูกห่อหุ้มด้วยกลไก <code>try...except</code> หากโจทย์มีความซับซ้อนเกินไปหรือหาค่าไม่ได้ ระบบจะแสดงข้อความแจ้งเตือนคำอธิบายสีแดงสุภาพให้ผู้ใช้ทราบ โดยหน้าเว็บจะไม่ขาวหรือแครชแน่นอนครับ"
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ========================================== -->
+  <!-- หมวดที่ 4: การแบ่งงาน & กฎเหล็กห้องสอบ -->
+  <!-- ========================================== -->
+  <section id="sec-strategy" class="section-card category-section" data-cat="strategy">
+    <div class="section-title">
+      <span>4. การแบ่งงานของนิสิตทั้งสองคน และ เทคนิคจิตวิทยาในห้องสอบ</span>
+      <span class="persona-badge badge-haiku">Team Strategy</span>
+    </div>
+
+    <p>กรรมการมักจะถามว่า <em>"สองคนนี้แบ่งงานกันอย่างไร ใครรับผิดชอบส่วนไหน?"</em> ให้ตอบแบ่งหน้าที่ตามตารางนี้อย่างชัดเจนและสนับสนุนซึ่งกันและกัน:</p>
 
     <table class="division-table">
       <thead>
         <tr>
           <th style="width: 25%;">ด้าน</th>
-          <th style="width: 35%;">นิสิตคนที่ 1 (เน้นระบบคำนวณและทดสอบ)</th>
-          <th style="width: 40%;">นิสิตคนที่ 2 (เน้นการสอนและการแสดงผล)</th>
+          <th style="width: 37%;">นางสาวขวัญเรือน สำเนียงดี<br><small style="color:var(--text-muted);">(เน้นเอนจินคณิตศาสตร์และชุดทดสอบ)</small></th>
+          <th style="width: 38%;">นางสาวเบญจกัฬยาณี พิทยากูล<br><small style="color:var(--text-muted);">(เน้นการสอน บทเรียน และแบบประเมิน)</small></th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td><strong>หน้าที่หลัก</strong></td>
-          <td>ผู้พัฒนากลไกคณิตศาสตร์ (Math Engine)</td>
-          <td>ผู้พัฒนาส่วนการเรียนรู้และหน้าจอ (Interactive UI)</td>
+          <td><strong>ผู้พัฒนาระบบคำนวณและทดสอบความถูกต้อง</strong> (Math & Test Engineer)</td>
+          <td><strong>ผู้พัฒนาสื่อการสอนและการประเมินผล</strong> (Learning & Usability Designer)</td>
         </tr>
         <tr>
-          <td><strong>รายละเอียดงาน</strong></td>
+          <td><strong>ความรับผิดชอบหลัก</strong></td>
           <td>
-            • จัดการตัวอ่านสมการ (Formula Parser)<br>
-            • เขียนฟังก์ชันแยกขั้นตอน ลิมิต และ ผลรวมรีมันน์<br>
-            • เขียนชุดทดสอบความถูกต้องอัตโนมัติ (Pytest)
+            • จัดการตัวอ่านและแปลงสมการด้วย SymPy<br>
+            • เขียนโมดูลแก้โจทย์ 7 หัวข้อ และตรวจจับจุดเอกฐาน<br>
+            • ออกแบบและรันชุดทดสอบอัตโนมัติ Pytest 265 ข้อ<br>
+            • ตรวจสอบความถูกต้องของสัญกรณ์คณิตศาสตร์
           </td>
           <td>
-            • ออกแบบขั้นตอนการสอนแบบทีละขั้น (Scaffolding Flow)<br>
-            • จัดการส่วนติดต่อผู้ใช้ด้วย Streamlit<br>
-            • จัดทำแบบทดสอบวัดผลสัมฤทธิ์ (Pre/Post Test)
+            • ออกแบบขั้นตอนการสอนแบบนั่งร้าน (Scaffolding Flow)<br>
+            • พัฒนาหน้าจอและการจัดวางส่วนติดต่อผู้ใช้ (Streamlit UI)<br>
+            • จัดทำคลังแบบทดสอบมโนทัศน์ 80 ข้อ พร้อมระบบคำใบ้<br>
+            • เก็บรวบรวมข้อมูลและวิเคราะห์แบบประเมิน SUS
           </td>
         </tr>
       </tbody>
     </table>
-  </section>
 
-  <!-- หมวดที่ 5 -->
-  <section id="section-5" class="section-card">
-    <h2 class="section-title">5. กฎเหล็ก 4 ข้อที่นิสิตต้องจำก่อนเข้าห้องสอบ</h2>
-    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
-      <div style="padding: 12px 16px; background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 4px;">
-        <strong>1. พูดความจริงเรื่องขอบเขต:</strong> ยอมรับแต่แรกว่าแอปทำได้เฉพาะหัวข้อที่กำหนด ไม่ต้องพยายามโม้ว่าแก้โจทย์ได้ทุกข้อในโลก
+    <div style="margin-top: 28px;">
+      <h3 style="font-size: 1.15rem; margin-bottom: 12px; color: var(--primary);">🎯 กฎเหล็ก 5 ข้อที่ต้องจำให้ขึ้นใจก่อนเดินเข้าห้องสอบ</h3>
+
+      <div class="rule-card">
+        <strong>1. สุภาพและรับฟังข้อเสนอแนะเป็นอันดับแรก:</strong> หากกรรมการทักท้วงสูตรหรือจุดบกพร่อง ห้ามเถียงหัวชนฝา ให้ตอบว่า <em>"กราบขอบพระคุณอาจารย์ครับ เป็นข้อสังเกตที่ถูกต้องและมีประโยชน์มาก ทางกลุ่มได้บันทึกจุดนี้และได้ปรับแก้ในตารางแก้ไขเรียบร้อยแล้วครับ/ค่ะ"</em>
       </div>
-      <div style="padding: 12px 16px; background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 4px;">
-        <strong>2. หลีกเลี่ยงศัพท์เทคนิคที่ตัวเองไม่เข้าใจ:</strong> อย่าใช้คำว่า "ปัญญาประดิษฐ์ (AI)", "Machine Learning" หรือศัพท์คอมพิวเตอร์ลึกๆ ถ้าเราไม่ได้ทำจริง เพราะกรรมการสายคอมจะจี้ถามจนตอบไม่ได้
+
+      <div class="rule-card">
+        <strong>2. พูดความจริงเรื่องขอบเขต:</strong> ย้ำเสมอว่าแอปนี้ทำหน้าที่เป็น 'สื่อช่วยเรียนรู้เฉพาะเรื่อง' ภายใต้ขอบเขต 7 หัวข้อที่กำหนด ไม่ใช่เครื่องคิดเลขสากลที่แก้โจทย์ได้ทุกอย่างในโลก
       </div>
-      <div style="padding: 12px 16px; background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 4px;">
-        <strong>3. ชูจุดเด่นเรื่อง 'การฝึกคิด' แทน 'การบอกคำตอบ':</strong> ทุกครั้งที่กรรมการเปรียบเทียบกับแอปอื่น ให้ย้ำเสมอว่าแอปอื่นเน้นให้ผลเฉลย แต่แอปเราเน้นสร้างความเข้าใจทีละขั้น
+
+      <div class="rule-card">
+        <strong>3. อย่าใช้คำศัพท์เทคนิคที่ตัวเองไม่เข้าใจ:</strong> ห้ามพูดคำว่า "ปัญญาประดิษฐ์ (AI)", "Machine Learning", หรือ "Algorithm ซับซ้อน" เด็ดขาด ให้ใช้คำว่า "การประมวลผลเชิงสัญลักษณ์ด้วย SymPy" และ "ขั้นตอนวิธีตามหลักคณิตศาสตร์" แทน
       </div>
-      <div style="padding: 12px 16px; background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 4px;">
-        <strong>4. สุภาพและรับฟังข้อเสนอแนะ:</strong> หากกรรมการท้วงติงจุดบกพร่อง ไม่ต้องเถียงหัวชนฝา ให้ตอบว่า <em>"ขอบพระคุณอาจารย์ครับ ทางกลุ่มจะนำประเด็นนี้ไปปรับปรุงในขอบเขตและระเบียบวิธีวิจัยในเล่มจริงครับ"</em>
+
+      <div class="rule-card">
+        <strong>4. ชูจุดเด่นเรื่อง 'การฝึกคิด' แทน 'การแจกเฉลย':</strong> เมื่อกรรมการเปรียบเทียบกับ Symbolab หรือ Photomath ให้ตอบเสมอว่า <em>"เว็บอื่นเน้นให้ผลเฉลยทันที แต่งานของเราเน้นเป็นสื่อฝึกกระบวนการคิดทีละขั้นพร้อมภาพเรขาคณิตครับ"</em>
+      </div>
+
+      <div class="rule-card">
+        <strong>5. แสดงความพร้อมด้วยคู่มือจุดแก้ไขเล่ม:</strong> หากกรรมการถามเรื่องจุดพิมพ์ผิดหรือสัญกรณ์ ให้รายงานว่า <em>"ทางกลุ่มได้จัดทำเอกสารคู่มือแก้ไขเล่มฉบับสมบูรณ์ พร้อมปรับแก้สัญกรณ์ ทฤษฎีบท FTC และสถิติให้ถูกต้องครบถ้วนแล้วครับ"</em>
       </div>
     </div>
+
   </section>
 
   <footer>
-    <p>เอกสารสรุปเตรียมสอบหัวข้อโครงงานวิจัยระดับปริญญาตรี • จัดทำเพื่อการเตรียมตัวและปรับปรุงเนื้อหาอย่างต่อเนื่อง</p>
+    <p>เอกสารสรุปเตรียมสอบป้องกันโครงงานปริญญานิพนธ์ • ภาควิชาวิทยาการคำนวณและเทคโนโลยีดิจิทัล คณะศิลปศาสตร์และวิทยาศาสตร์ มหาวิทยาลัยเกษตรศาสตร์</p>
   </footer>
 
 </div>
+
+<script>
+  function filterCategory(cat) {
+    // update buttons
+    const btns = document.querySelectorAll('.filter-btn');
+    btns.forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    // show/hide sections
+    const sections = document.querySelectorAll('.category-section');
+    sections.forEach(sec => {
+      if (cat === 'all' || sec.getAttribute('data-cat') === cat) {
+        sec.style.display = 'block';
+      } else {
+        sec.style.display = 'none';
+      }
+    });
+  }
+</script>
 
 </body>
 </html>
