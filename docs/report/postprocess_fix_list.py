@@ -15,6 +15,17 @@ MATH_RPR = (
     '</w:rPr>'
 )
 
+TABLE_BORDERS = (
+    '<w:tblBorders>'
+    '<w:top w:val="single" w:sz="8" w:space="0" w:color="000000"/>'
+    '<w:left w:val="none"/>'
+    '<w:bottom w:val="single" w:sz="8" w:space="0" w:color="000000"/>'
+    '<w:right w:val="none"/>'
+    '<w:insideH w:val="single" w:sz="4" w:space="0" w:color="CCCCCC"/>'
+    '<w:insideV w:val="none"/>'
+    '</w:tblBorders>'
+)
+
 def postprocess_docx(docx_path: str):
     path = Path(docx_path)
     if not path.exists():
@@ -44,30 +55,77 @@ def postprocess_docx(docx_path: str):
 
                 xml = re.sub(r"<m:r>(.*?)</m:r>", repl_math, xml, flags=re.DOTALL)
 
-                # 3. Ensure Heading 1 / Title runs have TH SarabunPSK 20pt (sz=40) Bold Black
-                # Pandoc applies pStyle Heading1
+                # 3. Add table borders to tables missing tblBorders
+                def repl_tbl(match):
+                    tbl_pr = match.group(1)
+                    if "<w:tblBorders" not in tbl_pr:
+                        tbl_pr = tbl_pr + TABLE_BORDERS
+                    return f"<w:tblPr>{tbl_pr}</w:tblPr>"
+
+                xml = re.sub(r"<w:tblPr>(.*?)</w:tblPr>", repl_tbl, xml, flags=re.DOTALL)
+
                 data = xml.encode("utf-8")
 
             elif item.filename == "word/styles.xml":
                 xml = data.decode("utf-8")
 
-                # Force TH SarabunPSK on all styles
+                # Strip theme overrides so font falls back strictly to TH SarabunPSK
+                xml = re.sub(r'w:asciiTheme="[^"]*"', '', xml)
+                xml = re.sub(r'w:hAnsiTheme="[^"]*"', '', xml)
+                xml = re.sub(r'w:eastAsiaTheme="[^"]*"', '', xml)
+                xml = re.sub(r'w:cstheme="[^"]*"', '', xml)
+
+                # Force TH SarabunPSK on all font attributes
                 xml = re.sub(r'w:ascii="[^"]*"', 'w:ascii="TH SarabunPSK"', xml)
                 xml = re.sub(r'w:hAnsi="[^"]*"', 'w:hAnsi="TH SarabunPSK"', xml)
                 xml = re.sub(r'w:eastAsia="[^"]*"', 'w:eastAsia="TH SarabunPSK"', xml)
                 xml = re.sub(r'w:cs="[^"]*"', 'w:cs="TH SarabunPSK"', xml)
 
-                # Set Heading 1 & Title to sz=40 (20pt) Bold Black
-                def fix_heading1_style(m):
-                    style_block = m.group(0)
-                    # Replace or insert sz=40
-                    style_block = re.sub(r'<w:sz w:val="[^"]*"/>', '<w:sz w:val="40"/>', style_block)
-                    style_block = re.sub(r'<w:szCs w:val="[^"]*"/>', '<w:szCs w:val="40"/>', style_block)
-                    style_block = re.sub(r'<w:color w:val="[^"]*"/>', '<w:color w:val="000000"/>', style_block)
-                    return style_block
+                # Strip blue / theme colors from headings
+                xml = re.sub(r'w:themeColor="[^"]*"', '', xml)
+                xml = re.sub(r'w:themeShade="[^"]*"', '', xml)
 
-                xml = re.sub(r'<w:style[^>]*w:styleId="Heading1"[^>]*>.*?</w:style>', fix_heading1_style, xml, flags=re.DOTALL)
-                xml = re.sub(r'<w:style[^>]*w:styleId="Title"[^>]*>.*?</w:style>', fix_heading1_style, xml, flags=re.DOTALL)
+                # Heading 1 & Title: 20pt (sz=40) Bold Black
+                def fix_h1_title(m):
+                    block = m.group(0)
+                    block = re.sub(r'<w:sz\s+w:val="[^"]*"\s*/>', '<w:sz w:val="40"/>', block)
+                    block = re.sub(r'<w:szCs\s+w:val="[^"]*"\s*/>', '<w:szCs w:val="40"/>', block)
+                    if '<w:color' in block:
+                        block = re.sub(r'<w:color\s+[^>]*/>', '<w:color w:val="000000"/>', block)
+                    else:
+                        block = re.sub(r'(<w:rPr[^>]*>)', r'\1<w:color w:val="000000"/>', block)
+                    if "<w:b/>" not in block and "<w:b " not in block:
+                        block = re.sub(r'(<w:rPr[^>]*>)', r'\1<w:b/><w:bCs/>', block)
+                    return block
+
+                xml = re.sub(r'<w:style[^>]*w:styleId="Heading1"[^>]*>.*?</w:style>', fix_h1_title, xml, flags=re.DOTALL)
+                xml = re.sub(r'<w:style[^>]*w:styleId="Title"[^>]*>.*?</w:style>', fix_h1_title, xml, flags=re.DOTALL)
+                xml = re.sub(r'<w:style[^>]*w:styleId="TitleChar"[^>]*>.*?</w:style>', fix_h1_title, xml, flags=re.DOTALL)
+                xml = re.sub(r'<w:style[^>]*w:styleId="Heading1Char"[^>]*>.*?</w:style>', fix_h1_title, xml, flags=re.DOTALL)
+
+                # Heading 2: 18pt (sz=36) Bold Black
+                def fix_h2(m):
+                    block = m.group(0)
+                    block = re.sub(r'<w:sz w:val="[^"]*"/>', '<w:sz w:val="36"/>', block)
+                    block = re.sub(r'<w:szCs w:val="[^"]*"/>', '<w:szCs w:val="36"/>', block)
+                    block = re.sub(r'<w:color [^>]*/>', '<w:color w:val="000000"/>', block)
+                    if "<w:b/>" not in block and "<w:b " not in block:
+                        block = re.sub(r'(<w:rPr>)', r'\1<w:b/><w:bCs/>', block)
+                    return block
+
+                xml = re.sub(r'<w:style[^>]*w:styleId="Heading2"[^>]*>.*?</w:style>', fix_h2, xml, flags=re.DOTALL)
+
+                # Heading 3: 16pt (sz=32) Bold Black
+                def fix_h3(m):
+                    block = m.group(0)
+                    block = re.sub(r'<w:sz w:val="[^"]*"/>', '<w:sz w:val="32"/>', block)
+                    block = re.sub(r'<w:szCs w:val="[^"]*"/>', '<w:szCs w:val="32"/>', block)
+                    block = re.sub(r'<w:color [^>]*/>', '<w:color w:val="000000"/>', block)
+                    if "<w:b/>" not in block and "<w:b " not in block:
+                        block = re.sub(r'(<w:rPr>)', r'\1<w:b/><w:bCs/>', block)
+                    return block
+
+                xml = re.sub(r'<w:style[^>]*w:styleId="Heading3"[^>]*>.*?</w:style>', fix_h3, xml, flags=re.DOTALL)
 
                 data = xml.encode("utf-8")
 
@@ -76,7 +134,10 @@ def postprocess_docx(docx_path: str):
     temp_out.replace(path)
     print(f"[SUCCESS] Post-processed {path.name}:")
     print(f"  - TH SarabunPSK 20pt Bold Black applied to Heading 1 and Title")
+    print(f"  - TH SarabunPSK 18pt Bold Black applied to Heading 2")
+    print(f"  - Theme fonts & colors stripped (no Tahoma / no Blue #0F4761)")
     print(f"  - All paragraph bottom borders (w:pBdr) removed")
+    print(f"  - Table borders verified")
     print(f"  - Cambria Math 12pt applied to {math_count} math runs")
 
 if __name__ == "__main__":
