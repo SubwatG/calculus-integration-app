@@ -203,6 +203,22 @@ def postprocess_docx(docx_path: str):
                 xml = re.sub(r'<w:style[^>]*w:styleId="Heading3Char"[^>]*>.*?</w:style>', fix_h3, xml, flags=re.DOTALL)
                 xml = re.sub(r'<w:style[^>]*w:styleId="Heading4Char"[^>]*>.*?</w:style>', fix_h3, xml, flags=re.DOTALL)
 
+                # VerbatimChar & SourceCode: 16pt (sz=32) TH SarabunPSK
+                def fix_verbatim(m):
+                    block = m.group(0)
+                    block = re.sub(r'<w:sz\s+w:val="[^"]*"\s*/>', '<w:sz w:val="32"/>', block)
+                    block = re.sub(r'<w:szCs\s+w:val="[^"]*"\s*/>', '<w:szCs w:val="32"/>', block)
+                    block = re.sub(r'<w:szCs\s*/>', '<w:szCs w:val="32"/>', block)
+                    if '<w:sz ' not in block and '<w:sz/' not in block:
+                        block = re.sub(r'(<w:rPr[^>]*>)', r'\1<w:sz w:val="32"/><w:szCs w:val="32"/>', block)
+                    block = re.sub(r'w:ascii="[^"]*"', 'w:ascii="TH SarabunPSK"', block)
+                    block = re.sub(r'w:hAnsi="[^"]*"', 'w:hAnsi="TH SarabunPSK"', block)
+                    block = re.sub(r'w:cs="[^"]*"', 'w:cs="TH SarabunPSK"', block)
+                    return block
+
+                xml = re.sub(r'<w:style[^>]*w:styleId="VerbatimChar"[^>]*>.*?</w:style>', fix_verbatim, xml, flags=re.DOTALL)
+                xml = re.sub(r'<w:style[^>]*w:styleId="SourceCode"[^>]*>.*?</w:style>', fix_verbatim, xml, flags=re.DOTALL)
+
                 data = xml.encode("utf-8")
 
             zout.writestr(item, data)
