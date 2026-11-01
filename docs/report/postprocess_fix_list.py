@@ -1,7 +1,17 @@
 import sys
 import re
 import zipfile
+import xml.etree.ElementTree as ET
 from pathlib import Path
+
+W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+ET.register_namespace('w', W_NS)
+ET.register_namespace('m', 'http://schemas.openxmlformats.org/officeDocument/2006/math')
+ET.register_namespace('r', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships')
+ET.register_namespace('v', 'urn:schemas-microsoft-com:vml')
+ET.register_namespace('wp', 'http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing')
+ET.register_namespace('a', 'http://schemas.openxmlformats.org/drawingml/2006/main')
+ET.register_namespace('pic', 'http://schemas.openxmlformats.org/drawingml/2006/picture')
 
 MATH_FONT = "Cambria Math"
 MATH_SIZE = "24"  # 12pt (half-points)
@@ -119,6 +129,69 @@ def postprocess_docx(docx_path: str):
                     return f'<w:rPr>{r_pr}</w:rPr>'
 
                 xml = re.sub(r"<w:rPr>(.*?)</w:rPr>", repl_red_run, xml, flags=re.DOTALL)
+
+                # 5. Proportionate column widths for tables
+                try:
+                    dtree = ET.fromstring(xml.encode("utf-8"))
+                    tables_resized = 0
+                    for tbl in dtree.iter(f"{{{W_NS}}}tbl"):
+                        first_tr = tbl.find(f"{{{W_NS}}}tr")
+                        if first_tr is None:
+                            continue
+                        cells = list(first_tr.iter(f"{{{W_NS}}}tc"))
+                        n_cols = len(cells)
+
+                        col_widths = None
+                        if n_cols == 4:
+                            # Col 0: ID (1100 dxa ~ 1.9 cm)
+                            # Col 1: Expr & Condition (2500 dxa ~ 4.4 cm)
+                            # Col 2: Status (1100 dxa ~ 1.9 cm)
+                            # Col 3: Justification & Math details (4500 dxa ~ 7.9 cm)
+                            col_widths = [1100, 2500, 1100, 4500]
+                        elif n_cols == 6:
+                            c0_text = "".join(cells[0].itertext())
+                            if "ลำดับ" in c0_text or "test_" in c0_text:
+                                col_widths = [700, 2200, 3700, 800, 800, 1000]
+                            else:
+                                col_widths = [2000, 2600, 1100, 1300, 900, 1300]
+
+                        if col_widths:
+                            tables_resized += 1
+                            tbl_pr = tbl.find(f"{{{W_NS}}}tblPr")
+                            if tbl_pr is not None:
+                                tbl_w = tbl_pr.find(f"{{{W_NS}}}tblW")
+                                if tbl_w is None:
+                                    tbl_w = ET.SubElement(tbl_pr, f"{{{W_NS}}}tblW")
+                                tbl_w.set(f"{{{W_NS}}}w", "9200")
+                                tbl_w.set(f"{{{W_NS}}}type", "dxa")
+
+                            grid = tbl.find(f"{{{W_NS}}}tblGrid")
+                            if grid is not None:
+                                tbl.remove(grid)
+                            new_grid = ET.Element(f"{{{W_NS}}}tblGrid")
+                            for w in col_widths:
+                                gc = ET.SubElement(new_grid, f"{{{W_NS}}}gridCol")
+                                gc.set(f"{{{W_NS}}}w", str(w))
+                            idx = list(tbl).index(tbl_pr) + 1 if tbl_pr is not None else 0
+                            tbl.insert(idx, new_grid)
+
+                            for tr in tbl.iter(f"{{{W_NS}}}tr"):
+                                r_cells = list(tr.iter(f"{{{W_NS}}}tc"))
+                                if len(r_cells) == len(col_widths):
+                                    for tc, w in zip(r_cells, col_widths):
+                                        tcpr = tc.find(f"{{{W_NS}}}tcPr")
+                                        if tcpr is None:
+                                            tcpr = ET.Element(f"{{{W_NS}}}tcPr")
+                                            tc.insert(0, tcpr)
+                                        tcw = tcpr.find(f"{{{W_NS}}}tcW")
+                                        if tcw is None:
+                                            tcw = ET.SubElement(tcpr, f"{{{W_NS}}}tcW")
+                                        tcw.set(f"{{{W_NS}}}w", str(w))
+                                        tcw.set(f"{{{W_NS}}}type", "dxa")
+
+                    xml = ET.tostring(dtree, encoding="utf-8").decode("utf-8")
+                except Exception as e:
+                    print(f"Warning: Table resizing skipped due to: {e}")
 
                 data = xml.encode("utf-8")
 
