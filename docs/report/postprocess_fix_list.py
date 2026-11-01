@@ -14,6 +14,17 @@ MATH_RPR = (
     '<w:i />'
     '</w:rPr>'
 )
+MATH_RPR_RED = (
+    '<w:rPr>'
+    f'<w:rFonts w:ascii="{MATH_FONT}" w:hAnsi="{MATH_FONT}"'
+    f' w:eastAsia="{MATH_FONT}" w:cs="{MATH_FONT}" />'
+    f'<w:sz w:val="{MATH_SIZE}" />'
+    f'<w:szCs w:val="{MATH_SIZE}" />'
+    '<w:color w:val="C00000" />'
+    '<w:b /><w:bCs />'
+    '<w:i />'
+    '</w:rPr>'
+)
 
 TABLE_BORDERS = (
     '<w:tblBorders>'
@@ -45,15 +56,20 @@ def postprocess_docx(docx_path: str):
                 # 1. Remove all w:pBdr (paragraph borders)
                 xml = re.sub(r"<w:pBdr>.*?</w:pBdr>", "", xml, flags=re.DOTALL)
 
-                # 2. Inject Cambria Math into all math runs <m:r>
-                def repl_math(match):
-                    nonlocal math_count
-                    body = match.group(1)
-                    cleaned = re.sub(r"<w:rPr>.*?</w:rPr>", "", body, flags=re.DOTALL)
-                    math_count += 1
-                    return f"<m:r>{MATH_RPR}{cleaned}</m:r>"
+                # 2. Inject Cambria Math into all math runs <m:r> (with red math support for RedText paragraphs)
+                def fix_p_math(p_match):
+                    p_xml = p_match.group(0)
+                    is_red_p = 'w:val="RedText"' in p_xml
+                    def repl_math(m_match):
+                        nonlocal math_count
+                        body = m_match.group(1)
+                        cleaned = re.sub(r"<w:rPr>.*?</w:rPr>", "", body, flags=re.DOTALL)
+                        math_count += 1
+                        rpr = MATH_RPR_RED if is_red_p else MATH_RPR
+                        return f"<m:r>{rpr}{cleaned}</m:r>"
+                    return re.sub(r"<m:r>(.*?)</m:r>", repl_math, p_xml, flags=re.DOTALL)
 
-                xml = re.sub(r"<m:r>(.*?)</m:r>", repl_math, xml, flags=re.DOTALL)
+                xml = re.sub(r"<w:p\b.*?</w:p>", fix_p_math, xml, flags=re.DOTALL)
 
                 # 3. Add table borders to tables missing tblBorders
                 def repl_tbl(match):
@@ -64,10 +80,41 @@ def postprocess_docx(docx_path: str):
 
                 xml = re.sub(r"<w:tblPr>(.*?)</w:tblPr>", repl_tbl, xml, flags=re.DOTALL)
 
+                # 4. Inject crimson red color (#C00000) and bold into any run with RedText
+                def repl_red_run(m):
+                    r_pr = m.group(1)
+                    if 'w:val="RedText"' in r_pr:
+                        if '<w:color' not in r_pr:
+                            r_pr += '<w:color w:val="C00000"/>'
+                        else:
+                            r_pr = re.sub(r'<w:color\s+[^>]*/>', '<w:color w:val="C00000"/>', r_pr)
+                        if '<w:b/>' not in r_pr:
+                            r_pr += '<w:b/><w:bCs/>'
+                    return f'<w:rPr>{r_pr}</w:rPr>'
+
+                xml = re.sub(r"<w:rPr>(.*?)</w:rPr>", repl_red_run, xml, flags=re.DOTALL)
+
                 data = xml.encode("utf-8")
 
             elif item.filename == "word/styles.xml":
                 xml = data.decode("utf-8")
+
+                # Define RedText character style if not present
+                if 'w:styleId="RedText"' not in xml:
+                    red_style = (
+                        '<w:style w:type="character" w:customStyle="1" w:styleId="RedText">'
+                        '<w:name w:val="RedText"/>'
+                        '<w:basedOn w:val="DefaultParagraphFont"/>'
+                        '<w:uiPriority w:val="1"/>'
+                        '<w:qFormat/>'
+                        '<w:rPr>'
+                        '<w:color w:val="C00000"/>'
+                        '<w:b/>'
+                        '<w:bCs/>'
+                        '</w:rPr>'
+                        '</w:style>'
+                    )
+                    xml = xml.replace('</w:styles>', f'{red_style}</w:styles>')
 
                 # Strip theme overrides so font falls back strictly to TH SarabunPSK
                 xml = re.sub(r'w:asciiTheme="[^"]*"', '', xml)
