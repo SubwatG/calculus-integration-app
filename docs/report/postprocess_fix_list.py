@@ -32,9 +32,17 @@ TABLE_BORDERS = (
     '<w:left w:val="none"/>'
     '<w:bottom w:val="single" w:sz="8" w:space="0" w:color="000000"/>'
     '<w:right w:val="none"/>'
-    '<w:insideH w:val="single" w:sz="4" w:space="0" w:color="CCCCCC"/>'
+    '<w:insideH w:val="single" w:sz="4" w:space="0" w:color="D3D3D3"/>'
     '<w:insideV w:val="none"/>'
     '</w:tblBorders>'
+)
+TABLE_CELL_MAR = (
+    '<w:tblCellMar>'
+    '<w:top w:w="60" w:type="dxa"/>'
+    '<w:bottom w:w="60" w:type="dxa"/>'
+    '<w:left w:w="100" w:type="dxa"/>'
+    '<w:right w:w="100" w:type="dxa"/>'
+    '</w:tblCellMar>'
 )
 
 def postprocess_docx(docx_path: str):
@@ -71,14 +79,32 @@ def postprocess_docx(docx_path: str):
 
                 xml = re.sub(r"<w:p\b.*?</w:p>", fix_p_math, xml, flags=re.DOTALL)
 
-                # 3. Add table borders to tables missing tblBorders
+                # 3. Add table borders and compact margins to tables
                 def repl_tbl(match):
                     tbl_pr = match.group(1)
                     if "<w:tblBorders" not in tbl_pr:
                         tbl_pr = tbl_pr + TABLE_BORDERS
+                    if "<w:tblCellMar" not in tbl_pr:
+                        tbl_pr = tbl_pr + TABLE_CELL_MAR
                     return f"<w:tblPr>{tbl_pr}</w:tblPr>"
 
                 xml = re.sub(r"<w:tblPr>(.*?)</w:tblPr>", repl_tbl, xml, flags=re.DOTALL)
+
+                # 3b. Make paragraphs inside table cells compact
+                def repl_tc(match):
+                    tc_xml = match.group(0)
+                    def repl_tc_p(p_match):
+                        p_xml = p_match.group(0)
+                        if "<w:pPr>" in p_xml:
+                            p_xml = re.sub(r"<w:spacing[^>]*/>", '<w:spacing w:after="20" w:line="240" w:lineRule="auto"/>', p_xml)
+                            if "<w:spacing" not in p_xml:
+                                p_xml = p_xml.replace("<w:pPr>", '<w:pPr><w:spacing w:after="20" w:line="240" w:lineRule="auto"/>')
+                        else:
+                            p_xml = f'<w:p><w:pPr><w:spacing w:after="20" w:line="240" w:lineRule="auto"/></w:pPr>{p_xml[5:]}'
+                        return p_xml
+                    return re.sub(r"<w:p\b.*?</w:p>", repl_tc_p, tc_xml, flags=re.DOTALL)
+
+                xml = re.sub(r"<w:tc\b.*?</w:tc>", repl_tc, xml, flags=re.DOTALL)
 
                 # 4. Inject crimson red color (#C00000) and bold into any run with RedText
                 def repl_red_run(m):
@@ -173,6 +199,9 @@ def postprocess_docx(docx_path: str):
                     return block
 
                 xml = re.sub(r'<w:style[^>]*w:styleId="Heading3"[^>]*>.*?</w:style>', fix_h3, xml, flags=re.DOTALL)
+                xml = re.sub(r'<w:style[^>]*w:styleId="Heading4"[^>]*>.*?</w:style>', fix_h3, xml, flags=re.DOTALL)
+                xml = re.sub(r'<w:style[^>]*w:styleId="Heading3Char"[^>]*>.*?</w:style>', fix_h3, xml, flags=re.DOTALL)
+                xml = re.sub(r'<w:style[^>]*w:styleId="Heading4Char"[^>]*>.*?</w:style>', fix_h3, xml, flags=re.DOTALL)
 
                 data = xml.encode("utf-8")
 
