@@ -1,0 +1,94 @@
+{
+  "slide_count": 34,
+  "changed_slides": [
+    7
+  ],
+  "other_slides_byte_exact": true,
+  "outside_s07_byte_exact": true,
+  "builder_only_s07_changed": true,
+  "baseline_commit": "0b10b63",
+  "deck_sha256": "ae1c035c1fca04971ac2d76d30a2117657040c51595e27db394505dea21ded3b",
+  "variant_files_unchanged": {
+    "build_defense_deck_v2.py": true,
+    "slide-deck-defense-v2.html": true,
+    "build_defense_deck_focus.py": true,
+    "slide-deck-defense-focus.html": true
+  },
+  "math_count": 194,
+  "math_formula_inventory_unchanged": true,
+  "katex_errors": 0,
+  "broken_images": 0,
+  "javascript_exceptions": [],
+  "javascript_syntax": "pass",
+  "keyboard_navigation_overview_lightbox": "pass",
+  "geometry": [
+    {
+      "viewport": [
+        1280,
+        800
+      ],
+      "x": 28.796875,
+      "y": 110.765625,
+      "width": 1222.40625,
+      "height": 606.46875,
+      "scrollWidth": 1216,
+      "clientWidth": 1216,
+      "scrollHeight": 600,
+      "clientHeight": 600,
+      "innerOverflow": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ]
+    },
+    {
+      "viewport": [
+        1920,
+        1080
+      ],
+      "x": 340,
+      "y": 184,
+      "width": 1240,
+      "height": 740,
+      "scrollWidth": 1234,
+      "clientWidth": 1234,
+      "scrollHeight": 734,
+      "clientHeight": 734,
+      "innerOverflow": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    "slide-07-1280x800.png",
+    "slide-07-1920x1080.png"
+  ]
+}

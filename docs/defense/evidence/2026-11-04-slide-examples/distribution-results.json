@@ -1,0 +1,35 @@
+{
+  "source_sha256": "ae1c035c1fca04971ac2d76d30a2117657040c51595e27db394505dea21ded3b",
+  "copies": [
+    {
+      "path": "/home/kitti/Documents/GitHub/Markdown/SubwatG/_production/defense/slide-deck-defense.html",
+      "previous_revision_sha256": "1058e7b21da0abf6f9fdb84b35f713a9fd73615f34d840c4310f16c9778c8288",
+      "after_sha256": "ae1c035c1fca04971ac2d76d30a2117657040c51595e27db394505dea21ded3b",
+      "readback_match": true
+    },
+    {
+      "path": "/home/kitti/Downloads/02-Active/Student-Projects/slide-deck-defense.html",
+      "previous_revision_sha256": "1058e7b21da0abf6f9fdb84b35f713a9fd73615f34d840c4310f16c9778c8288",
+      "after_sha256": "ae1c035c1fca04971ac2d76d30a2117657040c51595e27db394505dea21ded3b",
+      "readback_match": true
+    }
+  ],
+  "served": [
+    {
+      "url": "http://127.0.0.1:8080/defense/slide-deck-defense.html",
+      "http_status": 200,
+      "bytes": 12841847,
+      "sha256": "ae1c035c1fca04971ac2d76d30a2117657040c51595e27db394505dea21ded3b",
+      "matches": true
+    },
+    {
+      "url": "http://100.122.181.44:8080/defense/slide-deck-defense.html",
+      "http_status": 200,
+      "bytes": 12841847,
+      "sha256": "ae1c035c1fca04971ac2d76d30a2117657040c51595e27db394505dea21ded3b",
+      "matches": true
+    }
+  ],
+  "no_beeper": true,
+  "no_commit_or_push": true
+}

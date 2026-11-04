@@ -1,0 +1,568 @@
+{
+  "audit_completed": true,
+  "all_examples_match_manuscript": false,
+  "scope": "Exact recomputation of stated examples, not application solver or screenshot provenance verification",
+  "pdf_path": "/home/kitti/Downloads/02-Active/Student-Projects/เล่มโครงงานแคลคูลัส-ฉบับส่งกรรมการ-20261102.pdf",
+  "pdf_sha256": "18b3412fafc841d1ce7b35ca7193dc3a4c3e0165b3f22ea6902ab2c0a51c6a84",
+  "builder_sha256": "c41c360d976adca170fb0e358a3ac2d9354f9a2b982e9ccf3204a3e6ae6522ef",
+  "sympy_version": "1.14.0",
+  "named_example_count": 11,
+  "supplementary_case_count": 5,
+  "exact_check_count": 39,
+  "named_examples": [
+    {
+      "example": "2.2",
+      "slide": 12,
+      "printed_page": "8",
+      "pdf_page": "21",
+      "reference_expression": "limit((x**2-9)/(x-3),x,3)",
+      "reference_value": "6",
+      "status": "different_problem",
+      "note": "Slide uses x->2, (x**2-4)/(x-2), result 4, and cites printed page 10."
+    },
+    {
+      "example": "2.3",
+      "slide": 14,
+      "printed_page": "9-10",
+      "pdf_page": "22-23",
+      "reference_expression": "derivative(x**2,x=1); tangent y=2*x-1",
+      "reference_value": "2",
+      "status": "same_problem_wrong_page",
+      "note": "Slide cites printed page 12; solution continues on printed page 10."
+    },
+    {
+      "example": "2.7",
+      "slide": 16,
+      "printed_page": "14",
+      "pdf_page": "27",
+      "reference_expression": "midpoint(x**2,[0,2],n=8)",
+      "reference_value": "85/32",
+      "status": "extended_not_literal",
+      "note": "PDF specifies n=8; slide table instead lists n=4,10,20,50,100."
+    },
+    {
+      "example": "2.8",
+      "slide": 18,
+      "printed_page": "17",
+      "pdf_page": "30",
+      "reference_expression": "antiderivative(2*x*cos(x**2))=sin(x**2)+C",
+      "reference_value": "2*x*cos(x**2)",
+      "status": "same_problem_wrong_page",
+      "note": "Slide cites printed page 15 instead of 17."
+    },
+    {
+      "example": "2.9",
+      "slide": 18,
+      "printed_page": "17",
+      "pdf_page": "30",
+      "reference_expression": "antiderivative(x*exp(x))=x*exp(x)-exp(x)+C",
+      "reference_value": "x*exp(x)",
+      "status": "same_problem",
+      "note": ""
+    },
+    {
+      "example": "2.10",
+      "slide": 20,
+      "printed_page": "18",
+      "pdf_page": "31",
+      "reference_expression": "integral(2*x-x**2,0,2)",
+      "reference_value": "4/3",
+      "status": "same_problem_wrong_page",
+      "note": "Slide cites printed page 17 instead of 18."
+    },
+    {
+      "example": "2.11",
+      "slide": 20,
+      "printed_page": "18-19",
+      "pdf_page": "31-32",
+      "reference_expression": "area(2*x,x**2,[0,2])",
+      "reference_value": "4/3",
+      "status": "same_problem",
+      "note": ""
+    },
+    {
+      "example": "2.12",
+      "slide": 22,
+      "printed_page": "19-20",
+      "pdf_page": "32-33",
+      "reference_expression": "pi*integral(x,0,4)",
+      "reference_value": "8*pi",
+      "status": "same_problem",
+      "note": ""
+    },
+    {
+      "example": "2.13",
+      "slide": 22,
+      "printed_page": "20-21",
+      "pdf_page": "33-34",
+      "reference_expression": "pi*integral(x**2-x**4,0,1)",
+      "reference_value": "2*pi/15",
+      "status": "same_problem",
+      "note": ""
+    },
+    {
+      "example": "2.14",
+      "slide": 24,
+      "printed_page": "22",
+      "pdf_page": "35",
+      "reference_expression": "integral(1/x**2,1,infinity)",
+      "reference_value": "1",
+      "status": "same_problem",
+      "note": ""
+    },
+    {
+      "example": "2.15",
+      "slide": 24,
+      "printed_page": "23",
+      "pdf_page": "36",
+      "reference_expression": "integral(1/sqrt(x),0,1)",
+      "reference_value": "2",
+      "status": "same_problem",
+      "note": ""
+    }
+  ],
+  "supplementary": [
+    {
+      "slides": [
+        14,
+        25
+      ],
+      "case": "abs(x) at 0",
+      "result": "left=-1,right=1; not differentiable",
+      "provenance": "PDF printed 9 / physical 22 discusses this corner; not example 2.3 itself."
+    },
+    {
+      "slides": [
+        18
+      ],
+      "case": "u=exp(x),dv=x dx",
+      "result": "valid identity, less useful choice",
+      "provenance": "Supplement to example 2.9; algebra alone does not prove software loops."
+    },
+    {
+      "slides": [
+        20
+      ],
+      "case": "sin(x) vs cos(x), [0,2*pi]",
+      "result": "4*sqrt(2)",
+      "provenance": "Supplement, not numbered example 2.10 or 2.11."
+    },
+    {
+      "slides": [
+        24
+      ],
+      "case": "integral(1/x,-1,1)",
+      "result": "diverges; principal value is not ordinary integral",
+      "provenance": "Supplement to convergent examples 2.14 and 2.15."
+    },
+    {
+      "slides": [
+        26
+      ],
+      "case": "antiderivative(1/x)=log(abs(x))+C",
+      "result": "valid on each interval avoiding zero",
+      "provenance": "Supplementary misconception example; not assigned a manuscript example number."
+    }
+  ],
+  "checks": [
+    {
+      "id": "example-2.2",
+      "actual": "6",
+      "expected": "6",
+      "pass": true
+    },
+    {
+      "id": "slide12-alternative-limit",
+      "actual": "4",
+      "expected": "4",
+      "pass": true
+    },
+    {
+      "id": "slide12-table-19/10",
+      "actual": "39/10",
+      "expected": "39/10",
+      "pass": true
+    },
+    {
+      "id": "slide12-table-199/100",
+      "actual": "399/100",
+      "expected": "399/100",
+      "pass": true
+    },
+    {
+      "id": "slide12-table-1999/1000",
+      "actual": "3999/1000",
+      "expected": "3999/1000",
+      "pass": true
+    },
+    {
+      "id": "slide12-table-21/10",
+      "actual": "41/10",
+      "expected": "41/10",
+      "pass": true
+    },
+    {
+      "id": "slide12-table-201/100",
+      "actual": "401/100",
+      "expected": "401/100",
+      "pass": true
+    },
+    {
+      "id": "slide12-table-2001/1000",
+      "actual": "4001/1000",
+      "expected": "4001/1000",
+      "pass": true
+    },
+    {
+      "id": "example-2.3",
+      "actual": "2",
+      "expected": "2",
+      "pass": true
+    },
+    {
+      "id": "slide14-contact-value",
+      "actual": "1",
+      "expected": "1",
+      "pass": true
+    },
+    {
+      "id": "slide14-tangent",
+      "actual": "2*x - 1",
+      "expected": "2*x - 1",
+      "pass": true
+    },
+    {
+      "id": "example-2.7",
+      "actual": "85/32",
+      "expected": "85/32",
+      "pass": true
+    },
+    {
+      "id": "reference-midpoint-error",
+      "actual": "1/96",
+      "expected": "1/96",
+      "pass": true
+    },
+    {
+      "id": "riemann-exact-integral",
+      "actual": "8/3",
+      "expected": "8/3",
+      "pass": true
+    },
+    {
+      "id": "example-2.8",
+      "actual": "2*x*cos(x**2)",
+      "expected": "2*x*cos(x**2)",
+      "pass": true
+    },
+    {
+      "id": "example-2.9",
+      "actual": "x*exp(x)",
+      "expected": "x*exp(x)",
+      "pass": true
+    },
+    {
+      "id": "example-2.10",
+      "actual": "4/3",
+      "expected": "4/3",
+      "pass": true
+    },
+    {
+      "id": "example-2.11",
+      "actual": "4/3",
+      "expected": "4/3",
+      "pass": true
+    },
+    {
+      "id": "area-intersections",
+      "actual": "{0, 2}",
+      "expected": "{0, 2}",
+      "pass": true
+    },
+    {
+      "id": "example-2.12",
+      "actual": "8*pi",
+      "expected": "8*pi",
+      "pass": true
+    },
+    {
+      "id": "example-2.13",
+      "actual": "2*pi/15",
+      "expected": "2*pi/15",
+      "pass": true
+    },
+    {
+      "id": "washer-intersections",
+      "actual": "{0, 1}",
+      "expected": "{0, 1}",
+      "pass": true
+    },
+    {
+      "id": "example-2.14",
+      "actual": "1",
+      "expected": "1",
+      "pass": true
+    },
+    {
+      "id": "example-2.15",
+      "actual": "2",
+      "expected": "2",
+      "pass": true
+    },
+    {
+      "id": "corner-left",
+      "actual": "-1",
+      "expected": "-1",
+      "pass": true
+    },
+    {
+      "id": "corner-right",
+      "actual": "1",
+      "expected": "1",
+      "pass": true
+    },
+    {
+      "id": "parts-swapped-identity",
+      "actual": "x*exp(x)",
+      "expected": "x*exp(x)",
+      "pass": true
+    },
+    {
+      "id": "trig-area",
+      "actual": "4*sqrt(2)",
+      "expected": "4*sqrt(2)",
+      "pass": true
+    },
+    {
+      "id": "trig-intersection-pi/4",
+      "actual": "0",
+      "expected": "0",
+      "pass": true
+    },
+    {
+      "id": "trig-intersection-5*pi/4",
+      "actual": "0",
+      "expected": "0",
+      "pass": true
+    },
+    {
+      "id": "singular-left",
+      "actual": "-oo",
+      "expected": "-oo",
+      "pass": true
+    },
+    {
+      "id": "singular-right",
+      "actual": "oo",
+      "expected": "oo",
+      "pass": true
+    },
+    {
+      "id": "log-positive-component",
+      "actual": "1/z",
+      "expected": "1/z",
+      "pass": true
+    },
+    {
+      "id": "log-negative-component",
+      "actual": "1/x",
+      "expected": "1/x",
+      "pass": true
+    },
+    {
+      "id": "slide25-repeated-area",
+      "actual": "4/3",
+      "expected": "4/3",
+      "pass": true
+    },
+    {
+      "id": "screenshot-area",
+      "actual": "1/6",
+      "expected": "1/6",
+      "pass": true
+    },
+    {
+      "id": "screenshot-volume",
+      "actual": "8*pi/3",
+      "expected": "8*pi/3",
+      "pass": true
+    },
+    {
+      "id": "screenshot-riemann-left",
+      "actual": "35/16",
+      "expected": "35/16",
+      "pass": true
+    },
+    {
+      "id": "screenshot-riemann-right",
+      "actual": "51/16",
+      "expected": "51/16",
+      "pass": true
+    }
+  ],
+  "riemann_table": [
+    {
+      "n": 4,
+      "method": "left",
+      "exact": "7/4",
+      "display": "1.7500",
+      "error_percent_exact": "-275/8",
+      "error_percent_rounded": "-34.38",
+      "error_display": "-34.38%",
+      "rounding_ok": true
+    },
+    {
+      "n": 4,
+      "method": "right",
+      "exact": "15/4",
+      "display": "3.7500",
+      "error_percent_exact": "325/8",
+      "error_percent_rounded": "40.63",
+      "error_display": "+40.63%",
+      "rounding_ok": true
+    },
+    {
+      "n": 4,
+      "method": "midpoint",
+      "exact": "21/8",
+      "display": "2.6250",
+      "error_percent_exact": "-25/16",
+      "error_percent_rounded": "-1.56",
+      "error_display": "-1.56%",
+      "rounding_ok": true
+    },
+    {
+      "n": 10,
+      "method": "left",
+      "exact": "57/25",
+      "display": "2.2800",
+      "error_percent_exact": "-29/2",
+      "error_percent_rounded": "-14.50",
+      "error_display": "-14.50%",
+      "rounding_ok": true
+    },
+    {
+      "n": 10,
+      "method": "right",
+      "exact": "77/25",
+      "display": "3.0800",
+      "error_percent_exact": "31/2",
+      "error_percent_rounded": "15.50",
+      "error_display": "+15.50%",
+      "rounding_ok": true
+    },
+    {
+      "n": 10,
+      "method": "midpoint",
+      "exact": "133/50",
+      "display": "2.6600",
+      "error_percent_exact": "-1/4",
+      "error_percent_rounded": "-0.25",
+      "error_display": "-0.25%",
+      "rounding_ok": true
+    },
+    {
+      "n": 20,
+      "method": "left",
+      "exact": "247/100",
+      "display": "2.4700",
+      "error_percent_exact": "-59/8",
+      "error_percent_rounded": "-7.38",
+      "error_display": "-7.38%",
+      "rounding_ok": true
+    },
+    {
+      "n": 20,
+      "method": "right",
+      "exact": "287/100",
+      "display": "2.8700",
+      "error_percent_exact": "61/8",
+      "error_percent_rounded": "7.63",
+      "error_display": "+7.63%",
+      "rounding_ok": true
+    },
+    {
+      "n": 20,
+      "method": "midpoint",
+      "exact": "533/200",
+      "display": "2.6650",
+      "error_percent_exact": "-1/16",
+      "error_percent_rounded": "-0.06",
+      "error_display": "-0.06%",
+      "rounding_ok": true
+    },
+    {
+      "n": 50,
+      "method": "left",
+      "exact": "1617/625",
+      "display": "2.5872",
+      "error_percent_exact": "-149/50",
+      "error_percent_rounded": "-2.98",
+      "error_display": "-2.98%",
+      "rounding_ok": true
+    },
+    {
+      "n": 50,
+      "method": "right",
+      "exact": "1717/625",
+      "display": "2.7472",
+      "error_percent_exact": "151/50",
+      "error_percent_rounded": "3.02",
+      "error_display": "+3.02%",
+      "rounding_ok": true
+    },
+    {
+      "n": 50,
+      "method": "midpoint",
+      "exact": "3333/1250",
+      "display": "2.6664",
+      "error_percent_exact": "-1/100",
+      "error_percent_rounded": "-0.01",
+      "error_display": "-0.01%",
+      "rounding_ok": true
+    },
+    {
+      "n": 100,
+      "method": "left",
+      "exact": "6567/2500",
+      "display": "2.6268",
+      "error_percent_exact": "-299/200",
+      "error_percent_rounded": "-1.50",
+      "error_display": "-1.50%",
+      "rounding_ok": true
+    },
+    {
+      "n": 100,
+      "method": "right",
+      "exact": "6767/2500",
+      "display": "2.7068",
+      "error_percent_exact": "301/200",
+      "error_percent_rounded": "1.51",
+      "error_display": "+1.50%",
+      "rounding_ok": false
+    },
+    {
+      "n": 100,
+      "method": "midpoint",
+      "exact": "13333/5000",
+      "display": "2.6666",
+      "error_percent_exact": "-1/400",
+      "error_percent_rounded": "-0.00",
+      "error_display": "&lt; 0.01%",
+      "rounding_ok": true
+    }
+  ],
+  "rounding_issues": [
+    {
+      "n": 100,
+      "method": "right",
+      "exact": "6767/2500",
+      "display": "2.7068",
+      "error_percent_exact": "301/200",
+      "error_percent_rounded": "1.51",
+      "error_display": "+1.50%",
+      "rounding_ok": false
+    }
+  ],
+  "rounding_policy": "Decimal ROUND_HALF_UP at two decimal places; error=(approx-exact)/exact*100"
+}

@@ -392,47 +392,38 @@ S06 = slide(
 
 S07 = slide(
     "3. วิธีดำเนินงาน · สถาปัตยกรรมระบบ 3 ชั้น",
-    "การจัดวางสถาปัตยกรรมซอฟต์แวร์: Frontend &bull; Backend Services &bull; Data & Storage",
-    """          <div class="grid-3">
-            <div class="academic-card">
-              <div class="card-heading">1. ส่วนติดต่อผู้ใช้ (Frontend)</div>
-              <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.4rem;">
-                จัดการปฏิสัมพันธ์กับผู้เรียนผ่าน <strong>Streamlit</strong>
-              </p>
-              <ul style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.3rem; padding-left:1rem; line-height:1.65;">
-                <li>แถบเมนูนำทางเลือกโมดูล 15 หน้าจอ</li>
-                <li>สไลเดอร์และช่องป้อนฟังก์ชันโต้ตอบ</li>
-                <li>โมดูลแสดงวิธีทำทีละขั้น (Step Expander)</li>
-                <li>ห้องทดลองวาดกราฟิกสองมิติ</li>
-              </ul>
+    "จากเนื้อหาบทเรียน ผ่านการประมวลผล สู่การใช้งานบนเว็บ",
+    """          <div class="grid-2" style="grid-template-columns:0.8fr 1.6fr; align-items:start;">
+            <div style="display:flex; flex-direction:column; gap:0.65rem;">
+              <div class="academic-card">
+                <div class="card-heading">1. ส่วนติดต่อผู้ใช้ (Frontend)</div>
+                <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.3rem;">
+                  <strong>Streamlit</strong> รับฟังก์ชันและพารามิเตอร์ แสดงบทเรียน วิธีทำ และกราฟโต้ตอบ
+                </p>
+              </div>
+              <div class="academic-card">
+                <div class="card-heading">2. บริการประมวลผล (Backend)</div>
+                <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.3rem;">
+                  <strong>SymPy</strong> คำนวณเชิงสัญลักษณ์ ร่วมกับการตรวจเงื่อนไขและ <strong>Matplotlib</strong> สำหรับกราฟ
+                </p>
+              </div>
+              <div class="academic-card">
+                <div class="card-heading">3. จัดเก็บข้อมูล (Data &amp; Storage)</div>
+                <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.3rem;">
+                  แยกเนื้อหาบทเรียน <strong>Markdown</strong> และคลังข้อสอบ <strong>JSON</strong> ออกจากตรรกะประมวลผล
+                </p>
+              </div>
             </div>
-            <div class="academic-card">
-              <div class="card-heading">2. บริการประมวลผล (Backend)</div>
-              <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.4rem;">
-                ขับเคลื่อนด้วยระบบพีชคณิตคอมพิวเตอร์
-              </p>
-              <ul style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.3rem; padding-left:1rem; line-height:1.65;">
-                <li><strong>SymPy:</strong> คำนวณสัญลักษณ์ แยกตัวประกอบ หาอนุพันธ์ และอินทิเกรตแม่นยำ</li>
-                <li><strong>Plotter:</strong> Matplotlib สร้างภาพกราฟิกจุดโปร่ง เส้นสัมผัส และแว่นวงแหวน</li>
-                <li><strong>Validator:</strong> ตรวจสอบขอบเขตและเงื่อนไข</li>
-              </ul>
-            </div>
-            <div class="academic-card">
-              <div class="card-heading">3. จัดเก็บข้อมูล (Data & Storage)</div>
-              <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.4rem;">
-                โครงสร้างข้อมูลแบบแยกส่วน (Decoupled)
-              </p>
-              <ul style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.3rem; padding-left:1rem; line-height:1.65;">
-                <li>เนื้อหาบทเรียนจัดเก็บในไฟล์ Markdown</li>
-                <li>ตัวอย่างโจทย์และข้อสอบในไฟล์ JSON / YAML</li>
-                <li>ช่วยให้ปรับปรุงเนื้อหาได้ง่าย โดยไม่ต้องแก้ไขตรรกะการประมวลผลของระบบ</li>
-              </ul>
-            </div>
-          </div>
-          <div class="academic-card highlight">
-            <p style="font-size:0.88rem; color:var(--text-secondary);">
-              อ้างอิงสไลด์นำเสนอหัวข้อ: สถาปัตยกรรมแบบแยกส่วนนี้ช่วยให้ระบบมีความเสถียร สามารถรันชุดทดสอบ Pytest แยกจากส่วนติดต่อผู้ใช้ได้ 100%
-            </p>
+            <figure class="academic-card" style="margin:0; padding:0.75rem;">
+              <div class="card-heading">ภาพรวมสถาปัตยกรรมและเส้นทางเผยแพร่</div>
+              <button type="button" onclick="openLightboxModal(this.querySelector('img').src, 'ผังแนวคิดประกอบการนำเสนอ')" aria-label="ขยายภาพผังสถาปัตยกรรม" style="display:block; width:100%; padding:0; margin-top:0.5rem; border:0; background:transparent; cursor:zoom-in;">
+                <img src='""" + img_b64("architecture-workflow-full.png") + """' alt="ผังแนวคิดแสดงเนื้อหา สถาปัตยกรรมสามชั้น และการเผยแพร่ผ่าน GitHub และ Streamlit Community Cloud" style="display:block; width:100%; height:auto; max-height:360px; object-fit:contain;">
+              </button>
+              <figcaption style="font-size:0.78rem; color:var(--text-secondary); margin-top:0.5rem; line-height:1.6;">
+                คลิกภาพเพื่อขยาย &bull; ผังแนวคิดประกอบการนำเสนอ ไม่ใช่รายการความสามารถที่ทดสอบแล้วทั้งหมด<br>
+                <strong>User Progress (Future)</strong> คือแนวทางพัฒนาต่อ ยังไม่ใช่ระบบบันทึกความก้าวหน้าถาวร
+              </figcaption>
+            </figure>
           </div>""",
     "07 / 34",
     "เบญจกัฬยาณี"
