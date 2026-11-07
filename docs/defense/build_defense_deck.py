@@ -1468,6 +1468,57 @@ def build() -> str:
 """
 
 
+OUT_PDF_PATH = HERE / "slide-deck-defense.pdf"
+
+
+def export_pdf(html_path: Path, pdf_path: Path) -> bool:
+    import shutil
+    import subprocess
+
+    browser_candidates = [
+        Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe"),
+        Path(r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"),
+        Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
+        Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
+        Path("/usr/bin/google-chrome"),
+        Path("/usr/bin/chromium"),
+        Path("/usr/bin/chromium-browser"),
+    ]
+    browser = None
+    for cand in browser_candidates:
+        if cand.exists():
+            browser = cand
+            break
+    if not browser:
+        for name in ["google-chrome", "chrome", "chromium", "msedge"]:
+            found = shutil.which(name)
+            if found:
+                browser = Path(found)
+                break
+
+    if not browser:
+        print("[INFO] ข้ามการสร้าง PDF (ไม่พบ Chrome/Edge หรือ Chromium)")
+        return False
+
+    cmd = [
+        str(browser),
+        "--headless=new",
+        "--disable-gpu",
+        "--no-pdf-header-footer",
+        f"--print-to-pdf={pdf_path.resolve()}",
+        str(html_path.resolve()),
+    ]
+    try:
+        subprocess.run(cmd, capture_output=True, text=True, timeout=40)
+        if pdf_path.exists():
+            print(f"[OK] สร้าง PDF: {pdf_path}")
+            print(f"     size: {pdf_path.stat().st_size:,} bytes")
+            return True
+    except Exception as e:
+        print(f"[WARN] เกิดข้อผิดพลาดในการสร้าง PDF: {e}")
+    return False
+
+
 def main() -> None:
     if not PROPOSAL_DECK.exists():
         sys.exit(f"[ERROR] ไม่พบ deck ต้นทาง: {PROPOSAL_DECK}")
@@ -1482,6 +1533,8 @@ def main() -> None:
 
     if slide_count != 34:
         sys.exit(f"[ERROR] จำนวนสไลด์ไม่ครบ 34 (ได้ {slide_count})")
+
+    export_pdf(OUT_PATH, OUT_PDF_PATH)
 
 
 if __name__ == "__main__":
