@@ -579,12 +579,12 @@ S12 = slide(
     "ตัวอย่างที่ 2.2: การคำนวณลิมิต ตารางลู่เข้า และการพล๊อตจุดโปร่ง",
     """          <div class="grid-2">
             <div class="academic-card">
-              <div class="card-heading">ตัวอย่างที่ 2.2 จากเล่มรายงาน (หน้า 10)</div>
+              <div class="card-heading">ตัวอย่างที่ 2.2 จากเล่มรายงาน (หน้า 8)</div>
               <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.3rem;">
-                จงหาค่าของ $\\lim_{x\\to 2}\\frac{x^2-4}{x-2}$ ซึ่งแทนค่าแล้วได้ $\\left[\\frac{0}{0}\\right]$
+                จงหาค่าของ $\\lim_{x\\to 3}\\frac{x^2-9}{x-3}$ ซึ่งแทนค่าแล้วได้ $\\left[\\frac{0}{0}\\right]$
               </p>
               <div class="math-box" style="font-size:0.82rem;">
-                $$\\lim_{x\\to 2}\\frac{(x-2)(x+2)}{x-2} = \\lim_{x\\to 2}(x+2) = 4$$
+                $$\\lim_{x\\to 3}\\frac{(x-3)(x+3)}{x-3} = \\lim_{x\\to 3}(x+3) = 6$$
               </div>
               <p style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.35rem;">
                 <strong>ตารางจำลองค่าลู่เข้าเชิงตัวเลขของระบบ:</strong>
@@ -592,14 +592,14 @@ S12 = slide(
               <table class="table-academic" style="font-size:0.78rem;">
                 <thead><tr><th>$x$ ซ้าย</th><th>$f(x)$</th><th>$x$ ขวา</th><th>$f(x)$</th></tr></thead>
                 <tbody>
-                  <tr><td>1.9</td><td>3.900</td><td>2.1</td><td>4.100</td></tr>
-                  <tr><td>1.99</td><td>3.990</td><td>2.01</td><td>4.010</td></tr>
-                  <tr><td>1.999</td><td>3.999</td><td>2.001</td><td>4.001</td></tr>
+                  <tr><td>2.9</td><td>5.900</td><td>3.1</td><td>6.100</td></tr>
+                  <tr><td>2.99</td><td>5.990</td><td>3.01</td><td>6.010</td></tr>
+                  <tr><td>2.999</td><td>5.999</td><td>3.001</td><td>6.001</td></tr>
                 </tbody>
               </table>
               <div class="academic-card highlight" style="margin-top:0.4rem; padding:0.5rem;">
                 <p style="font-size:0.82rem; color:var(--text-secondary);">
-                  <strong>จุดเตือนของระบบ:</strong> แม้ $f(2)$ จะไม่นิยามในโดเมน แต่ลิมิตหาค่าได้ กราฟจะแสดง <strong>จุดโปร่ง (Hole)</strong> ที่พิกัด $(2, 4)$ อย่างชัดเจน ป้องกันการสับสนระหว่างค่าฟังก์ชันกับลิมิต
+                  <strong>จุดเตือนของระบบ:</strong> แม้ $f(3)$ จะไม่นิยามในโดเมน แต่ลิมิตหาค่าได้ กราฟจะแสดง <strong>จุดโปร่ง (Hole)</strong> ที่พิกัด $(3, 6)$ อย่างชัดเจน ป้องกันการสับสนระหว่างค่าฟังก์ชันกับลิมิต
                 </p>
               </div>
             </div>
@@ -610,7 +610,6 @@ S12 = slide(
     "12 / 34",
     "ขวัญเรือน"
 )
-
 # --- 2.1.2 เส้นสัมผัสและอนุพันธ์ ---
 S13 = slide(
     "2.1.2 ทฤษฎี · เส้นสัมผัสและอนุพันธ์",
@@ -1469,6 +1468,57 @@ def build() -> str:
 """
 
 
+OUT_PDF_PATH = HERE / "slide-deck-defense.pdf"
+
+
+def export_pdf(html_path: Path, pdf_path: Path) -> bool:
+    import shutil
+    import subprocess
+
+    browser_candidates = [
+        Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe"),
+        Path(r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"),
+        Path(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"),
+        Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
+        Path("/usr/bin/google-chrome"),
+        Path("/usr/bin/chromium"),
+        Path("/usr/bin/chromium-browser"),
+    ]
+    browser = None
+    for cand in browser_candidates:
+        if cand.exists():
+            browser = cand
+            break
+    if not browser:
+        for name in ["google-chrome", "chrome", "chromium", "msedge"]:
+            found = shutil.which(name)
+            if found:
+                browser = Path(found)
+                break
+
+    if not browser:
+        print("[INFO] ข้ามการสร้าง PDF (ไม่พบ Chrome/Edge หรือ Chromium)")
+        return False
+
+    cmd = [
+        str(browser),
+        "--headless=new",
+        "--disable-gpu",
+        "--no-pdf-header-footer",
+        f"--print-to-pdf={pdf_path.resolve()}",
+        str(html_path.resolve()),
+    ]
+    try:
+        subprocess.run(cmd, capture_output=True, text=True, timeout=40)
+        if pdf_path.exists():
+            print(f"[OK] สร้าง PDF: {pdf_path}")
+            print(f"     size: {pdf_path.stat().st_size:,} bytes")
+            return True
+    except Exception as e:
+        print(f"[WARN] เกิดข้อผิดพลาดในการสร้าง PDF: {e}")
+    return False
+
+
 def main() -> None:
     if not PROPOSAL_DECK.exists():
         sys.exit(f"[ERROR] ไม่พบ deck ต้นทาง: {PROPOSAL_DECK}")
@@ -1483,6 +1533,8 @@ def main() -> None:
 
     if slide_count != 34:
         sys.exit(f"[ERROR] จำนวนสไลด์ไม่ครบ 34 (ได้ {slide_count})")
+
+    export_pdf(OUT_PATH, OUT_PDF_PATH)
 
 
 if __name__ == "__main__":

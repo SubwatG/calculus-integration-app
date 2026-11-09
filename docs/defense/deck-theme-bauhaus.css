@@ -508,8 +508,48 @@ a:hover { color: var(--rose); }
 .katex { font-size: 1.02em; }
 
 @media print {
-  body { background: #fff; }
-  .top-nav, .bottom-footer, .progress-rail, .modal-overlay { display: none !important; }
-  .deck-canvas { padding: 0; }
-  .slide { display: flex !important; page-break-after: always; box-shadow: none; height: auto; max-height: none; }
+  @page {
+    size: 16in 9in;
+    margin: 0.4in;
+  }
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    color: #18181B !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .top-nav, .bottom-footer, .progress-rail, .modal-overlay, #galleryModal, #lightboxModal {
+    display: none !important;
+  }
+  .deck-canvas {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .slide {
+    display: block !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    box-shadow: none !important;
+    border: 3px solid #18181B !important;
+    border-radius: 16px !important;
+    width: 15.2in !important;
+    height: 8.2in !important;
+    max-width: 15.2in !important;
+    max-height: 8.2in !important;
+    padding: 0.5in 0.7in !important;
+    margin: 0 auto !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    box-sizing: border-box !important;
+  }
+  .slide-header {
+    margin-bottom: 0.4in !important;
+  }
 }
