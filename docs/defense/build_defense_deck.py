@@ -576,7 +576,7 @@ S11 = slide(
 
 S12 = slide(
     "2.1.1 ตัวอย่าง · ลิมิตและการจัดการรูปแบบ 0/0",
-    "ตัวอย่างที่ 2.2: การคำนวณลิมิต ตารางลู่เข้า และการพล๊อตจุดโปร่ง",
+    "ตัวอย่างที่ 2.2: การคำนวณลิมิต ตารางลู่เข้า",
     """          <div class="grid-2">
             <div class="academic-card">
               <div class="card-heading">ตัวอย่างที่ 2.2 จากเล่มรายงาน (หน้า 8)</div>
@@ -604,7 +604,7 @@ S12 = slide(
               </div>
             </div>
             <div>
-""" + web_frame_img("screenshot-limit-full.png", "โมดูลลิมิตเข้าใกล้จุด", "หน้าจอเว็บแอปจริง · ลิมิตเข้าใกล้จุดและการพล๊อตจุดโปร่ง (Hole)", max_height="390px") + """
+""" + web_frame_img("screenshot-limit-full.png", "โมดูลลิมิตเข้าใกล้จุด", "หน้าจอเว็บแอปจริง · ลิมิตเข้าใกล้จุด", max_height="390px") + """
             </div>
           </div>""",
     "12 / 34",
@@ -1044,7 +1044,7 @@ S25 = slide(
               <div class="academic-card">
                 <div class="card-heading">Fail-safe 4 กรณีที่ระบบปฏิเสธอย่างถูกต้อง</div>
                 <ul style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.3rem; padding-left:1.1rem; line-height:1.65;">
-                  <li>ลิมิตซ้ายและขวาไม่เท่ากัน &rarr; รายงานสถานะ $\\text{DNE}$</li>
+                  <li>ลิมิตซ้ายและขวาไม่เท่ากัน &rarr; รายงานสถานะ "หาค่าไม่ได้"</li>
                   <li>จุดมุมแหลม $|x|$ ที่ $x=0$ &rarr; ปฏิเสธการวาดเส้นสัมผัสลวง</li>
                   <li>ปริพันธ์ลู่ออก &rarr; ระบุสถานะชัดเจน ไม่คืนค่าตัวเลขหักล้าง</li>
                   <li>ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน &rarr; แจ้งเตือนข้อจำกัดและหยุด</li>
@@ -1122,7 +1122,7 @@ S27 = slide(
             <p style="font-size:0.88rem; color:var(--text-secondary); margin-top:0.35rem;">
               การทดสอบผ่านพิสูจน์ว่า <strong>กรณีที่ประกาศรองรับทำงานถูกต้อง</strong> และ
               <strong>กรณีที่อยู่นอกขอบเขตถูกปฏิเสธอย่างชัดเจน</strong>
-              แต่ไม่ได้พิสูจน์ว่าถูกต้องสำหรับทุกอินพุตที่เป็นไปได้ เราจึงไม่กล่าวอ้างความถูกต้องแบบสากล
+              แต่ไม่ได้พิสูจน์ว่าถูกต้องสำหรับทุกอินพุต ทุกโจทย์ที่เป็นไปได้
             </p>
           </div>""",
     "27 / 34",
@@ -1264,8 +1264,8 @@ S31 = slide(
 # ============================================================================
 
 S32 = slide(
-    "7. ข้อจำกัดและการแถลง Errata เล่มส่งกรรมการ",
-    "การตรวจสอบตนเองอย่างซื่อสัตย์ และรายการ Errata",
+    "7. ข้อจำกัด",
+    "ข้อจำกัด และหมายเหตุ",
     """          <div class="grid-2">
             <div class="academic-card">
               <div class="card-heading">ข้อจำกัดทางคณิตศาสตร์ที่ค้นพบ</div>
@@ -1276,11 +1276,10 @@ S32 = slide(
               </ul>
             </div>
             <div class="academic-card">
-              <div class="card-heading">ใบบันทึก Errata เล่มส่งกรรมการ (120 หน้า)</div>
+              <div class="card-heading">หมายเหตุเล่มส่งกรรมการ (120 หน้า)</div>
               <ul style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.4rem; padding-left:1.1rem; line-height:1.75;">
-                <li><strong>ภาคผนวก ง (หน้า 95–104):</strong> เฉลยเป็น ก ทั้ง 16 ข้อ เกิดจาก JSON dump สล็อตแรก (มีตารางเฉลยสลับ 4:4:4:4 แนบมาด้วย)</li>
+                <li><strong>ภาคผนวก ง (หน้า 95–104):</strong> เฉลยเป็น ก ทั้ง 16 ข้อ แต่ในหน้า webapp จะทำการสุ่มตัวเลือกใหม่ทุกครั้ง</li>
                 <li><strong>สารบัญภาพ:</strong> เลขหน้าภาพที่ 12 คลาดเคลื่อน 2 หน้าจากการแทรก QR Code เว็บจริง</li>
-                <li><strong>บรรณานุกรม [6]–[14]:</strong> เป็นเอกสารเครื่องมือ จะเติม In-text ในบทที่ 2 หลังสอบ</li>
               </ul>
             </div>
           </div>""",
@@ -1323,10 +1322,10 @@ S33 = slide(
 S34 = """      <div class="slide">
         <div class="slide-header">
           <div>
-            <div class="section-label">ขอขอบพระคุณคณะกรรมการทุกท่าน</div>
-            <div class="main-title" style="font-size:2.2rem; margin-top:0.5rem;">ขอบพระคุณค่ะ / พร้อมรับฟังข้อซักถาม</div>
+            <div class="section-label">ขอขอบคุณคณะกรรมการทุกท่าน</div>
+            <div class="main-title" style="font-size:2.2rem; margin-top:0.5rem;">ขอบคุณค่ะ / พร้อมรับฟังข้อซักถาม</div>
             <p style="font-size:1.05rem; color:var(--text-secondary); margin-top:0.8rem;">
-              Calculus Learning Sandbox &bull; โครงงานคณิตศาสตร์ประยุกต์ 2569
+              &bull; โครงงานคณิตศาสตร์ประยุกต์ 2569
             </p>
           </div>
           <div class="slide-counter-chip">34 / 34</div>
@@ -1345,15 +1344,14 @@ S34 = """      <div class="slide">
               <div class="card-heading">ซอร์สโค้ดและรายงาน</div>
               <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.4rem; line-height:1.7;">
                 <strong>GitHub:</strong> SubwatG/calculus-integration-app<br>
-                <strong>เล่มรายงาน:</strong> ฉบับส่งกรรมการ (120 หน้า)<br>
-                <strong>เอกสารประกอบ:</strong> ใบบันทึก Errata, สเปกสไลด์ 34 หน้า, คู่มือ Q&A 22 ข้อ, ชีตสรุปโค้ดดิ้ง
+                <strong>เล่มรายงาน:</strong> ฉบับส่งกรรมการ (120 หน้า)
               </p>
             </div>
             <div class="academic-card">
               <div class="card-heading">คณะผู้วิจัย</div>
               <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.4rem; line-height:1.7;">
-                ขวัญเรือน สำเนียงดี (แอร์)<br>
-                เบญจกัฬยาณี พิทยากูล (ชิชา)<br>
+                1. ขวัญเรือน สำเนียงดี (แอร์)<br>
+                2. เบญจกัฬยาณี พิทยากูล (ชิชา)<br>
                 อ.ดร.กิตติพงศ์ ทรัพย์วัฒนาชัย (ที่ปรึกษา)
               </p>
             </div>
