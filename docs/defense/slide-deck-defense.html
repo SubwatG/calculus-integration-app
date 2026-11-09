@@ -565,6 +565,7 @@ a:hover { color: var(--rose); }
     overflow: visible !important;
     background: #ffffff !important;
     box-sizing: border-box !important;
+    zoom: 1.50 !important;
   }
   .slide-header {
     margin-bottom: 0.4in !important;
@@ -628,7 +629,7 @@ a:hover { color: var(--rose); }
           <div class="academic-card highlight" style="margin-top:0.35rem;">
             <p style="font-size:0.9rem; color:var(--text-secondary);">
               <strong>โครงสร้างการนำเสนอ 28–30 นาที</strong> บทนำและเปรียบเทียบเครื่องมือ &rarr; สถาปัตยกรรม &rarr;
-              เนื้อหาและตัวอย่างคำนวณบทที่ 2 (7 โมดูล x 2 สไลด์) &rarr; การทดสอบ 265 ข้อ &rarr; การประเมินผู้ใช้จริง &rarr; แถลง Errata
+              เนื้อหาและตัวอย่างคำนวณบทที่ 2 (7 โมดูล x 2 สไลด์) &rarr; การทดสอบ 265 ข้อ &rarr; การประเมินผู้ใช้จริง
             </p>
           </div>
         </div>
@@ -689,9 +690,9 @@ a:hover { color: var(--rose); }
               <div class="card-heading">จุดที่ 1 · ลิมิตเข้าใกล้จุด</div>
               <p style="font-size:0.86rem; color:var(--text-secondary); margin-top:0.35rem;">
                 รูปแบบยังไม่กำหนด $\frac{0}{0}$ ผู้เรียนมักท่องจำว่า "แยกตัวประกอบแล้วตัดทอน"
-                แต่ไม่เคยเห็นว่าค่าฟังก์ชันวิ่งชนเข้าสู่ 4 จริงอย่างไร และทำไมกราฟจึงเกิดจุดโปร่ง
+                แต่ไม่เคยเห็นว่าค่าฟังก์ชันวิ่งเข้าสู่ค่าจริงอย่างไร และทำไมกราฟจึงเกิดจุดโปร่ง
               </p>
-              <div class="math-box">$$\lim_{x\to 2}\frac{x^2-4}{x-2} = 4$$</div>
+              <div class="math-box">$$\lim_{x\to 3}\frac{x^2-9}{x-3} = 6$$</div>
             </div>
             <div class="academic-card">
               <div class="card-heading">จุดที่ 2 · อนุพันธ์และเส้นสัมผัส</div>
@@ -754,7 +755,7 @@ a:hover { color: var(--rose); }
               </tr>
               <tr>
                 <td><strong>3. การจัดการจุดเข้าใจผิด</strong></td>
-                <td>ตอบตามฉลาดโมเดล (เสี่ยงหลอน)</td>
+                <td>ตอบตามฉลาดโมเดล</td>
                 <td>ตรวจไม่ได้ แจ้งแค่ไวยากรณ์ผิด</td>
                 <td>ตรวจไม่ได้ วาดตามที่พิมพ์</td>
                 <td><strong>ตรวจจับ Misconceptions แจ้งเตือนสด</strong></td>
@@ -1165,7 +1166,7 @@ a:hover { color: var(--rose); }
               </div>
               <div class="academic-card highlight" style="margin-top:0.4rem; padding:0.5rem;">
                 <p style="font-size:0.81rem; color:var(--text-secondary);">
-                  <strong>จุดเตือนของระบบ:</strong> ลิมิตความชันด้านซ้ายได้ $-1$ ด้านขวาได้ $+1$ ไม่เท่ากัน อนุพันธ์จึง **DNE** ระบบแจ้งเตือนว่าเป็นจุดมุมแหลมและปฏิเสธการวาดเส้นสัมผัสลวง
+                  <strong>จุดเตือนของระบบ:</strong> ลิมิตความชันด้านซ้ายได้ $-1$ ด้านขวาได้ $+1$ ไม่เท่ากัน อนุพันธ์จึงหาค่าไม่ได้ ระบบแจ้งเตือนว่าเป็นจุดมุมแหลมและปฏิเสธการวาดเส้นสัมผัสลวง
                 </p>
               </div>
             </div>
@@ -1210,12 +1211,12 @@ a:hover { color: var(--rose); }
               <div class="card-heading">ทฤษฎีบทหลักมูลของแคลคูลัส (FTC)</div>
               <div class="academic-card highlight" style="margin-top:0.35rem; padding:0.55rem;">
                 <p style="font-size:0.82rem; color:var(--text-secondary);">
-                  <strong>FTC ส่วนที่ 1:</strong> ถ้า $f$ ต่อเนื่องบน $[a, b]$ และ $g(x) = \int_a^x f(t)dt$ แล้ว $g'(x) = f(x)$
+                  <strong>Theorem 1:</strong> ถ้า $f$ ต่อเนื่องบน $[a, b]$ และ $g(x) = \int_a^x f(t)dt$ แล้ว $g'(x) = f(x)$
                 </p>
               </div>
               <div class="academic-card highlight" style="margin-top:0.35rem; padding:0.55rem;">
                 <p style="font-size:0.82rem; color:var(--text-secondary);">
-                  <strong>FTC ส่วนที่ 2:</strong> ถ้า $F'(x) = f(x)$ แล้ว $\int_a^b f(x)dx = F(b) - F(a)$
+                  <strong>Theorem 2:</strong> ถ้า $F'(x) = f(x)$ แล้ว $\int_a^b f(x)dx = F(b) - F(a)$
                 </p>
               </div>
               <p style="font-size:0.82rem; color:var(--text-muted); margin-top:0.35rem;">
@@ -1423,17 +1424,12 @@ a:hover { color: var(--rose); }
                 หาพื้นที่ปิดล้อมด้วย $y = 2x - x^2$ และแกน $x$ ($y=0$) บน $[0, 2]$
               </p>
               <div class="math-box" style="font-size:0.8rem;">
-                $$A = \int_0^2 (2x - x^2)\,dx = \left[x^2 - \frac{x^3}{3}\right]_0^2 = 4 - \frac{8}{3} = \frac{4}{3}\ \text{ตร.หน่วย}$$
+                $$A = \int_0^2 |2x - x^2|\,dx  = \int_0^2 (2x - x^2)\,dx = \left[x^2 - \frac{x^3}{3}\right]_0^2 = 4 - \frac{8}{3} = \frac{4}{3}\ \text{ตร.หน่วย}$$
               </div>
-              <p style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.35rem;">
+              <p style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.45rem;">
                 <strong>ตัวอย่างที่ 2.11: เส้นตรง $y=2x$ กับ $y=x^2$</strong><br>
                 จุดตัดคือ $x=0, 2$ ได้พื้นที่ $A = \int_0^2 (2x - x^2)dx = \frac{4}{3}$ ตร.หน่วย
               </p>
-              <div class="academic-card highlight" style="margin-top:0.4rem; padding:0.5rem;">
-                <p style="font-size:0.81rem; color:var(--text-secondary);">
-                  <strong>ตัวอย่างซับซ้อน: $\sin x$ กับ $\cos x$ บน $[0, 2\pi]$:</strong> ระบบแบ่งอินทิเกรต 3 ช่วงย่อยตามจุดตัด $\frac{\pi}{4}$ และ $\frac{5\pi}{4}$ แรเงาคนละสี ทำให้ได้พื้นที่รวม $4\sqrt{2}$ อย่างถูกต้อง
-                </p>
-              </div>
             </div>
             <div>
 <div class="web-preview-frame" style="max-height:390px; overflow-y:auto; border:1.5px solid var(--ink); border-radius:8px; box-shadow:2px 2px 0 var(--ink); background:#ffffff; margin-top:0.35rem;">
@@ -1589,11 +1585,6 @@ a:hover { color: var(--rose); }
               <div class="math-box" style="font-size:0.78rem;">
                 $$\lim_{t\to 0^+}\int_t^1 x^{-1/2}dx = \lim_{t\to 0^+}\left[2\sqrt{x}\right]_t^1 = 2 - 0 = 2$$
               </div>
-              <div class="academic-card highlight" style="margin-top:0.4rem; padding:0.5rem;">
-                <p style="font-size:0.81rem; color:var(--text-secondary);">
-                  <strong>กรณี $\int_{-1}^1 \frac{1}{x}dx$ ลู่ออก:</strong> มีจุดเอกฐานที่ $x=0$ ลิมิตด้านซ้ายได้ $-\infty$ ลู่ออกทันที ระบบปฏิเสธการตอบ 0 เด็ดขาด
-                </p>
-              </div>
             </div>
             <div>
 <div class="web-preview-frame" style="max-height:390px; overflow-y:auto; border:1.5px solid var(--ink); border-radius:8px; box-shadow:2px 2px 0 var(--ink); background:#ffffff; margin-top:0.35rem;">
@@ -1626,15 +1617,6 @@ a:hover { color: var(--rose); }
                 </p>
                 <div class="math-box">$$\int_0^2 (2x - x^2)\,dx = \frac{4}{3}\ \text{ตารางหน่วย}$$</div>
               </div>
-              <div class="academic-card">
-                <div class="card-heading">Fail-safe 4 กรณีที่ระบบปฏิเสธอย่างถูกต้อง</div>
-                <ul style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.3rem; padding-left:1.1rem; line-height:1.65;">
-                  <li>ลิมิตซ้ายและขวาไม่เท่ากัน &rarr; รายงานสถานะ "หาค่าไม่ได้"</li>
-                  <li>จุดมุมแหลม $|x|$ ที่ $x=0$ &rarr; ปฏิเสธการวาดเส้นสัมผัสลวง</li>
-                  <li>ปริพันธ์ลู่ออก &rarr; ระบุสถานะชัดเจน ไม่คืนค่าตัวเลขหักล้าง</li>
-                  <li>ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน &rarr; แจ้งเตือนข้อจำกัดและหยุด</li>
-                </ul>
-              </div>
             </div>
             <div>
 <div class="web-preview-frame" style="max-height:390px; overflow-y:auto; border:1.5px solid var(--ink); border-radius:8px; box-shadow:2px 2px 0 var(--ink); background:#ffffff; margin-top:0.35rem;">
@@ -1664,13 +1646,13 @@ a:hover { color: var(--rose); }
                 <div class="card-heading">โครงสร้างแบบทดสอบมโนทัศน์</div>
                 <ul style="font-size:0.83rem; color:var(--text-secondary); margin-top:0.35rem; padding-left:1.15rem; line-height:1.7;">
                   <li>ข้อสอบครอบคลุมทั้ง 7 โมดูล + Solver รวม 80 ข้อ (โมดูลละ 10 ข้อ)</li>
-                  <li>ข้อคำถามเน้น **ความเข้าใจเชิงมโนทัศน์** ไม่ใช่การคิดเลขถึก</li>
+                  <li>ข้อคำถามเน้น **ความเข้าใจเชิงมโนทัศน์** ไม่ใช่การคิดเลขเพียงอย่างเดียว</li>
                   <li>ระบบคำใบ้ 3 ระดับ: ทบทวนนิยาม &rarr; จัดรูปโจทย์ &rarr; ชี้จุดลวง</li>
                   <li>สุ่มสลับตำแหน่งตัวเลือก (Shuffle) ทุกครั้งที่ทำ</li>
                 </ul>
               </div>
               <div class="academic-card">
-                <div class="card-heading">การดักจับจุดเข้าใจผิด (Distractor Analysis)</div>
+                <div class="card-heading">การดักจับจุดเข้าใจผิด</div>
                 <ul style="font-size:0.81rem; color:var(--text-secondary); margin-top:0.3rem; padding-left:1.1rem; line-height:1.65;">
                   <li>ลืมใส่ค่าสัมบูรณ์ใน $\int \frac{1}{x}dx = \ln|x| + C$</li>
                   <li>จำสูตรวงแหวนผิดเป็น $\pi(R - r)^2$</li>
@@ -1746,6 +1728,15 @@ a:hover { color: var(--rose); }
         <div class="slide-body">
           <div class="grid-2">
             <div class="academic-card">
+                <div class="card-heading">เครื่องมือวัด 2 ชุด</div>
+                <div style="font-size:0.86rem; color:var(--text-secondary); margin-top:0.4rem; line-height:1.7;">
+                  <p><strong>ชุดที่ 1 · ความพึงพอใจ 4 ด้าน (20 ข้อ)</strong><br>
+                  มาตรประมาณค่า 5 ระดับ: UI/UX, ฟังก์ชันโต้ตอบ, เนื้อหามโนทัศน์, เจตคติและแรงจูงใจ</p>
+                  <p style="margin-top:0.5rem;"><strong>ชุดที่ 2 · System Usability Scale (10 ข้อ)</strong><br>
+                  ฉบับปรับปรุงข้อคำถามเป็นเชิงบวก (Sauro &amp; Lewis, 2011) เพื่อลดความสับสนของผู้ตอบไทย</p>
+                </div>
+            </div>
+            <div class="academic-card">
               <div class="card-heading">กลุ่มตัวอย่าง ($N = 50$)</div>
               <p style="font-size:0.86rem; color:var(--text-secondary); margin-top:0.4rem;">
                 บันทึกผล ณ วันที่ 30 ตุลาคม 2569 เวลา 10:15 น. รวม <strong>$N = 50$ คน</strong>
@@ -1757,19 +1748,7 @@ a:hover { color: var(--rose); }
                 <li>สังกัด: มก. กำแพงแสน 36%, ศิลปากร 24%, มรภ.ธนบุรี 12%, อื่น ๆ 28%</li>
               </ul>
             </div>
-            <div class="academic-card">
-              <div class="card-heading">เครื่องมือวัด 2 ชุด</div>
-              <div style="font-size:0.86rem; color:var(--text-secondary); margin-top:0.4rem; line-height:1.7;">
-                <p><strong>ชุดที่ 1 · ความพึงพอใจ 4 ด้าน (20 ข้อ)</strong><br>
-                มาตรประมาณค่า 5 ระดับ: UI/UX, ฟังก์ชันโต้ตอบ, เนื้อหามโนทัศน์, เจตคติและแรงจูงใจ</p>
-                <p style="margin-top:0.5rem;"><strong>ชุดที่ 2 · System Usability Scale (10 ข้อ)</strong><br>
-                ฉบับปรับปรุงข้อคำถามเป็นเชิงบวก (Sauro &amp; Lewis, 2011) เพื่อลดความสับสนของผู้ตอบไทย</p>
-              </div>
-            </div>
           </div>
-          <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.3rem;">
-            การเลือกกลุ่มตัวอย่างเป็นแบบตามสะดวก (Convenience Sampling) ซึ่งเป็นข้อจำกัดที่ระบุไว้ในบทที่ 5
-          </p>
         </div>
       </div>
 
@@ -2068,7 +2047,7 @@ function updateSlide() {
   slides.forEach((slide, index) => {
     slide.classList.toggle('active', index === currentSlide);
   });
-  
+
   const pct = ((currentSlide + 1) / totalSlides) * 100;
   progressFill.style.width = pct + '%';
   slideCounterText.innerText = `Slide ${currentSlide + 1} of ${totalSlides}`;

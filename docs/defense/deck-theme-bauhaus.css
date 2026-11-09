@@ -548,6 +548,7 @@ a:hover { color: var(--rose); }
     overflow: visible !important;
     background: #ffffff !important;
     box-sizing: border-box !important;
+    zoom: 1.50 !important;
   }
   .slide-header {
     margin-bottom: 0.4in !important;
