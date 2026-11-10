@@ -660,11 +660,6 @@ S14 = slide(
               <div class="math-box" style="font-size:0.8rem;">
                 $$y - 1 = 2(x - 1) \\implies y = 2x - 1$$
               </div>
-              <div class="academic-card highlight" style="margin-top:0.4rem; padding:0.5rem;">
-                <p style="font-size:0.81rem; color:var(--text-secondary);">
-                  <strong>จุดเตือนของระบบ:</strong> ลิมิตความชันด้านซ้ายได้ $-1$ ด้านขวาได้ $+1$ ไม่เท่ากัน อนุพันธ์จึง **DNE** ระบบแจ้งเตือนว่าเป็นจุดมุมแหลมและปฏิเสธการวาดเส้นสัมผัสลวง
-                </p>
-              </div>
             </div>
             <div>
 """ + web_frame_img("screenshot-tangent-full.png", "โมดูลเส้นสัมผัสและอนุพันธ์", "หน้าจอเว็บแอปจริง · เส้นสัมผัสและการดักจับจุดมุมแหลม", max_height="390px") + """
