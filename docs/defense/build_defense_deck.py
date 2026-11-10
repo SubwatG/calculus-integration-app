@@ -313,7 +313,7 @@ S04 = slide(
             </tbody>
           </table>
           <p style="font-size:0.86rem; color:var(--text-secondary); margin-top:0.4rem;">
-            อ้างอิงตารางที่ 3 เล่มหน้า 26 และสไลด์นำเสนอหัวข้อ: ระบบของเราออกแบบขึ้นเพื่อเป็น <strong>นั่งร้านทางปัญญา (Scaffolding)</strong> สำหรับผู้เรียนไทยโดยเฉพาะ
+            อ้างอิงตารางที่ 3 ในเล่ม และสไลด์นำเสนอหัวข้อ: ระบบของเราออกแบบขึ้นเพื่อเป็น <strong>นั่งร้านทางปัญญา (Scaffolding)</strong> สำหรับผู้เรียนไทยโดยเฉพาะ
           </p>""",
     "04 / 34",
     "ขวัญเรือน"
@@ -579,7 +579,7 @@ S12 = slide(
     "ตัวอย่างที่ 2.2: การคำนวณลิมิต ตารางลู่เข้า",
     """          <div class="grid-2">
             <div class="academic-card">
-              <div class="card-heading">ตัวอย่างที่ 2.2 จากเล่มรายงาน (หน้า 8)</div>
+              <div class="card-heading">ตัวอย่างที่ 2.2</div>
               <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.3rem;">
                 จงหาค่าของ $\\lim_{x\\to 3}\\frac{x^2-9}{x-3}$ ซึ่งแทนค่าแล้วได้ $\\left[\\frac{0}{0}\\right]$
               </p>
@@ -647,7 +647,7 @@ S14 = slide(
     "ตัวอย่างที่ 2.3: หาสมการเส้นสัมผัส $x^2$ และการดักจับจุดมุมแหลม $|x|$",
     """          <div class="grid-2">
             <div class="academic-card">
-              <div class="card-heading">ตัวอย่างที่ 2.3 จากเล่มรายงาน (หน้า 12)</div>
+              <div class="card-heading">ตัวอย่างที่ 2.3</div>
               <p style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.3rem;">
                 จงหาความชันและสมการเส้นสัมผัสของ $f(x) = x^2$ ที่จุด $x = 1$
               </p>
@@ -804,7 +804,7 @@ S18 = slide(
     """          <div class="grid-2">
             <div style="display:flex; flex-direction:column; gap:0.5rem;">
               <div class="academic-card">
-                <div class="card-heading">ตัวอย่างที่ 2.8: แทนค่า $u$ (เล่มหน้า 15)</div>
+                <div class="card-heading">ตัวอย่างที่ 2.8: แทนค่า $u$</div>
                 <p style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.25rem;">
                   จงหาค่าของ $\\int 2x\\cos(x^2)\\,dx$ ให้ $u = x^2 \\implies du = 2x\\,dx$
                 </p>
@@ -870,7 +870,7 @@ S20 = slide(
     "ตัวอย่างที่ 2.10 และ 2.11: การคำนวณพื้นที่จริง และภาพกราฟิกแรเงา",
     """          <div class="grid-2">
             <div class="academic-card">
-              <div class="card-heading">ตัวอย่างที่ 2.10: พาราโบลากับแกน $x$ (หน้า 17)</div>
+              <div class="card-heading">ตัวอย่างที่ 2.10: พาราโบลากับแกน $x$</div>
               <p style="font-size:0.83rem; color:var(--text-secondary); margin-top:0.3rem;">
                 หาพื้นที่ปิดล้อมด้วย $y = 2x - x^2$ และแกน $x$ ($y=0$) บน $[0, 2]$
               </p>
@@ -932,14 +932,14 @@ S22 = slide(
     "ตัวอย่างที่ 2.12 (วิธีจาน) และ 2.13 (วิธีวงแหวน) พร้อมภาพหน้าตัดสะสม",
     """          <div class="grid-2">
             <div class="academic-card">
-              <div class="card-heading">ตัวอย่างที่ 2.12: วิธีจาน (เล่มหน้า 19)</div>
+              <div class="card-heading">ตัวอย่างที่ 2.12: วิธีจาน</div>
               <p style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.25rem;">
                 หมุนบริเวณใต้กราฟ $y = \\sqrt{x}$ จาก $x = 0$ ถึง $4$ รอบแกน $x$
               </p>
               <div class="math-box" style="font-size:0.78rem;">
                 $$V = \\pi \\int_0^4 (\\sqrt{x})^2\\,dx = \\pi \\int_0^4 x\\,dx = \\pi\\left[\\frac{x^2}{2}\\right]_0^4 = 8\\pi\\ \\text{ลบ.หน่วย}$$
               </div>
-              <div class="card-heading" style="margin-top:0.4rem;">ตัวอย่างที่ 2.13: วิธีวงแหวน (เล่มหน้า 20)</div>
+              <div class="card-heading" style="margin-top:0.4rem;">ตัวอย่างที่ 2.13: วิธีวงแหวน</div>
               <p style="font-size:0.82rem; color:var(--text-secondary); margin-top:0.25rem;">
                 หมุนบริเวณปิดล้อมด้วย $y = x$ และ $y = x^2$ รอบแกน $x$ ($R=x, r=x^2$)
               </p>
@@ -1155,7 +1155,7 @@ S28 = slide(
                 <p><strong>ชุดที่ 1 · ความพึงพอใจ 4 ด้าน (20 ข้อ)</strong><br>
                 มาตรประมาณค่า 5 ระดับ: UI/UX, ฟังก์ชันโต้ตอบ, เนื้อหามโนทัศน์, เจตคติและแรงจูงใจ</p>
                 <p style="margin-top:0.5rem;"><strong>ชุดที่ 2 · System Usability Scale (10 ข้อ)</strong><br>
-                ฉบับปรับปรุงข้อคำถามเป็นเชิงบวก (Sauro &amp; Lewis, 2011) เพื่อลดความสับสนของผู้ตอบไทย</p>
+                คือแบบสอบถามมาตรฐาน 10 ข้อ ใช้มาตราส่วน 5 ระดับ เพื่อประเมินความสามารถในการใช้งาน (Usability) ของระบบจากมุมมองผู้ใช้ โดยมีคะแนนรวมตั้งแต่ 0&ndash;100 คะแนน</p>
               </div>
             </div>
           </div>
@@ -1278,7 +1278,7 @@ S32 = slide(
             <div class="academic-card">
               <div class="card-heading">หมายเหตุเล่มส่งกรรมการ (120 หน้า)</div>
               <ul style="font-size:0.84rem; color:var(--text-secondary); margin-top:0.4rem; padding-left:1.1rem; line-height:1.75;">
-                <li><strong>ภาคผนวก ง (หน้า 95–104):</strong> เฉลยเป็น ก ทั้ง 16 ข้อ แต่ในหน้า webapp จะทำการสุ่มตัวเลือกใหม่ทุกครั้ง</li>
+                <li><strong>ภาคผนวก ง:</strong> เฉลยเป็น ก ทั้ง 16 ข้อ แต่ในหน้า webapp จะทำการสุ่มตัวเลือกใหม่ทุกครั้ง</li>
                 <li><strong>สารบัญภาพ:</strong> เลขหน้าภาพที่ 12 คลาดเคลื่อน 2 หน้าจากการแทรก QR Code เว็บจริง</li>
               </ul>
             </div>
