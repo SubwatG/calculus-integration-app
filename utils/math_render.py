@@ -21,6 +21,18 @@ _THAI_RE = re.compile(r"[\u0e00-\u0e7f]")
 _WRAPPED_DISPLAY = re.compile(r"^\s*\$\$(.*)\$\$\s*$", re.DOTALL)
 _WRAPPED_INLINE = re.compile(r"^\s*\$(.*)\$\s*$", re.DOTALL)
 
+
+def format_inverse_trig(text: str) -> str:
+    """แปลงสัญลักษณ์ฟังก์ชันตรีโกณมิติผกผันจาก asin, acos, atan ให้เป็น \\arcsin, \\arccos, \\arctan ตามแบบหนังสือเรียน"""
+    if not text:
+        return text
+    # 1. จัดการ \\operatorname{asin}, \\operatorname{acos}, \\operatorname{atan}
+    s = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", text)
+    s = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", s)
+    # 2. จัดการคำสั่งที่ไม่มี \ นำหน้าเมื่อตามด้วยวงเล็บ เช่น asin(...) หรือ asin{...}
+    s = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", s)
+    return s
+
 _MATH_MACROS = [
     r"\\pi", r"\\infty", r"\\pm", r"\\mp", r"\\alpha", r"\\beta", r"\\gamma", 
     r"\\theta", r"\\lambda", r"\\mu", r"\\sigma", r"\\tau", r"\\phi", r"\\omega",
@@ -56,7 +68,7 @@ def has_thai(text: str) -> bool:
 
 def strip_math_delimiters(expr: str) -> str:
     """Remove outer $...$ or $$...$$ if the whole string is wrapped."""
-    s = (expr or "").strip()
+    s = format_inverse_trig((expr or "").strip())
     m = _WRAPPED_DISPLAY.match(s)
     if m:
         return m.group(1).strip()
@@ -80,7 +92,8 @@ def format_math_spacing(text: str) -> str:
     """เว้นวรรคหน้าและหลังสมการ ($...$ หรือ $$...$$) เมื่ออยู่ติดกับข้อความภาษาไทย และห่อสัญลักษณ์ LaTeX ลอย ๆ"""
     if not text:
         return text
-    # 0. ห่อสัญลักษณ์ LaTeX ลอย ๆ เช่น \pi, \frac{\pi}{2} ให้เป็น $...$
+    # 0. แปลงฟังก์ชันตรีโกณมิติผกผัน และห่อสัญลักษณ์ LaTeX ลอย ๆ
+    text = format_inverse_trig(text)
     text = auto_wrap_bare_latex(text)
     if not has_thai(text):
         return text
@@ -211,7 +224,7 @@ def preview_math_expr(expr_str: str, label: str = "สมการที่ร�
         )
         local_dict = {"e": sp.E, "E": sp.E, "pi": sp.pi, "ln": sp.log}
         parsed = parse_expr(clean, transformations=transformations, local_dict=local_dict)
-        latex_str = sp.latex(parsed)
+        latex_str = format_inverse_trig(sp.latex(parsed, inv_trig_style="full"))
 
         # กำหนดชื่อฟังก์ชัน เช่น f(x), g(x), R(x), r(x)
         if var_name is None:

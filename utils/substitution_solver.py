@@ -4,6 +4,7 @@
 และการจำแนกฟังก์ชันที่ไม่เป็นฟังก์ชันมูลฐาน (Non-elementary integrals)
 ตามเกณฑ์ Universal Step Contract
 """
+import re
 import sympy as sp
 from sympy.parsing.sympy_parser import (
     convert_xor,
@@ -47,9 +48,13 @@ SPECIAL_FUNCS = (
 
 
 def _to_latex(sym_obj) -> str:
-    """แปลง SymPy object เป็น LaTeX string พร้อมแทนที่ \\log เป็น \\ln ตามมาตรฐานการสอนแคลคูลัส"""
-    lat = sp.latex(sym_obj)
-    return lat.replace(r"\log", r"\ln")
+    """แปลง SymPy object เป็น LaTeX string พร้อมแทนที่ \\log เป็น \\ln และปรับฟังก์ชันตรีโกณผกผันตามมาตรฐานการสอนแคลคูลัส"""
+    lat = sp.latex(sym_obj, inv_trig_style="full")
+    lat = lat.replace(r"\log", r"\ln")
+    lat = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", lat)
+    lat = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", lat)
+    lat = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", lat)
+    return lat
 
 
 def _parse_input(expr_str: str) -> sp.Expr:
@@ -164,8 +169,8 @@ def _get_domain_note(expr: sp.Expr, var: sp.Symbol = X) -> str:
             notes.append(f"${_to_latex(node.base)} \\geq 0$")
 
     if notes:
-        return f"เงื่อนไขโดเมน (Domain restriction): ขั้นนี้ถูกต้องบนช่วงที่ " + " และ ".join(notes)
-    return "เงื่อนไขโดเมน (Domain restriction): ฟังก์ชันหาปริพันธ์ได้บนทุกช่วงที่ฟังก์ชันมีความต่อเนื่อง ($x \\in \\mathbb{R}$)"
+        return f"เงื่อนไขโดเมน: ขั้นตอนนี้ถูกต้องบนช่วงที่ " + " และ ".join(notes)
+    return "เงื่อนไขโดเมน: ฟังก์ชันหาปริพันธ์ได้บนทุกช่วงที่ฟังก์ชันมีความต่อเนื่อง ($x \\in \\mathbb{R}$)"
 
 
 def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
@@ -280,10 +285,10 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
             rem_integral = sp.integrate(v_du, var_sym)
 
             steps.append(
-                f"เป้าหมาย / กฎที่ใช้ (Goal / Rule): ใช้เทคนิคการอินทิเกรตทีละส่วน (Integration by Parts) ตามสูตร $\\int u \\, dv = uv - \\int v \\, du$ ({parts_reason})"
+                f"เลือกวิธี: การอินทิเกรตทีละส่วน (Integration by parts) ตามสูตร $\\int u \\, dv = uv - \\int v \\, du$ ({parts_reason})"
             )
             steps.append(
-                f"นิพจน์หลังแทนค่า (Substituted expression): กำหนดตัวแปรและหาอนุพันธ์กับปฏิยานุพันธ์:\n"
+                f"กำหนดตัวแปร: กำหนดตัวแปรและหาอนุพันธ์กับปฏิยานุพันธ์:\n"
                 f"- กำหนด $u = {_to_latex(u_p)} \\implies du = {_to_latex(du_p)} \\, d{v_lat}$\n"
                 f"- กำหนด $dv = {_to_latex(dv_p)} \\, d{v_lat} \\implies v = \\int {_to_latex(dv_p)} \\, d{v_lat} = {_to_latex(v_p)}$"
             )
@@ -291,11 +296,11 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
                 f"แทนค่าลงในสูตร By Parts: $\\int u \\, dv = uv - \\int v \\, du = \\left({_to_latex(u_p)}\\right)\\left({_to_latex(v_p)}\\right) - \\int \\left({_to_latex(v_p)}\\right)\\left({_to_latex(du_p)}\\right) \\, d{v_lat}$"
             )
             steps.append(
-                f"พีชคณิตระหว่างทาง (Intermediate algebra): จัดรูปอินทิกรัลที่เหลือ $\\int v \\, du = \\int {_to_latex(v_du)} \\, d{v_lat} = {_to_latex(rem_integral)}$"
+                f"คำนวณปริพันธ์ที่เหลือ: จัดรูปและหาค่า $\\int v \\, du = \\int {_to_latex(v_du)} \\, d{v_lat} = {_to_latex(rem_integral)}$"
             )
             steps.append(domain_note)
             steps.append(
-                f"ผลลัพธ์แม่นตรง (Exact result): $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$"
+                f"สรุปผลลัพธ์: $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$"
             )
 
             return {
@@ -329,23 +334,23 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
             integral_u = sp.integrate(integrand_u, u_sym)
 
             steps.append(
-                f"เป้าหมาย / กฎที่ใช้ (Goal / Rule): ใช้เทคนิคการเปลี่ยนตัวแปร (u-Substitution) โดยเลือกฟังก์ชันก้อนในที่มีอนุพันธ์คูณร่วมอยู่"
+                f"เลือกวิธี: การเปลี่ยนตัวแปร (Integration by substitution) โดยเลือกฟังก์ชันก้อนในที่มีอนุพันธ์คูณร่วมอยู่"
             )
             steps.append(
-                f"นิพจน์หลังแทนค่า (Substituted expression): กำหนดตัวแปร $u = {_to_latex(u_cand)}$ ส่งผลให้หาอนุพันธ์ได้ $du = {_to_latex(du_cand)} \\, d{v_lat}$ หรือ $d{v_lat} = \\frac{{du}}{{{_to_latex(du_cand)}}}$"
+                f"กำหนดตัวแปร: กำหนดตัวแปร $u = {_to_latex(u_cand)}$ จะได้ $du = {_to_latex(du_cand)} \\, d{v_lat}$ หรือ $d{v_lat} = \\frac{{du}}{{{_to_latex(du_cand)}}}$"
             )
             steps.append(
-                f"พีชคณิตระหว่างทาง (Intermediate algebra): แทนค่า $u$ และ $d{v_lat}$ ลงในโจทย์ ทำให้ตัวแปร ${v_lat}$ ถูกตัดทอนทั้งหมด: $\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(integrand_u)} \\, du$"
+                f"เปลี่ยนรูปปริพันธ์: แทนค่า $u$ และ $d{v_lat}$ ในโจทย์ ทำให้เหลือเฉพาะตัวแปร $u$:\n$\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(integrand_u)} \\, du$"
             )
             steps.append(
                 f"คำนวณปริพันธ์เทียบกับตัวแปร u: $\\int {_to_latex(integrand_u)} \\, du = {_to_latex(integral_u)} + C$"
             )
             steps.append(
-                f"แทนค่ากลับ (Back-substitution): แทนค่า $u = {_to_latex(u_cand)}$ คืนสู่ตัวแปรเดิม: ${_to_latex(antideriv)} + C$"
+                f"แทนค่ากลับ: แทนค่า $u = {_to_latex(u_cand)}$ กลับคืน:\n${_to_latex(antideriv)} + C$"
             )
             steps.append(domain_note)
             steps.append(
-                f"ผลลัพธ์แม่นตรง (Exact result): $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$"
+                f"สรุปผลลัพธ์: $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$"
             )
 
             return {
@@ -365,11 +370,11 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
 
         # เส้นทางทั่วไป (Standard rules)
         steps.append(
-            "เป้าหมาย / กฎที่ใช้ (Goal / Rule): คำนวณปริพันธ์โดยใช้สูตรพื้นฐานของแคลคูลัส (Basic Integration Rules)"
+            "คำนวณปริพันธ์โดยใช้สูตรพื้นฐานของแคลคูลัส"
         )
         steps.append(domain_note)
         steps.append(
-            f"ผลลัพธ์แม่นตรง (Exact result): $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$"
+            f"สรุปผลลัพธ์: $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$"
         )
 
         return {

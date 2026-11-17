@@ -77,7 +77,7 @@ st.markdown(
             </span>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span class="home-stat-pill">7 โมดูลจำลอง</span>
+            <span class="home-stat-pill">6 โมดูลจำลอง</span>
             <span class="home-stat-pill">SymPy CAS</span>
             <span class="home-stat-pill">80 ข้อสอบ</span>
             <span class="home-stat-pill">KU KPS</span>
@@ -89,14 +89,14 @@ st.markdown(
 
 search_query = st.text_input(
     label="ค้นหาบทเรียนหรือเครื่องมือ...",
-    placeholder="พิมพ์เพื่อค้นหา เช่น ลิมิต, รีมันน์, ปริมาตร, u-sub...",
+    placeholder="พิมพ์เพื่อค้นหา เช่น ลิมิต, การแทนตัวแปร, อินทิเกรตทีละส่วน...",
     key="home_search",
 )
 
 cards_data = [
     {
-        "title": "1. ลิมิตเข้าใกล้จุด",
-        "subtitle": "สำรวจการลู่เข้า ลิมิตสองด้าน และรูปแบบไม่กำหนด (Indeterminate Forms)",
+        "title": "1. ลิมิต",
+        "subtitle": "สำรวจการลู่เข้า ลิมิตสองด้าน และรูปแบบยังไม่กำหนด",
         "badge": "บทเรียนที่ 1 • แคลคูลัส 1",
         "badge_color": "#FECDD3",
         "btn_label": "เข้าสู่บทเรียนที่ 1",
@@ -113,22 +113,22 @@ cards_data = [
         "key": "btn_card_tangent",
     },
     {
-        "title": "3. ผลรวมรีมันน์ (Riemann Sum)",
-        "subtitle": "จำลองพื้นที่ใต้กราฟด้วยแท่งสี่เหลี่ยมและการลู่เข้าสู่ค่าอินทิกรัลจริง",
-        "badge": "บทเรียนที่ 3 • ปริพันธ์",
-        "badge_color": "#BAE6FD",
-        "btn_label": "เข้าสู่บทเรียนที่ 3",
-        "target": "pages/riemann.py",
-        "key": "btn_card_riemann",
-    },
-    {
-        "title": "4. เทคนิคการอินทิเกรต",
-        "subtitle": "ฝึกตัดสินใจเลือกตัวแปร u-Substitution และ Integration by Parts",
-        "badge": "บทเรียนที่ 4 • เทคนิคอินทิเกรต",
+        "title": "3. อินทิเกรตโดยการแทนตัวแปร",
+        "subtitle": "ฝึกตัดสินใจเลือกตัวแปร u และ du เพื่อลดทอนรูปอินทิกรัลให้เป็นรูปพื้นฐาน",
+        "badge": "บทเรียนที่ 3 • u-Substitution",
         "badge_color": "#BBF7D0",
-        "btn_label": "เข้าสู่บทเรียนที่ 4",
+        "btn_label": "เข้าสู่บทเรียนที่ 3",
         "target": "pages/substitution.py",
         "key": "btn_card_sub",
+    },
+    {
+        "title": "4. การอินทิเกรตทีละส่วน",
+        "subtitle": "สร้างมโนทัศน์การเลือก u และ dv ตามกฎ LIATE พร้อมเทคนิคการอินทิเกรตแบบวนลูป",
+        "badge": "บทเรียนที่ 4 • By Parts",
+        "badge_color": "#BAE6FD",
+        "btn_label": "เข้าสู่บทเรียนที่ 4",
+        "target": "pages/by_parts.py",
+        "key": "btn_card_by_parts",
     },
     {
         "title": "5. พื้นที่ระหว่างเส้นโค้ง",
@@ -140,20 +140,11 @@ cards_data = [
         "key": "btn_card_area",
     },
     {
-        "title": "6. ปริมาตรของรูปทรงตัน",
-        "subtitle": "คำนวณปริมาตรทรงตันที่เกิดจากการหมุนรอบแกนด้วยวิธีจาน (Disk Method)",
-        "badge": "บทเรียนที่ 6 • ปริมาตรหมุน",
-        "badge_color": "#E9D5FF",
-        "btn_label": "เข้าสู่บทเรียนที่ 6",
-        "target": "pages/volume_revolution.py",
-        "key": "btn_card_volume",
-    },
-    {
-        "title": "7. ปริพันธ์ไม่ตรงแบบ",
-        "subtitle": "สำรวจการลู่เข้าหรือลู่ออกบนช่วงอนันต์และจุดเอกฐาน (Singularities)",
-        "badge": "บทเรียนที่ 7 • ปริพันธ์ขั้นสูง",
+        "title": "6. ปริพันธ์ไม่ตรงแบบ",
+        "subtitle": "สำรวจการลู่เข้าหรือลู่ออกบนช่วงอนันต์และจุดเอกฐาน",
+        "badge": "บทเรียนที่ 6 • ปริพันธ์ขั้นสูง",
         "badge_color": "#FBCFE8",
-        "btn_label": "เข้าสู่บทเรียนที่ 7",
+        "btn_label": "เข้าสู่บทเรียนที่ 6",
         "target": "pages/improper_integrals.py",
         "key": "btn_card_improper",
     },

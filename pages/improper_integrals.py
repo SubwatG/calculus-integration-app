@@ -44,11 +44,11 @@ with st.container(border=True):
         "การหาพื้นที่บนช่วงอนันต์หรือจุดที่ฟังก์ชันมีความไม่ต่อเนื่อง (จุดเอกฐาน) ต้องนิยามผ่านกระบวนการเทคลิมิตของ definite integral เสมอ:"
     )
 
-    st.latex(r"\int_a^\infty f(x)\,dx = \lim_{t \to \infty} \int_a^t f(x)\,dx \quad \left(\text{ถ้าลิมิตมีค่าจริง } \implies \text{ลู่เข้า / Converges}\right)")
+    st.latex(r"\int_a^\infty f(x)\,dx = \lim_{t \to \infty} \int_a^t f(x)\,dx \quad \left(\text{ถ้าลิมิตมีค่าจริง } \implies \text{ลู่เข้า}\right)")
 
     st.info(
         """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
-- **การลู่เข้า vs ลู่ออก (Convergence vs Divergence):** สังเกตว่าเมื่อขอบเขตขยายสู่อนันต์ พื้นที่ใต้กราฟหยุดสะสมและคงที่ (ลู่เข้า) หรือโตขึ้นเรื่อย ๆ ไม่สิ้นสุด (ลู่ออก)
+- **การลู่เข้าหรือลู่ออก:** สังเกตว่าเมื่อขอบเขตขยายสู่อนันต์ พื้นที่ใต้กราฟหยุดสะสมและคงที่ (ลู่เข้า) หรือโตขึ้นเรื่อย ๆ ไม่สิ้นสุด (ลู่ออก)
 - **การทดสอบด้วยอันดับ ($p$-Integral Test):** บนช่วง $[1, \\infty)$ ฟังก์ชัน $\\frac{1}{x^p}$ จะลู่เข้าเมื่อ $p > 1$ และจะลู่ออกเมื่อ $p \\le 1$"""
     )
 
@@ -131,13 +131,13 @@ else:
 
         status = res.get("status")
         if status == "divergent":
-            st.warning("ปริพันธ์นี้ลู่ออก (Divergent) ไม่ลู่เข้าสู่ค่าจำกัด")
+            st.warning("ปริพันธ์นี้ลู่ออก ไม่ลู่เข้าสู่ค่าจำกัด")
         elif status == "unsupported":
             st.info("ยังไม่สามารถหาค่าปริพันธ์นี้ในรูปแบบปิดได้")
 
         st.divider()
 
-        st.markdown("### กราฟการลู่เข้าและพื้นที่ใต้กราฟ (Improper Integral Visualization)")
+        st.markdown("### กราฟการลู่เข้าและพื้นที่ใต้กราฟ")
         try:
             fig, ax = plot_improper(res["expr"], a_input, b_input)
             st.pyplot(fig)

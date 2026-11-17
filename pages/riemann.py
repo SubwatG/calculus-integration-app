@@ -43,7 +43,7 @@ with st.container(border=True):
             unsafe_allow_html=True,
         )
     with col_concept:
-        st.markdown("**การประมาณพื้นที่ใต้กราฟสู่ค่าอินทิกรัลจริง (Riemann Sum to Definite Integral)**")
+        st.markdown("**การประมาณพื้นที่ใต้กราฟสู่ค่าปริพันธ์จำกัดเขต**")
 
     st.markdown(
         "พื้นที่ใต้กราฟคำนวณจากผลรวมของพื้นที่แท่งสี่เหลี่ยมผืนผ้า $n$ แท่ง เมื่อซอยย่อยให้ละเอียดไม่สิ้นสุด ($n \\to \\infty$):"
@@ -53,8 +53,8 @@ with st.container(border=True):
 
     st.info(
         """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
-- **การลู่เข้า (Convergence):** ลองเลื่อนสไลเดอร์เพิ่ม $n$ สังเกตช่องว่างส่วนเกิน/ส่วนขาดจะเล็กลงจนผลรวมเข้าใกล้ค่าจริง
-- **ทิศทางการประมาณ:** สำหรับฟังก์ชันเพิ่ม ($f' > 0$) ค่า $L_n$ จะประเมินต่ำกว่าจริง (Underestimate) ส่วน $R_n$ จะประเมินสูงกว่าจริง (Overestimate)"""
+- **การลู่เข้า:** ลองเลื่อนสไลเดอร์เพิ่ม $n$ สังเกตช่องว่างส่วนเกินหรือส่วนขาดจะเล็กลงจนผลรวมเข้าใกล้ค่าจริง
+- **ทิศทางการประมาณ:** สำหรับฟังก์ชันเพิ่ม ($f' > 0$) ค่า $L_n$ จะประเมินต่ำกว่าจริง ส่วน $R_n$ จะประเมินสูงกว่าจริง"""
     )
 
 with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
@@ -139,7 +139,7 @@ else:
             st.info(f"ตรวจพบตัวแปร **${v_name}$**: ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
 
         if res.get("has_negative_region") and res.get("negative_warning"):
-            st.warning(f"พื้นที่คิดเครื่องหมาย (Net Signed Area): {res['negative_warning']}")
+            st.warning(f"พื้นที่คิดเครื่องหมาย: {res['negative_warning']}")
 
         comp = res.get("methods_comparison")
         if comp:
@@ -147,13 +147,13 @@ else:
             c1, c2, c3 = st.columns(3)
             with c1:
                 left_d = comp.get("left", {})
-                st.metric("ปลายขอบซ้าย (Left)", f"{left_d.get('val', 0):.4f}", f"{left_d.get('error_pct', 0):+.2f}%")
+                st.metric("จุดปลายขอบซ้าย", f"{left_d.get('val', 0):.4f}", f"{left_d.get('error_pct', 0):+.2f}%")
             with c2:
                 mid_d = comp.get("midpoint", {})
-                st.metric("จุดกึ่งกลาง (Midpoint)", f"{mid_d.get('val', 0):.4f}", f"{mid_d.get('error_pct', 0):+.2f}%")
+                st.metric("จุดกึ่งกลาง", f"{mid_d.get('val', 0):.4f}", f"{mid_d.get('error_pct', 0):+.2f}%")
             with c3:
                 right_d = comp.get("right", {})
-                st.metric("ปลายขอบขวา (Right)", f"{right_d.get('val', 0):.4f}", f"{right_d.get('error_pct', 0):+.2f}%")
+                st.metric("จุดปลายขอบขวา", f"{right_d.get('val', 0):.4f}", f"{right_d.get('error_pct', 0):+.2f}%")
 
         st.markdown("### ผลลัพธ์การประมาณค่า")
         render_latex(res["latex"])
