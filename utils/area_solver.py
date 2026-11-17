@@ -5,6 +5,7 @@
 ตามเกณฑ์ Universal Step Contract
 """
 import math
+import re
 import sympy as sp
 from sympy.parsing.sympy_parser import (
     convert_xor,
@@ -30,8 +31,12 @@ X = sp.Symbol("x", real=True)
 
 
 def _to_latex(sym_obj) -> str:
-    lat = sp.latex(sym_obj)
-    return lat.replace(r"\log", r"\ln")
+    lat = sp.latex(sym_obj, inv_trig_style="full")
+    lat = lat.replace(r"\log", r"\ln")
+    lat = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", lat)
+    lat = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", lat)
+    lat = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", lat)
+    return lat
 
 
 def _parse_input(expr_str: str) -> sp.Expr:
@@ -270,15 +275,15 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         # -------------------------------------------------------------
         steps = [
             f"กำหนดฟังก์ชัน: $f({v_lat}) = {_to_latex(f_raw)}, \\quad g({v_lat}) = {_to_latex(g_raw)}$ บนช่วง $[{a_disp}, {b_disp}]$",
-            f"เป้าหมาย / กฎที่ใช้ (Goal / Rule): ตั้งสูตรอินทิกรัลพื้นที่เรขาคณิต (Geometric Area) $A = \\int_{{{a_disp}}}^{{{b_disp}}} |f({v_lat}) - g({v_lat})| \\, d{v_lat}$ "
-            f"โดยใช้ค่าสัมบูรณ์ (Absolute value) เพื่อไม่ให้พื้นที่บริเวณที่เส้นโค้งสลับบน-ล่างหักล้างกัน",
-            f"พีชคณิตระหว่างทาง (Intermediate algebra): หาผลต่างของฟังก์ชัน $f({v_lat}) - g({v_lat}) = {_to_latex(diff_expr)}$",
+            f"ตั้งสูตรหาพื้นที่: $A = \\int_{{{a_disp}}}^{{{b_disp}}} |f({v_lat}) - g({v_lat})| \\, d{v_lat}$ "
+            f"โดยใช้ค่าสัมบูรณ์เพื่อป้องกันการหักล้างกันของพื้นที่",
+            f"หาผลต่างของฟังก์ชัน: $f({v_lat}) - g({v_lat}) = {_to_latex(diff_expr)}$",
         ]
 
         if crossings_float:
             roots_str = ", ".join(f"${v_lat} = {_format_bound_latex(r)}$" for r in cuts[1:-1])
             steps.append(
-                f"หาจุดตัด (Intersections): แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ พบจุดตัดภายในช่วงที่ {roots_str} "
+                f"หาจุดตัดของเส้นโค้ง: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ พบจุดตัดภายในช่วงที่ {roots_str} "
                 f"จึงแบ่งการคำนวณออกเป็น {len(cuts) - 1} ช่วงย่อยเพื่อปลดเครื่องหมายค่าสัมบูรณ์"
             )
             steps.extend(sub_steps)
@@ -298,12 +303,12 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
                 is_pos = True
             if is_pos:
                 steps.append(
-                    f"หาจุดตัด (Intersections): แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
+                    f"หาจุดตัดของเส้นโค้ง: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
                     f"โดยบนช่วงนี้ $f({v_lat}) \\geq g({v_lat})$ ดังนั้น $|f({v_lat}) - g({v_lat})| = f({v_lat}) - g({v_lat})$"
                 )
             else:
                 steps.append(
-                    f"หาจุดตัด (Intersections): แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
+                    f"หาจุดตัดของเส้นโค้ง: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
                     f"โดยบนช่วงนี้ $g({v_lat}) \\geq f({v_lat})$ (เส้นโค้ง $g$ อยู่เหนือ $f$) "
                     f"ดังนั้นจึงสลับเครื่องหมายค่าสัมบูรณ์: $|f({v_lat}) - g({v_lat})| = g({v_lat}) - f({v_lat}) = {_to_latex(-diff_expr)}$"
                 )
@@ -312,10 +317,10 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             )
 
         steps.append(
-            f"เงื่อนไขโดเมน (Domain restriction): ฟังก์ชันทั้งสองมีความต่อเนื่องบนช่วงปิด $[{a_disp}, {b_disp}]$"
+            f"เงื่อนไขความต่อเนื่อง: ฟังก์ชันทั้งสองมีความต่อเนื่องบนช่วงปิด $[{a_disp}, {b_disp}]$"
         )
         steps.append(
-            f"ผลลัพธ์แม่นตรง (Exact result): คำนวณพื้นที่เรขาคณิตรวม: $A = {_to_latex(area_val)} \\approx {res_float:.6g}$"
+            f"สรุปผลลัพธ์: พื้นที่รวม $A = {_to_latex(area_val)} \\approx {res_float:.6g}$ ตารางหน่วย"
         )
 
         return {
