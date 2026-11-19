@@ -9,6 +9,7 @@ import sympy as sp
 
 from utils.keypad import render_math_keypad
 from utils.math_render import format_inverse_trig, preview_math_expr, render_latex, render_steps, render_syntax_guide
+from utils.special_functions import describe_special_functions, special_functions_in
 from utils.substitution_solver import (
     get_suggested_u_candidates,
     solve_substitution,
@@ -339,8 +340,11 @@ with tab_auto:
                 st.markdown("##### ผลลัพธ์การคำนวณ")
                 render_latex(res["latex"])
 
-                if res.get("status") == "non_elementary":
-                    st.warning("ข้อสังเกต: ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน (Non-Elementary Function) คำตอบอยู่ในรูปฟังก์ชันพิเศษ เช่น erf, Si, li")
+                special_names = special_functions_in(res.get("result"))
+                if special_names:
+                    st.info(describe_special_functions(special_names))
+                elif res.get("status") == "non_elementary":
+                    st.warning("ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน")
                 elif res.get("method") == "by_parts":
                     st.warning("ข้อสังเกต: โจทย์ข้อนี้ไม่สามารถแก้ด้วยการแทนตัวแปร u ได้ แนะนำให้ใช้วิธีการอินทิเกรตทีละส่วน (Integration by Parts)")
                 elif res.get("u_candidate") is not None:

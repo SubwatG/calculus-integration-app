@@ -9,6 +9,7 @@ from utils.improper_solver import compute_improper
 from utils.math_render import preview_math_expr, render_latex, render_syntax_guide, render_steps
 from utils.plotter import plot_improper
 from utils.riemann_solver import X
+from utils.special_functions import describe_special_functions, numeric_approximation, special_functions_in
 from utils.theme import inject_css, render_hero
 from utils.theory import THEORY_CONTENT
 
@@ -128,6 +129,12 @@ else:
 
         st.markdown("### ผลลัพธ์")
         render_latex(res["latex"])
+        special_names = special_functions_in(res.get("result"))
+        if special_names:
+            st.info(describe_special_functions(special_names))
+            approximation = numeric_approximation(res.get("result"))
+            if approximation is not None:
+                st.caption(f"ค่าประมาณ: {approximation}")
 
         status = res.get("status")
         if status == "divergent":

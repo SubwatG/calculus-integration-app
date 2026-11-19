@@ -10,6 +10,7 @@ import sympy as sp
 from utils.by_parts_solver import solve_by_parts
 from utils.keypad import render_math_keypad
 from utils.math_render import format_inverse_trig, preview_math_expr, render_latex, render_steps, render_syntax_guide
+from utils.special_functions import describe_special_functions, special_functions_in
 from utils.theme import render_hero
 
 render_hero(
@@ -266,8 +267,13 @@ if st.button("คำนวณผลลัพธ์", type="primary", key="btn_by
             st.markdown("#### ผลลัพธ์การคำนวณ")
             render_latex(res["latex"])
 
-            if res.get("status") == "better_suited_for_substitution":
+            special_names = special_functions_in(res.get("result"))
+            if special_names:
+                st.info(describe_special_functions(special_names))
+            elif res.get("status") == "better_suited_for_substitution":
                 st.warning(res.get("warning", "โจทย์ข้อนี้เหมาะสมกับการใช้การแทนตัวแปร u มากกว่าการอินทิเกรตทีละส่วน"))
+            elif res.get("status") == "non_elementary":
+                st.warning("ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน")
             elif res.get("parts_info"):
                 p = res["parts_info"]
                 u_lat = format_inverse_trig(sp.latex(p["u"]))

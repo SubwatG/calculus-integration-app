@@ -2,6 +2,7 @@ import streamlit as st
 import sympy as sp
 from utils.keypad import render_math_keypad
 from utils.math_render import format_inverse_trig, preview_math_expr, render_latex, render_steps, render_syntax_guide
+from utils.special_functions import describe_special_functions, special_functions_in
 from utils.sympy_solver import compute_limit, detect_variable, differentiate, integrate
 from utils.theme import render_hero
 
@@ -154,6 +155,10 @@ if res:
             st.success(f"**คำนวณสำเร็จเทียบกับตัวแปรอัตโนมัติ:** `{res_var}`")
         st.markdown("### สมการผลลัพธ์")
         render_latex(res["latex"])
+        if current_op == "อินทิเกรต":
+            special_names = special_functions_in(res.get("result"))
+            if special_names:
+                st.info(describe_special_functions(special_names))
 
         # Comprehensive Result Explanation & Interpretation
         with st.container(border=True):
