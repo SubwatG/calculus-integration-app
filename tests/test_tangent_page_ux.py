@@ -40,7 +40,7 @@ RIGHT_ARROW = "\u2192"
 
 # Expander names the refactor must expose (content preserved, not deleted)
 NAMED_EXPANDERS = {
-    "มโนทัศน์หลัก: ความชันเส้นสัมผัสมาจากลิมิตของเส้นตัดอย่างไร?",
+    "แนวคิดหลัก: ความชันเส้นสัมผัสมาจากลิมิตของเส้นตัดอย่างไร?",
     "รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม",
     "วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)",
 }
@@ -95,14 +95,14 @@ class TestPageLayout:
     def test_theory_section_precedes_experiment_section(self):
         at = _render("x^2", 1.0)
         md = [m.value for m in at.markdown]
-        idx_theory = next(i for i, v in enumerate(md) if "### มโนทัศน์หลักและทฤษฎี" in v)
+        idx_theory = next(i for i, v in enumerate(md) if "### แนวคิดหลักและทฤษฎี" in v)
         idx_experiment = next(i for i, v in enumerate(md) if "ลองสำรวจเส้นสัมผัส" in v)
         assert idx_theory < idx_experiment
 
     def test_theory_appears_before_the_result_metric(self):
         at = _render("x^2", 1.0)
         md = [m.value for m in at.markdown]
-        idx_theory = next(i for i, v in enumerate(md) if "### มโนทัศน์หลักและทฤษฎี" in v)
+        idx_theory = next(i for i, v in enumerate(md) if "### แนวคิดหลักและทฤษฎี" in v)
         idx_result = next(i for i, v in enumerate(md) if v.startswith("### ผลลัพธ์สมการเส้นสัมผัส"))
         assert idx_theory < idx_result
 
@@ -113,7 +113,7 @@ class TestPageLayout:
         # source order: theory block, then the tangent-point control, then the plot call
         i_ctrl = PAGE_SRC.index("จุดสัมผัส a เลื่อนแล้วกราฟ")
         i_plot = PAGE_SRC.index("st.pyplot(fig)")
-        i_theory = PAGE_SRC.index("### มโนทัศน์หลักและทฤษฎี")
+        i_theory = PAGE_SRC.index("### แนวคิดหลักและทฤษฎี")
         assert i_theory < i_ctrl < i_plot
 
     def test_named_expanders_present(self):
@@ -124,11 +124,11 @@ class TestPageLayout:
     def test_concept_anchor_is_a_named_expander_not_open_container(self):
         at = _render("x^2", 1.0)
         labels = {e.label for e in at.expander}
-        assert "มโนทัศน์หลัก: ความชันเส้นสัมผัสมาจากลิมิตของเส้นตัดอย่างไร?" in labels
+        assert "แนวคิดหลัก: ความชันเส้นสัมผัสมาจากลิมิตของเส้นตัดอย่างไร?" in labels
         # The badge + concept block must sit inside that expander, i.e. before the
         # experiment header in source order (no fully open top-of-page container).
         i_experiment = PAGE_SRC.index("### ลองสำรวจเส้นสัมผัส")
-        i_badge = PAGE_SRC.index("มโนทัศน์หลัก</span>")
+        i_badge = PAGE_SRC.index("แนวคิดหลัก</span>")
         assert i_badge < i_experiment
         assert "with st.container(border=True):\n    col_badge" not in PAGE_SRC
         # Content preserved inside the expander.

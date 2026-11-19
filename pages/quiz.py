@@ -264,7 +264,7 @@ if st.session_state.quiz_done:
                     สุดยอดมาก! ผ่านการทดสอบระดับยอดเยี่ยม
                 </h3>
                 <p style="font-family: 'Mali', sans-serif; font-size: 1.05rem; font-weight: 600; color: #18181B; margin: 0;">
-                    มีความเข้าใจมโนทัศน์แคลคูลัสอย่างแม่นยำ พร้อมลุยบทเรียนต่อไปได้เลย!
+                    มีความเข้าใจแนวคิดแคลคูลัสอย่างแม่นยำ พร้อมลุยบทเรียนต่อไปได้เลย!
                 </p>
             </div>
             """,
@@ -273,7 +273,7 @@ if st.session_state.quiz_done:
     elif percentage >= 50:
         st.info("ผลการประเมิน: ระดับผ่านเกณฑ์ มีความเข้าใจพื้นฐานที่ดี สามารถทบทวนเพิ่มเติมในหัวข้อที่ตอบผิดได้จากหน้าบทเรียน")
     else:
-        st.warning("ผลการประเมิน: ควรทบทวนเพิ่มเติม แนะนำให้ใช้เครื่องมือจำลองในหน้ารีมันน์และการแทนค่าตัวแปรเพื่อสร้างมโนทัศน์")
+        st.warning("ผลการประเมิน: ควรทบทวนเพิ่มเติม แนะนำให้ใช้เครื่องมือจำลองในหน้ารีมันน์และการแทนค่าตัวแปรเพื่อสร้างแนวคิด")
 
     st.divider()
     st.markdown("### สรุปคำตอบและคำอธิบายรายข้อ")
@@ -316,7 +316,7 @@ else:
         revealed = st.session_state.quiz_revealed
         show_hint = st.session_state.quiz_show_hint
         current_choice = st.session_state.quiz_current_choice
-        topic_name = TOPIC_LABELS.get(QUIZ_TOPIC, "มโนทัศน์")
+        topic_name = TOPIC_LABELS.get(QUIZ_TOPIC, "แนวคิด")
 
         # Top Bauhaus Status Header
         st.markdown(
@@ -436,7 +436,7 @@ else:
                                 ถูกต้องยอดเยี่ยม! +1 คะแนน
                             </div>
                             <div style="font-family: 'Mali', sans-serif; font-size: 0.9rem; color: #15803D; font-weight: 600;">
-                                มโนทัศน์แม่นยำมาก เก่งมากครับ!
+                                เข้าใจแนวคิดแม่นยำมาก เก่งมากครับ!
                             </div>
                         </div>
                     </div>

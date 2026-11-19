@@ -415,7 +415,7 @@ def compute_riemann(
             f"เปรียบเทียบกับปริพันธ์จำกัดเขต: "
             f"เปรียบเทียบค่าประมาณ ${method_latex}$ กับค่าจริงจากปริพันธ์จำกัดเขต:\n"
             f"{comp_lines}\n"
-            f"ข้อสังเกตมโนทัศน์: เมื่อ $n \\to \\infty$ จะได้ $\\Delta {v_lat} \\to 0$ และค่าผลรวมรีมันน์ ${method_latex} \\to \\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {_to_latex(expr)}\\,d{v_lat}$",
+            f"ข้อสังเกตเชิงแนวคิด: เมื่อ $n \\to \\infty$ จะได้ $\\Delta {v_lat} \\to 0$ และค่าผลรวมรีมันน์ ${method_latex} \\to \\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {_to_latex(expr)}\\,d{v_lat}$",
         ]
 
         return {

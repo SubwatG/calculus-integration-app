@@ -28,7 +28,7 @@ if "volume_inner" not in st.session_state:
 theory = THEORY_CONTENT["volume"]
 
 # ---------------------------------------------------------------------------
-# Concept Anchor & What to Observe (มโนทัศน์หลักและจุดสังเกต)
+# Concept Anchor & What to Observe (แนวคิดหลักและจุดสังเกต)
 # ---------------------------------------------------------------------------
 with st.container(border=True):
     col_badge, col_concept = st.columns([1, 4])

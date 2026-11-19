@@ -236,7 +236,7 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
             status = "non_elementary"
             warning = "ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน (Non-Elementary Antiderivative)"
             steps.append(
-                "ข้อสังเกตเชิงมโนทัศน์: ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน (Non-Elementary Antiderivative) ตามทฤษฎีบทของ Liouville จึงไม่สามารถหาผลลัพธ์ด้วยเทคนิคการเปลี่ยนตัวแปรหรือ By Parts ปกติได้"
+                "ข้อสังเกตเชิงแนวคิด: ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน (Non-Elementary Antiderivative) ตามทฤษฎีบทของ Liouville จึงไม่สามารถหาผลลัพธ์ด้วยเทคนิคการเปลี่ยนตัวแปรหรือ By Parts ปกติได้"
             )
             steps.append(
                 f"ผลลัพธ์อยู่ในรูปฟังก์ชันพิเศษระดับสูง: $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$"

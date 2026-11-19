@@ -19,7 +19,7 @@ render_hero("ปริพันธ์ไม่ตรงแบบ", "สำรว
 theory = THEORY_CONTENT["improper"]
 
 # ---------------------------------------------------------------------------
-# Concept Anchor & What to Observe (มโนทัศน์หลักและจุดสังเกต)
+# Concept Anchor & What to Observe (แนวคิดหลักและจุดสังเกต)
 # ---------------------------------------------------------------------------
 with st.container(border=True):
     col_badge, col_concept = st.columns([1, 4])

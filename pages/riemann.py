@@ -23,7 +23,7 @@ render_hero("พื้นที่ภายใต้เส้นโค้ง", "
 theory = THEORY_CONTENT["riemann_sum"]
 
 # ---------------------------------------------------------------------------
-# Concept Anchor & What to Observe (มโนทัศน์หลักและจุดสังเกต)
+# Concept Anchor & What to Observe (แนวคิดหลักและจุดสังเกต)
 # ---------------------------------------------------------------------------
 with st.container(border=True):
     col_badge, col_concept = st.columns([1, 4])

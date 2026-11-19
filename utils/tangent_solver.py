@@ -234,7 +234,7 @@ def _build_finite_tangent_steps(
         f"สมการเส้นสัมผัสคือ $y = {_to_latex(sp.simplify(tangent_eq))}$ (จุดตัดแกน $y$ คือ $(0, {_to_latex(c_val)})$)"
     )
 
-    # Step 7: มโนทัศน์เพิ่มเติม Local Linear Approximation และ Normal Line
+    # Step 7: แนวคิดเพิ่มเติม Local Linear Approximation และ Normal Line
     if slope_sym != 0:
         normal_m = -1 / slope_sym
         normal_eq = normal_m * (var_sym - a_sym) + fa_sym
@@ -249,7 +249,7 @@ def _build_finite_tangent_steps(
         )
 
     step7 = (
-        f"มโนทัศน์เพิ่มเติมและเส้นแนวฉาก: "
+        f"แนวคิดเพิ่มเติมและเส้นแนวฉาก: "
         f"1. การประมาณค่าเชิงเส้น: $L({v_lat}) = {_to_latex(sp.simplify(tangent_eq))}$ เมื่อ ${v_lat} \\approx {a_lat}$\n"
         f"{normal_desc}"
     )
