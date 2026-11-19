@@ -178,7 +178,7 @@ else:
             st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
 
         # วิธีทำฉบับเต็มอยู่ใน expander ที่ตั้งชื่อชัดเจน
-        with st.expander("วิธีทำทีละขั้นตอน", expanded=False):
+        with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)", expanded=False):
             render_steps(res["steps"])
     else:
         st.error(res["error"])

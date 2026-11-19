@@ -568,7 +568,7 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
             # Level 6: Oscillating Singularity
             status = "dne"
             steps.append(
-                f"ข้อสังเกตเชิงมโนทัศน์: ฟังก์ชันมีการแกว่งกวัดไม่สิ้นสุดในช่วง $\\langle -1, 1\\rangle$ เมื่อเข้าใกล้จุด ${v_lat} = {a_str}$ ค่าจึงไม่ลู่เข้าหาจำนวนจริงใดจำนวนหนึ่ง"
+                f"ข้อสังเกต: ฟังก์ชันมีการแกว่งกวัดไม่สิ้นสุดในช่วง $\\langle -1, 1\\rangle$ เมื่อเข้าใกล้จุด ${v_lat} = {a_str}$ ค่าจึงไม่ลู่เข้าหาจำนวนจริงใดจำนวนหนึ่ง"
             )
             steps.append(
                 f"สรุปผล (ไม่มีลิมิตเนื่องจากการแกว่งกวัด): \\lim_{{{v_lat} \\to {a_str}}} \\left({expr_tex}\\right) \\quad \\text{{(does not exist)}}"

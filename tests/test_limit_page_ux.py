@@ -42,8 +42,8 @@ EMOJI = re.compile("[\U0001F300-\U0001FAFF\u2600-\u26FF\u2700-\u27BF\u2B00-\u2BF
 NAMED_EXPANDERS = {
     "ควรเลือกวิธีหาลิมิตอย่างไร?",
     "รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม",
-    "มโนทัศน์ลิมิตซ้าย-ขวา และเหตุใดบางโจทย์จึงต้องแยกพิจารณา",
-    "มโนทัศน์: ลิมิตที่อนันต์และเส้นกำกับแนวนอน",
+    "ลิมิตซ้าย-ขวา และการพิจารณาลิมิตสองด้าน",
+    "ลิมิตที่อนันต์และเส้นกำกับแนวนอน",
 }
 
 
@@ -173,7 +173,7 @@ class TestPageLayout:
         # source order: delta control, then the plot call, then the theory divider
         i_delta = PAGE_SRC.index("ระยะ delta ควบคุมช่วงที่กราฟ")
         i_plot = PAGE_SRC.index("st.pyplot(fig)")
-        i_theory = PAGE_SRC.index("### มโนทัศน์หลักและทฤษฎี")
+        i_theory = PAGE_SRC.index("### ทฤษฎีบทและหลักการสำคัญ")
         assert i_delta < i_plot < i_theory
 
     def test_named_expanders_present(self):

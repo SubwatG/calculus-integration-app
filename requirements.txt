@@ -3,3 +3,5 @@ sympy>=1.14
 pytest>=8.0
 matplotlib>=3.9
 numpy>=1.26
+plotly>=5.24.0
+

@@ -1,4 +1,4 @@
-"""utils/substitution_solver.py — การอินทิเกรตโดยการแทนตัวแปรและเทคนิคการอินทิเกรต
+"""utils/substitution_solver.py - การอินทิเกรตโดยการแทนตัวแปรและเทคนิคการอินทิเกรต
 
 รองรับการตรวจหาตัวแปร u เชิงสัญลักษณ์, เทคนิคการอินทิเกรตทีละส่วน (Integration by Parts),
 และการจำแนกฟังก์ชันที่ไม่เป็นฟังก์ชันมูลฐาน (Non-elementary integrals)
@@ -405,3 +405,293 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
             "warning": None,
             "error": f"ไม่สามารถคำนวณได้: {e}",
         }
+
+
+def check_standard_form(h: sp.Expr, var: sp.Symbol) -> bool:
+    """ตรวจสอบว่านิพจน์ h(var) อยู่ในรูปผลรวมของฟังก์ชันพื้นฐานที่หาอินทิกรัลได้โดยตรงหรือไม่"""
+    try:
+        expanded = sp.expand(h)
+        terms = sp.Add.make_args(expanded)
+        for t in terms:
+            c, r = t.as_coeff_Mul()
+            if r == 1 or r == var:
+                continue
+            if isinstance(r, sp.Pow) and r.base == var:
+                continue
+            if r == sp.exp(var):
+                continue
+            if r in (sp.sin(var), sp.cos(var), sp.sec(var)**2, sp.csc(var)**2):
+                continue
+            if r == 1 / (var**2 + 1):
+                continue
+            return False
+        return True
+    except Exception:
+        return False
+
+
+def get_suggested_u_candidates(expr_str: str, var: str | sp.Symbol | None = None) -> list[str]:
+    """สร้างรายการตัวเลือกฟังก์ชัน u ที่น่าสนใจสำหรับโจทย์ที่กำหนด เพื่อให้ผู้เรียนได้ทดลองเลือก"""
+    try:
+        clean_expr, diff_var = _clean_calculus_input(expr_str)
+        expr = _parse_input(clean_expr)
+        if var is None:
+            var_sym = sp.Symbol(diff_var) if diff_var is not None else _get_variable(expr)
+        elif isinstance(var, str):
+            var_sym = sp.Symbol(var)
+        else:
+            var_sym = var
+
+        cands = []
+        best_u, _ = _detect_u_candidate(expr, var_sym)
+        if best_u is not None:
+            cands.append(best_u)
+
+        for node in expr.atoms(sp.Pow):
+            if node.base != var_sym and node.base.has(var_sym) and not node.base.is_number:
+                cands.append(node.base)
+            if node.has(var_sym) and not node.is_number and node != var_sym:
+                cands.append(node)
+
+        for cls in (sp.sin, sp.cos, sp.tan):
+            for node in expr.atoms(cls):
+                if node.args[0] != var_sym and node.args[0].has(var_sym):
+                    cands.append(node.args[0])
+                cands.append(node)
+
+        for node in expr.atoms(sp.exp):
+            if node.args[0] != var_sym and node.args[0].has(var_sym):
+                cands.append(node.args[0])
+            cands.append(node)
+
+        for node in expr.atoms(sp.log):
+            if node.has(var_sym):
+                cands.append(node)
+                if node.args[0] != var_sym and node.args[0].has(var_sym):
+                    cands.append(node.args[0])
+
+        numer, denom = expr.as_numer_denom()
+        if denom != 1 and denom.has(var_sym) and denom != var_sym:
+            cands.append(denom)
+
+        if expr.is_Mul:
+            for f in expr.args:
+                if f.has(var_sym) and f != var_sym:
+                    cands.append(f)
+
+        seen = set()
+        result = []
+        for c in cands:
+            s_code = str(c)
+            if s_code not in seen and c != var_sym:
+                seen.add(s_code)
+                result.append(s_code)
+
+        result.append(str(var_sym))
+        return result[:6]
+    except Exception:
+        return ["x"]
+
+
+def verify_user_u_substitution(
+    expr_str: str,
+    u_str: str,
+    var: str | sp.Symbol | None = None,
+) -> dict:
+    """ตรวจสอบการเลือกตัวแปร u ของผู้ใช้ ว่าทำได้โดยตรง, ต้องจัดรูปก่อน, หรือทำไม่ได้"""
+    clean_expr_str = (expr_str or "").strip()
+    clean_u_str = (u_str or "").strip()
+
+    if not clean_expr_str or not clean_u_str:
+        return {
+            "ok": False,
+            "status": "error",
+            "status_th": "ข้อมูลไม่ครบถ้วน",
+            "message": "กรุณาระบุทั้งโจทย์อินทิกรัลและฟังก์ชัน u ที่ต้องการทดสอบ",
+            "steps": [],
+            "latex": "",
+            "result": None,
+            "variable": "x",
+        }
+
+    try:
+        clean_expr, diff_var = _clean_calculus_input(clean_expr_str)
+        expr = _parse_input(clean_expr)
+        u_expr = _parse_input(clean_u_str)
+
+        if var is None:
+            var_sym = sp.Symbol(diff_var) if diff_var is not None else _get_variable(expr)
+        elif isinstance(var, str):
+            var_sym = sp.Symbol(var)
+        else:
+            var_sym = var
+
+        v_lat = _to_latex(var_sym)
+        domain_note = _get_domain_note(expr, var_sym)
+
+        # ตรวจสอบว่า u มีตัวแปร x หรือไม่
+        if not u_expr.has(var_sym):
+            return {
+                "ok": False,
+                "status": "invalid",
+                "status_th": "ตัวแปร u ไม่ถูกต้อง",
+                "message": f"ตัวแปร $u$ ต้องขึ้นอยู่กับตัวแปร ${v_lat}$ ไม่สามารถเป็นค่าคงที่ได้",
+                "steps": [
+                    f"โจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+                    f"ค่าที่เลือก: $u = {_to_latex(u_expr)}$ เป็นค่าคงที่ ไม่มีตัวแปร ${v_lat}$ จึงไม่สามารถหาอนุพันธ์เทียบกับ ${v_lat}$ ได้",
+                ],
+                "latex": "",
+                "result": None,
+                "variable": str(var_sym.name),
+            }
+
+        # ตรวจสอบกรณี trivial u = x
+        if u_expr == var_sym:
+            return {
+                "ok": True,
+                "status": "trivial",
+                "status_th": "ไม่มีการลดทอนความซับซ้อน",
+                "message": f"การกำหนด $u = {v_lat}$ เป็นเพียงการเปลี่ยนชื่อตัวอักษร ไม่ได้ช่วยให้อินทิเกรตง่ายขึ้น",
+                "steps": [
+                    f"โจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+                    f"กำหนด $u = {v_lat} \\implies du = d{v_lat}$",
+                    f"แทนค่าแล้วได้: $\\int {_to_latex(expr.subs(var_sym, sp.Symbol('u')))} \\, du$ ซึ่งมีความซับซ้อนเท่ากับโจทย์เดิมทุกประการ",
+                ],
+                "latex": "",
+                "result": None,
+                "variable": str(var_sym.name),
+            }
+
+        du = sp.diff(u_expr, var_sym)
+        ratio = sp.simplify(expr / du)
+        u_sym = sp.Symbol("u")
+        ratio_u = sp.simplify(ratio.subs(u_expr, u_sym))
+
+        # -------------------------------------------------------------
+        # 1. กรณี Direct Substitution (ทำได้โดยตรง)
+        # -------------------------------------------------------------
+        if not ratio_u.has(var_sym):
+            antideriv_u = sp.integrate(ratio_u, u_sym)
+            if not antideriv_u.has(sp.Integral) and not any(antideriv_u.has(f) for f in SPECIAL_FUNCS):
+                antideriv_x = sp.simplify(antideriv_u.subs(u_sym, u_expr))
+                steps = [
+                    f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+                    f"ขั้นที่ 1: กำหนดตัวแปรและคำนวณอนุพันธ์\n"
+                    f"$$u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = \\frac{{du}}{{{_to_latex(du)}}}$$",
+                    f"ขั้นที่ 2: แทนค่าลงในอินทิกรัลและสังเกตการตัดทอน\n"
+                    f"$$\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int {_to_latex(ratio_u)} \\, du$$\n"
+                    f"ตัวแปร ${v_lat}$ ถูกตัดทอนจนหมดจด เหลือเพียงฟังก์ชันของตัวแปร $u$ ล้วน",
+                    f"ขั้นที่ 3: คำนวณปริพันธ์เทียบกับตัวแปร u\n"
+                    f"$$\\int {_to_latex(ratio_u)} \\, du = {_to_latex(antideriv_u)} + C$$",
+                    f"ขั้นที่ 4: แทนค่า $u = {_to_latex(u_expr)}$ กลับคืนสู่ตัวแปรเดิม\n"
+                    f"$$= {_to_latex(antideriv_x)} + C$$",
+                    domain_note,
+                ]
+                return {
+                    "ok": True,
+                    "status": "direct",
+                    "status_th": "ทำได้โดยตรง (สำเร็จ)",
+                    "message": f"ถูกต้องตามหลักการ: การเลือก $u = {_to_latex(u_expr)}$ ทำให้อนุพันธ์ตัดทอนตัวแปรเดิมได้หมดจดทันที",
+                    "steps": steps,
+                    "latex": f"\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv_x)} + C",
+                    "result": antideriv_x,
+                    "u_expr": u_expr,
+                    "du_expr": du,
+                    "integrand_u": ratio_u,
+                    "variable": str(var_sym.name),
+                }
+
+        # -------------------------------------------------------------
+        # 2. กรณี Algebraic Adjustment (ต้องจัดรูปพีชคณิตเสริมก่อน)
+        # -------------------------------------------------------------
+        sols = sp.solve(sp.Eq(u_sym, u_expr), var_sym)
+        if sols:
+            for x_sol in sols:
+                subbed = sp.simplify(ratio_u.subs(var_sym, x_sol))
+                if not subbed.has(var_sym):
+                    int_u = sp.integrate(subbed, u_sym)
+                    if not int_u.has(sp.Integral) and not any(int_u.has(f) for f in SPECIAL_FUNCS):
+                        if check_standard_form(subbed, u_sym):
+                            antideriv_x = sp.simplify(int_u.subs(u_sym, u_expr))
+                            steps = [
+                                f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+                                f"ขั้นที่ 1: กำหนดตัวแปรและหาอนุพันธ์\n"
+                                f"$$u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = \\frac{{du}}{{{_to_latex(du)}}}$$",
+                                f"ขั้นที่ 2: แทนค่าลงในอินทิกรัล (พบตัวแปรตกค้าง)\n"
+                                f"$$\\int {_to_latex(expr)} \\, d{v_lat} = \\int \\left({_to_latex(ratio)}\\right) du$$\n"
+                                f"สังเกตว่าตัวแปร ${v_lat}$ ด้านหน้ายังตัดทอนไม่หมด",
+                                f"ขั้นที่ 3: จัดรูปพีชคณิตเสริมโดยแก้สมการย้อนกลับ\n"
+                                f"จาก $u = {_to_latex(u_expr)}$ แก้สมการหาค่า ${v_lat}$ ในรูปของ $u$ ได้เป็น:\n"
+                                f"$${v_lat} = {_to_latex(x_sol)}$$\n"
+                                f"นำค่า ${v_lat}$ ไปแทนที่ในอินทิกรัล แล้วคูณกระจาย จะได้ฟังก์ชันของ $u$ ล้วน:\n"
+                                f"$$\\int {_to_latex(subbed)} \\, du$$",
+                                f"ขั้นที่ 4: คำนวณปริพันธ์เทียบกับตัวแปร u\n"
+                                f"$$\\int {_to_latex(subbed)} \\, du = {_to_latex(int_u)} + C$$",
+                                f"ขั้นที่ 5: แทนค่า $u = {_to_latex(u_expr)}$ กลับคืนสู่ตัวแปรเดิม\n"
+                                f"$$= {_to_latex(antideriv_x)} + C$$",
+                                domain_note,
+                            ]
+                            return {
+                                "ok": True,
+                                "status": "algebraic_adjustment",
+                                "status_th": "ทำได้โดยต้องจัดรูปพีชคณิตเสริมก่อน",
+                                "message": f"ทำได้สำเร็จ: เมื่อแทนค่าแล้วตัวแปร ${v_lat}$ ยังตัดไม่หมด ต้องจัดรูปแก้สมการกลับ ${v_lat} = {_to_latex(x_sol)}$ แทนลงไปเพื่อคูณกระจาย",
+                                "steps": steps,
+                                "latex": f"\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv_x)} + C",
+                                "result": antideriv_x,
+                                "u_expr": u_expr,
+                                "du_expr": du,
+                                "x_sol": x_sol,
+                                "integrand_u": subbed,
+                                "variable": str(var_sym.name),
+                            }
+
+        # -------------------------------------------------------------
+        # 3. กรณี Incompatible (ทำไม่ได้ด้วย u นี้) หรือโจทย์ต้องใช้ By Parts
+        # -------------------------------------------------------------
+        from utils.by_parts_solver import detect_parts_candidate
+        parts_c = detect_parts_candidate(expr, var_sym)
+        best_u, _ = _detect_u_candidate(expr, var_sym)
+
+        if parts_c is not None and best_u is None:
+            return {
+                "ok": False,
+                "status": "unsuitable_for_substitution",
+                "status_th": "ไม่เหมาะกับการแทนตัวแปร u",
+                "message": "โจทย์ข้อนี้ไม่สามารถแก้ด้วยการแทนตัวแปร u ได้ เนื่องจากไม่มีพจน์อนุพันธ์ร่วมคูณอยู่ แนะนำให้ใช้วิธีการอินทิเกรตทีละส่วน (Integration by Parts)",
+                "steps": [
+                    f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+                    f"ข้อสังเกต: โจทย์ข้อนี้อยู่ในรูปแบบผลคูณของสองฟังก์ชันที่แตกต่างกันอย่างสิ้นเชิง ซึ่งสอดคล้องกับกฎ LIATE แนะนำให้เปิดหน้า \"4. การอินทิเกรตทีละส่วน\"",
+                ],
+                "latex": "",
+                "result": None,
+                "variable": str(var_sym.name),
+            }
+
+        return {
+            "ok": False,
+            "status": "incompatible",
+            "status_th": "ทำไม่ได้ด้วยตัวแปร u นี้",
+            "message": f"การเลือก $u = {_to_latex(u_expr)}$ เป็นทางตัน: ตัวแปร ${v_lat}$ ไม่สามารถตัดทอนให้หมดไปได้ และไม่ได้ช่วยลดทอนความซับซ้อนของอินทิกรัล",
+            "steps": [
+                f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+                f"ขั้นที่ 1: กำหนดตัวแปรและหาอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat}$",
+                f"ขั้นที่ 2: เมื่อนำไปแทนค่าในโจทย์จะได้รูป:\n$$\\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int \\left({_to_latex(ratio)}\\right) du$$",
+                f"ขั้นที่ 3: สังเกตว่าพจน์ของตัวแปร ${v_lat}$ ยังคงตกค้างอยู่ และไม่สามารถเขียนแทนด้วยตัวแปร $u$ ได้อย่างสะดวก จึงไม่สามารถอินทิเกรตต่อได้",
+            ],
+            "latex": "",
+            "result": None,
+            "variable": str(var_sym.name),
+        }
+    except Exception as e:
+        return {
+            "ok": False,
+            "status": "error",
+            "status_th": "เกิดข้อผิดพลาด",
+            "message": f"ไม่สามารถคำนวณการแทนค่าได้: {e}",
+            "steps": [],
+            "latex": "",
+            "result": None,
+            "variable": "x",
+        }
+

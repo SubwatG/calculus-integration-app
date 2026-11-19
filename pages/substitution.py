@@ -9,7 +9,11 @@ import sympy as sp
 
 from utils.keypad import render_math_keypad
 from utils.math_render import format_inverse_trig, preview_math_expr, render_latex, render_steps, render_syntax_guide
-from utils.substitution_solver import solve_substitution
+from utils.substitution_solver import (
+    get_suggested_u_candidates,
+    solve_substitution,
+    verify_user_u_substitution,
+)
 from utils.theme import render_hero
 
 render_hero(
@@ -217,10 +221,10 @@ else:
 st.divider()
 
 # =============================================================================
-# 3. เครื่องคิดเลขคำนวณการเปลี่ยนตัวแปรด้วย SymPy
+# 3. เครื่องคิดเลขคำนวณและทดลองเลือกตัวแปร u
 # =============================================================================
-st.markdown("### คำนวณนิพจน์ด้วย SymPy")
-st.caption("ระบบจะคำนวณปฏิยานุพันธ์ ตรวจจับตัวแปร $u$ ที่เหมาะสม และแสดงขั้นตอนอย่างละเอียด")
+st.markdown("### คำนวณและทดลองเลือกตัวแปร u")
+st.caption("ทดลองเลือกฟังก์ชัน u ด้วยตนเองเพื่อตรวจสอบว่าทำได้หรือไม่ หรือให้ระบบวิเคราะห์และแสดงวิธีทำฉบับเต็ม")
 
 def _set_sub_preset(val: str) -> None:
     st.session_state["substitution_expr"] = val
@@ -242,46 +246,110 @@ with p_cols2[0]:
 with p_cols2[1]:
     st.button("3x² (x³ + 5)⁴", key="pre_sub_6", use_container_width=True, on_click=_set_sub_preset, args=("3x^2*(x^3+5)^4",))
 with p_cols2[2]:
-    st.button("e^(-x²) (ไม่เป็นฟังก์ชันมูลฐาน)", key="pre_sub_7", use_container_width=True, on_click=_set_sub_preset, args=("exp(-x^2)",))
+    st.button("x e^x (เหมาะกับ By Parts)", key="pre_sub_7", use_container_width=True, on_click=_set_sub_preset, args=("x*exp(x)",))
 
 expr_input = st.text_input(
     "ใส่นิพจน์อินทิกรัลที่ต้องการคำนวณ",
     value=st.session_state.get("substitution_expr", "2x*sqrt(x^2+1)"),
-    placeholder="เช่น 2x*sqrt(x^2+1), ln(x)/x, 3x^2*(x^3+1)^4",
+    placeholder="เช่น 2x*sqrt(x^2+1), ln(x)/x, x*sqrt(x+1)",
     key="substitution_expr",
 )
 preview_math_expr(expr_input)
 render_syntax_guide()
-
 render_math_keypad(target_key="substitution_expr", key_prefix="sub_kp", expanded=False)
 
-if st.button("คำนวณผลลัพธ์", type="primary", key="btn_substitution_calc"):
-    if not expr_input.strip():
-        st.error("กรุณาใส่นิพจน์ก่อน")
-    else:
-        res = solve_substitution(expr_input)
-        if res["ok"]:
-            v_name = res.get("variable", "x")
-            if v_name != "x":
-                st.info(f"ตรวจพบตัวแปร **${v_name}$**: ระบบคำนวณและอินทิเกรตเทียบกับ $d{v_name}$ อัตโนมัติ")
+tab_user, tab_auto = st.tabs(["ทดลองกำหนดตัวแปร u ด้วยตนเอง", "ระบบเฉลยวิธีทำโดยอัตโนมัติ"])
 
-            st.markdown("#### ผลลัพธ์การคำนวณ")
-            render_latex(res["latex"])
+with tab_user:
+    st.markdown("#### ทดลองกำหนดตัวแปร u ด้วยตนเอง")
+    st.caption("ระบบจะตรวจสอบว่าตัวแปร u ที่ท่านเลือก สามารถตัดทอนตัวแปรเดิมได้หมดจดหรือไม่ ต้องจัดรูปพีชคณิตก่อน หรือเป็นทางตัน")
 
-            if res.get("status") == "non_elementary":
-                st.warning("ข้อสังเกตเชิงมโนทัศน์: ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน (Non-Elementary Function) คำตอบที่ได้อยู่ในรูปฟังก์ชันพิเศษระดับสูง เช่น erf, Si, li")
-            elif res.get("method") == "by_parts" and res.get("parts_info"):
-                p = res["parts_info"]
-                u_lat = format_inverse_trig(sp.latex(p["u"]))
-                dv_lat = format_inverse_trig(sp.latex(p["dv"]))
-                st.info(f"การอินทิเกรตทีละส่วน (By Parts): กำหนด $u = {u_lat}$ และ $dv = {dv_lat} \\, d{v_name}$")
-            elif res.get("u_candidate") is not None:
-                u_c = format_inverse_trig(sp.latex(res["u_candidate"]))
-                du_c = format_inverse_trig(sp.latex(res["du_candidate"]))
-                st.info(f"คำแนะนำเทคนิคการเปลี่ยนตัวแปร: สามารถกำหนดให้ $u = {u_c}$ ซึ่งจะได้ $du = {du_c} \\, d{v_name}$")
+    candidates = get_suggested_u_candidates(expr_input)
+    if candidates:
+        st.markdown("**ตัวเลือกตัวแปร u ที่น่าสนใจในโจทย์นี้:**")
+        cand_cols = st.columns(min(len(candidates), 5))
+        for idx, cand_str in enumerate(candidates[:5]):
+            with cand_cols[idx]:
+                if st.button(
+                    f"u = {cand_str}",
+                    key=f"btn_cand_u_{idx}",
+                    use_container_width=True,
+                ):
+                    st.session_state["user_u_input"] = cand_str
 
-            st.divider()
-            st.markdown("#### ขั้นตอนการพิจารณา")
-            render_steps(res["steps"])
+    u_input_val = st.text_input(
+        "ระบุฟังก์ชัน u(x) ที่ท่านเลือก:",
+        value=st.session_state.get("user_u_input", candidates[0] if candidates else "x^2 + 1"),
+        placeholder="เช่น x^2 + 1, ln(x), x + 1",
+        key="user_u_input",
+    )
+
+    if st.button("ตรวจสอบการเลือกตัวแปร u", type="primary", key="btn_check_u"):
+        if not expr_input.strip() or not u_input_val.strip():
+            st.error("กรุณาระบุทั้งโจทย์อินทิกรัลและฟังก์ชัน u")
         else:
-            st.error(res["error"])
+            ver_res = verify_user_u_substitution(expr_input, u_input_val)
+            st.divider()
+
+            if ver_res["status"] == "direct":
+                st.success(f"**{ver_res['status_th']}** : {ver_res['message']}")
+                st.markdown("##### ผลลัพธ์สุดท้าย")
+                render_latex(ver_res["latex"])
+                with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม", expanded=True):
+                    render_steps(ver_res["steps"])
+
+            elif ver_res["status"] == "algebraic_adjustment":
+                st.info(f"**{ver_res['status_th']}** : {ver_res['message']}")
+                st.markdown("##### ผลลัพธ์สุดท้าย")
+                render_latex(ver_res["latex"])
+                with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม (พร้อมการจัดรูปพีชคณิต)", expanded=True):
+                    render_steps(ver_res["steps"])
+
+            elif ver_res["status"] == "incompatible":
+                st.error(f"**{ver_res['status_th']}** : {ver_res['message']}")
+                with st.expander("รายละเอียดว่าเหตุใดการเลือกนี้จึงเป็นทางตัน", expanded=True):
+                    render_steps(ver_res["steps"])
+
+            elif ver_res["status"] == "trivial":
+                st.warning(f"**{ver_res['status_th']}** : {ver_res['message']}")
+                with st.expander("คำอธิบาย", expanded=True):
+                    render_steps(ver_res["steps"])
+
+            elif ver_res["status"] == "unsuitable_for_substitution":
+                st.warning(f"**{ver_res['status_th']}** : {ver_res['message']}")
+                with st.expander("คำแนะนำแนวทางที่เหมาะสม", expanded=True):
+                    render_steps(ver_res["steps"])
+            else:
+                st.error(ver_res.get("message", "เกิดข้อผิดพลาดในการคำนวณ"))
+
+with tab_auto:
+    st.markdown("#### ระบบวิเคราะห์และเฉลยวิธีทำโดยอัตโนมัติ")
+    st.caption("ระบบจะค้นหาตัวแปร u ที่เหมาะสมที่สุด หรือแนะนำเทคนิคที่ตรงกับโจทย์")
+
+    if st.button("คำนวณและแสดงวิธีทำ", type="primary", key="btn_substitution_calc"):
+        if not expr_input.strip():
+            st.error("กรุณาใส่นิพจน์ก่อน")
+        else:
+            res = solve_substitution(expr_input)
+            if res["ok"]:
+                v_name = res.get("variable", "x")
+                if v_name != "x":
+                    st.info(f"ตรวจพบตัวแปร **${v_name}$**: ระบบคำนวณเทียบกับ $d{v_name}$ อัตโนมัติ")
+
+                st.markdown("##### ผลลัพธ์การคำนวณ")
+                render_latex(res["latex"])
+
+                if res.get("status") == "non_elementary":
+                    st.warning("ข้อสังเกต: ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน (Non-Elementary Function) คำตอบอยู่ในรูปฟังก์ชันพิเศษ เช่น erf, Si, li")
+                elif res.get("method") == "by_parts":
+                    st.warning("ข้อสังเกต: โจทย์ข้อนี้ไม่สามารถแก้ด้วยการแทนตัวแปร u ได้ แนะนำให้ใช้วิธีการอินทิเกรตทีละส่วน (Integration by Parts)")
+                elif res.get("u_candidate") is not None:
+                    u_c = format_inverse_trig(sp.latex(res["u_candidate"]))
+                    du_c = format_inverse_trig(sp.latex(res["du_candidate"]))
+                    st.info(f"แนะนำตัวแปรที่เหมาะสม: กำหนดให้ $u = {u_c}$ ซึ่งจะได้ $du = {du_c} \\, d{v_name}$")
+
+                st.divider()
+                st.markdown("##### ขั้นตอนการพิจารณา")
+                render_steps(res["steps"])
+            else:
+                st.error(res["error"])

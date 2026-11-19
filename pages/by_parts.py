@@ -7,9 +7,9 @@
 import streamlit as st
 import sympy as sp
 
+from utils.by_parts_solver import solve_by_parts
 from utils.keypad import render_math_keypad
 from utils.math_render import format_inverse_trig, preview_math_expr, render_latex, render_steps, render_syntax_guide
-from utils.substitution_solver import solve_substitution
 from utils.theme import render_hero
 
 render_hero(
@@ -257,7 +257,7 @@ if st.button("คำนวณผลลัพธ์", type="primary", key="btn_by
     if not expr_input.strip():
         st.error("กรุณาใส่นิพจน์ก่อน")
     else:
-        res = solve_substitution(expr_input)
+        res = solve_by_parts(expr_input)
         if res["ok"]:
             v_name = res.get("variable", "x")
             if v_name != "x":
@@ -266,17 +266,13 @@ if st.button("คำนวณผลลัพธ์", type="primary", key="btn_by
             st.markdown("#### ผลลัพธ์การคำนวณ")
             render_latex(res["latex"])
 
-            if res.get("status") == "non_elementary":
-                st.warning("ข้อสังเกตเชิงมโนทัศน์: ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน")
-            elif res.get("method") == "by_parts" and res.get("parts_info"):
+            if res.get("status") == "better_suited_for_substitution":
+                st.warning(res.get("warning", "โจทย์ข้อนี้เหมาะสมกับการใช้การแทนตัวแปร u มากกว่าการอินทิเกรตทีละส่วน"))
+            elif res.get("parts_info"):
                 p = res["parts_info"]
                 u_lat = format_inverse_trig(sp.latex(p["u"]))
                 dv_lat = format_inverse_trig(sp.latex(p["dv"]))
                 st.info(f"การอินทิเกรตทีละส่วน (By Parts): กำหนด $u = {u_lat}$ และ $dv = {dv_lat} \\, d{v_name}$")
-            elif res.get("u_candidate") is not None:
-                u_c = format_inverse_trig(sp.latex(res["u_candidate"]))
-                du_c = format_inverse_trig(sp.latex(res["du_candidate"]))
-                st.info(f"ระบบตรวจพบว่าข้อนี้สามารถใช้การเปลี่ยนตัวแปร: $u = {u_c}$ ($du = {du_c} \\, d{v_name}$)")
 
             st.divider()
             st.markdown("#### ขั้นตอนการพิจารณา")
