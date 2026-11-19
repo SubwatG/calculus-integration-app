@@ -6,6 +6,7 @@
 """
 import math
 import re
+import sys
 import sympy as sp
 from sympy.calculus.accumulationbounds import AccumulationBounds
 from sympy.parsing.sympy_parser import (
@@ -62,7 +63,22 @@ def _classify_improper(res_val: sp.Expr) -> str:
         return "divergent"
     if getattr(res_val, "is_finite", False) is True and getattr(res_val, "is_real", False) is True:
         return "finite"
+    # Special values such as Si(1) carry no is_finite flag, but a finite real
+    # numeric value still proves convergence.
+    if _safe_float(res_val) is not None:
+        return "finite"
     return "unsupported"
+
+
+def _safe_float(value: sp.Expr):
+    """Real float value of a SymPy expression, or None when it is not finite/real."""
+    try:
+        numeric = complex(value.evalf(15))
+    except Exception:
+        return None
+    if abs(numeric.imag) > 1e-12 or not math.isfinite(numeric.real):
+        return None
+    return float(numeric.real)
 
 
 def _parse_bound(val: float | int | str | sp.Expr | None, is_upper: bool = False) -> sp.Expr:
@@ -143,6 +159,33 @@ def _is_singular_at_point(expr: sp.Expr, pt: sp.Expr, direction: str, var: sp.Sy
     return False
 
 
+def _abs_logs(expr: sp.Expr) -> sp.Expr:
+    """Wrap every logarithm argument in |.| so substituting an endpoint stays real.
+
+    SymPy returns log(x - 1) for 1/(x**2 - 1); at x = 0 that evaluates to
+    log(-1) = i*pi, which is correct over the complex numbers but confusing in a
+    Calculus 1 step-by-step explanation. The textbook form is log|x - 1|.
+    """
+    return expr.replace(
+        lambda node: isinstance(node, sp.log),
+        lambda node: sp.log(sp.Abs(node.args[0])),
+    )
+
+
+def _divergence_reason(antideriv: sp.Expr, var: sp.Symbol) -> str:
+    """Explain a divergent infinite-bound integral from its own antiderivative."""
+    t = sp.Symbol("t", positive=True)
+    try:
+        at_t = sp.simplify(antideriv.subs(var, t))
+    except Exception:
+        at_t = antideriv
+    if at_t.has(sp.log(sp.log(t))):
+        return r"เพราะ $\ln(\ln t) \to \infty$ เมื่อ $t \to \infty$"
+    if at_t.has(sp.log(t)):
+        return r"เพราะ $\ln t \to \infty$ เมื่อ $t \to \infty$"
+    return r"เพราะ $F(t)$ ไม่มีลิมิตจำกัดเมื่อ $t \to \infty$"
+
+
 def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: float | int | str | sp.Expr | None = None) -> dict:
     """คำนวณอินทิกรัลไม่ตรงแบบผ่านลิมิต ตรวจสอบการลู่เข้า/ลู่ออกตาม Universal Step Contract"""
     try:
@@ -185,6 +228,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             right_part = sp.integrate(expr, (var_sym, c_val, sp.oo))
             left_status = _classify_improper(left_part)
             right_status = _classify_improper(right_part)
+            res_val = None
 
             steps.append(
                 f"คำนวณลิมิตแต่ละฝั่งแยกกัน:\n"
@@ -204,7 +248,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             elif left_status == "finite" and right_status == "finite":
                 res_val = left_part + right_part
                 status = "finite"
-                result = float(res_val.evalf()) if getattr(res_val, "is_real", False) else None
+                result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
                 steps.append(
                     f"สรุปผลลัพธ์: ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด รวมกันได้: "
@@ -223,6 +267,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "latex": latex_str,
                 "steps": steps,
                 "expr": expr,
+                "value_expr": res_val,
                 "error": None,
                 "status": status,
                 "interior_singularities": [],
@@ -247,13 +292,16 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             res_val = sp.integrate(expr, (var_sym, -sp.oo, upper))
             status = _classify_improper(res_val)
             if status == "finite":
-                result = float(res_val.evalf()) if getattr(res_val, "is_real", False) else None
+                result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
                 steps.append(f"สรุปผลลัพธ์: ลิมิตลู่เข้าสู่ค่าจำกัด ได้ $V = {value_latex} \\approx {result:.6g}$")
             elif status == "divergent":
                 result = None
                 value_latex = "\\text{diverges}"
-                steps.append("ผลลัพธ์: ลิมิตลู่ออกสู่อนันต์หรือไม่นิยาม จึงสรุปว่า **อินทิกรัลลู่ออก (Diverges)**")
+                steps.append(
+                    r"ผลลัพธ์: ลิมิตไม่มีค่าจำกัดเมื่อ $t \to -\infty$ "
+                    r"จึงสรุปว่า **อินทิกรัลลู่ออก (Diverges)**"
+                )
             else:
                 result = None
                 value_latex = "\\text{unsupported}"
@@ -266,6 +314,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "latex": latex_str,
                 "steps": steps,
                 "expr": expr,
+                "value_expr": res_val,
                 "error": None,
                 "status": status,
                 "interior_singularities": [],
@@ -290,13 +339,16 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             res_val = sp.integrate(expr, (var_sym, lower, sp.oo))
             status = _classify_improper(res_val)
             if status == "finite":
-                result = float(res_val.evalf()) if getattr(res_val, "is_real", False) else None
+                result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
                 steps.append(f"สรุปผลลัพธ์: ลิมิตลู่เข้าสู่ค่าจำกัด ได้คำตอบ $V = {value_latex} \\approx {result:.6g}$")
             elif status == "divergent":
                 result = None
                 value_latex = "\\text{diverges}"
-                steps.append("ผลลัพธ์: ลิมิตลู่ออกสู่อนันต์ (เช่น พจน์ฮาร์มอนิก $\\ln(t) \\to \\infty$) จึงสรุปว่า **อินทิกรัลลู่ออก (Diverges)**")
+                steps.append(
+                    f"ผลลัพธ์: ลิมิตลู่ออกสู่อนันต์ ({_divergence_reason(antideriv, var_sym)}) "
+                    "จึงสรุปว่า **อินทิกรัลลู่ออก (Diverges)**"
+                )
             else:
                 result = None
                 value_latex = "\\text{unsupported}"
@@ -309,6 +361,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "latex": latex_str,
                 "steps": steps,
                 "expr": expr,
+                "value_expr": res_val,
                 "error": None,
                 "status": status,
                 "interior_singularities": [],
@@ -343,6 +396,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             right_part = sp.integrate(expr, (var_sym, c_sp, upper))
             left_status = _classify_improper(left_part)
             right_status = _classify_improper(right_part)
+            res_val = None
 
             steps.append(
                 f"พิจารณาลิมิตแต่ละฝั่งแยกกัน:\n"
@@ -362,7 +416,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             elif left_status == "finite" and right_status == "finite":
                 res_val = left_part + right_part
                 status = "finite"
-                result = float(res_val.evalf()) if getattr(res_val, "is_real", False) else None
+                result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
                 steps.append(
                     f"สรุปผลลัพธ์: ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด รวมกันได้: "
@@ -381,6 +435,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "latex": latex_str,
                 "steps": steps,
                 "expr": expr,
+                "value_expr": res_val,
                 "error": None,
                 "status": status,
                 "interior_singularities": interior_sings,
@@ -399,7 +454,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"จึงแปลงเป็นรูปลิมิตเข้าใกล้ทางขวา:\n"
                 f"$$\\lim_{{t \\to {lower_latex}^+}} \\int_{{t}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}$$"
             )
-            antideriv = sp.integrate(expr, var_sym)
+            antideriv = _abs_logs(sp.integrate(expr, var_sym))
             steps.append(
                 f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
                 f"และแทนค่าขอบเขต: $[F({v_lat})]_{{t}}^{{{bound_latex}}} = {_to_latex(antideriv.subs(var_sym, upper))} - {_to_latex(antideriv.subs(var_sym, sp.Symbol('t')))}$"
@@ -408,7 +463,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             res_val = sp.integrate(expr, (var_sym, lower, upper))
             status = _classify_improper(res_val)
             if status == "finite":
-                result = float(res_val.evalf()) if getattr(res_val, "is_real", False) else None
+                result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
                 steps.append(f"สรุปผลลัพธ์: ลิมิตลู่เข้าสู่ค่าจำกัด: $\\lim_{{t \\to {lower_latex}^+}} \\int_{{t}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} = {value_latex} \\approx {result:.6g}$")
             elif status == "divergent":
@@ -426,6 +481,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "latex": latex_str,
                 "steps": steps,
                 "expr": expr,
+                "value_expr": res_val,
                 "error": None,
                 "status": status,
                 "interior_singularities": [],
@@ -440,7 +496,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"จึงแปลงเป็นรูปลิมิตเข้าใกล้ทางซ้าย:\n"
                 f"$$\\lim_{{t \\to {bound_latex}^-}} \\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}$$"
             )
-            antideriv = sp.integrate(expr, var_sym)
+            antideriv = _abs_logs(sp.integrate(expr, var_sym))
             steps.append(
                 f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
                 f"และแทนค่าขอบเขต: $[F({v_lat})]_{{{lower_latex}}}^{{t}} = {_to_latex(antideriv.subs(var_sym, sp.Symbol('t')))} - {_to_latex(antideriv.subs(var_sym, lower))}$"
@@ -449,7 +505,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             res_val = sp.integrate(expr, (var_sym, lower, upper))
             status = _classify_improper(res_val)
             if status == "finite":
-                result = float(res_val.evalf()) if getattr(res_val, "is_real", False) else None
+                result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
                 steps.append(f"สรุปผลลัพธ์: ลิมิตลู่เข้าสู่ค่าจำกัด: $\\lim_{{t \\to {bound_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat} = {value_latex} \\approx {result:.6g}$")
             elif status == "divergent":
@@ -467,6 +523,61 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "latex": latex_str,
                 "steps": steps,
                 "expr": expr,
+                "value_expr": res_val,
+                "error": None,
+                "status": status,
+                "interior_singularities": [],
+                "variable": str(var_sym.name),
+            }
+
+        # 4.2b เอกฐานที่ขอบทั้งสอง (เช่น 1/sqrt(x*(1-x)) บน [0, 1])
+        if lower_singular and upper_singular:
+            mid = sp.nsimplify((lower + upper) / 2)
+            mid_latex = _to_latex(mid)
+            steps.append(
+                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดเอกฐานที่ขอบทั้งสอง "
+                f"${v_lat} = {lower_latex}$ และ ${v_lat} = {bound_latex}$ "
+                f"จึงแยกช่วงที่จุดกึ่งกลาง ${v_lat} = {mid_latex}$ แล้วรวมสองลิมิต:\n"
+                f"$$\\lim_{{t \\to {mid_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat}"
+                f" + \\lim_{{s \\to {mid_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat}$$"
+            )
+            res_val = sp.integrate(expr, (var_sym, lower, upper))
+            # A Piecewise antiderivative can leave an unevaluated Integral, a zoo or
+            # an imaginary constant; that is not evidence of divergence, so refuse
+            # to classify it instead of guessing.
+            unreliable = (
+                res_val.has(sp.Integral) or res_val.has(sp.zoo)
+                or res_val.has(sp.I) or res_val.has(sp.oo, -sp.oo)
+            )
+            if unreliable:
+                status = "unsupported"
+                result = None
+                value_latex = "\\text{unsupported}"
+                steps.append("ระบบไม่สามารถหาค่าลิมิตของสองช่วงในรูปแบบปิดได้")
+            else:
+                status = _classify_improper(res_val)
+                if status == "finite":
+                    result = _safe_float(res_val)
+                    value_latex = _to_latex(res_val)
+                    steps.append(
+                        f"สรุปผลลัพธ์: สองลิมิตลู่เข้าสู่ค่าจำกัด รวมได้ $V = {value_latex} \\approx {result:.6g}$"
+                    )
+                elif status == "divergent":
+                    result = None
+                    value_latex = "\\text{diverges}"
+                    steps.append("ผลลัพธ์: มีอย่างน้อยหนึ่งช่วงที่ลู่ออก จึงสรุปว่า **อินทิกรัลลู่ออก (Diverges)**")
+                else:
+                    result = None
+                    value_latex = "\\text{unsupported}"
+
+            latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {_to_latex(expr)} \\, d{v_lat} = {value_latex}"
+            return {
+                "ok": True,
+                "result": result,
+                "latex": latex_str,
+                "steps": steps,
+                "expr": expr,
+                "value_expr": res_val,
                 "error": None,
                 "status": status,
                 "interior_singularities": [],
@@ -485,7 +596,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         )
         res_val = sp.integrate(expr, (var_sym, lower, upper))
         status = _classify_improper(res_val)
-        result = float(res_val.evalf()) if getattr(res_val, "is_real", False) and getattr(res_val, "is_finite", False) else None
+        result = _safe_float(res_val)
         value_latex = _to_latex(res_val)
 
         if status == "divergent":
@@ -508,20 +619,23 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             "latex": latex_str,
             "steps": steps,
             "expr": expr,
+            "value_expr": res_val,
             "error": None,
             "status": status,
             "interior_singularities": [],
             "variable": str(var_sym.name),
         }
 
-    except Exception as e:
+    except Exception as exc:
+        # Keep SymPy internals in the server log; students get a plain Thai message.
+        print(f"[improper_solver] {type(exc).__name__}: {exc}", file=sys.stderr)
         return {
             "ok": False,
             "result": None,
             "latex": "",
             "steps": [],
             "expr": None,
-            "error": f"ไม่สามารถคำนวณได้: {e}",
+            "error": "ไม่สามารถคำนวณปริพันธ์นี้ได้ในรูปแบบปิด",
             "status": "error",
             "interior_singularities": [],
         }

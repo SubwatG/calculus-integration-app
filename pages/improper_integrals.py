@@ -129,10 +129,10 @@ else:
 
         st.markdown("### ผลลัพธ์")
         render_latex(res["latex"])
-        special_names = special_functions_in(res.get("result"))
+        special_names = special_functions_in(res.get("value_expr"))
         if special_names:
             st.info(describe_special_functions(special_names))
-            approximation = numeric_approximation(res.get("result"))
+            approximation = numeric_approximation(res.get("value_expr"))
             if approximation is not None:
                 st.caption(f"ค่าประมาณ: {approximation}")
 
