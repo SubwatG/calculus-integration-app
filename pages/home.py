@@ -3,7 +3,7 @@ from utils.theme import render_hero
 
 render_hero(
     "Calculus Learning Sandbox",
-    "เว็บแอปพลิเคชันสำหรับฝึกมโนทัศน์แคลคูลัสผ่านกราฟเชิงโต้ตอบและการคำนวณทีละขั้น",
+    "เว็บแอปพลิเคชันสำหรับฝึกฝนและเรียนรู้แคลคูลัสผ่านกราฟเชิงโต้ตอบและการคำนวณทีละขั้น",
 )
 
 st.markdown(
@@ -73,7 +73,7 @@ st.markdown(
         <div style="display: flex; align-items: center; gap: 8px;">
             <span class="material-symbols-rounded" style="font-size: 24px; color: #D97706;">lightbulb</span>
             <span style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 14px; font-weight: 700; color: #18181B;">
-                สำรวจมโนทัศน์แคลคูลัสผ่านกราฟแบบอินเทอร์แอ็กทิฟและการแก้โจทย์ทีละขั้น
+                สำรวจบทเรียนแคลคูลัสผ่านกราฟแบบอินเทอร์แอ็กทิฟและการแก้โจทย์ทีละขั้น
             </span>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
@@ -123,7 +123,7 @@ cards_data = [
     },
     {
         "title": "4. การอินทิเกรตทีละส่วน",
-        "subtitle": "สร้างมโนทัศน์การเลือก u และ dv ตามกฎ LIATE พร้อมเทคนิคการอินทิเกรตแบบวนลูป",
+        "subtitle": "หลักการเลือก u และ dv ตามกฎ LIATE พร้อมเทคนิคการอินทิเกรตแบบวนลูป",
         "badge": "บทเรียนที่ 4 • By Parts",
         "badge_color": "#BAE6FD",
         "btn_label": "เข้าสู่บทเรียนที่ 4",
@@ -158,7 +158,7 @@ cards_data = [
         "key": "btn_card_solver",
     },
     {
-        "title": "แบบทดสอบมโนทัศน์ (80 ข้อ)",
+        "title": "แบบทดสอบความเข้าใจ (80 ข้อ)",
         "subtitle": "ฝึกคิด 80 ข้อ ครอบคลุม 8 บทเรียน พร้อมระบบคำใบ้และสุ่มตัวเลือก",
         "badge": "วัดระดับทักษะ • มีคำใบ้",
         "badge_color": "#BAE6FD",
@@ -218,7 +218,7 @@ else:
             """
             <div style="background-color: #FFFFFF; border: 2px dashed #94A3B8; border-radius: 12px; padding: 12px 18px;">
                 <span style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 14px; font-weight: 600; color: #475569;">
-                    ยังไม่มีบันทึกคะแนนในเซสชันนี้ ทำแบบทดสอบมโนทัศน์เพื่อบันทึกผล
+                    ยังไม่มีบันทึกคะแนนในเซสชันนี้ ทำแบบทดสอบเพื่อบันทึกผล
                 </span>
             </div>
             """,

@@ -18,7 +18,7 @@ from utils.theme import render_hero
 
 render_hero(
     "การอินทิเกรตโดยการแทนตัวแปร (Integration by Substitution)",
-    "สร้างมโนทัศน์การเลือกตัวแปร u และ du เพื่อลดทอนรูปอินทิกรัลให้เป็นรูปพื้นฐาน",
+    "หลักการและขั้นตอนการเลือกตัวแปร u และ du เพื่อลดรูปอินทิกรัลให้อยู่ในรูปพื้นฐาน",
 )
 
 # =============================================================================
@@ -296,29 +296,29 @@ with tab_user:
                 st.markdown("##### ผลลัพธ์สุดท้าย")
                 render_latex(ver_res["latex"])
                 with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม", expanded=True):
-                    render_steps(ver_res["steps"])
+                    render_steps(ver_res["steps"], title=None)
 
             elif ver_res["status"] == "algebraic_adjustment":
                 st.info(f"**{ver_res['status_th']}** : {ver_res['message']}")
                 st.markdown("##### ผลลัพธ์สุดท้าย")
                 render_latex(ver_res["latex"])
                 with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม (พร้อมการจัดรูปพีชคณิต)", expanded=True):
-                    render_steps(ver_res["steps"])
+                    render_steps(ver_res["steps"], title=None)
 
             elif ver_res["status"] == "incompatible":
                 st.error(f"**{ver_res['status_th']}** : {ver_res['message']}")
                 with st.expander("รายละเอียดว่าเหตุใดการเลือกนี้จึงเป็นทางตัน", expanded=True):
-                    render_steps(ver_res["steps"])
+                    render_steps(ver_res["steps"], title=None)
 
             elif ver_res["status"] == "trivial":
                 st.warning(f"**{ver_res['status_th']}** : {ver_res['message']}")
                 with st.expander("คำอธิบาย", expanded=True):
-                    render_steps(ver_res["steps"])
+                    render_steps(ver_res["steps"], title=None)
 
             elif ver_res["status"] == "unsuitable_for_substitution":
                 st.warning(f"**{ver_res['status_th']}** : {ver_res['message']}")
                 with st.expander("คำแนะนำแนวทางที่เหมาะสม", expanded=True):
-                    render_steps(ver_res["steps"])
+                    render_steps(ver_res["steps"], title=None)
             else:
                 st.error(ver_res.get("message", "เกิดข้อผิดพลาดในการคำนวณ"))
 
@@ -349,7 +349,6 @@ with tab_auto:
                     st.info(f"แนะนำตัวแปรที่เหมาะสม: กำหนดให้ $u = {u_c}$ ซึ่งจะได้ $du = {du_c} \\, d{v_name}$")
 
                 st.divider()
-                st.markdown("##### ขั้นตอนการพิจารณา")
                 render_steps(res["steps"])
             else:
                 st.error(res["error"])

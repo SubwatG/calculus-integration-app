@@ -29,7 +29,7 @@ QUIZ_OPTIONS = {
 }
 
 TOPIC_LABELS = {
-    "all": "รวมโจทย์มโนทัศน์ทุกบท",
+    "all": "รวมโจทย์ทุกบท",
     "tangent": "1. เส้นสัมผัสและอนุพันธ์",
     "limits": "2. ลิมิตและความต่อเนื่อง",
     "basic_rules": "3. กฎพื้นฐานและทฤษฎีบท",
@@ -202,9 +202,9 @@ def init_quiz_session(topic: str) -> None:
     reset_quiz()
 
 
-render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำแนะนำและสะสมคะแนน")
+render_hero("แบบทดสอบความเข้าใจ", "ตอบคำถามเพื่อทดสอบและทบทวนความเข้าใจ พร้อมระบบคำแนะนำและสะสมคะแนน")
 
-st.markdown("### เลือกชุดข้อสอบมโนทัศน์")
+st.markdown("### เลือกชุดข้อสอบ")
 selected_topic_name = st.radio(
     "คลิกเลือกชุดข้อสอบที่ต้องการทำ:",
     list(QUIZ_OPTIONS.keys()),
@@ -216,7 +216,7 @@ QUIZ_TOPIC = QUIZ_OPTIONS[selected_topic_name]
 
 col_topic_info, col_topic_btn = st.columns([3, 1])
 with col_topic_info:
-    st.caption("ระบบสุ่มลำดับตัวเลือก (A, B, C, D) และสุ่มลำดับโจทย์แบบไดนามิกทุกรอบ เพื่อฝึกมโนทัศน์แท้จริง")
+    st.caption("ระบบสุ่มลำดับตัวเลือก (A, B, C, D) และสุ่มลำดับโจทย์แบบไดนามิกทุกรอบ")
 with col_topic_btn:
     if st.button("สุ่มรอบใหม่", icon=":material/casino:", key="btn_reshuffle_now", use_container_width=True):
         init_quiz_session(QUIZ_TOPIC)
@@ -346,7 +346,7 @@ else:
                 f"""
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 2px dashed #E4E4E7; padding-bottom: 8px;">
                     <div style="display: inline-flex; align-items: center; gap: 8px;">
-                        <span style="background-color: #F43F5E; color: #FFFFFF; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 800; box-shadow: 1.5px 1.5px 0px #18181B;">โจทย์มโนทัศน์</span>
+                        <span style="background-color: #F43F5E; color: #FFFFFF; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 800; box-shadow: 1.5px 1.5px 0px #18181B;">คำถามทดสอบ</span>
                         <span style="font-size: 13px; font-weight: 700; color: #4B5563;">คำถามข้อที่ {q_idx + 1}</span>
                     </div>
                     <span style="font-size: 12px; font-weight: 700; color: #71717A; background-color: #F4F4F5; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px;">

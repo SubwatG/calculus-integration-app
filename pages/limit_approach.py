@@ -246,7 +246,7 @@ is_inf_target = s_a_clean in ("inf", "+inf", "-inf", "oo", "+oo", "-oo")
 col_delta, col_delta_note = st.columns([1, 2])
 with col_delta:
     if is_inf_target:
-        st.info("โหมดลิมิตที่อนันต์ (x → ±∞) ไม่ต้องกำหนดระยะ delta")
+        st.info("โหมดลิมิตที่อนันต์ ($x \\to \\pm\\infty$) ไม่ต้องกำหนดระยะ delta")
         delta_val = 0.5
     else:
         delta_val = st.slider(

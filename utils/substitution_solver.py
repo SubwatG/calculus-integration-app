@@ -334,7 +334,7 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
             integral_u = sp.integrate(integrand_u, u_sym)
 
             steps.append(
-                f"เลือกวิธี: การเปลี่ยนตัวแปร (Integration by substitution) โดยเลือกฟังก์ชันก้อนในที่มีอนุพันธ์คูณร่วมอยู่"
+                f"เลือกวิธี: การเปลี่ยนตัวแปร (Integration by Substitution) โดยเลือกฟังก์ชันก้อนในที่มีอนุพันธ์คูณร่วมอยู่"
             )
             steps.append(
                 f"กำหนดตัวแปร: กำหนดตัวแปร $u = {_to_latex(u_cand)}$ จะได้ $du = {_to_latex(du_cand)} \\, d{v_lat}$ หรือ $d{v_lat} = \\frac{{du}}{{{_to_latex(du_cand)}}}$"

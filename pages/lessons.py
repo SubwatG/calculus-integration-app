@@ -13,7 +13,7 @@ from utils.math_render import format_math_spacing
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
 
-render_hero("ภาพรวมบทเรียนและทฤษฎี (Calculus Lessons)", "สำรวจสรุปทฤษฎีบท มโนทัศน์สำคัญ และเอกสารอ้างอิงฉบับเต็ม")
+render_hero("ภาพรวมบทเรียนและทฤษฎี (Calculus Lessons)", "สำรวจสรุปทฤษฎีบท หลักการสำคัญ และเอกสารอ้างอิงฉบับเต็ม")
 
 # ---------------------------------------------------------------------------
 # Mapping: key ใน THEORY_CONTENT -> หน้า interactive ที่เกี่ยวข้อง

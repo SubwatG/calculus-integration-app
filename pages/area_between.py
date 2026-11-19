@@ -42,7 +42,7 @@ with st.container(border=True):
                 font-weight: 700;
                 color: #18181B;
                 display: inline-block;
-            ">มโนทัศน์หลัก</span>""",
+            ">หลักการสำคัญ</span>""",
             unsafe_allow_html=True,
         )
     with col_concept:

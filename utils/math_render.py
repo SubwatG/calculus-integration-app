@@ -125,22 +125,28 @@ def render_latex(expr: str, *, label: Optional[str] = None) -> None:
         st.markdown(f"$${core}$$")
 
 
-def render_steps(steps) -> None:
+def render_steps(steps, title: Optional[str] = "### วิธีทำทีละขั้นตอน") -> None:
     """แสดงวิธีทำทีละขั้นตอนอย่างเป็นระเบียบ สวยงาม ด้วย st.latex และ KaTeX"""
     if not steps:
         return
 
-    st.markdown("### วิธีทำทีละขั้นตอน")
+    if title:
+        st.markdown(title)
+
     for i, step in enumerate(steps, 1):
         if isinstance(step, dict):
-            title = step.get("title", f"ขั้นตอนที่ {i}")
+            title_text = step.get("title", f"ขั้นตอนที่ {i}")
             latex_expr = step.get("latex", "")
             desc = step.get("desc", "")
-            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title)}**")
+            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title_text)}**")
             if desc:
                 st.markdown(format_math_spacing(desc))
             if latex_expr:
-                st.latex(strip_math_delimiters(latex_expr))
+                core_lex = strip_math_delimiters(latex_expr)
+                if is_pure_latex(core_lex):
+                    st.latex(core_lex)
+                else:
+                    st.markdown(format_math_spacing(latex_expr))
             continue
 
         s = str(step).strip()
@@ -150,17 +156,17 @@ def render_steps(steps) -> None:
         # ตรวจสอบรูปแบบ "คำอธิบายภาษาไทย: สมการ LaTeX"
         if ":" in s:
             parts = s.split(":", 1)
-            title = parts[0].strip()
+            title_text = parts[0].strip()
             math_part = parts[1].strip()
 
-            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title)}**")
+            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title_text)}**")
 
             # หากมีหลายบรรทัด ให้แยกบรรทัดข้อความอธิบาย (markdown) กับสมการคณิตศาสตร์ (latex)
             if "\n" in math_part:
                 sub_lines = [line.strip() for line in math_part.split("\n") if line.strip()]
                 for sub_line in sub_lines:
                     core_sub = strip_math_delimiters(sub_line)
-                    if has_thai(core_sub):
+                    if has_thai(core_sub) or not is_pure_latex(core_sub):
                         st.markdown(format_math_spacing(sub_line))
                     elif core_sub:
                         try:
@@ -170,20 +176,9 @@ def render_steps(steps) -> None:
             else:
                 core_math = strip_math_delimiters(math_part)
 
-                # ถ้าในส่วนสมการมีตัวอักษรไทยปนและใช้ $...$
-                if has_thai(core_math) and "$" in math_part:
-                    match = re.search(r"^(.*?)\$+(.+?)\$+(.*)$", math_part, re.DOTALL)
-                    if match and not match.group(3).strip():
-                        prefix = match.group(1).strip()
-                        inner_math = match.group(2).strip()
-                        if prefix:
-                            st.markdown(format_math_spacing(prefix))
-                        try:
-                            st.latex(inner_math)
-                        except Exception:
-                            st.markdown(f"$${inner_math}$$")
-                    else:
-                        st.markdown(format_math_spacing(math_part))
+                # ถ้ามีภาษาไทย หรือไม่ใช่ pure LaTeX ให้แสดงผลเป็น markdown เสมอ ห้ามส่งเข้า st.latex
+                if has_thai(core_math) or not is_pure_latex(core_math):
+                    st.markdown(format_math_spacing(math_part))
                 elif core_math:
                     try:
                         st.latex(core_math)

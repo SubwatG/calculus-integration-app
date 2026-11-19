@@ -43,7 +43,7 @@ volume_page = st.Page("pages/volume_revolution.py", title="ปริมาตร
 # 3. เครื่องมือและการประเมิน (Tools & Assessment)
 # -----------------------------------------------------------------------------
 solver_page = st.Page("pages/solver.py", title="เครื่องคิดเลขสัญลักษณ์ SymPy", icon=":material/calculate:")
-quiz_page = st.Page("pages/quiz.py", title="แบบทดสอบมโนทัศน์ (มีคำใบ้)", icon=":material/lightbulb:")
+quiz_page = st.Page("pages/quiz.py", title="แบบทดสอบความเข้าใจ (มีคำใบ้)", icon=":material/lightbulb:")
 survey_page = st.Page("pages/survey.py", title="แบบประเมินความพึงพอใจ (SUS)", icon=":material/rate_review:")
 
 # -----------------------------------------------------------------------------

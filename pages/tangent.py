@@ -179,7 +179,7 @@ else:
 
         # วิธีทำฉบับเต็มอยู่ใน expander ที่ตั้งชื่อชัดเจน
         with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)", expanded=False):
-            render_steps(res["steps"])
+            render_steps(res["steps"], title=None)
     else:
         st.error(res["error"])
         feedback_kind, feedback_text = _short_case_feedback(res)

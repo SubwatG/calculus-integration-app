@@ -14,7 +14,7 @@ from utils.theme import render_hero
 
 render_hero(
     "การอินทิเกรตทีละส่วน (Integration by Parts)",
-    "สร้างมโนทัศน์การเลือก u และ dv ตามกฎ LIATE พร้อมเทคนิคการอินทิเกรตแบบวนลูป",
+    "หลักการเลือก u และ dv ตามกฎ LIATE พร้อมเทคนิคการอินทิเกรตแบบวนลูป",
 )
 
 # =============================================================================
@@ -275,7 +275,6 @@ if st.button("คำนวณผลลัพธ์", type="primary", key="btn_by
                 st.info(f"การอินทิเกรตทีละส่วน (By Parts): กำหนด $u = {u_lat}$ และ $dv = {dv_lat} \\, d{v_name}$")
 
             st.divider()
-            st.markdown("#### ขั้นตอนการพิจารณา")
             render_steps(res["steps"])
         else:
             st.error(res["error"])
