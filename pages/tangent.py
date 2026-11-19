@@ -88,7 +88,65 @@ def _short_case_feedback(res: dict) -> tuple[str, str]:
 
 
 # ---------------------------------------------------------------------------
-# 1) ทดลองสำรวจก่อน (Experiment First)
+# 1) มโนทัศน์หลักและทฤษฎี
+# ---------------------------------------------------------------------------
+st.divider()
+st.markdown("### มโนทัศน์หลักและทฤษฎี")
+
+with st.expander("มโนทัศน์หลัก: ความชันเส้นสัมผัสมาจากลิมิตของเส้นตัดอย่างไร?", expanded=False):
+    col_badge, col_concept = st.columns([1, 4])
+    with col_badge:
+        st.markdown(
+            """<span style="
+                background-color: #FEF08A;
+                border: 1.5px solid #18181B;
+                border-radius: 8px;
+                padding: 4px 10px;
+                font-family: 'Fredoka', 'Mali', sans-serif;
+                font-size: 13px;
+                font-weight: 700;
+                color: #18181B;
+                display: inline-block;
+            ">มโนทัศน์หลัก</span>""",
+            unsafe_allow_html=True,
+        )
+    with col_concept:
+        st.markdown("**ความชันของเส้นสัมผัสและอนุพันธ์**")
+
+    st.markdown(
+        "ความชันของเส้นสัมผัส ณ จุด $x = a$ คือลิมิตของความชันเส้นตัด "
+        "เมื่อจุดทั้งสองเคลื่อนเข้าหากันโดยที่ $h \\neq 0$ และให้ $h \\to 0$ "
+        "(ไม่ใช่การแทนค่า $h = 0$ ซึ่งจะทำให้ตัวส่วนเป็นศูนย์และนิพจน์ไม่นิยาม):"
+    )
+
+    st.latex(r"m = f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h} \quad \implies \text{สมการเส้นสัมผัส: } y - f(a) = f'(a)(x - a)")
+
+    st.info(
+        """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
+- **ทิศทางความชัน ($f'(a)$):** เลื่อนจุด $a$ สังเกตหาก $f'(a) > 0$ เส้นชันขึ้น, $f'(a) < 0$ เส้นลาดลง, และ $f'(a) = 0$ เส้นสัมผัสเป็นแนวนอน (จุดนิ่ง) โดยจุดนิ่งไม่จำเป็นต้องเป็นจุดวกกลับหรือจุดสูงสุด/ต่ำสุดเสมอไป เช่น $f(x) = x^3$ ที่ $x = 0$
+- **การประมาณค่าเชิงเส้นเฉพาะที่:** ใกล้จุดสัมผัส เส้นตรงจะแนบสนิทไปกับเส้นโค้ง ซึ่งเป็นรากฐานของการประมาณค่าเชิงเส้น"""
+    )
+
+with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
+    col_t1, col_t2 = st.columns(2)
+    with col_t1:
+        st.markdown("**เงื่อนไขการใช้งาน**")
+        for item in theory["conditions"]:
+            st.markdown(f"- {format_math_spacing(item)}")
+        st.markdown("**สมบัติสำคัญ**")
+        for item in theory["properties"]:
+            st.markdown(f"- {format_math_spacing(item)}")
+    with col_t2:
+        st.markdown("**ข้อควรระวัง**")
+        with st.container(border=True):
+            for caution in theory["cautions"]:
+                st.markdown(f"- {format_math_spacing(caution)}")
+        st.markdown("**การประยุกต์ใช้**")
+        for item in theory["applications"]:
+            st.markdown(f"- {format_math_spacing(item)}")
+
+# ---------------------------------------------------------------------------
+# 2) ทดลองสำรวจ
 # ---------------------------------------------------------------------------
 st.markdown("### ลองสำรวจเส้นสัมผัส")
 st.caption("ตัวอย่างโจทย์ยอดนิยม:")
@@ -188,60 +246,3 @@ else:
         else:
             st.info(feedback_text)
 
-# ---------------------------------------------------------------------------
-# 2) มโนทัศน์หลักและทฤษฎี (หลังการทดลอง)
-# ---------------------------------------------------------------------------
-st.divider()
-st.markdown("### มโนทัศน์หลักและทฤษฎี")
-
-with st.expander("มโนทัศน์หลัก: ความชันเส้นสัมผัสมาจากลิมิตของเส้นตัดอย่างไร?", expanded=False):
-    col_badge, col_concept = st.columns([1, 4])
-    with col_badge:
-        st.markdown(
-            """<span style="
-                background-color: #FEF08A;
-                border: 1.5px solid #18181B;
-                border-radius: 8px;
-                padding: 4px 10px;
-                font-family: 'Fredoka', 'Mali', sans-serif;
-                font-size: 13px;
-                font-weight: 700;
-                color: #18181B;
-                display: inline-block;
-            ">มโนทัศน์หลัก</span>""",
-            unsafe_allow_html=True,
-        )
-    with col_concept:
-        st.markdown("**ความชันของเส้นสัมผัสและอนุพันธ์**")
-
-    st.markdown(
-        "ความชันของเส้นสัมผัส ณ จุด $x = a$ คือลิมิตของความชันเส้นตัด "
-        "เมื่อจุดทั้งสองเคลื่อนเข้าหากันโดยที่ $h \\neq 0$ และให้ $h \\to 0$ "
-        "(ไม่ใช่การแทนค่า $h = 0$ ซึ่งจะทำให้ตัวส่วนเป็นศูนย์และนิพจน์ไม่นิยาม):"
-    )
-
-    st.latex(r"m = f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h} \quad \implies \text{สมการเส้นสัมผัส: } y - f(a) = f'(a)(x - a)")
-
-    st.info(
-        """**จุดที่ควรสังเกตขณะทดลองด้านบน:**
-- **ทิศทางความชัน ($f'(a)$):** เลื่อนจุด $a$ สังเกตหาก $f'(a) > 0$ เส้นชันขึ้น, $f'(a) < 0$ เส้นลาดลง, และ $f'(a) = 0$ เส้นสัมผัสเป็นแนวนอน (จุดนิ่ง) โดยจุดนิ่งไม่จำเป็นต้องเป็นจุดวกกลับหรือจุดสูงสุด/ต่ำสุดเสมอไป เช่น $f(x) = x^3$ ที่ $x = 0$
-- **การประมาณค่าเชิงเส้นเฉพาะที่:** ใกล้จุดสัมผัส เส้นตรงจะแนบสนิทไปกับเส้นโค้ง ซึ่งเป็นรากฐานของการประมาณค่าเชิงเส้น"""
-    )
-
-with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
-    col_t1, col_t2 = st.columns(2)
-    with col_t1:
-        st.markdown("**เงื่อนไขการใช้งาน**")
-        for item in theory["conditions"]:
-            st.markdown(f"- {format_math_spacing(item)}")
-        st.markdown("**สมบัติสำคัญ**")
-        for item in theory["properties"]:
-            st.markdown(f"- {format_math_spacing(item)}")
-    with col_t2:
-        st.markdown("**ข้อควรระวัง**")
-        with st.container(border=True):
-            for caution in theory["cautions"]:
-                st.markdown(f"- {format_math_spacing(caution)}")
-        st.markdown("**การประยุกต์ใช้**")
-        for item in theory["applications"]:
-            st.markdown(f"- {format_math_spacing(item)}")

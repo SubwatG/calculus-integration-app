@@ -8,8 +8,9 @@ reproduced on the live page at the recorded baseline hashes:
   D2  raw ``\\lim ... \\neq \\lim ...`` leaked as plain text in the 1/x DNE summary
       (utils/limit_solver.py `_steps_infinite_asymptote`) and in the
       absolute-value/piecewise summaries (`_steps_abs_piecewise`).
-  D3  long theory sat above the interactive experiment, pushing inputs/graph far
-      down the page, and the left-right explanation was repeated per case.
+  D3  the left-right explanation was repeated per case. The theory block now sits
+      above the experiment as collapsed expanders (curriculum review 2026-11-19),
+      so it no longer pushes the inputs/graph down the page.
   D4  left-right guidance was overrestrictive (abs/piecewise only) although a
       ``c/0`` vertical-asymptote case such as ``1/x`` also needs two-sided analysis.
   D5  the short per-case feedback invented a method the solver never reported
@@ -152,29 +153,29 @@ class TestSolverStepMathDelimiters:
 # D3 / D6 — experiment first, instructional content collapsed into named expanders
 # ---------------------------------------------------------------------------
 class TestPageLayout:
-    def test_experiment_section_precedes_theory_section(self):
+    def test_theory_section_precedes_experiment_section(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
         md = [m.value for m in at.markdown]
+        idx_theory = next(i for i, v in enumerate(md) if "### ทฤษฎีบทและหลักการสำคัญ" in v)
         idx_experiment = next(i for i, v in enumerate(md) if "ลองสำรวจการลู่เข้าของลิมิต" in v)
-        idx_theory = next(i for i, v in enumerate(md) if "ไม่ได้เริ่มด้วยการแยกซ้าย-ขวา" in v)
-        assert idx_experiment < idx_theory
+        assert idx_theory < idx_experiment
 
-    def test_result_metric_appears_before_theory(self):
+    def test_theory_appears_before_the_result_metric(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
         md = [m.value for m in at.markdown]
+        idx_theory = next(i for i, v in enumerate(md) if "### ทฤษฎีบทและหลักการสำคัญ" in v)
         idx_result = next(i for i, v in enumerate(md) if v.startswith("### ผลลัพธ์ลิมิต"))
-        idx_theory = next(i for i, v in enumerate(md) if "ไม่ได้เริ่มด้วยการแยกซ้าย-ขวา" in v)
-        assert idx_result < idx_theory
+        assert idx_theory < idx_result
 
     def test_graph_is_rendered_next_to_delta_control(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
         assert any(s.key == "limit_delta" for s in at.slider)
         assert len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "graph (st.pyplot) was not rendered"
-        # source order: delta control, then the plot call, then the theory divider
+        # source order: theory block, then delta control, then the plot call
         i_delta = PAGE_SRC.index("ระยะ delta ควบคุมช่วงที่กราฟ")
         i_plot = PAGE_SRC.index("st.pyplot(fig)")
         i_theory = PAGE_SRC.index("### ทฤษฎีบทและหลักการสำคัญ")
-        assert i_delta < i_plot < i_theory
+        assert i_theory < i_delta < i_plot
 
     def test_named_expanders_present(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
@@ -189,7 +190,7 @@ class TestPageLayout:
         assert 'st.expander("ควรเลือกวิธีหาลิมิตอย่างไร?", expanded=False):' in PAGE_SRC
         assert "with st.container(border=True):\n    col_badge" not in PAGE_SRC
         # Content preserved inside the expander.
-        assert "ลำดับการคิด 3 ขั้น" in " ".join(_visible_texts(at))
+        assert "ลำดับการพิจารณา 3 ขั้น" in " ".join(_visible_texts(at))
 
     def test_parsed_equation_preview_retained(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
