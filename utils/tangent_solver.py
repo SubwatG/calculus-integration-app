@@ -1,4 +1,4 @@
-"""utils/tangent_solver.py — เส้นสัมผัสและอนุพันธ์
+"""utils/tangent_solver.py : เส้นสัมผัสและอนุพันธ์
 
 skeleton สำหรับนักศึกษา project
 TODO: ใส่ logic จริงให้ test ใน tests/ ผ่าน
@@ -156,6 +156,20 @@ def _format_tangent_algebra(v_lat: str, a_sym: sp.Expr, fa_sym: sp.Expr, slope_s
     return lines
 
 
+def _format_substitution(expr: sp.Expr, var_sym: sp.Symbol, a_sym: sp.Expr) -> str:
+    """จัดรูปแบบการแทนค่าลงในนิพจน์ แสดงการแทนค่าก่อนผลลัพธ์ เช่น f(0) = 0 + 2 = 2"""
+    try:
+        val = expr.subs(var_sym, a_sym)
+        val_lat = _to_latex(val)
+        sub_expr = expr.subs(var_sym, sp.UnevaluatedExpr(a_sym))
+        sub_lat = _to_latex(sub_expr)
+        if sub_lat != val_lat:
+            return f"{sub_lat} = {val_lat}"
+        return val_lat
+    except Exception:
+        return _to_latex(expr.subs(var_sym, a_sym))
+
+
 def _build_finite_tangent_steps(
     expr: sp.Expr,
     var_sym: sp.Symbol,
@@ -172,17 +186,18 @@ def _build_finite_tangent_steps(
 
     # Step 1: ปัญหาและเป้าหมาย
     step1 = (
-        f"กำหนดโจทย์และเป้าหมาย (Problem Setup & Goal): "
+        f"กำหนดโจทย์และเป้าหมาย: "
         f"กำหนดฟังก์ชันและจุดที่พิจารณา:\n"
         f"f({v_lat}) = {_to_latex(expr)}, \\quad a = {a_lat}\n"
         f"เป้าหมาย: หาสมการเส้นตรงสัมผัส $y - f(a) = f'(a)({v_lat} - a)$"
     )
 
-    # Step 2: จุดสัมผัส
+    # Step 2: จุดสัมผัส (แสดงขั้นตอนการแทนค่าลงในสมการ)
+    sub_fa_lat = _format_substitution(expr, var_sym, a_sym)
     step2 = (
-        f"คำนวณพิกัด y ของจุดสัมผัส (Point of Tangency): "
-        f"แทนค่า ${v_lat} = {a_lat}$ ในฟังก์ชัน:\n"
-        f"f({a_lat}) = {_to_latex(fa_sym)}\n"
+        f"คำนวณพิกัด y ของจุดสัมผัส: "
+        f"แทนค่า ${v_lat} = {a_lat}$ ในฟังก์ชัน $f({v_lat})$:\n"
+        f"f({a_lat}) = {sub_fa_lat}\n"
         f"ได้จุดสัมผัส $(a, f(a)) = ({a_lat}, {_to_latex(fa_sym)})$"
     )
 
@@ -194,26 +209,12 @@ def _build_finite_tangent_steps(
         f"f'({v_lat}) = \\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(expr)}\\right] = {_to_latex(df)}"
     )
 
-    # Step 4: คำนวณความชันเฉพาะจุด m = f'(a)
-    if slope > 0:
-        slope_geo = (
-            f"ความหมายเรขาคณิต: ความชัน $m = {slope:.4f} > 0$ กราฟมีแนวโน้มเพิ่มขึ้น"
-        )
-    elif slope < 0:
-        slope_geo = (
-            f"ความหมายเรขาคณิต: ความชัน $m = {slope:.4f} < 0$ กราฟมีแนวโน้มลดลง"
-        )
-    else:
-        slope_geo = (
-            f"ความหมายเรขาคณิต: ความชัน $m = 0$ เส้นสัมผัสแนวนอนขนานแกน ${v_lat}$ "
-            f"เป็นจุดนิ่ง โดยจุดนิ่งไม่จำเป็นต้องเป็นจุดวกกลับเสมอไป"
-        )
-
+    # Step 4: คำนวณความชันเฉพาะจุด m = f'(a) (ตัดความหมายเรขาคณิตออกตามข้อเสนอแนะ)
+    sub_df_lat = _format_substitution(df, var_sym, a_sym)
     step4 = (
         f"แทนค่าจุดสัมผัสหาความชัน m = f'(a): "
         f"แทนค่า ${v_lat} = {a_lat}$ ในสูตรอนุพันธ์:\n"
-        f"m = f'({a_lat}) = {_to_latex(slope_sym)}\n"
-        f"{slope_geo}"
+        f"m = f'({a_lat}) = {sub_df_lat}"
     )
 
     # Step 5: แทนค่าลงในสูตร Point-Slope

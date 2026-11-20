@@ -7,14 +7,14 @@ import streamlit as st
 
 from utils.improper_solver import compute_improper
 from utils.math_render import preview_math_expr, render_latex, render_syntax_guide, render_steps
-from utils.plotter import plot_improper
+from utils.plotter import plot_improper, plot_improper_plotly
 from utils.riemann_solver import X
 from utils.special_functions import describe_special_functions, numeric_approximation, special_functions_in
 from utils.theme import inject_css, render_hero
 from utils.theory import THEORY_CONTENT
 
 inject_css()
-render_hero("ปริพันธ์ไม่ตรงแบบ", "สำรวจการลู่เข้าหรือลู่ออกของปริพันธ์บนช่วงอนันต์และจุดเอกฐาน")
+render_hero("ปริพันธ์ไม่ตรงแบบ", "สำรวจการลู่เข้าหรือลู่ออกของปริพันธ์บนช่วงอนันต์และจุดที่ฟังก์ชันไม่ต่อเนื่อง")
 
 theory = THEORY_CONTENT["improper"]
 
@@ -39,19 +39,27 @@ with st.container(border=True):
             unsafe_allow_html=True,
         )
     with col_concept:
-        st.markdown("**ปริพันธ์ไม่ตรงแบบและการลู่เข้า (Improper Integrals & Limits)**")
-
-    st.markdown(
-        "การหาพื้นที่บนช่วงอนันต์หรือจุดที่ฟังก์ชันมีความไม่ต่อเนื่อง (จุดเอกฐาน) ต้องนิยามผ่านกระบวนการเทคลิมิตของ definite integral เสมอ:"
-    )
+        st.markdown("#### ปริพันธ์ไม่ตรงแบบและการลู่เข้า")
 
     st.latex(r"\int_a^\infty f(x)\,dx = \lim_{t \to \infty} \int_a^t f(x)\,dx \quad \left(\text{ถ้าลิมิตมีค่าจริง } \implies \text{ลู่เข้า}\right)")
 
-    st.info(
-        """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
-- **การลู่เข้าหรือลู่ออก:** สังเกตว่าเมื่อขอบเขตขยายสู่อนันต์ พื้นที่ใต้กราฟหยุดสะสมและคงที่ (ลู่เข้า) หรือโตขึ้นเรื่อย ๆ ไม่สิ้นสุด (ลู่ออก)
-- **การทดสอบด้วยอันดับ ($p$-Integral Test):** บนช่วง $[1, \\infty)$ ฟังก์ชัน $\\frac{1}{x^p}$ จะลู่เข้าเมื่อ $p > 1$ และจะลู่ออกเมื่อ $p \\le 1$"""
+    st.markdown(
+        """
+| ประเภทการพิจารณา | เงื่อนไขทางคณิตศาสตร์ | พฤติกรรมการลู่เข้า / ลู่ออก |
+| :---: | :--- | :--- |
+| ค่าของลิมิต | $\\lim_{t \\to \\infty} \\int_a^t f(x)\\,dx = L$ | มีค่าจริง = ลู่เข้า (Converges) / หาค่าไม่ได้ = ลู่ออก (Diverges) |
+| p-Integral Test | $\\int_1^\\infty \\frac{1}{x^p}\\,dx$ บนช่วง $[1, \\infty)$ | ลู่เข้าเมื่อ $p > 1$ และ ลู่ออกเมื่อ $p \\le 1$ |
+        """
     )
+
+    with st.expander("อ่านรายละเอียดทฤษฎี จุดสังเกต และการทดสอบการลู่เข้า", expanded=False):
+        st.markdown("**จุดที่ควรสังเกตขณะทดลอง:**")
+        st.markdown(
+            """
+- **การลู่เข้าหรือลู่ออก:** สังเกตว่าเมื่อขอบเขตขยายสู่อนันต์ พื้นที่ใต้กราฟหยุดสะสมและคงที่ (ลู่เข้า) หรือโตขึ้นเรื่อย ๆ ไม่สิ้นสุด (ลู่ออก)
+- **การทดสอบด้วยอันดับ ($p$-Integral Test):** บนช่วง $[1, \\infty)$ ฟังก์ชัน $\\frac{1}{x^p}$ จะ **ลู่เข้าเมื่อ $p > 1$** และจะ **ลู่ออกเมื่อ $p \\le 1$**
+            """
+        )
 
 with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
     col_t1, col_t2 = st.columns(2)
@@ -116,7 +124,7 @@ with col_b:
         key="improper_b_str",
     )
 
-st.caption("[คำแนะนำ] รองรับช่วงกึ่งอนันต์ [a, ∞), ช่วงสองฝั่ง (-∞, ∞), และช่วงจำกัด [a, b] ที่มีจุดเอกฐานภายใน")
+st.caption("[คำแนะนำ] รองรับช่วงกึ่งอนันต์ [a, ∞), ช่วงสองฝั่ง (-∞, ∞), และช่วงจำกัด [a, b] ที่มีจุดที่ฟังก์ชันไม่ต่อเนื่องภายในช่วง")
 
 if not expr_input.strip():
     st.info("กรุณาระบุฟังก์ชัน f(x) หรือคลิกเลือกตัวอย่างด้านบน")
@@ -145,11 +153,17 @@ else:
         st.divider()
 
         st.markdown("### กราฟการลู่เข้าและพื้นที่ใต้กราฟ")
+        st.caption("กราฟแบบ Interactive: ใช้ลูกกลิ้งเมาส์เพื่อซูมเข้า/ออก ลากเพื่อเลื่อนดูกราฟ หรือดับเบิลคลิกเพื่อรีเซ็ตมุมมอง")
         try:
-            fig, ax = plot_improper(res["expr"], a_input, b_input)
-            st.pyplot(fig)
+            fig_plotly = plot_improper_plotly(res["expr"], a_input, b_input)
+            st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+            st.warning(f"แสดงผลกราฟ interactive ขัดข้อง: {e} กำลังสลับไปใช้กราฟสำรอง")
+            try:
+                fig, ax = plot_improper(res["expr"], a_input, b_input)
+                st.pyplot(fig)
+            except Exception as e2:
+                st.warning(f"ไม่สามารถวาดกราฟได้: {e2}")
 
         render_steps(res["steps"])
     else:

@@ -141,7 +141,7 @@ cards_data = [
     },
     {
         "title": "6. ปริพันธ์ไม่ตรงแบบ",
-        "subtitle": "สำรวจการลู่เข้าหรือลู่ออกบนช่วงอนันต์และจุดเอกฐาน",
+        "subtitle": "สำรวจการลู่เข้าหรือลู่ออกบนช่วงอนันต์และจุดที่ฟังก์ชันไม่ต่อเนื่อง",
         "badge": "บทเรียนที่ 6 • ปริพันธ์ขั้นสูง",
         "badge_color": "#FBCFE8",
         "btn_label": "เข้าสู่บทเรียนที่ 6",
@@ -178,22 +178,23 @@ filtered_cards = [
 ]
 
 if filtered_cards:
-    col1, col2 = st.columns(2)
-    for idx, card in enumerate(filtered_cards):
-        col = col1 if idx % 2 == 0 else col2
-        with col:
-            with st.container(border=True):
-                st.markdown(
-                    f"<span class='card-category-badge' style='background-color: {card.get('badge_color', '#FEF08A')};'>{card.get('badge', 'บทเรียน')}</span>",
-                    unsafe_allow_html=True,
-                )
-                st.markdown(f"### {card['title']}")
-                st.markdown(
-                    f"<p style='color: #475569; font-size: 14px; margin-top: -6px; line-height: 1.5;'>{card['subtitle']}</p>",
-                    unsafe_allow_html=True,
-                )
-                if st.button(card["btn_label"], icon=":material/arrow_forward:", key=card["key"], use_container_width=True):
-                    st.switch_page(card["target"])
+    for i in range(0, len(filtered_cards), 2):
+        row_cards = filtered_cards[i : i + 2]
+        cols = st.columns(2)
+        for j, card in enumerate(row_cards):
+            with cols[j]:
+                with st.container(border=True):
+                    st.markdown(
+                        f"<div style='margin-bottom: 2px;'><span class='card-category-badge' style='background-color: {card.get('badge_color', '#FEF08A')};'>{card.get('badge', 'บทเรียน')}</span></div>",
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(f"#### {card['title']}")
+                    st.markdown(
+                        f"<p style='color: #475569; font-size: 13.5px; margin-top: -6px; margin-bottom: 8px; line-height: 1.4;'>{card['subtitle']}</p>",
+                        unsafe_allow_html=True,
+                    )
+                    if st.button(card["btn_label"], icon=":material/arrow_forward:", key=card["key"], use_container_width=True):
+                        st.switch_page(card["target"])
 else:
     st.info("ไม่พบเมนูหรือบทเรียนที่ตรงกับคำค้นหา ลองใช้คำอื่น", icon=":material/search:")
 

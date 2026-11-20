@@ -13,7 +13,7 @@ import sympy as sp
 import streamlit as st
 
 from utils.math_render import preview_math_expr, render_latex, render_steps, render_syntax_guide
-from utils.plotter import plot_riemann
+from utils.plotter import plot_riemann, plot_riemann_plotly
 from utils.riemann_solver import METHODS, X, compute_riemann
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
@@ -45,16 +45,15 @@ with st.container(border=True):
     with col_concept:
         st.markdown("**การประมาณพื้นที่ใต้กราฟสู่ค่าปริพันธ์จำกัดเขต**")
 
-    st.markdown(
-        "พื้นที่ใต้กราฟคำนวณจากผลรวมของพื้นที่แท่งสี่เหลี่ยมผืนผ้า $n$ แท่ง เมื่อซอยย่อยให้ละเอียดไม่สิ้นสุด ($n \\to \\infty$):"
-    )
-
     st.latex(r"A = \lim_{n \to \infty} \sum_{i=1}^{n} f(x_i^*) \Delta x = \int_a^b f(x)\,dx \quad \left(\text{โดยที่ } \Delta x = \frac{b-a}{n}\right)")
 
-    st.info(
-        """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
-- **การลู่เข้า:** ลองเลื่อนสไลเดอร์เพิ่ม $n$ สังเกตช่องว่างส่วนเกินหรือส่วนขาดจะเล็กลงจนผลรวมเข้าใกล้ค่าจริง
-- **ทิศทางการประมาณ:** สำหรับฟังก์ชันเพิ่ม ($f' > 0$) ค่า $L_n$ จะประเมินต่ำกว่าจริง ส่วน $R_n$ จะประเมินสูงกว่าจริง"""
+    st.markdown(
+        """
+| หัวข้อสังเกต | พฤติกรรมทางคณิตศาสตร์ | ผลลัพธ์บนกราฟ |
+| :---: | :--- | :--- |
+| การลู่เข้า ($n \\to \\infty$) | เพิ่มจำนวนแท่งสี่เหลี่ยม $n$ | ช่องว่างส่วนเกิน/ส่วนขาดเล็กลงจนเข้าใกล้ค่าจริง |
+| ทิศทางการประมาณ | ฟังก์ชันเพิ่ม ($f' > 0$) | ผลรวมซ้าย ($L_n$) ต่ำกว่าจริง, ผลรวมขวา ($R_n$) สูงกว่าจริง |
+        """
     )
 
 with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
@@ -160,15 +159,22 @@ else:
         st.divider()
 
         # กราฟ (ใช้ expr ที่ solver parse แล้ว กันปัญหา symbol undefined)
+        st.markdown("### กราฟผลบวกรีมันน์")
+        st.caption("กราฟแบบ Interactive: ใช้ลูกกลิ้งเมาส์เพื่อซูมเข้า/ออก ลากเพื่อเลื่อนดูกราฟ หรือดับเบิลคลิกเพื่อรีเซ็ตมุมมอง")
         try:
             expr = res["expr"]
             var_sym = sp.Symbol(v_name)
             exact = sp.integrate(expr, (var_sym, a_val, b_val))
             exact_val = float(exact) if getattr(exact, "is_number", False) and getattr(exact, "is_real", False) else None
-            fig, _ = plot_riemann(expr, a_val, b_val, n_val, method_label, exact_val)
-            st.pyplot(fig)
+            fig_plotly = plot_riemann_plotly(expr, a_val, b_val, n_val, method_label, exact_val)
+            st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+            st.warning(f"แสดงผลกราฟ interactive ขัดข้อง: {e} กำลังสลับไปใช้กราฟสำรอง")
+            try:
+                fig, _ = plot_riemann(expr, a_val, b_val, n_val, method_label, exact_val)
+                st.pyplot(fig)
+            except Exception as e2:
+                st.warning(f"ไม่สามารถวาดกราฟได้: {e2}")
 
         st.divider()
         render_steps(res["steps"])

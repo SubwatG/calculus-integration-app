@@ -21,7 +21,7 @@ from utils.math_render import (
     render_steps,
     render_syntax_guide,
 )
-from utils.plotter import plot_tangent
+from utils.plotter import plot_tangent, plot_tangent_plotly
 from utils.tangent_solver import compute_tangent
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
@@ -88,12 +88,12 @@ def _short_case_feedback(res: dict) -> tuple[str, str]:
 
 
 # ---------------------------------------------------------------------------
-# 1) แนวคิดหลักและทฤษฎี
+# 1) แนวคิดหลักและทฤษฎี (เปิดแสดงในกล่องสีขาว ไม่ใช้การซ่อน)
 # ---------------------------------------------------------------------------
 st.divider()
 st.markdown("### แนวคิดหลักและทฤษฎี")
 
-with st.expander("แนวคิดหลัก: ความชันเส้นสัมผัสมาจากลิมิตของเส้นตัดอย่างไร?", expanded=False):
+with st.container(border=True):
     col_badge, col_concept = st.columns([1, 4])
     with col_badge:
         st.markdown(
@@ -111,39 +111,30 @@ with st.expander("แนวคิดหลัก: ความชันเส้
             unsafe_allow_html=True,
         )
     with col_concept:
-        st.markdown("**ความชันของเส้นสัมผัสและอนุพันธ์**")
+        st.markdown("#### ความชันของเส้นสัมผัสและอนุพันธ์")
+
+    st.latex(r"m = f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h} \implies y - f(a) = f'(a)(x - a)")
 
     st.markdown(
-        "ความชันของเส้นสัมผัส ณ จุด $x = a$ คือลิมิตของความชันเส้นตัด "
-        "เมื่อจุดทั้งสองเคลื่อนเข้าหากันโดยที่ $h \\neq 0$ และให้ $h \\to 0$ "
-        "(ไม่ใช่การแทนค่า $h = 0$ ซึ่งจะทำให้ตัวส่วนเป็นศูนย์และนิพจน์ไม่นิยาม):"
+        """
+| ความชัน $f'(a)$ | ลักษณะเส้นสัมผัส | พฤติกรรมกราฟ ณ จุดสัมผัส |
+| :---: | :--- | :--- |
+| $f'(a) > 0$ | เส้นตรงเฉียงขึ้น (ทำมุมแหลมกับแกน X) | ฟังก์ชันกำลังเพิ่มขึ้น (Increasing) |
+| $f'(a) < 0$ | เส้นตรงเฉียงลง (ทำมุมป้านกับแกน X) | ฟังก์ชันกำลังลดลง (Decreasing) |
+| $f'(a) = 0$ | เส้นตรงแนวนอนขนานแกน X | จุดนิ่ง (Stationary Point) ความชันเป็นศูนย์ |
+        """
     )
 
-    st.latex(r"m = f'(a) = \lim_{h \to 0} \frac{f(a+h) - f(a)}{h} \quad \implies \text{สมการเส้นสัมผัส: } y - f(a) = f'(a)(x - a)")
-
-    st.info(
-        """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
-- **ทิศทางความชัน ($f'(a)$):** เลื่อนจุด $a$ สังเกตหาก $f'(a) > 0$ เส้นชันขึ้น, $f'(a) < 0$ เส้นลาดลง, และ $f'(a) = 0$ เส้นสัมผัสเป็นแนวนอน (จุดนิ่ง) โดยจุดนิ่งไม่จำเป็นต้องเป็นจุดวกกลับหรือจุดสูงสุด/ต่ำสุดเสมอไป เช่น $f(x) = x^3$ ที่ $x = 0$
-- **การประมาณค่าเชิงเส้นเฉพาะที่:** ใกล้จุดสัมผัส เส้นตรงจะแนบสนิทไปกับเส้นโค้ง ซึ่งเป็นรากฐานของการประมาณค่าเชิงเส้น"""
+with st.expander("อ่านรายละเอียดทฤษฎี จุดที่ควรสังเกต และกรณีพิเศษ", expanded=False):
+    st.markdown("**จุดที่ควรสังเกตขณะทดลอง:**")
+    st.markdown(
+        """
+- **ความชันเส้นสัมผัส:** ณ จุด $x = a$ คือลิมิตของความชันเส้นตัด เมื่อจุดทั้งสองเคลื่อนเข้าหากันโดยที่ $h \\neq 0$ และให้ $h \\to 0$ (ไม่ใช่การแทนค่า $h = 0$ ซึ่งจะทำให้ตัวส่วนเป็นศูนย์และนิพจน์ไม่นิยาม)
+- **จุดนิ่ง:** $f'(a) = 0$ เส้นสัมผัสเป็นแนวนอน โดยจุดนิ่งไม่จำเป็นต้องเป็นจุดวกกลับหรือจุดสูงสุด/ต่ำสุดเสมอไป เช่น $f(x) = x^3$ ที่ $x = 0$
+- **การประมาณค่าเชิงเส้นเฉพาะที่:** ใกล้จุดสัมผัส เส้นตรงจะแนบสนิทไปกับเส้นโค้ง
+- **กรณีหาอนุพันธ์ไม่ได้:** เช่น จุดหักมุม $|x|$ ที่ $x = 0$ (ความชันสองฝั่งไม่เท่ากัน) หรือเส้นสัมผัสแนวดิ่ง ($m = \\infty$) จะไม่มีเส้นสัมผัส
+        """
     )
-
-with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
-    col_t1, col_t2 = st.columns(2)
-    with col_t1:
-        st.markdown("**เงื่อนไขการใช้งาน**")
-        for item in theory["conditions"]:
-            st.markdown(f"- {format_math_spacing(item)}")
-        st.markdown("**สมบัติสำคัญ**")
-        for item in theory["properties"]:
-            st.markdown(f"- {format_math_spacing(item)}")
-    with col_t2:
-        st.markdown("**ข้อควรระวัง**")
-        with st.container(border=True):
-            for caution in theory["cautions"]:
-                st.markdown(f"- {format_math_spacing(caution)}")
-        st.markdown("**การประยุกต์ใช้**")
-        for item in theory["applications"]:
-            st.markdown(f"- {format_math_spacing(item)}")
 
 # ---------------------------------------------------------------------------
 # 2) ทดลองสำรวจ
@@ -224,16 +215,28 @@ else:
             st.info(feedback_text)
 
         # กราฟวางติดกับตัวควบคุมด้านบน เพื่อให้เห็นผลทันทีหลังเลื่อนจุด a
+        st.markdown("### กราฟเส้นโค้งและเส้นสัมผัส")
+        st.caption("กราฟแบบ Interactive: ใช้ลูกกลิ้งเมาส์เพื่อซูมเข้า/ออก ลากเพื่อเลื่อนดูกราฟ หรือดับเบิลคลิกเพื่อรีเซ็ตมุมมอง")
         try:
-            fig, _ = plot_tangent(
+            fig_plotly = plot_tangent_plotly(
                 res["expr"],
                 a_val,
                 slope=res.get("result"),
                 status=res.get("status", "finite"),
             )
-            st.pyplot(fig)
+            st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+            st.warning(f"แสดงผลกราฟ interactive ขัดข้อง: {e} กำลังสลับไปใช้กราฟสำรอง")
+            try:
+                fig, _ = plot_tangent(
+                    res["expr"],
+                    a_val,
+                    slope=res.get("result"),
+                    status=res.get("status", "finite"),
+                )
+                st.pyplot(fig)
+            except Exception as e2:
+                st.warning(f"ไม่สามารถวาดกราฟได้: {e2}")
 
         # วิธีทำฉบับเต็มอยู่ใน expander ที่ตั้งชื่อชัดเจน
         with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)", expanded=False):

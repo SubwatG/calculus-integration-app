@@ -413,10 +413,29 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         # -------------------------------------------------------------
         # สร้าง Steps ตาม Universal Step Contract
         # -------------------------------------------------------------
+        if crossings_float:
+            formula_step = (
+                f"ตั้งสูตรหาพื้นที่: $A = \\int_{{{a_disp}}}^{{{b_disp}}} |f({v_lat}) - g({v_lat})| \\, d{v_lat}$ "
+                f"เนื่องจากเส้นโค้งตัดกันภายในช่วง จึงต้องหาจุดตัดเพื่อแบ่งช่วงย่อย และนำ (เส้นโค้งบน ลบ เส้นโค้งล่าง) ในแต่ละช่วงย่อย"
+            )
+            latex_ans = f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |{_to_latex(diff_expr, order='none')}| \\, d{v_lat} = {total_disp}"
+        else:
+            mid_full = (a_sp + b_sp) / 2
+            mid_val = diff_expr.subs(var_sym, mid_full)
+            try:
+                is_top = (float(mid_val.evalf()) >= 0)
+            except Exception:
+                is_top = True
+            if is_top:
+                formula_step = f"ตั้งสูตรหาพื้นที่: $A = \\int_{{{a_disp}}}^{{{b_disp}}} [f({v_lat}) - g({v_lat})] \\, d{v_lat}$ (เส้นโค้ง $f$ อยู่เหนือ $g$ ตลอดช่วง)"
+                latex_ans = f"A = \\int_{{{a_disp}}}^{{{b_disp}}} \\left[{_to_latex(f_raw, order='none')} - ({_to_latex(g_raw, order='none')})\\right] \\, d{v_lat} = {total_disp}"
+            else:
+                formula_step = f"ตั้งสูตรหาพื้นที่: $A = \\int_{{{a_disp}}}^{{{b_disp}}} [g({v_lat}) - f({v_lat})] \\, d{v_lat}$ (เส้นโค้ง $g$ อยู่เหนือ $f$ ตลอดช่วง)"
+                latex_ans = f"A = \\int_{{{a_disp}}}^{{{b_disp}}} \\left[{_to_latex(g_raw, order='none')} - ({_to_latex(f_raw, order='none')})\\right] \\, d{v_lat} = {total_disp}"
+
         steps = [
             f"กำหนดฟังก์ชัน: $f({v_lat}) = {_to_latex(f_raw, order='none')}, \\quad g({v_lat}) = {_to_latex(g_raw, order='none')}$ บนช่วง $[{a_disp}, {b_disp}]$",
-            f"ตั้งสูตรหาพื้นที่: $A = \\int_{{{a_disp}}}^{{{b_disp}}} |f({v_lat}) - g({v_lat})| \\, d{v_lat}$ "
-            f"โดยใช้เครื่องหมายค่าสัมบูรณ์ในนิยามเพื่อให้ได้ค่าพื้นที่เป็นบวกเสมอ เมื่อคำนวณจริงจะหาจุดตัดเพื่อแบ่งช่วง และนำ (เส้นโค้งบน ลบ เส้นโค้งล่าง) ในแต่ละช่วงย่อย",
+            formula_step,
             f"หาผลต่างของฟังก์ชัน: $f({v_lat}) - g({v_lat}) = {_to_latex(diff_expr, order='none')}$",
         ]
 
@@ -474,7 +493,7 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         return {
             "ok": True,
             "result": res_float,
-            "latex": f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |{_to_latex(diff_expr, order='none')}| \\, d{v_lat} = {total_disp}",
+            "latex": latex_ans,
             "steps": steps,
             "expr": diff_expr,
             "f_expr": f_expr,

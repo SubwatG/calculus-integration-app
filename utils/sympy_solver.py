@@ -147,6 +147,27 @@ def detect_variable(expr_str: str, default: str = "x") -> str:
         return default
 
 
+def _simplify_trig_for_integration(expr: sp.Expr) -> sp.Expr:
+    """จัดรูปฟังก์ชันตรีโกณมิติ เช่น tan, cot, sec, csc เพื่อช่วยให้คำนวณปริพันธ์ได้สำเร็จ"""
+    try:
+        trig_rep = expr.replace(sp.tan, lambda a: sp.sin(a) / sp.cos(a))
+        trig_rep = trig_rep.replace(sp.cot, lambda a: sp.cos(a) / sp.sin(a))
+        trig_rep = trig_rep.replace(sp.sec, lambda a: 1 / sp.cos(a))
+        trig_rep = trig_rep.replace(sp.csc, lambda a: 1 / sp.sin(a))
+        simplified = sp.cancel(trig_rep)
+        if simplified != expr:
+            return simplified
+    except Exception:
+        pass
+    try:
+        ts = sp.trigsimp(expr)
+        if ts != expr:
+            return ts
+    except Exception:
+        pass
+    return expr
+
+
 def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, Any]:
     try:
         clean_str, diff_var = _clean_calculus_input(expr_str)
@@ -169,6 +190,19 @@ def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, An
             f"หาปฏิยานุพันธ์ของฟังก์ชันเทียบกับตัวแปร ${v_lat}$:\n"
             f"\\int \\left({_to_latex(expr)}\\right) \\, d{v_lat}"
         ]
+
+        if result.has(sp.Integral):
+            simp_expr = _simplify_trig_for_integration(expr)
+            if simp_expr != expr:
+                res_simp = sp.integrate(simp_expr, var_sym)
+                if not res_simp.has(sp.Integral):
+                    steps.append(
+                        f"จัดรูปฟังก์ชันตรีโกณมิติก่อนอินทิเกรต: "
+                        f"แปลงรูปฟังก์ชันเพื่อให้หาปฏิยานุพันธ์ได้:\n"
+                        f"{_to_latex(expr)} = {_to_latex(simp_expr)}"
+                    )
+                    expr = simp_expr
+                    result = res_simp
 
         if not expr.has(var_sym):
             steps.append(

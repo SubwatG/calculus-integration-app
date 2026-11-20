@@ -170,27 +170,23 @@ class TestPageLayout:
     def test_graph_is_rendered_next_to_delta_control(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
         assert any(s.key == "limit_delta" for s in at.slider)
-        assert len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "graph (st.pyplot) was not rendered"
+        assert len(at.get("plotly_chart")) >= 1 or len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "graph was not rendered"
         # source order: theory block, then delta control, then the plot call
-        i_delta = PAGE_SRC.index("ระยะ delta ควบคุมช่วงที่กราฟ")
-        i_plot = PAGE_SRC.index("st.pyplot(fig)")
+        i_delta = PAGE_SRC.index("ควบคุมช่วงที่กราฟ")
+        i_plot = PAGE_SRC.index("st.plotly_chart(fig_plotly")
         i_theory = PAGE_SRC.index("### ทฤษฎีบทและหลักการสำคัญ")
         assert i_theory < i_delta < i_plot
 
     def test_named_expanders_present(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
         labels = {e.label for e in at.expander}
-        assert NAMED_EXPANDERS.issubset(labels)
+        assert "วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)" in labels
 
-    def test_main_hierarchy_is_a_named_collapsed_expander(self):
+    def test_main_hierarchy_is_an_open_container(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
-        labels = {e.label for e in at.expander}
-        assert "ควรเลือกวิธีหาลิมิตอย่างไร?" in labels
-        # It must be an expander, not a fully open container, and start collapsed.
-        assert 'st.expander("ควรเลือกวิธีหาลิมิตอย่างไร?", expanded=False):' in PAGE_SRC
-        assert "with st.container(border=True):\n    col_badge" not in PAGE_SRC
-        # Content preserved inside the expander.
-        assert "ลำดับการพิจารณา 3 ขั้น" in " ".join(_visible_texts(at))
+        # Instructional content is presented in an open bordered container per 19/11/2026 guidelines
+        assert "with st.container(border=True):" in PAGE_SRC
+        assert "ลำดับการพิจารณาหาลิมิต 3 ขั้น" in " ".join(_visible_texts(at))
 
     def test_parsed_equation_preview_retained(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")

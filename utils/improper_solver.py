@@ -1,4 +1,4 @@
-"""utils/improper_solver.py — อินทิกรัลไม่ตรงแบบ (Improper Integrals)
+"""utils/improper_solver.py : อินทิกรัลไม่ตรงแบบ (Improper Integrals)
 
 คำนวณอินทิกรัลไม่ตรงแบบผ่านลิมิต ตรวจสอบการลู่เข้า/ลู่ออก (Convergence/Divergence)
 รองรับช่วงอนันต์ [a, oo), (-oo, b], (-oo, oo) และจุดเอกฐานที่ขอบเขต (Endpoints) และภายใน (Interior)
@@ -286,7 +286,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             antideriv = sp.integrate(expr, var_sym)
             steps.append(
                 f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
-                f"แล้วแทนค่าขอบเขต: $[F({v_lat})]_{{t}}^{{{bound_latex}}} = {_to_latex(antideriv.subs(var_sym, upper))} - \\left({_to_latex(antideriv.subs(var_sym, sp.Symbol('t')))}\\right)$"
+                f"แล้วแทนค่าขอบเขต: $[F({v_lat})]_{{t}}^{{{bound_latex}}} = \\left({_to_latex(antideriv.subs(var_sym, upper))}\\right) - \\left({_to_latex(antideriv.subs(var_sym, sp.Symbol('t')))}\\right)$"
             )
 
             res_val = sp.integrate(expr, (var_sym, -sp.oo, upper))
@@ -331,9 +331,11 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"$$\\lim_{{t \\to \\infty}} \\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}$$"
             )
             antideriv = sp.integrate(expr, var_sym)
+            lower_eval = antideriv.subs(var_sym, lower)
+            lower_sub_tex = f"\\left({_to_latex(lower_eval)}\\right)" if str(lower_eval).startswith("-") else _to_latex(lower_eval)
             steps.append(
                 f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
-                f"แล้วแทนค่าขอบเขต: $[F({v_lat})]_{{{lower_latex}}}^{{t}} = \\left({_to_latex(antideriv.subs(var_sym, sp.Symbol('t')))}\\right) - {_to_latex(antideriv.subs(var_sym, lower))}$"
+                f"แล้วแทนค่าขอบเขต: $[F({v_lat})]_{{{lower_latex}}}^{{t}} = \\left({_to_latex(antideriv.subs(var_sym, sp.Symbol('t')))}\\right) - {lower_sub_tex}$"
             )
 
             res_val = sp.integrate(expr, (var_sym, lower, sp.oo))
@@ -385,7 +387,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             c_sp = sp.nsimplify(c_val)
             c_latex = _format_bound_latex(c_sp)
             steps.append(
-                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดเอกฐานภายในช่วง (Interior Singularity) ที่ ${v_lat} = {c_latex}$ "
+                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดที่ฟังก์ชันไม่ต่อเนื่องภายในช่วง (Interior Singularity) ที่ ${v_lat} = {c_latex}$ "
                 f"ซึ่งทำให้ฟังก์ชันไม่ต่อเนื่อง จึงแยกช่วงคำนวณตามนิยาม:\n"
                 f"$$\\int_{{{lower_latex}}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} = "
                 f"\\lim_{{t \\to {c_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat} + "
@@ -446,18 +448,20 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         lower_singular = _is_singular_at_point(expr, lower, "+", var=var_sym)
         upper_singular = _is_singular_at_point(expr, upper, "-", var=var_sym)
 
-        # เอกฐานที่ขอบล่าง a เท่านั้น (เช่น 1/sqrt(x) บน [0, 1])
+        # ฟังก์ชันไม่ต่อเนื่องที่ขอบล่าง a เท่านั้น (เช่น 1/sqrt(x) บน [0, 1])
         if lower_singular and not upper_singular:
             steps.append(
-                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดเอกฐานที่ขอบล่าง ${v_lat} = {lower_latex}$ "
+                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดที่ฟังก์ชันไม่ต่อเนื่องที่ขอบล่าง ${v_lat} = {lower_latex}$ "
                 f"โดย $\\lim_{{{v_lat} \\to {lower_latex}^+}} f({v_lat}) = \\infty$ ในขณะที่ฟังก์ชันต่อเนื่องที่ขอบบน ${v_lat} = {bound_latex}$ "
                 f"จึงแปลงเป็นรูปลิมิตเข้าใกล้ทางขวา:\n"
                 f"$$\\lim_{{t \\to {lower_latex}^+}} \\int_{{t}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}$$"
             )
             antideriv = _abs_logs(sp.integrate(expr, var_sym))
+            upper_eval = antideriv.subs(var_sym, upper)
+            t_eval = antideriv.subs(var_sym, sp.Symbol('t'))
             steps.append(
                 f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
-                f"และแทนค่าขอบเขต: $[F({v_lat})]_{{t}}^{{{bound_latex}}} = {_to_latex(antideriv.subs(var_sym, upper))} - {_to_latex(antideriv.subs(var_sym, sp.Symbol('t')))}$"
+                f"และแทนค่าขอบเขต: $[F({v_lat})]_{{t}}^{{{bound_latex}}} = \\left({_to_latex(upper_eval)}\\right) - \\left({_to_latex(t_eval)}\\right)$"
             )
 
             res_val = sp.integrate(expr, (var_sym, lower, upper))
@@ -488,18 +492,20 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "variable": str(var_sym.name),
             }
 
-        # เอกฐานที่ขอบบน b เท่านั้น (เช่น 1/sqrt(1-x) บน [0, 1])
+        # ฟังก์ชันไม่ต่อเนื่องที่ขอบบน b เท่านั้น (เช่น 1/sqrt(1-x) บน [0, 1])
         if upper_singular and not lower_singular:
             steps.append(
-                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดเอกฐานที่ขอบบน ${v_lat} = {bound_latex}$ "
+                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดที่ฟังก์ชันไม่ต่อเนื่องที่ขอบบน ${v_lat} = {bound_latex}$ "
                 f"โดย $\\lim_{{{v_lat} \\to {bound_latex}^-}} f({v_lat}) = \\infty$ ในขณะที่ฟังก์ชันต่อเนื่องที่ขอบล่าง ${v_lat} = {lower_latex}$ "
                 f"จึงแปลงเป็นรูปลิมิตเข้าใกล้ทางซ้าย:\n"
                 f"$$\\lim_{{t \\to {bound_latex}^-}} \\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}$$"
             )
             antideriv = _abs_logs(sp.integrate(expr, var_sym))
+            t_eval = antideriv.subs(var_sym, sp.Symbol('t'))
+            lower_eval = antideriv.subs(var_sym, lower)
             steps.append(
                 f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
-                f"และแทนค่าขอบเขต: $[F({v_lat})]_{{{lower_latex}}}^{{t}} = {_to_latex(antideriv.subs(var_sym, sp.Symbol('t')))} - {_to_latex(antideriv.subs(var_sym, lower))}$"
+                f"และแทนค่าขอบเขต: $[F({v_lat})]_{{{lower_latex}}}^{{t}} = \\left({_to_latex(t_eval)}\\right) - \\left({_to_latex(lower_eval)}\\right)$"
             )
 
             res_val = sp.integrate(expr, (var_sym, lower, upper))
@@ -530,12 +536,12 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "variable": str(var_sym.name),
             }
 
-        # 4.2b เอกฐานที่ขอบทั้งสอง (เช่น 1/sqrt(x*(1-x)) บน [0, 1])
+        # 4.2b ฟังก์ชันไม่ต่อเนื่องที่ขอบทั้งสอง (เช่น 1/sqrt(x*(1-x)) บน [0, 1])
         if lower_singular and upper_singular:
             mid = sp.nsimplify((lower + upper) / 2)
             mid_latex = _to_latex(mid)
             steps.append(
-                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดเอกฐานที่ขอบทั้งสอง "
+                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดที่ฟังก์ชันไม่ต่อเนื่องที่ขอบทั้งสอง "
                 f"${v_lat} = {lower_latex}$ และ ${v_lat} = {bound_latex}$ "
                 f"จึงแยกช่วงที่จุดกึ่งกลาง ${v_lat} = {mid_latex}$ แล้วรวมสองลิมิต:\n"
                 f"$$\\lim_{{t \\to {mid_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat}"

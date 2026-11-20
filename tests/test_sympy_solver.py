@@ -41,6 +41,13 @@ class TestIntegrate:
         # SymPy ให้ log(x) (ขอบเขตจำนวนจริงบวก)
         assert "log" in sp.sstr(res["result"])
 
+    def test_trig_simplification_before_integration(self):
+        # tan(x+1)*cos(x+1) = sin(x+1) -> -cos(x+1)
+        res = integrate("tan(x+1)*cos(x+1)")
+        assert res["ok"] is True
+        assert not res["result"].has(sp.Integral)
+        assert expr_eq(res["result"], "-cos(x+1)")
+
     def test_invalid_input_returns_error(self):
         res = integrate("")
         assert res["ok"] is False

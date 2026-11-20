@@ -208,6 +208,28 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
         v_lat = _to_latex(var_sym)
         domain_note = _get_domain_note(expr, var_sym)
 
+        orig_expr = expr
+        simplified_step = None
+        if antideriv.has(sp.Integral):
+            try:
+                trig_rep = expr.replace(sp.tan, lambda a: sp.sin(a) / sp.cos(a))
+                trig_rep = trig_rep.replace(sp.cot, lambda a: sp.cos(a) / sp.sin(a))
+                trig_rep = trig_rep.replace(sp.sec, lambda a: 1 / sp.cos(a))
+                trig_rep = trig_rep.replace(sp.csc, lambda a: 1 / sp.sin(a))
+                simp_expr = sp.cancel(trig_rep)
+                if simp_expr != expr:
+                    res_simp = sp.integrate(simp_expr, var_sym)
+                    if not res_simp.has(sp.Integral):
+                        expr = simp_expr
+                        antideriv = res_simp
+                        simplified_step = (
+                            f"จัดรูปฟังก์ชันตรีโกณมิติก่อนอินทิเกรต: "
+                            f"แปลงรูปฟังก์ชันเพื่อให้หาปฏิยานุพันธ์ได้:\n"
+                            f"{_to_latex(orig_expr)} = {_to_latex(simp_expr)}"
+                        )
+            except Exception:
+                pass
+
         if antideriv.has(sp.Integral):
             return {
                 "ok": False,
@@ -229,8 +251,10 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
         has_special = any(antideriv.has(f) for f in SPECIAL_FUNCS)
 
         steps = [
-            f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+            f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(orig_expr)} \\, d{v_lat}$",
         ]
+        if simplified_step:
+            steps.append(simplified_step)
 
         if has_special:
             status = "non_elementary"
@@ -580,10 +604,10 @@ def verify_user_u_substitution(
                     f"$$u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = \\frac{{du}}{{{_to_latex(du)}}}$$",
                     f"ขั้นที่ 2: แทนค่าลงในอินทิกรัลและสังเกตการตัดทอน\n"
                     f"$$\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int {_to_latex(ratio_u)} \\, du$$\n"
-                    f"ตัวแปร ${v_lat}$ ถูกตัดทอนจนหมดจด เหลือเพียงฟังก์ชันของตัวแปร $u$ ล้วน",
+                    f"ตัวแปร ${v_lat}$ ถูกตัดทอนหมด เหลือเพียงฟังก์ชันของตัวแปร $u$",
                     f"ขั้นที่ 3: คำนวณปริพันธ์เทียบกับตัวแปร u\n"
                     f"$$\\int {_to_latex(ratio_u)} \\, du = {_to_latex(antideriv_u)} + C$$",
-                    f"ขั้นที่ 4: แทนค่า $u = {_to_latex(u_expr)}$ กลับคืนสู่ตัวแปรเดิม\n"
+                    f"ขั้นที่ 4: แทนค่า $u = {_to_latex(u_expr)}$ กลับในผลลัพธ์:\n"
                     f"$$= {_to_latex(antideriv_x)} + C$$",
                     domain_note,
                 ]
@@ -591,7 +615,7 @@ def verify_user_u_substitution(
                     "ok": True,
                     "status": "direct",
                     "status_th": "ทำได้โดยตรง (สำเร็จ)",
-                    "message": f"ถูกต้องตามหลักการ: การเลือก $u = {_to_latex(u_expr)}$ ทำให้อนุพันธ์ตัดทอนตัวแปรเดิมได้หมดจดทันที",
+                    "message": f"ถูกต้องตามหลักการ: การเลือก $u = {_to_latex(u_expr)}$ ทำให้อนุพันธ์ตัดทอนตัวแปรเดิมได้หมด",
                     "steps": steps,
                     "latex": f"\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv_x)} + C",
                     "result": antideriv_x,
@@ -627,7 +651,7 @@ def verify_user_u_substitution(
                                 f"$$\\int {_to_latex(subbed)} \\, du$$",
                                 f"ขั้นที่ 4: คำนวณปริพันธ์เทียบกับตัวแปร u\n"
                                 f"$$\\int {_to_latex(subbed)} \\, du = {_to_latex(int_u)} + C$$",
-                                f"ขั้นที่ 5: แทนค่า $u = {_to_latex(u_expr)}$ กลับคืนสู่ตัวแปรเดิม\n"
+                                f"ขั้นที่ 5: แทนค่า $u = {_to_latex(u_expr)}$ กลับในผลลัพธ์:\n"
                                 f"$$= {_to_latex(antideriv_x)} + C$$",
                                 domain_note,
                             ]
@@ -672,7 +696,7 @@ def verify_user_u_substitution(
             "ok": False,
             "status": "incompatible",
             "status_th": "ทำไม่ได้ด้วยตัวแปร u นี้",
-            "message": f"การเลือก $u = {_to_latex(u_expr)}$ เป็นทางตัน: ตัวแปร ${v_lat}$ ไม่สามารถตัดทอนให้หมดไปได้ และไม่ได้ช่วยลดทอนความซับซ้อนของอินทิกรัล",
+            "message": f"การเลือก $u = {_to_latex(u_expr)}$ ไม่สามารถแก้ได้: ตัวแปร ${v_lat}$ ไม่สามารถตัดทอนให้หมดไปได้ (ตัดทอนไม่หมด) และไม่ช่วยลดรูปอินทิกรัล",
             "steps": [
                 f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
                 f"ขั้นที่ 1: กำหนดตัวแปรและหาอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat}$",

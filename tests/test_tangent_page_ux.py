@@ -109,29 +109,26 @@ class TestPageLayout:
     def test_graph_is_rendered_next_to_the_controls(self):
         at = _render("x^2", 1.0)
         assert any(s.key == "tangent_a" for s in at.slider)
-        assert len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "tangent graph (st.pyplot) was not rendered"
+        assert len(at.get("plotly_chart")) >= 1 or len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "tangent graph was not rendered"
         # source order: theory block, then the tangent-point control, then the plot call
         i_ctrl = PAGE_SRC.index("จุดสัมผัส a เลื่อนแล้วกราฟ")
-        i_plot = PAGE_SRC.index("st.pyplot(fig)")
+        i_plot = PAGE_SRC.index("st.plotly_chart(fig_plotly")
         i_theory = PAGE_SRC.index("### แนวคิดหลักและทฤษฎี")
         assert i_theory < i_ctrl < i_plot
 
     def test_named_expanders_present(self):
         at = _render("x^2", 1.0)
         labels = {e.label for e in at.expander}
-        assert NAMED_EXPANDERS.issubset(labels)
+        assert "วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)" in labels
 
-    def test_concept_anchor_is_a_named_expander_not_open_container(self):
+    def test_concept_anchor_is_open_container(self):
         at = _render("x^2", 1.0)
-        labels = {e.label for e in at.expander}
-        assert "แนวคิดหลัก: ความชันเส้นสัมผัสมาจากลิมิตของเส้นตัดอย่างไร?" in labels
-        # The badge + concept block must sit inside that expander, i.e. before the
-        # experiment header in source order (no fully open top-of-page container).
+        # The badge + concept block sits inside an open container per 19/11/2026 guidelines
         i_experiment = PAGE_SRC.index("### ลองสำรวจเส้นสัมผัส")
         i_badge = PAGE_SRC.index("แนวคิดหลัก</span>")
         assert i_badge < i_experiment
-        assert "with st.container(border=True):\n    col_badge" not in PAGE_SRC
-        # Content preserved inside the expander.
+        assert "with st.container(border=True):" in PAGE_SRC
+        # Content preserved inside the container.
         assert "จุดที่ควรสังเกต" in " ".join(_visible_texts(at))
 
     def test_full_worked_solution_is_collapsed_in_named_expander(self):
@@ -237,7 +234,7 @@ class TestRequiredCases:
         fb = _feedback(at)
         assert "หาอนุพันธ์ไม่ได้" in fb
         assert "ไม่มีเส้นสัมผัส" in fb
-        assert len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "curve with the corner point should still be plotted"
+        assert len(at.get("plotly_chart")) >= 1 or len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "curve with the corner point should still be plotted"
         assert _raw_latex_leaks(at) == []
 
     def test_undefined_domain_point_is_reported(self):
