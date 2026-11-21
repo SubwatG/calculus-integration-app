@@ -1,5 +1,5 @@
 """
-utils/plotter.py — ฟังก์ชันวาดกราฟสำหรับบทเรียน interactive แคลคูลัส
+utils/plotter.py : ฟังก์ชันวาดกราฟสำหรับบทเรียน interactive แคลคูลัส
 
 ใช้ matplotlib (Agg) คืน (fig, ax) สำหรับ st.pyplot
 label ในกราฟเป็นภาษาอังกฤษ เพื่อความน่าเชื่อถือของ matplotlib
@@ -268,7 +268,12 @@ def plot_tangent(
     return fig, ax
 
 
-def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: float = 0.5, span: float = 3.0) -> tuple:
+def plot_limit_near(
+    expr: sp.Expr,
+    a: float | int | str | sp.Expr = 0.0,
+    delta: float = 0.5,
+    span: float = 3.0,
+) -> tuple:
     """วาดเส้นโค้ง + จุดวิ่งเข้าใกล้ a ทั้งสองด้าน (หรือพฤติกรรมระยะไกลเมื่อ var -> +-oo)
 
     expr: sympy expression
@@ -304,6 +309,29 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
         title_dir = "+oo" if is_pos_inf else "-oo"
         if lim_val is not None and np.isfinite(lim_val):
             ax.axhline(lim_val, color="#E74C3C", lw=1.6, linestyle="--", label=f"Horizontal Asymptote y = {lim_val:.4f}")
+
+        # ปรับ y-scale ให้มองเห็นเส้นกำกับและเส้นกราฟชัดเจน ไม่ถูก squash จากจุด singularity / y -> inf
+        finite_ys = ys[np.isfinite(ys)]
+        if len(finite_ys) > 0:
+            if lim_val is not None and np.isfinite(lim_val):
+                tail_start = int(len(xs) * 0.3)
+                tail_ys = ys[tail_start:]
+                tail_finite = tail_ys[np.isfinite(tail_ys)]
+                if len(tail_finite) > 0:
+                    q_low = float(np.percentile(tail_finite, 2))
+                    q_high = float(np.percentile(tail_finite, 98))
+                else:
+                    q_low, q_high = lim_val - 2.0, lim_val + 2.0
+                y_min = min(q_low, lim_val, 0.0)
+                y_max = max(q_high, lim_val, 0.0)
+                pad = max(0.5, (y_max - y_min) * 0.15)
+                ax.set_ylim(y_min - pad, y_max + pad)
+            else:
+                p_low = float(np.percentile(finite_ys, 2))
+                p_high = float(np.percentile(finite_ys, 95))
+                if p_low < p_high:
+                    pad = max(1.0, (p_high - p_low) * 0.1)
+                    ax.set_ylim(p_low - pad, min(p_high + pad, 100.0))
 
         ax.set_xlabel(var_name)
         ax.set_ylabel("y")
@@ -373,7 +401,7 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
         )
         ax.axhline(lim_val, color="#E5E7EB", lw=1, linestyle=":")
 
-    # จุดเข้าใกล้ทางซ้าย x_L = a - delta และทางขวา x_R = a + delta
+    # จุดเข้าใกล้ทางซ้าย x_L = a - delta และทางขวา x_R = a + delta (ระยะห่าง d)
     x_l = a_num - delta
     x_r = a_num + delta
 
@@ -406,6 +434,46 @@ def plot_limit_near(expr: sp.Expr, a: float | int | str | sp.Expr = 0.0, delta: 
                 xytext=(x_r, y_r),
                 arrowprops=dict(arrowstyle="->", color="#E67E22", lw=1.5),
             )
+
+    # ควบคุมสเกลแกน y ไม่ให้พุ่งสู่อนันต์จนเส้นกราฟและจุดทดสอบถูกบีบจนมองไม่เห็น
+    finite_ys = ys[np.isfinite(ys)]
+    if len(finite_ys) > 0:
+        focus_pts = [0.0]
+        if lim_finite and lim_val is not None:
+            focus_pts.append(lim_val)
+        if y_l is not None and np.isfinite(y_l):
+            focus_pts.append(y_l)
+        if y_r is not None and np.isfinite(y_r):
+            focus_pts.append(y_r)
+
+        mask_away = np.abs(xs - a_num) >= min(0.15, span * 0.08)
+        away_ys = ys[mask_away & np.isfinite(ys)]
+        if len(away_ys) == 0:
+            away_ys = finite_ys
+
+        p_low = float(np.percentile(away_ys, 2))
+        p_high = float(np.percentile(away_ys, 98))
+
+        y_min = min(min(focus_pts), p_low)
+        y_max = max(max(focus_pts), p_high)
+
+        if lim_finite and lim_val is not None:
+            max_dev = max(8.0, span * 3.0)
+            y_min = max(y_min, min(focus_pts) - 2.0, lim_val - max_dev)
+            y_max = min(y_max, max(focus_pts) + 2.0, lim_val + max_dev)
+        else:
+            focus_min = min(focus_pts)
+            focus_max = max(focus_pts)
+            margin = max(4.0, (focus_max - focus_min) * 0.8)
+            y_min = max(y_min, focus_min - margin, -25.0)
+            y_max = min(y_max, focus_max + margin, 25.0)
+
+        if y_max - y_min < 2.0:
+            mid = (y_max + y_min) / 2.0
+            y_min, y_max = mid - 1.5, mid + 1.5
+
+        pad = (y_max - y_min) * 0.1
+        ax.set_ylim(y_min - pad, y_max + pad)
 
     ax.set_xlabel(var_name)
     ax.set_ylabel("y")
@@ -554,8 +622,9 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
         ys_g_area = _as_curve(g(xs_area), xs_area)
 
     fig, ax = _create_figure()
-    ax.plot(xs_full, ys_f_full, color=CURVE, lw=2.2, label=f"y = f({var_name})")
-    ax.plot(xs_full, ys_g_full, color="#2563EB", lw=2.2, linestyle="--", label=f"y = g({var_name})")
+    # ใช้เส้นทึบทั้งสองฟังก์ชัน (ไม่ใช้เส้นประ)
+    ax.plot(xs_full, ys_f_full, color=CURVE, lw=2.2, linestyle="-", label=f"y = f({var_name})")
+    ax.plot(xs_full, ys_g_full, color="#2563EB", lw=2.2, linestyle="-", label=f"y = g({var_name})")
 
     # แรเงาพื้นที่ระหว่าง f และ g
     ax.fill_between(
@@ -588,17 +657,166 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
     ax.set_title(f"Area Between Curves on [{a}, {b}]")
     ax.grid(True, color=GRID, lw=0.5)
 
-    all_ys = np.concatenate([ys_f_area, ys_g_area])
-    finite_ys = all_ys[np.isfinite(all_ys)]
+    finite_ys = np.concatenate([ys_f_area[np.isfinite(ys_f_area)], ys_g_area[np.isfinite(ys_g_area)]])
     if len(finite_ys) > 0:
-        ymin = float(np.percentile(finite_ys, 2)) - 0.5
-        ymax = float(np.percentile(finite_ys, 98)) + 0.5
-        if ymin < ymax:
-            ax.set_ylim(ymin, ymax)
+        ymin = float(np.percentile(finite_ys, 1))
+        ymax = float(np.percentile(finite_ys, 99))
+        if ymin == ymax:
+            ymin -= 1.0
+            ymax += 1.0
+        pad = max(0.4, 0.15 * (ymax - ymin))
+        ax.set_ylim(ymin - pad, ymax + pad)
 
     ax.legend(loc="upper right", fontsize=8.5, framealpha=0.9)
     fig.tight_layout()
     return fig, ax
+
+
+def plot_area_between_plotly(
+    f_expr,
+    g_expr,
+    a: float,
+    b: float,
+    crossings: list[float] | None = None,
+):
+    """สร้างกราฟแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ สเกลโฟกัสช่วง [a, b] เส้นทึบ และหมุดจุดตัด"""
+    import plotly.graph_objects as go
+
+    MODULE_MAP = [{"real_root": lambda base, n: np.sign(base) * (np.abs(base) ** (1.0 / n))}, "numpy"]
+    var = _get_plot_var(f_expr, g_expr)
+    var_name = var.name
+    f = sp.lambdify(var, f_expr, modules=MODULE_MAP)
+    g = sp.lambdify(var, g_expr, modules=MODULE_MAP)
+
+    x_start = min(a, b)
+    x_end = max(a, b)
+    span = max(x_end - x_start, 1.0)
+    x_min = x_start - 0.25 * span
+    x_max = x_end + 0.25 * span
+
+    xs_full = np.linspace(x_min, x_max, 400)
+    with np.errstate(all="ignore"):
+        ys_f_full = _as_curve(f(xs_full), xs_full)
+        ys_g_full = _as_curve(g(xs_full), xs_full)
+
+    fig = go.Figure()
+
+    # แบ่งช่วงย่อยตามจุดตัด เพื่อแรเงาพื้นที่แต่ละช่วงอย่างถูกต้อง
+    cuts = [x_start]
+    if crossings:
+        for c in crossings:
+            if x_start < c < x_end:
+                cuts.append(c)
+    cuts.append(x_end)
+    cuts = sorted(set(cuts))
+
+    for i in range(len(cuts) - 1):
+        c1, c2 = cuts[i], cuts[i + 1]
+        xs_sub = np.linspace(c1, c2, 100)
+        with np.errstate(all="ignore"):
+            yf_sub = _as_curve(f(xs_sub), xs_sub)
+            yg_sub = _as_curve(g(xs_sub), xs_sub)
+        y_low = np.minimum(yf_sub, yg_sub)
+        y_high = np.maximum(yf_sub, yg_sub)
+        mid_x = (c1 + c2) / 2.0
+        try:
+            f_is_top = float(f(mid_x)) >= float(g(mid_x))
+        except Exception:
+            f_is_top = True
+
+        color = "rgba(225, 29, 72, 0.28)" if f_is_top else "rgba(37, 99, 235, 0.28)"
+        label_area = f"พื้นที่ [{c1:g}, {c2:g}] (f ≥ g)" if f_is_top else f"พื้นที่ [{c1:g}, {c2:g}] (g ≥ f)"
+
+        fig.add_trace(go.Scatter(
+            x=xs_sub,
+            y=y_low,
+            mode="lines",
+            line=dict(width=0),
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=xs_sub,
+            y=y_high,
+            mode="lines",
+            line=dict(width=0),
+            fill="tonexty",
+            fillcolor=color,
+            name=label_area,
+            hovertemplate=f"{label_area}<br>{var_name}: %{{x:.3f}}<extra></extra>",
+        ))
+
+    # กราฟเส้นหลัก f(x) และ g(x) เป็นเส้นทึบทั้งสองเส้น (ไม่ใช้เส้นประ)
+    fig.add_trace(go.Scatter(
+        x=xs_full,
+        y=ys_f_full,
+        mode="lines",
+        name=f"y = f({var_name})",
+        line=dict(color=CURVE, width=2.8, dash="solid"),
+        hovertemplate=f"f(%{{x:.3f}}) = %{{y:.3f}}<extra></extra>",
+    ))
+    fig.add_trace(go.Scatter(
+        x=xs_full,
+        y=ys_g_full,
+        mode="lines",
+        name=f"y = g({var_name})",
+        line=dict(color="#2563EB", width=2.8, dash="solid"),
+        hovertemplate=f"g(%{{x:.3f}}) = %{{y:.3f}}<extra></extra>",
+    ))
+
+    # มาร์กเกอร์จุดตัดของเส้นโค้ง
+    if crossings:
+        pts_x = [c for c in crossings if (x_min - 0.1 * span) <= c <= (x_max + 0.1 * span)]
+        if pts_x:
+            with np.errstate(all="ignore"):
+                pts_y = [_as_curve(f(c), np.array([c]))[0] for c in pts_x]
+            fig.add_trace(go.Scatter(
+                x=pts_x,
+                y=pts_y,
+                mode="markers",
+                marker=dict(color="#F59E0B", size=9, line=dict(color="#18181B", width=1.5)),
+                name="จุดตัดเส้นโค้ง",
+                hovertemplate=f"จุดตัด: ({var_name}=%{{x:.4g}}, y=%{{y:.4g}})<extra></extra>",
+            ))
+
+    # เส้นขอบเขตแนวตั้ง x = a และ x = b
+    fig.add_vline(
+        x=a,
+        line=dict(color="#64748B", width=1.5, dash="dot"),
+        annotation_text=f"{var_name} = {a:g}",
+        annotation_position="top left",
+    )
+    fig.add_vline(
+        x=b,
+        line=dict(color="#64748B", width=1.5, dash="dot"),
+        annotation_text=f"{var_name} = {b:g}",
+        annotation_position="top right",
+    )
+
+    # ควบคุมช่วงแกน y เริ่มต้นให้อยู่ในกรอบสมเหตุสมผลตามช่วง [a, b]
+    xs_int = np.linspace(x_start, x_end, 200)
+    with np.errstate(all="ignore"):
+        ys_int = np.concatenate([_as_curve(f(xs_int), xs_int), _as_curve(g(xs_int), xs_int)])
+    finite_ys = ys_int[np.isfinite(ys_int)]
+    if len(finite_ys) > 0:
+        y_low = float(np.percentile(finite_ys, 1))
+        y_high = float(np.percentile(finite_ys, 99))
+        if y_low == y_high:
+            y_low -= 1.0
+            y_high += 1.0
+        pad = max(0.4, 0.15 * (y_high - y_low))
+        fig.update_yaxes(range=[y_low - pad, y_high + pad])
+
+    fig.update_layout(
+        title=f"กราฟพื้นที่ระหว่างเส้นโค้งบนช่วง [{a:g}, {b:g}] (Interactive)",
+        xaxis_title=var_name,
+        yaxis_title="y",
+        template="plotly_white",
+        hovermode="closest",
+        margin=dict(l=40, r=40, t=50, b=40),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
 
 
 def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | str | sp.Expr | None = None) -> tuple:
@@ -685,4 +903,666 @@ def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | s
     ax.legend(loc="upper right", fontsize=8.5, framealpha=0.9)
     fig.tight_layout()
     return fig, ax
+
+
+def plot_riemann_plotly(
+    expr: sp.Expr,
+    a: float,
+    b: float,
+    n: int,
+    method: str = "left",
+    exact: float | None = None,
+):
+    """สร้างกราฟผลบวกรีมันน์แบบ interactive ด้วย Plotly: ซูม/แพนอิสระ สเกลแท่งสี่เหลี่ยม และเส้นโค้ง"""
+    import plotly.graph_objects as go
+
+    var = _get_plot_var(expr)
+    var_name = var.name
+    f = sp.lambdify(var, expr, modules=["numpy"])
+    dx = (b - a) / n
+    pad = (b - a) * 0.05
+
+    xs_smooth = np.linspace(a - pad, b + pad, 400)
+    with np.errstate(all="ignore"):
+        ys_smooth = _as_curve(f(xs_smooth), xs_smooth)
+
+    if method == "left":
+        xs_rect = np.array([a + i * dx for i in range(n)])
+    elif method == "right":
+        xs_rect = np.array([a + (i + 1) * dx for i in range(n)])
+    else:
+        xs_rect = np.array([a + (i + 0.5) * dx for i in range(n)])
+
+    with np.errstate(all="ignore"):
+        ys_rect = _as_curve(f(xs_rect), xs_rect)
+
+    fig = go.Figure()
+
+    # วาดแท่งสี่เหลี่ยมรีมันน์
+    for i in range(n):
+        x0 = a + i * dx
+        x1 = x0 + dx
+        h = float(ys_rect[i])
+        y0 = 0.0
+        y1 = h
+        fig.add_shape(
+            type="rect",
+            x0=x0,
+            y0=min(y0, y1),
+            x1=x1,
+            y1=max(y0, y1),
+            line=dict(color="#BE123C", width=1.2),
+            fillcolor="rgba(225, 29, 72, 0.25)",
+        )
+
+    # จุดตัวแทน f(x*) บนหัวแท่ง
+    fig.add_trace(go.Scatter(
+        x=xs_rect,
+        y=ys_rect,
+        mode="markers",
+        marker=dict(color="#BE123C", size=6),
+        name="จุดตัวแทน f(x*)",
+        hovertemplate=f"จุดตัวแทน: ({var_name}=%{{x:.4f}}, y=%{{y:.4f}})<extra></extra>",
+    ))
+
+    # เส้นกราฟ f(var)
+    fig.add_trace(go.Scatter(
+        x=xs_smooth,
+        y=ys_smooth,
+        mode="lines",
+        line=dict(color=CURVE, width=2.8),
+        name=f"y = f({var_name})",
+        hovertemplate=f"f(%{{x:.4f}}) = %{{y:.4f}}<extra></extra>",
+    ))
+
+    # แรเงาพื้นที่ใต้กราฟจริงเพื่อเปรียบเทียบ
+    xs_area = np.linspace(a, b, 200)
+    with np.errstate(all="ignore"):
+        ys_area = _as_curve(f(xs_area), xs_area)
+    fig.add_trace(go.Scatter(
+        x=xs_area,
+        y=ys_area,
+        mode="lines",
+        line=dict(width=0),
+        fill="tozeroy",
+        fillcolor="rgba(59, 130, 246, 0.12)",
+        name="พื้นที่จริงใต้กราฟ",
+        hoverinfo="skip",
+    ))
+
+    method_label = {"left": "ซ้าย (Left)", "right": "ขวา (Right)", "midpoint": "กึ่งกลาง (Midpoint)"}.get(method, method)
+    title_str = f"ผลบวกรีมันน์ ({method_label}, n={n}, Δ{var_name}={dx:.4f})"
+    if exact is not None:
+        title_str += f" | ค่าจริง = {exact:.4f}"
+
+    fig.update_layout(
+        title=f"{title_str} (Interactive)",
+        xaxis_title=var_name,
+        yaxis_title="y",
+        template="plotly_white",
+        hovermode="closest",
+        margin=dict(l=40, r=40, t=50, b=40),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
+
+
+def plot_tangent_plotly(
+    expr: sp.Expr,
+    a: float,
+    span: float = 3.0,
+    slope: float | None = None,
+    status: str = "finite",
+):
+    """สร้างกราฟเส้นสัมผัสแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ จุดสัมผัส และเส้นสัมผัส"""
+    import plotly.graph_objects as go
+
+    var = _get_plot_var(expr)
+    var_name = var.name
+    f = sp.lambdify(var, expr, modules=["numpy"])
+
+    fa_sym = expr.subs(var, a)
+    try:
+        fa = float(fa_sym)
+    except (TypeError, ValueError):
+        fa = 0.0
+
+    if slope is None and status == "finite":
+        df = sp.diff(expr, var)
+        slope_sym = df.subs(var, a)
+        try:
+            slope = float(slope_sym)
+        except (TypeError, ValueError):
+            slope = 0.0
+
+    x_min = a - span
+    x_max = a + span
+    xs = np.linspace(x_min, x_max, 400)
+
+    with np.errstate(all="ignore"):
+        ys = _as_curve(f(xs), xs)
+        ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
+
+    fig = go.Figure()
+
+    # เส้นกราฟ f(var)
+    fig.add_trace(go.Scatter(
+        x=xs,
+        y=ys,
+        mode="lines",
+        line=dict(color=CURVE, width=2.8),
+        name=f"y = f({var_name})",
+        hovertemplate=f"f(%{{x:.4f}}) = %{{y:.4f}}<extra></extra>",
+    ))
+
+    # เส้นสัมผัส
+    if status == "vertical":
+        fig.add_vline(
+            x=a,
+            line=dict(color="#D96B27", width=2.2, dash="dash"),
+            annotation_text=f"เส้นสัมผัสแนวดิ่ง {var_name}={a:.2f}",
+        )
+        title_str = f"เส้นสัมผัสแนวดิ่งที่ {var_name} = {a:.2f} (ความชัน m = ∞)"
+    elif status == "non_differentiable":
+        title_str = f"หาอนุพันธ์ไม่ได้ที่ {var_name} = {a:.2f} (จุดหักมุม)"
+    elif status == "finite" and slope is not None:
+        ys_tangent = slope * (xs - a) + fa
+        fig.add_trace(go.Scatter(
+            x=xs,
+            y=ys_tangent,
+            mode="lines",
+            line=dict(color="#D96B27", width=2.2, dash="dash"),
+            name=f"เส้นสัมผัส (m={slope:.2f})",
+            hovertemplate=f"เส้นสัมผัส: y = %{{y:.4f}}<extra></extra>",
+        ))
+        title_str = f"เส้นสัมผัสที่ {var_name} = {a:.2f} (ความชัน m = {slope:.4f})"
+    else:
+        title_str = f"จุดบนเส้นโค้งที่ {var_name} = {a:.2f}"
+
+    # จุดสัมผัส (a, f(a))
+    if np.isfinite(fa):
+        fig.add_trace(go.Scatter(
+            x=[a],
+            y=[fa],
+            mode="markers",
+            marker=dict(color="#1E3A8A", size=10, line=dict(color="white", width=2)),
+            name=f"จุดสัมผัส ({a:.2f}, {fa:.2f})",
+            hovertemplate=f"จุดสัมผัส: ({var_name}={a:.2f}, y={fa:.2f})<extra></extra>",
+        ))
+
+    fig.update_layout(
+        title=f"{title_str} (Interactive)",
+        xaxis_title=var_name,
+        yaxis_title="y",
+        template="plotly_white",
+        hovermode="closest",
+        margin=dict(l=40, r=40, t=50, b=40),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
+
+
+def plot_limit_plotly(
+    expr: sp.Expr,
+    a: float | int | str | sp.Expr,
+    delta: float = 0.5,
+    span: float = 2.0,
+):
+    """สร้างกราฟการเข้าใกล้ลิมิตแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ จุดเข้าใกล้ทางซ้าย/ขวา และค่าเป้าหมาย L"""
+    import plotly.graph_objects as go
+
+    var = _get_plot_var(expr)
+    var_name = var.name
+
+    s_a = str(a).lower().replace(" ", "")
+    is_inf = s_a in ("inf", "+inf", "-inf", "oo", "+oo", "-oo", "infinity", "-infinity") or a in (sp.oo, -sp.oo)
+    is_pos_inf = s_a in ("inf", "+inf", "oo", "+oo", "infinity") or a == sp.oo
+
+    fig = go.Figure()
+
+    if is_inf:
+        f = sp.lambdify(var, expr, modules=["numpy"])
+        target_a = sp.oo if is_pos_inf else -sp.oo
+        try:
+            lim_sym = sp.limit(expr, var, target_a)
+            lim_val = float(lim_sym.evalf()) if getattr(lim_sym, "is_finite", False) else None
+        except Exception:
+            lim_sym = None
+            lim_val = None
+
+        if is_pos_inf:
+            xs = np.linspace(0.1, 50.0, 500)
+        else:
+            xs = np.linspace(-50.0, -0.1, 500)
+
+        with np.errstate(all="ignore"):
+            ys = _as_curve(f(xs), xs)
+            ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
+
+        fig.add_trace(go.Scatter(
+            x=xs,
+            y=ys,
+            mode="lines",
+            line=dict(color=CURVE, width=2.8),
+            name=f"y = f({var_name})",
+            hovertemplate=f"f(%{{x:.3f}}) = %{{y:.3f}}<extra></extra>",
+        ))
+
+        title_dir = "+∞" if is_pos_inf else "-∞"
+        if lim_val is not None and np.isfinite(lim_val):
+            fig.add_hline(
+                y=lim_val,
+                line=dict(color="#E74C3C", width=2, dash="dash"),
+                annotation_text=f"เส้นกำกับแนวนอน y = {lim_val:.4f}",
+            )
+
+        l_str = f"{lim_val:.4f}" if lim_val is not None else str(lim_sym)
+        fig.update_layout(
+            title=f"พฤติกรรมกราฟเมื่อ {var_name} เข้าสู่อนันต์ ({var_name} -> {title_dir}) | L = {l_str} (Interactive)",
+            xaxis_title=var_name,
+            yaxis_title="y",
+            template="plotly_white",
+            hovermode="closest",
+            margin=dict(l=40, r=40, t=50, b=40),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        )
+        return fig
+
+    # Finite point
+    try:
+        if isinstance(a, (int, float)):
+            a_num = float(a)
+            a_disp = f"{a_num:.2f}"
+            a_target = sp.Rational(str(a))
+        else:
+            from utils.limit_solver import _parse_target_a
+            a_target = _parse_target_a(a)
+            a_num = float(a_target.evalf())
+            a_disp = str(a_target)
+    except Exception:
+        a_num = 0.0
+        a_disp = "0"
+        a_target = sp.Integer(0)
+
+    f = sp.lambdify(var, expr, modules=["numpy"])
+    try:
+        lim_sym = sp.limit(expr, var, a_target)
+        lim_val = float(lim_sym.evalf()) if getattr(lim_sym, "is_finite", False) else None
+        lim_finite = lim_val is not None and np.isfinite(lim_val)
+    except Exception:
+        lim_sym = None
+        lim_val = None
+        lim_finite = False
+
+    x_min = a_num - span
+    x_max = a_num + span
+    xs_left = np.linspace(x_min, a_num - 1e-4, 200)
+    xs_right = np.linspace(a_num + 1e-4, x_max, 200)
+    xs = np.concatenate([xs_left, xs_right])
+
+    with np.errstate(all="ignore"):
+        ys = _as_curve(f(xs), xs)
+        ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
+
+    fig.add_trace(go.Scatter(
+        x=xs,
+        y=ys,
+        mode="lines",
+        line=dict(color=CURVE, width=2.8),
+        name=f"y = f({var_name})",
+        hovertemplate=f"f(%{{x:.3f}}) = %{{y:.3f}}<extra></extra>",
+    ))
+
+    # เส้นแนวดิ่งที่ var = a
+    fig.add_vline(
+        x=a_num,
+        line=dict(color="#9CA3AF", width=1.5, dash="dash"),
+        annotation_text=f"{var_name} = {a_disp}",
+    )
+
+    # จุดเป้าหมาย L
+    if lim_finite and lim_val is not None:
+        fig.add_trace(go.Scatter(
+            x=[a_num],
+            y=[lim_val],
+            mode="markers",
+            marker=dict(color="white", size=9, line=dict(color="#C0392B", width=2.5)),
+            name=f"เป้าหมาย L = {lim_val:.4f}",
+            hovertemplate=f"เป้าหมาย L: ({var_name}={a_disp}, y={lim_val:.4f})<extra></extra>",
+        ))
+
+    # จุดเข้าใกล้ทางซ้าย x_l และทางขวา x_r
+    x_l = a_num - delta
+    x_r = a_num + delta
+    try:
+        y_l = float(f(x_l))
+        if np.isfinite(y_l):
+            fig.add_trace(go.Scatter(
+                x=[x_l],
+                y=[y_l],
+                mode="markers",
+                marker=dict(color="#2563EB", size=8),
+                name=f"ซ้าย x = a - d ({x_l:.3f})",
+                hovertemplate=f"ซ้าย: ({var_name}={x_l:.3f}, y={y_l:.4f})<extra></extra>",
+            ))
+    except Exception:
+        pass
+
+    try:
+        y_r = float(f(x_r))
+        if np.isfinite(y_r):
+            fig.add_trace(go.Scatter(
+                x=[x_r],
+                y=[y_r],
+                mode="markers",
+                marker=dict(color="#059669", size=8),
+                name=f"ขวา x = a + d ({x_r:.3f})",
+                hovertemplate=f"ขวา: ({var_name}={x_r:.3f}, y={y_r:.4f})<extra></extra>",
+            ))
+    except Exception:
+        pass
+
+    fig.update_layout(
+        title=f"การเข้าใกล้ลิมิตเมื่อ {var_name} -> {a_disp} (ระยะ d = {delta:.3f}) (Interactive)",
+        xaxis_title=var_name,
+        yaxis_title="y",
+        template="plotly_white",
+        hovermode="closest",
+        margin=dict(l=40, r=40, t=50, b=40),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
+
+
+def plot_volume_plotly(
+    expr,
+    a: float,
+    b: float,
+    method: str = "disk",
+    inner_expr=None,
+):
+    """สร้างกราฟภาพตัดขวางและการหมุนรอบแกนแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ และจำลองการหมุน 360 องศา"""
+    import plotly.graph_objects as go
+
+    is_washer = (method or "disk").lower() == "washer" and inner_expr is not None
+    var = _get_plot_var(expr, inner_expr)
+    var_name = var.name
+
+    f = sp.lambdify(var, expr, modules=["numpy"])
+    f_in = None
+    if is_washer:
+        f_in = sp.lambdify(var, inner_expr, modules=["numpy"])
+
+    x_start = min(a, b)
+    x_end = max(a, b)
+    span = max(x_end - x_start, 1.0)
+    x_min = x_start - 0.2 * span
+    x_max = x_end + 0.2 * span
+
+    xs_solid = np.linspace(x_start, x_end, 300)
+    xs_ext = np.linspace(x_min, x_max, 400)
+
+    with np.errstate(all="ignore"):
+        ys_solid = _as_curve(f(xs_solid), xs_solid)
+        ys_ext = _as_curve(f(xs_ext), xs_ext)
+        if is_washer and f_in is not None:
+            ys_inner = _as_curve(f_in(xs_solid), xs_solid)
+        else:
+            ys_inner = np.zeros_like(xs_solid)
+
+    fig = go.Figure()
+
+    if is_washer:
+        # แรเงาพื้นที่เนื้อทรงตันด้านบน
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=ys_inner,
+            mode="lines",
+            line=dict(width=0),
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=ys_solid,
+            mode="lines",
+            line=dict(width=0),
+            fill="tonexty",
+            fillcolor="rgba(225, 29, 72, 0.28)",
+            name="พื้นที่หน้าตัดทรงตัน (R ≥ r)",
+            hovertemplate=f"เนื้อทรงตัน<br>{var_name}: %{{x:.3f}}<extra></extra>",
+        ))
+
+        # แรเงาภาพสะท้อนด้านล่าง (-R ถึง -r)
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=-ys_solid,
+            mode="lines",
+            line=dict(width=0),
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=-ys_inner,
+            mode="lines",
+            line=dict(width=0),
+            fill="tonexty",
+            fillcolor="rgba(225, 29, 72, 0.28)",
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+
+        # เส้นขอบนอก R และเส้นขอบใน r
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=ys_solid,
+            mode="lines",
+            line=dict(color=CURVE, width=2.8),
+            name=f"รัศมีนอก R({var_name})",
+            hovertemplate=f"R(%{{x:.3f}}) = %{{y:.3f}}<extra></extra>",
+        ))
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=-ys_solid,
+            mode="lines",
+            line=dict(color=CURVE, width=1.8, dash="dash"),
+            name=f"ภาพสะท้อน -R({var_name})",
+            hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=ys_inner,
+            mode="lines",
+            line=dict(color="#2563EB", width=2.4),
+            name=f"รัศมีใน r({var_name})",
+            hovertemplate=f"r(%{{x:.3f}}) = %{{y:.3f}}<extra></extra>",
+        ))
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=-ys_inner,
+            mode="lines",
+            line=dict(color="#2563EB", width=1.6, dash="dash"),
+            name=f"ภาพสะท้อน -r({var_name})",
+            hoverinfo="skip",
+        ))
+    else:
+        # Disk method
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=np.zeros_like(xs_solid),
+            mode="lines",
+            line=dict(width=0),
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=ys_solid,
+            mode="lines",
+            line=dict(width=0),
+            fill="tonexty",
+            fillcolor="rgba(225, 29, 72, 0.28)",
+            name="พื้นที่หน้าตัดทรงตัน",
+            hovertemplate=f"หน้าตัดทรงตัน<br>{var_name}: %{{x:.3f}}<extra></extra>",
+        ))
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=-ys_solid,
+            mode="lines",
+            line=dict(width=0),
+            fill="tozeroy",
+            fillcolor="rgba(225, 29, 72, 0.28)",
+            showlegend=False,
+            hoverinfo="skip",
+        ))
+
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=ys_solid,
+            mode="lines",
+            line=dict(color=CURVE, width=2.8),
+            name=f"y = f({var_name})",
+            hovertemplate=f"f(%{{x:.3f}}) = %{{y:.3f}}<extra></extra>",
+        ))
+        fig.add_trace(go.Scatter(
+            x=xs_solid,
+            y=-ys_solid,
+            mode="lines",
+            line=dict(color=CURVE, width=1.8, dash="dash"),
+            name=f"ภาพสะท้อน -f({var_name})",
+            hoverinfo="skip",
+        ))
+
+    fig.add_vline(x=a, line=dict(color="#64748B", width=1.5, dash="dot"), annotation_text=f"{var_name} = {a:g}")
+    fig.add_vline(x=b, line=dict(color="#64748B", width=1.5, dash="dot"), annotation_text=f"{var_name} = {b:g}")
+    fig.add_hline(y=0, line=dict(color="#475569", width=1.2, dash="dash"), annotation_text="แกนหมุน (y = 0)")
+
+    method_label = "Washer Method" if is_washer else "Disk Method"
+    fig.update_layout(
+        title=f"ภาพตัดขวางและการหมุนทรงตันรอบแกน ({method_label}) บนช่วง [{a:g}, {b:g}] (Interactive)",
+        xaxis_title=var_name,
+        yaxis_title="y",
+        template="plotly_white",
+        hovermode="closest",
+        margin=dict(l=40, r=40, t=50, b=40),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
+
+
+def plot_improper_plotly(
+    expr,
+    a: float | int | str | sp.Expr = 0.0,
+    b: float | int | str | sp.Expr | None = None,
+):
+    """สร้างกราฟแบบ interactive ด้วย Plotly สำหรับอินทิกรัลไม่ตรงแบบ: ซูม/แพนอิสระ และแรเงาพื้นที่"""
+    import plotly.graph_objects as go
+
+    var = _get_plot_var(expr)
+    var_name = var.name
+    f = sp.lambdify(var, expr, modules=["numpy"])
+
+    s_a = str(a).lower().replace(" ", "")
+    is_inf_lower = (s_a in ("-inf", "-oo", "-infinity") or a == -sp.oo)
+
+    s_b = str(b).lower().replace(" ", "") if b is not None else "inf"
+    is_inf_upper = (b is None or s_b in ("inf", "+inf", "oo", "+oo", "infinity") or b == sp.oo)
+
+    if is_inf_lower and is_inf_upper:
+        x_start, x_end = -8.0, 8.0
+        t_l, t_r = -5.0, 5.0
+        shade_start, shade_end = t_l, t_r
+        shade_label = "Area over (-∞, ∞)"
+    elif is_inf_lower:
+        b_num = float(sp.sympify(b).evalf()) if b is not None else 0.0
+        x_start, x_end = b_num - 8.0, b_num + 1.0
+        t_l = b_num - 5.0
+        shade_start, shade_end = t_l, b_num
+        shade_label = f"Area over (-∞, {b_num:g}]"
+    elif is_inf_upper:
+        a_num = float(sp.sympify(a).evalf()) if a is not None else 0.0
+        x_start, x_end = a_num - 1.0, a_num + 8.0
+        t_r = a_num + 5.0
+        shade_start, shade_end = a_num, t_r
+        shade_label = f"Area over [{a_num:g}, ∞)"
+    else:
+        a_num = float(sp.sympify(a).evalf())
+        b_num = float(sp.sympify(b).evalf())
+        x_start = min(a_num, b_num) - 1.0
+        x_end = max(a_num, b_num) + 1.0
+        shade_start, shade_end = min(a_num, b_num), max(a_num, b_num)
+        shade_label = f"Area over [{a_num:g}, {b_num:g}]"
+
+    xs = np.linspace(x_start, x_end, 500)
+    xs = xs[np.abs(xs) > 1e-4]
+
+    with np.errstate(all="ignore"):
+        ys = _as_curve(f(xs), xs)
+        ys = np.where(np.abs(ys) > 1e4, np.nan, ys)
+
+    xs_shade = np.linspace(shade_start, shade_end, 300)
+    xs_shade = xs_shade[np.abs(xs_shade) > 1e-4]
+    with np.errstate(all="ignore"):
+        ys_shade = _as_curve(f(xs_shade), xs_shade)
+        ys_shade = np.where(np.abs(ys_shade) > 1e4, np.nan, ys_shade)
+
+    fig = go.Figure()
+
+    # แรเงาพื้นที่
+    fig.add_trace(go.Scatter(
+        x=xs_shade,
+        y=np.zeros_like(xs_shade),
+        mode="lines",
+        line=dict(width=0),
+        showlegend=False,
+        hoverinfo="skip",
+    ))
+    fig.add_trace(go.Scatter(
+        x=xs_shade,
+        y=ys_shade,
+        mode="lines",
+        line=dict(width=0),
+        fill="tonexty",
+        fillcolor="rgba(225, 29, 72, 0.28)",
+        name=shade_label,
+        hovertemplate=f"พื้นที่ {shade_label}<br>{var_name}: %{{x:.3f}}<extra></extra>",
+    ))
+
+    # กราฟเส้นหลัก f(var)
+    fig.add_trace(go.Scatter(
+        x=xs,
+        y=ys,
+        mode="lines",
+        line=dict(color=CURVE, width=2.8),
+        name=f"y = f({var_name})",
+        hovertemplate=f"f(%{{x:.3f}}) = %{{y:.3f}}<extra></extra>",
+    ))
+
+    if not is_inf_lower and not is_inf_upper:
+        fig.add_vline(x=shade_start, line=dict(color="#64748B", width=1.5, dash="dot"), annotation_text=f"a = {shade_start:g}")
+        fig.add_vline(x=shade_end, line=dict(color="#DC2626", width=1.5, dash="dot"), annotation_text=f"b = {shade_end:g}")
+    elif is_inf_upper and not is_inf_lower:
+        fig.add_vline(x=shade_start, line=dict(color="#64748B", width=1.5, dash="dot"), annotation_text=f"a = {shade_start:g}")
+    elif is_inf_lower and not is_inf_upper:
+        fig.add_vline(x=shade_end, line=dict(color="#DC2626", width=1.5, dash="dot"), annotation_text=f"b = {shade_end:g}")
+
+    finite_ys = ys_shade[np.isfinite(ys_shade)]
+    if len(finite_ys) > 0:
+        ymin = max(-1.0, float(np.percentile(finite_ys, 1)) - 0.5)
+        ymax = min(15.0, float(np.percentile(finite_ys, 98)) + 1.0)
+        if ymin < ymax:
+            fig.update_yaxes(range=[ymin, ymax])
+
+    fig.update_layout(
+        title=f"กราฟอินทิกรัลไม่ตรงแบบ ({shade_label}) (Interactive)",
+        xaxis_title=var_name,
+        yaxis_title="y",
+        template="plotly_white",
+        hovermode="closest",
+        margin=dict(l=40, r=40, t=50, b=40),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    )
+    return fig
+
 

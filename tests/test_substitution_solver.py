@@ -120,6 +120,53 @@ class TestSolveSubstitution:
         steps_text = " ".join(res["steps"])
         assert "Non-Elementary" in steps_text
 
+    def test_verify_user_u_direct_success(self):
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("2*x*sqrt(x**2 + 1)", "x**2 + 1")
+        assert res["ok"] is True
+        assert res["status"] == "direct"
+        assert res["result"] is not None
+        assert len(res["steps"]) >= 4
+        steps_text = " ".join(res["steps"])
+        assert "u = x^{2} + 1" in steps_text or "x^{2} + 1" in steps_text
+
+    def test_verify_user_u_algebraic_adjustment(self):
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("x*sqrt(x + 1)", "x + 1")
+        assert res["ok"] is True
+        assert res["status"] == "algebraic_adjustment"
+        assert res["result"] is not None
+        steps_text = " ".join(res["steps"])
+        assert "จัดรูปพีชคณิตเสริม" in steps_text
+        assert "แก้สมการ" in steps_text
+
+    def test_verify_user_u_incompatible(self):
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("2*x*sqrt(x**2 + 1)", "2*x")
+        assert res["ok"] is False
+        assert res["status"] == "incompatible"
+        assert "ทางตัน" in res["message"] or "ตัดทอนไม่หมด" in res["message"]
+
+    def test_verify_user_u_trivial(self):
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("2*x*sqrt(x**2 + 1)", "x")
+        assert res["ok"] is True
+        assert res["status"] == "trivial"
+        assert "เปลี่ยนชื่อตัวอักษร" in res["message"]
+
+    def test_verify_user_u_unsuitable_warns_by_parts(self):
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("x*exp(x)", "exp(x)")
+        assert res["ok"] is False
+        assert res["status"] in ("unsuitable_for_substitution", "incompatible")
+        if res["status"] == "unsuitable_for_substitution":
+            assert "By Parts" in res["message"] or "การอินทิเกรตทีละส่วน" in res["message"]
+
+    def test_get_suggested_u_candidates(self):
+        from utils.substitution_solver import get_suggested_u_candidates
+        cands = get_suggested_u_candidates("2*x*sqrt(x**2 + 1)")
+        assert "x**2 + 1" in cands or any("x**2" in c for c in cands)
+
 
 def test_substitution_page_apptest_render():
     from pathlib import Path

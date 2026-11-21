@@ -13,7 +13,7 @@ from utils.math_render import format_math_spacing
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
 
-render_hero("ภาพรวมบทเรียนและทฤษฎี (Calculus Lessons)", "สำรวจสรุปทฤษฎีบท มโนทัศน์สำคัญ และเอกสารอ้างอิงฉบับเต็ม")
+render_hero("ภาพรวมบทเรียนและทฤษฎี (Calculus Lessons)", "สำรวจสรุปทฤษฎีบท หลักการสำคัญ และเอกสารอ้างอิงฉบับเต็ม")
 
 # ---------------------------------------------------------------------------
 # Mapping: key ใน THEORY_CONTENT -> หน้า interactive ที่เกี่ยวข้อง
@@ -21,11 +21,12 @@ render_hero("ภาพรวมบทเรียนและทฤษฎี (Ca
 INTERACTIVE_PAGES = {
     "limit": "pages/limit_approach.py",
     "tangent": "pages/tangent.py",
-    "riemann_sum": "pages/riemann.py",
     "substitution": "pages/substitution.py",
+    "by_parts": "pages/by_parts.py",
     "area_between": "pages/area_between.py",
-    "volume": "pages/volume_revolution.py",
     "improper": "pages/improper_integrals.py",
+    "riemann_sum": "pages/riemann.py",
+    "volume": "pages/volume_revolution.py",
 }
 
 # key ที่ยังไม่มีหน้า interactive (เผื่อเพิ่มในอนาคต)

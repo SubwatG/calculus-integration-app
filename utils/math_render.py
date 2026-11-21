@@ -21,6 +21,18 @@ _THAI_RE = re.compile(r"[\u0e00-\u0e7f]")
 _WRAPPED_DISPLAY = re.compile(r"^\s*\$\$(.*)\$\$\s*$", re.DOTALL)
 _WRAPPED_INLINE = re.compile(r"^\s*\$(.*)\$\s*$", re.DOTALL)
 
+
+def format_inverse_trig(text: str) -> str:
+    """แปลงสัญลักษณ์ฟังก์ชันตรีโกณมิติผกผันจาก asin, acos, atan ให้เป็น \\arcsin, \\arccos, \\arctan ตามแบบหนังสือเรียน"""
+    if not text:
+        return text
+    # 1. จัดการ \\operatorname{asin}, \\operatorname{acos}, \\operatorname{atan}
+    s = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", text)
+    s = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", s)
+    # 2. จัดการคำสั่งที่ไม่มี \ นำหน้าเมื่อตามด้วยวงเล็บ เช่น asin(...) หรือ asin{...}
+    s = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", s)
+    return s
+
 _MATH_MACROS = [
     r"\\pi", r"\\infty", r"\\pm", r"\\mp", r"\\alpha", r"\\beta", r"\\gamma", 
     r"\\theta", r"\\lambda", r"\\mu", r"\\sigma", r"\\tau", r"\\phi", r"\\omega",
@@ -56,7 +68,7 @@ def has_thai(text: str) -> bool:
 
 def strip_math_delimiters(expr: str) -> str:
     """Remove outer $...$ or $$...$$ if the whole string is wrapped."""
-    s = (expr or "").strip()
+    s = format_inverse_trig((expr or "").strip())
     m = _WRAPPED_DISPLAY.match(s)
     if m:
         return m.group(1).strip()
@@ -80,7 +92,8 @@ def format_math_spacing(text: str) -> str:
     """เว้นวรรคหน้าและหลังสมการ ($...$ หรือ $$...$$) เมื่ออยู่ติดกับข้อความภาษาไทย และห่อสัญลักษณ์ LaTeX ลอย ๆ"""
     if not text:
         return text
-    # 0. ห่อสัญลักษณ์ LaTeX ลอย ๆ เช่น \pi, \frac{\pi}{2} ให้เป็น $...$
+    # 0. แปลงฟังก์ชันตรีโกณมิติผกผัน และห่อสัญลักษณ์ LaTeX ลอย ๆ
+    text = format_inverse_trig(text)
     text = auto_wrap_bare_latex(text)
     if not has_thai(text):
         return text
@@ -112,22 +125,28 @@ def render_latex(expr: str, *, label: Optional[str] = None) -> None:
         st.markdown(f"$${core}$$")
 
 
-def render_steps(steps) -> None:
+def render_steps(steps, title: Optional[str] = "### วิธีทำทีละขั้นตอน") -> None:
     """แสดงวิธีทำทีละขั้นตอนอย่างเป็นระเบียบ สวยงาม ด้วย st.latex และ KaTeX"""
     if not steps:
         return
 
-    st.markdown("### วิธีทำทีละขั้นตอน")
+    if title:
+        st.markdown(title)
+
     for i, step in enumerate(steps, 1):
         if isinstance(step, dict):
-            title = step.get("title", f"ขั้นตอนที่ {i}")
+            title_text = step.get("title", f"ขั้นตอนที่ {i}")
             latex_expr = step.get("latex", "")
             desc = step.get("desc", "")
-            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title)}**")
+            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title_text)}**")
             if desc:
                 st.markdown(format_math_spacing(desc))
             if latex_expr:
-                st.latex(strip_math_delimiters(latex_expr))
+                core_lex = strip_math_delimiters(latex_expr)
+                if is_pure_latex(core_lex):
+                    st.latex(core_lex)
+                else:
+                    st.markdown(format_math_spacing(latex_expr))
             continue
 
         s = str(step).strip()
@@ -137,17 +156,17 @@ def render_steps(steps) -> None:
         # ตรวจสอบรูปแบบ "คำอธิบายภาษาไทย: สมการ LaTeX"
         if ":" in s:
             parts = s.split(":", 1)
-            title = parts[0].strip()
+            title_text = parts[0].strip()
             math_part = parts[1].strip()
 
-            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title)}**")
+            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title_text)}**")
 
             # หากมีหลายบรรทัด ให้แยกบรรทัดข้อความอธิบาย (markdown) กับสมการคณิตศาสตร์ (latex)
             if "\n" in math_part:
                 sub_lines = [line.strip() for line in math_part.split("\n") if line.strip()]
                 for sub_line in sub_lines:
                     core_sub = strip_math_delimiters(sub_line)
-                    if has_thai(core_sub):
+                    if has_thai(core_sub) or not is_pure_latex(core_sub):
                         st.markdown(format_math_spacing(sub_line))
                     elif core_sub:
                         try:
@@ -157,20 +176,9 @@ def render_steps(steps) -> None:
             else:
                 core_math = strip_math_delimiters(math_part)
 
-                # ถ้าในส่วนสมการมีตัวอักษรไทยปนและใช้ $...$
-                if has_thai(core_math) and "$" in math_part:
-                    match = re.search(r"^(.*?)\$+(.+?)\$+(.*)$", math_part, re.DOTALL)
-                    if match and not match.group(3).strip():
-                        prefix = match.group(1).strip()
-                        inner_math = match.group(2).strip()
-                        if prefix:
-                            st.markdown(format_math_spacing(prefix))
-                        try:
-                            st.latex(inner_math)
-                        except Exception:
-                            st.markdown(f"$${inner_math}$$")
-                    else:
-                        st.markdown(format_math_spacing(math_part))
+                # ถ้ามีภาษาไทย หรือไม่ใช่ pure LaTeX ให้แสดงผลเป็น markdown เสมอ ห้ามส่งเข้า st.latex
+                if has_thai(core_math) or not is_pure_latex(core_math):
+                    st.markdown(format_math_spacing(math_part))
                 elif core_math:
                     try:
                         st.latex(core_math)
@@ -211,7 +219,7 @@ def preview_math_expr(expr_str: str, label: str = "สมการที่ร�
         )
         local_dict = {"e": sp.E, "E": sp.E, "pi": sp.pi, "ln": sp.log}
         parsed = parse_expr(clean, transformations=transformations, local_dict=local_dict)
-        latex_str = sp.latex(parsed)
+        latex_str = format_inverse_trig(sp.latex(parsed, inv_trig_style="full"))
 
         # กำหนดชื่อฟังก์ชัน เช่น f(x), g(x), R(x), r(x)
         if var_name is None:

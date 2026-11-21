@@ -111,9 +111,82 @@ class TestComputeAreaBetween:
 
     def test_plot_area_between_figure(self):
         import sympy as sp
-        from utils.plotter import plot_area_between
+        from utils.plotter import plot_area_between, plot_area_between_plotly
         f = sp.sympify("x")
         g = sp.sympify("x**2")
         fig, ax = plot_area_between(f, g, 0.0, 1.0)
         assert fig is not None
         assert ax is not None
+
+        # Matplotlib plot must use solid line, not dashed
+        assert ax.lines[1].get_linestyle() in ("-", "solid")
+
+        # Plotly interactive figure test
+        fig_plotly = plot_area_between_plotly(f, g, 0.0, 1.0, crossings=[0.0, 1.0])
+        assert fig_plotly is not None
+        assert len(fig_plotly.data) >= 3
+
+    def test_find_curve_intersections_two_points(self):
+        from utils.area_solver import find_curve_intersections
+        res = find_curve_intersections("x", "x**2")
+        assert res["ok"] is True
+        assert res["count"] == 2
+        assert res["can_enclose_area"] is True
+        assert res["roots"] == [0.0, 1.0]
+        assert res["natural_bounds"] == (0.0, 1.0)
+
+    def test_find_curve_intersections_symmetric(self):
+        from utils.area_solver import find_curve_intersections
+        res = find_curve_intersections("2 - x**2", "x**2")
+        assert res["ok"] is True
+        assert res["count"] == 2
+        assert res["can_enclose_area"] is True
+        assert res["roots"] == [-1.0, 1.0]
+
+    def test_find_curve_intersections_no_intersection(self):
+        from utils.area_solver import find_curve_intersections
+        res = find_curve_intersections("x**2 + 2", "x")
+        assert res["ok"] is True
+        assert res["count"] == 0
+        assert res["can_enclose_area"] is False
+        assert res["natural_bounds"] is None
+
+    def test_find_curve_intersections_single_point(self):
+        from utils.area_solver import find_curve_intersections
+        res = find_curve_intersections("cos(x)", "x")
+        assert res["ok"] is True
+        assert res["count"] == 1
+        assert res["can_enclose_area"] is False
+
+    def test_difference_not_factored_into_product(self):
+        res = compute_area_between("x", "x**2", 0, 1)
+        assert res["ok"] is True
+        steps_text = " ".join(res["steps"])
+        # Must show x - x^2 and NOT x(1-x)
+        assert "x(1-x)" not in steps_text
+        assert "x \\left(1 - x\\right)" not in steps_text
+        assert "x - x^{2}" in steps_text or "x - x^2" in steps_text or "- x^{2} + x" in steps_text
+
+    def test_no_absolute_value_bar_outside_integral_in_substeps(self):
+        res = compute_area_between("cos(x)", "x", 0, 1.6)
+        assert res["ok"] is True
+        # Check substeps: no \left| \int
+        for s in res["steps"]:
+            if "ช่วงย่อยที่" in s:
+                assert "\\left| \\int" not in s
+                assert "|\\int" not in s
+
+    def test_no_gigantic_fractions_in_numerical_cases(self):
+        res = compute_area_between("cos(x)", "x", 0, 1.6)
+        assert res["ok"] is True
+        steps_text = " ".join(res["steps"])
+        # Should not contain 11-digit denominator
+        assert "80000000000" not in steps_text
+        assert "21849865489" not in steps_text
+
+    def test_no_domain_continuity_step_in_output(self):
+        res = compute_area_between("x", "x**2", 0, 1)
+        assert res["ok"] is True
+        steps_text = " ".join(res["steps"])
+        assert "เงื่อนไขความต่อเนื่อง" not in steps_text
+

@@ -26,6 +26,15 @@ PREFERRED_INDEPENDENT_VARS = ["x", "t", "y", "u", "z", "s", "r", "v", "w", "thet
 PARAM_CONSTANTS = {"a", "b", "c", "k", "m", "n", "p", "q", "d", "A", "B", "C", "K", "M", "N"}
 
 
+def _to_latex(sym_obj) -> str:
+    lat = sp.latex(sym_obj, inv_trig_style="full")
+    lat = lat.replace(r"\log", r"\ln")
+    lat = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", lat)
+    lat = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", lat)
+    lat = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", lat)
+    return lat
+
+
 def _clean_calculus_input(expr_str: str) -> tuple[str, str | None]:
     """ทำความสะอาดข้อความสูตรและสกัดตัวแปรดิฟเฟอเรนเชียล (เช่น '3t^2 dt' -> '3t^2', 't')"""
     clean = (expr_str or "").strip()
@@ -138,6 +147,27 @@ def detect_variable(expr_str: str, default: str = "x") -> str:
         return default
 
 
+def _simplify_trig_for_integration(expr: sp.Expr) -> sp.Expr:
+    """จัดรูปฟังก์ชันตรีโกณมิติ เช่น tan, cot, sec, csc เพื่อช่วยให้คำนวณปริพันธ์ได้สำเร็จ"""
+    try:
+        trig_rep = expr.replace(sp.tan, lambda a: sp.sin(a) / sp.cos(a))
+        trig_rep = trig_rep.replace(sp.cot, lambda a: sp.cos(a) / sp.sin(a))
+        trig_rep = trig_rep.replace(sp.sec, lambda a: 1 / sp.cos(a))
+        trig_rep = trig_rep.replace(sp.csc, lambda a: 1 / sp.sin(a))
+        simplified = sp.cancel(trig_rep)
+        if simplified != expr:
+            return simplified
+    except Exception:
+        pass
+    try:
+        ts = sp.trigsimp(expr)
+        if ts != expr:
+            return ts
+    except Exception:
+        pass
+    return expr
+
+
 def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, Any]:
     try:
         clean_str, diff_var = _clean_calculus_input(expr_str)
@@ -153,19 +183,32 @@ def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, An
             var_sym = var
 
         result = sp.integrate(expr, var_sym)
-        v_lat = sp.latex(var_sym)
+        v_lat = _to_latex(var_sym)
 
         steps: list[str] = [
-            f"กำหนดโจทย์ปริพันธ์ไม่จำกัดเขต (Indefinite Integral): "
+            f"กำหนดโจทย์ปริพันธ์ไม่จำกัดเขต: "
             f"หาปฏิยานุพันธ์ของฟังก์ชันเทียบกับตัวแปร ${v_lat}$:\n"
-            f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat}"
+            f"\\int \\left({_to_latex(expr)}\\right) \\, d{v_lat}"
         ]
+
+        if result.has(sp.Integral):
+            simp_expr = _simplify_trig_for_integration(expr)
+            if simp_expr != expr:
+                res_simp = sp.integrate(simp_expr, var_sym)
+                if not res_simp.has(sp.Integral):
+                    steps.append(
+                        f"จัดรูปฟังก์ชันตรีโกณมิติก่อนอินทิเกรต: "
+                        f"แปลงรูปฟังก์ชันเพื่อให้หาปฏิยานุพันธ์ได้:\n"
+                        f"{_to_latex(expr)} = {_to_latex(simp_expr)}"
+                    )
+                    expr = simp_expr
+                    result = res_simp
 
         if not expr.has(var_sym):
             steps.append(
                 f"ดึงค่าคงที่ออกจากเครื่องหมายปริพันธ์: "
                 f"ตามสมบัติ $\\int c \\, d{v_lat} = c \\int 1 \\, d{v_lat}$:\n"
-                f"\\int {sp.latex(expr)} \\, d{v_lat} = {sp.latex(expr)} \\int 1 \\, d{v_lat}"
+                f"\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(expr)} \\int 1 \\, d{v_lat}"
             )
             steps.append(
                 f"คำนวณปริพันธ์ของ 1: "
@@ -175,16 +218,16 @@ def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, An
             steps.append(
                 f"สรุปผลลัพธ์ปริพันธ์: "
                 f"นำค่าคงที่คูณกลับและใส่ค่าคงที่ของการอินทิเกรต $C$:\n"
-                f"\\int {sp.latex(expr)} \\, d{v_lat} = {sp.latex(result)} + C"
+                f"\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(result)} + C"
             )
             steps.append(
                 f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
                 f"อนุพันธ์ของคำตอบต้องเท่ากับตัวถูกอินทิเกรตเดิม:\n"
-                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(result)} + C\\right] = {sp.latex(expr)}"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(result)} + C\\right] = {_to_latex(expr)}"
             )
         elif expr == var_sym:
             steps.append(
-                f"ระบุกฎเลขชี้กำลัง (Power Rule): "
+                f"ใช้กฎยกกำลัง: "
                 f"สำหรับพจน์ยกกำลังหนึ่ง $n = 1$:\n"
                 f"\\int {v_lat}^n \\, d{v_lat} = \\frac{{{v_lat}^{{n+1}}}}{{n+1}} + C \\quad (n \\neq -1)"
             )
@@ -195,7 +238,7 @@ def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, An
             )
             steps.append(
                 f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
-                f"ดิฟคำตอบกลับเพื่อยืนยันความถูกต้อง:\n"
+                f"หาอนุพันธ์คำตอบกลับเพื่อยืนยันความถูกต้อง:\n"
                 f"\\frac{{d}}{{d{v_lat}}}\\left[\\frac{{{v_lat}^2}}{{2}} + C\\right] = \\frac{{2{v_lat}}}{{2}} = {v_lat}"
             )
         elif isinstance(expr, sp.Pow) and expr.args[0] == var_sym and expr.args[1].is_number:
@@ -213,37 +256,36 @@ def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, An
                 )
             else:
                 steps.append(
-                    f"ระบุกฎเลขชี้กำลัง (Power Rule): "
+                    f"ใช้กฎยกกำลัง: "
                     f"สูตรอินทิเกรตฟังก์ชันพหุนามและเลขยกกำลัง:\n"
                     f"\\int {v_lat}^n \\, d{v_lat} = \\frac{{{v_lat}^{{n+1}}}}{{n+1}} + C \\quad (n \\neq -1)"
                 )
                 steps.append(
-                    f"แทนค่าเลขชี้กำลัง $n = {sp.latex(n)}$: "
-                    f"คำนวณเลขชี้กำลังใหม่ $n + 1 = {sp.latex(n+1)}$:\n"
-                    f"\\int {v_lat}^{{{sp.latex(n)}}} \\, d{v_lat} = \\frac{{{v_lat}^{{{sp.latex(n+1)}}}}}{{{sp.latex(n+1)}}} + C"
+                    f"แทนค่าเลขชี้กำลัง $n = {_to_latex(n)}$: "
+                    f"คำนวณเลขชี้กำลังใหม่ $n + 1 = {_to_latex(n+1)}$:\n"
+                    f"\\int {v_lat}^{{{_to_latex(n)}}} \\, d{v_lat} = \\frac{{{v_lat}^{{{_to_latex(n+1)}}}}}{{{_to_latex(n+1)}}} + C"
                 )
                 steps.append(
                     f"จัดรูปผลสำเร็จและใส่ค่าคงที่ C: "
                     f"สมการปริพันธ์ในรูปชัดแจ้ง:\n"
-                    f"\\int {v_lat}^{{{sp.latex(n)}}} \\, d{v_lat} = {sp.latex(result)} + C"
+                    f"\\int {v_lat}^{{{_to_latex(n)}}} \\, d{v_lat} = {_to_latex(result)} + C"
                 )
                 steps.append(
-                    f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
-                    f"ทดสอบดิฟผลลัพธ์กลับ:\n"
-                    f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(result)} + C\\right] = {sp.latex(expr)}"
+                    f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ:\n"
+                    f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(result)} + C\\right] = {_to_latex(expr)}"
                 )
         elif isinstance(expr, sp.Add):
             terms = expr.as_ordered_terms()
-            terms_integrals = " + ".join(f"\\int \\left({sp.latex(term)}\\right) \\, d{v_lat}" for term in terms)
+            terms_integrals = " + ".join(f"\\int \\left({_to_latex(term)}\\right) \\, d{v_lat}" for term in terms)
             steps.append(
-                f"ใช้สมบัติเชิงเส้นของการอินทิเกรต (Linearity Property): "
+                f"ใช้สมบัติเชิงเส้นของการอินทิเกรต: "
                 f"สามารถแยกอินทิเกรตทีละพจน์บวก-ลบได้อิสระ:\n"
-                f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {terms_integrals}"
+                f"\\int \\left({_to_latex(expr)}\\right) \\, d{v_lat} = {terms_integrals}"
             )
             sub_results = []
             for term in terms:
                 sub_res = sp.integrate(term, var_sym)
-                sub_results.append(f"\\int \\left({sp.latex(term)}\\right) \\, d{v_lat} = {sp.latex(sub_res)}")
+                sub_results.append(f"\\int \\left({_to_latex(term)}\\right) \\, d{v_lat} = {_to_latex(sub_res)}")
             steps.append(
                 f"คำนวณอินทิเกรตทีละพจน์: "
                 f"หาปฏิยานุพันธ์ของแต่ละส่วนประกอบย่อย:\n"
@@ -252,12 +294,12 @@ def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, An
             steps.append(
                 f"รวมผลลัพธ์ทุกพจน์และบวกค่าคงที่ C: "
                 f"รวมผลการอินทิเกรตทั้งหมดเข้าด้วยกัน:\n"
-                f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
+                f"\\int \\left({_to_latex(expr)}\\right) \\, d{v_lat} = {_to_latex(result)} + C"
             )
             steps.append(
                 f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
                 f"หาอนุพันธ์ของผลรวมกลับคืน:\n"
-                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(result)} + C\\right] = {sp.latex(expr)}"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(result)} + C\\right] = {_to_latex(expr)}"
             )
         elif isinstance(expr, sp.sin) and expr.args[0] == var_sym:
             steps.append(
@@ -314,36 +356,34 @@ def integrate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str, An
                 du = sp.diff(u_cand, var_sym)
                 sub_var_name = "w" if var_sym.name == "u" else "u"
                 steps.append(
-                    f"วิเคราะห์การเปลี่ยนตัวแปร ({sub_var_name}-Substitution): "
-                    f"กำหนดฟังก์ชันก้อนในเป็นตัวแปรใหม่:\n"
-                    f"{sub_var_name} = {sp.latex(u_cand)}"
+                    f"การเปลี่ยนตัวแปร ${sub_var_name}$: "
+                    f"กำหนดฟังก์ชันก้อนใน:\n"
+                    f"{sub_var_name} = {_to_latex(u_cand)}"
                 )
                 steps.append(
-                    f"หาผลต่างสืบเนื่อง d{sub_var_name}: "
-                    f"หาอนุพันธ์เทียบกับตัวแปร ${v_lat}$:\n"
-                    f"\\frac{{d{sub_var_name}}}{{d{v_lat}}} = {sp.latex(du)} \\implies d{sub_var_name} = {sp.latex(du)} \\, d{v_lat}"
+                    f"หาผลต่างสืบเนื่อง $d{sub_var_name}$:\n"
+                    f"\\frac{{d{sub_var_name}}}{{d{v_lat}}} = {_to_latex(du)} \\implies d{sub_var_name} = {_to_latex(du)} \\, d{v_lat}"
                 )
                 steps.append(
                     f"คำนวณปริพันธ์และแทนค่ากลับ: "
-                    f"แทนค่า ${sub_var_name}$ กลับคืนสู่ตัวแปรเดิม:\n"
-                    f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
+                    f"แทนค่า ${sub_var_name}$ กลับคืน:\n"
+                    f"\\int \\left({_to_latex(expr)}\\right) \\, d{v_lat} = {_to_latex(result)} + C"
                 )
                 steps.append(
-                    f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
-                    f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(result)} + C\\right] = {sp.latex(expr)}"
+                    f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ:\n"
+                    f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(result)} + C\\right] = {_to_latex(expr)}"
                 )
             else:
                 steps.append(
-                    f"คำนวณปริพันธ์เชิงสัญลักษณ์: "
-                    f"ใช้วิธีการวิเคราะห์ทางแคลคูลัสเชิงสัญลักษณ์:\n"
-                    f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
+                    f"คำนวณปริพันธ์:\n"
+                    f"\\int \\left({_to_latex(expr)}\\right) \\, d{v_lat} = {_to_latex(result)} + C"
                 )
                 steps.append(
-                    f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ: "
-                    f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(result)} + C\\right] = {sp.latex(expr)}"
+                    f"ตรวจสอบความถูกต้องโดยการหาอนุพันธ์กลับ:\n"
+                    f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(result)} + C\\right] = {_to_latex(expr)}"
                 )
 
-        latex_str = f"\\int \\left({sp.latex(expr)}\\right) \\, d{v_lat} = {sp.latex(result)} + C"
+        latex_str = f"\\int \\left({_to_latex(expr)}\\right) \\, d{v_lat} = {_to_latex(result)} + C"
         return {
             "ok": True,
             "result": result,
@@ -378,19 +418,19 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
             var_sym = var
 
         result = sp.diff(expr, var_sym)
-        v_lat = sp.latex(var_sym)
+        v_lat = _to_latex(var_sym)
 
         steps: list[str] = [
             f"กำหนดฟังก์ชันที่ต้องการหาอนุพันธ์: "
             f"คำนวณอัตราการเปลี่ยนแปลงของฟังก์ชันเทียบกับตัวแปร ${v_lat}$:\n"
-            f"f({v_lat}) = {sp.latex(expr)}"
+            f"f({v_lat}) = {_to_latex(expr)}"
         ]
 
         if not expr.has(var_sym):
             steps.append(
-                f"ใช้กฎอนุพันธ์ของค่าคงที่ (Constant Rule): "
+                f"ใช้กฎอนุพันธ์ของค่าคงที่: "
                 f"ค่าคงที่ไม่ขึ้นกับตัวแปร ${v_lat}$ จึงไม่มีการเปลี่ยนแปลง:\n"
-                f"\\frac{{d}}{{d{v_lat}}}[c] = 0 \\implies \\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = 0"
+                f"\\frac{{d}}{{d{v_lat}}}[c] = 0 \\implies \\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(expr)}\\right] = 0"
             )
             steps.append(
                 f"ความหมายทางเรขาคณิต: "
@@ -409,31 +449,31 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
         elif isinstance(expr, sp.Pow) and expr.args[0] == var_sym and expr.args[1].is_number:
             n = expr.args[1]
             steps.append(
-                f"ใช้กฎเลขชี้กำลัง (Power Rule): "
+                f"ใช้กฎยกกำลัง: "
                 f"นำเลขชี้กำลังมาคูณข้างหน้าแล้วลดเลขชี้กำลังลง 1:\n"
                 f"\\frac{{d}}{{d{v_lat}}}[{v_lat}^n] = n {v_lat}^{{n-1}}"
             )
             steps.append(
-                f"แทนค่าเลขชี้กำลัง $n = {sp.latex(n)}$: "
-                f"คำนวณ $n - 1 = {sp.latex(n-1)}$:\n"
-                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(n)} {v_lat}^{{{sp.latex(n-1)}}} = {sp.latex(result)}"
+                f"แทนค่าเลขชี้กำลัง $n = {_to_latex(n)}$: "
+                f"คำนวณ $n - 1 = {_to_latex(n-1)}$:\n"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(expr)}\\right] = {_to_latex(n)} {v_lat}^{{{_to_latex(n-1)}}} = {_to_latex(result)}"
             )
             steps.append(
                 f"ความหมายทางเรขาคณิต: "
-                f"สูตรความชันของเส้นสัมผัส ณ พิกัด ${v_lat}$ ใดๆ บนกราฟคือ $m = {sp.latex(result)}$"
+                f"ความชันของเส้นสัมผัสที่จุดใดๆ บนกราฟคือ $m = {_to_latex(result)}$"
             )
         elif isinstance(expr, sp.Add):
             terms = expr.as_ordered_terms()
-            diff_terms_str = " + ".join(f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(term)}\\right]" for term in terms)
+            diff_terms_str = " + ".join(f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(term)}\\right]" for term in terms)
             steps.append(
-                f"ใช้กฎผลบวกและผลต่างของอนุพันธ์ (Sum & Difference Rule): "
+                f"ใช้กฎผลบวกและผลต่างของอนุพันธ์: "
                 f"สามารถแยกหาอนุพันธ์ของแต่ละพจน์ได้:\n"
-                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {diff_terms_str}"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(expr)}\\right] = {diff_terms_str}"
             )
             sub_results = []
             for term in terms:
                 sub_res = sp.diff(term, var_sym)
-                sub_results.append(f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(term)}\\right] = {sp.latex(sub_res)}")
+                sub_results.append(f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(term)}\\right] = {_to_latex(sub_res)}")
             steps.append(
                 f"หาอนุพันธ์ของแต่ละพจน์: "
                 f"คำนวณอนุพันธ์ย่อยทีละส่วนประกอบ:\n"
@@ -442,20 +482,20 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
             steps.append(
                 f"รวมผลลัพธ์ทุกพจน์: "
                 f"นำผลอนุพันธ์ของแต่ละพจน์มารวมกัน:\n"
-                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(expr)}\\right] = {_to_latex(result)}"
             )
         numer, denom = expr.as_numer_denom()
         if denom != 1 and denom.has(var_sym) and numer.has(var_sym):
             du = sp.diff(numer, var_sym)
             dv = sp.diff(denom, var_sym)
-            u_lat = sp.latex(numer)
-            denom_lat = sp.latex(denom)
-            du_lat = sp.latex(du)
-            dv_lat = sp.latex(dv)
-            expr_lat = sp.latex(expr)
-            res_lat = sp.latex(result)
+            u_lat = _to_latex(numer)
+            denom_lat = _to_latex(denom)
+            du_lat = _to_latex(du)
+            dv_lat = _to_latex(dv)
+            expr_lat = _to_latex(expr)
+            res_lat = _to_latex(result)
             steps.append(
-                f"ใช้กฎผลหารของอนุพันธ์ (Quotient Rule): "
+                f"ใช้กฎผลหารของอนุพันธ์: "
                 f"สูตรอนุพันธ์ของฟังก์ชันเศษส่วน:\n"
                 f"\\frac{{d}}{{d{v_lat}}}\\left[\\frac{{u}}{{v}}\\right] = \\frac{{v \\frac{{du}}{{d{v_lat}}} - u \\frac{{dv}}{{d{v_lat}}}}}{{v^2}}"
             )
@@ -479,14 +519,14 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
             u_sym = sp.Symbol("u")
             outer_f = expr.func(u_sym)
             df_du = sp.diff(outer_f, u_sym).subs(u_sym, g)
-            g_lat = sp.latex(g)
-            du_lat = sp.latex(du)
-            df_du_lat = sp.latex(df_du)
-            expr_lat = sp.latex(expr)
-            res_lat = sp.latex(result)
+            g_lat = _to_latex(g)
+            du_lat = _to_latex(du)
+            df_du_lat = _to_latex(df_du)
+            expr_lat = _to_latex(expr)
+            res_lat = _to_latex(result)
             steps.append(
-                f"ใช้กฎลูกโซ่ (Chain Rule): "
-                f"สำหรับฟังก์ชันคอมโพสิต $f(g({v_lat}))$:\n"
+                f"ใช้กฎลูกโซ่: "
+                f"สำหรับฟังก์ชันประกอบ $f(g({v_lat}))$:\n"
                 f"\\frac{{d}}{{d{v_lat}}}[f(g({v_lat}))] = f'(g({v_lat})) \\cdot g'({v_lat})"
             )
             steps.append(
@@ -495,7 +535,7 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
             )
             steps.append(
                 f"หาอนุพันธ์ของฟังก์ชันภายนอก: "
-                f"\\frac{{df}}{{du}} = {sp.latex(sp.diff(outer_f, u_sym))} \\implies f'(g({v_lat})) = {df_du_lat}"
+                f"\\frac{{df}}{{du}} = {_to_latex(sp.diff(outer_f, u_sym))} \\implies f'(g({v_lat})) = {df_du_lat}"
             )
             steps.append(
                 f"คูณตามกฎลูกโซ่และจัดรูป: "
@@ -505,14 +545,14 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
             g = expr.args[0]
             n = expr.args[1]
             du = sp.diff(g, var_sym)
-            g_lat = sp.latex(g)
-            n_lat = sp.latex(n)
-            nm1_lat = sp.latex(n - 1)
-            du_lat = sp.latex(du)
-            expr_lat = sp.latex(expr)
-            res_lat = sp.latex(result)
+            g_lat = _to_latex(g)
+            n_lat = _to_latex(n)
+            nm1_lat = _to_latex(n - 1)
+            du_lat = _to_latex(du)
+            expr_lat = _to_latex(expr)
+            res_lat = _to_latex(result)
             steps.append(
-                f"ใช้กฎกำลังร่วมกับกฎลูกโซ่ (General Power Rule / Chain Rule): "
+                f"ใช้กฎลูกโซ่ร่วมกับกฎยกกำลัง: "
                 f"\\frac{{d}}{{d{v_lat}}}[u^n] = n u^{{n-1}} \\frac{{du}}{{d{v_lat}}}"
             )
             steps.append(
@@ -528,22 +568,22 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
             if len(var_factors) == 2:
                 u, v = var_factors[0], var_factors[1]
                 steps.append(
-                    f"ใช้กฎผลคูณของอนุพันธ์ (Product Rule): "
+                    f"ใช้กฎผลคูณของอนุพันธ์: "
                     f"\\frac{{d}}{{d{v_lat}}}[u \\cdot v] = u \\frac{{dv}}{{d{v_lat}}} + v \\frac{{du}}{{d{v_lat}}}"
                 )
                 steps.append(
                     f"กำหนดฟังก์ชันย่อย: "
-                    f"u = {sp.latex(u)} \\implies \\frac{{du}}{{d{v_lat}}} = {sp.latex(sp.diff(u, var_sym))}\n"
-                    f"v = {sp.latex(v)} \\implies \\frac{{dv}}{{d{v_lat}}} = {sp.latex(sp.diff(v, var_sym))}"
+                    f"u = {_to_latex(u)} \\implies \\frac{{du}}{{d{v_lat}}} = {_to_latex(sp.diff(u, var_sym))}\n"
+                    f"v = {_to_latex(v)} \\implies \\frac{{dv}}{{d{v_lat}}} = {_to_latex(sp.diff(v, var_sym))}"
                 )
                 steps.append(
                     f"แทนค่าในสูตรผลคูณและจัดรูป: "
-                    f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
+                    f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(expr)}\\right] = {_to_latex(result)}"
                 )
             else:
                 steps.append(
-                    f"คำนวณอนุพันธ์เชิงสัญลักษณ์: "
-                    f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
+                    f"คำนวณอนุพันธ์: "
+                    f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(expr)}\\right] = {_to_latex(result)}"
                 )
         elif isinstance(expr, sp.sin) and expr.args[0] == var_sym:
             steps.append(
@@ -573,10 +613,10 @@ def differentiate(expr_str: str, var: str | sp.Symbol | None = None) -> dict[str
         else:
             steps.append(
                 f"คำนวณอนุพันธ์เชิงสัญลักษณ์: "
-                f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
+                f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(expr)}\\right] = {_to_latex(result)}"
             )
 
-        latex_str = f"\\frac{{d}}{{d{v_lat}}}\\left[{sp.latex(expr)}\\right] = {sp.latex(result)}"
+        latex_str = f"\\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(expr)}\\right] = {_to_latex(result)}"
         return {
             "ok": True,
             "result": result,
@@ -651,92 +691,92 @@ def compute_limit(expr_str: str, point: float | int = 0, var: str | sp.Symbol | 
 
         pt_str = _format_point_str(point)
         s_left_ex, s_right_ex = _format_samples(point)
-        v_lat = sp.latex(var_sym)
+        v_lat = _to_latex(var_sym)
 
         steps = [
-            f"กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชันเมื่อตัวแปร ${v_lat}$ ขยับเข้าใกล้จุด ${v_lat} = {pt_str}$ (โดยที่ ${v_lat} \\neq {pt_str}$)\n\\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right)"
+            f"กำหนดโจทย์ลิมิตที่ต้องการหา: ศึกษาพฤติกรรมของค่าฟังก์ชันเมื่อตัวแปร ${v_lat}$ ขยับเข้าใกล้จุด ${v_lat} = {pt_str}$ (โดยที่ ${v_lat} \\neq {pt_str}$)\n\\lim_{{{v_lat} \\to {pt_str}}} \\left({_to_latex(expr)}\\right)"
         ]
 
         if status == "finite":
             result = sp.limit(expr, var_sym, point)
-            res_latex = sp.latex(result)
-            latex_str = f"\\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right) = {res_latex}"
+            res_latex = _to_latex(result)
+            latex_str = f"\\lim_{{{v_lat} \\to {pt_str}}} \\left({_to_latex(expr)}\\right) = {res_latex}"
 
             try:
                 direct_val = expr.subs(var_sym, point)
                 if direct_val.is_number and direct_val.is_finite:
                     steps.append(
-                        f"ทดสอบแทนค่าโดยตรง (Direct Substitution): ฟังก์ชันต่อเนื่องที่จุดนี้ สามารถแทนค่าได้ทันที\nf({pt_str}) = {sp.latex(direct_val)}"
+                        f"ทดสอบการแทนค่าโดยตรง: ฟังก์ชันต่อเนื่องที่จุดนี้ สามารถแทนค่าได้ทันที\nf({pt_str}) = {_to_latex(direct_val)}"
                     )
                 else:
                     steps.append(
-                        f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^-$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้ายของเส้นจำนวน (ค่าน้อยกว่า {pt_str} เสมอ หรือ ${v_lat} < {pt_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\nเมื่อ ${v_lat}$ วิ่งเฉียดเข้าหา {pt_str} ทางซ้าย ค่าของฟังก์ชันมีแนวโน้มลู่เข้าหา {sp.latex(left)}\n\\lim_{{{v_lat} \\to {pt_str}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
+                        f"พิจารณาลิมิตทางซ้าย: สัญลักษณ์ ${v_lat} \\to {pt_str}^-$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้ายของเส้นจำนวน (ค่าน้อยกว่า {pt_str} เสมอ หรือ ${v_lat} < {pt_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\nเมื่อ ${v_lat}$ วิ่งเฉียดเข้าหา {pt_str} ทางซ้าย ค่าของฟังก์ชันมีแนวโน้มลู่เข้าหา {_to_latex(left)}\n\\lim_{{{v_lat} \\to {pt_str}^-}} \\left({_to_latex(expr)}\\right) = {_to_latex(left)}"
                     )
                     steps.append(
-                        f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^+$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งขวาบนเส้นจำนวน (ค่ามากกว่า {pt_str} เสมอ หรือ ${v_lat} > {pt_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\nเมื่อ ${v_lat}$ วิ่งเฉียดเข้าหา {pt_str} ทางขวา ค่าของฟังก์ชันมีแนวโน้มลู่เข้าหา {sp.latex(right)}\n\\lim_{{{v_lat} \\to {pt_str}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
+                        f"พิจารณาลิมิตทางขวา: สัญลักษณ์ ${v_lat} \\to {pt_str}^+$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งขวาบนเส้นจำนวน (ค่ามากกว่า {pt_str} เสมอ หรือ ${v_lat} > {pt_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\nเมื่อ ${v_lat}$ วิ่งเฉียดเข้าหา {pt_str} ทางขวา ค่าของฟังก์ชันมีแนวโน้มลู่เข้าหา {_to_latex(right)}\n\\lim_{{{v_lat} \\to {pt_str}^+}} \\left({_to_latex(expr)}\\right) = {_to_latex(right)}"
                     )
             except Exception:
                 steps.append(
-                    f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^-$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้ายของเส้นจำนวน (ค่าน้อยกว่า {pt_str} เสมอ หรือ ${v_lat} < {pt_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
+                    f"พิจารณาลิมิตทางซ้าย: สัญลักษณ์ ${v_lat} \\to {pt_str}^-$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้ายของเส้นจำนวน (ค่าน้อยกว่า {pt_str} เสมอ หรือ ${v_lat} < {pt_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^-}} \\left({_to_latex(expr)}\\right) = {_to_latex(left)}"
                 )
                 steps.append(
-                    f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^+$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งขวาบนเส้นจำนวน (ค่ามากกว่า {pt_str} เสมอ หรือ ${v_lat} > {pt_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
+                    f"พิจารณาลิมิตทางขวา: สัญลักษณ์ ${v_lat} \\to {pt_str}^+$ หมายถึงให้ค่า ${v_lat}$ ค่อย ๆ ขยับเข้าใกล้ {pt_str} จากฝั่งขวาบนเส้นจำนวน (ค่ามากกว่า {pt_str} เสมอ หรือ ${v_lat} > {pt_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^+}} \\left({_to_latex(expr)}\\right) = {_to_latex(right)}"
                 )
 
             steps.append(
-                f"สรุปค่าลิมิตสองด้าน: กฎพื้นฐานคือ ลิมิตสองด้านจะมีค่าได้ก็ต่อเมื่อ ลิมิตซ้ายและขวาต้องมุ่งสู่จำนวนจริงเดียวกัน\nเนื่องจากเส้นกราฟจากทั้งสองฝั่งวิ่งมาบรรจบกันที่ระดับความสูงเดียวกัน (${res_latex}$)\n\\lim_{{{v_lat} \\to {pt_str}^-}} f({v_lat}) = \\lim_{{{v_lat} \\to {pt_str}^+}} f({v_lat}) = {res_latex} \\implies \\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right) = {res_latex}"
+                f"สรุปค่าลิมิตสองด้าน: กฎพื้นฐานคือ ลิมิตสองด้านจะมีค่าได้ก็ต่อเมื่อ ลิมิตซ้ายและขวาต้องมุ่งสู่จำนวนจริงเดียวกัน\nเนื่องจากเส้นกราฟจากทั้งสองฝั่งวิ่งมาบรรจบกันที่ระดับความสูงเดียวกัน (${res_latex}$)\n\\lim_{{{v_lat} \\to {pt_str}^-}} f({v_lat}) = \\lim_{{{v_lat} \\to {pt_str}^+}} f({v_lat}) = {res_latex} \\implies \\lim_{{{v_lat} \\to {pt_str}}} \\left({_to_latex(expr)}\\right) = {res_latex}"
             )
 
         elif status == "infinite":
             result = left
-            res_latex = sp.latex(result)
-            latex_str = f"\\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right) = {res_latex}"
+            res_latex = _to_latex(result)
+            latex_str = f"\\lim_{{{v_lat} \\to {pt_str}}} \\left({_to_latex(expr)}\\right) = {res_latex}"
             steps.append(
-                f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^-$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้าย (${v_lat} < {pt_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
+                f"พิจารณาลิมิตทางซ้าย: สัญลักษณ์ ${v_lat} \\to {pt_str}^-$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้าย (${v_lat} < {pt_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^-}} \\left({_to_latex(expr)}\\right) = {_to_latex(left)}"
             )
             steps.append(
-                f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^+$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งขวา (${v_lat} > {pt_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
+                f"พิจารณาลิมิตทางขวา: สัญลักษณ์ ${v_lat} \\to {pt_str}^+$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งขวา (${v_lat} > {pt_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^+}} \\left({_to_latex(expr)}\\right) = {_to_latex(right)}"
             )
             steps.append(
-                f"สรุปผล (ลิมิตทั้งสองข้างลู่ไปสู่อนันต์เดียวกัน): ทั้งสองฝั่งลู่ไปสู่ค่าเดียวกันคือ ${res_latex}$ แต่เนื่องจากอนันต์ไม่ใช่จำนวนจริงจำกัด จึงถือว่าลิมิตลู่ออก\n\\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right) = {res_latex}"
+                f"สรุปผล (ลิมิตทั้งสองข้างลู่ไปสู่อนันต์เดียวกัน): ทั้งสองฝั่งลู่ไปสู่ค่าเดียวกันคือ ${res_latex}$ แต่เนื่องจากอนันต์ไม่ใช่จำนวนจริงจำกัด จึงถือว่าลิมิตลู่ออก\n\\lim_{{{v_lat} \\to {pt_str}}} \\left({_to_latex(expr)}\\right) = {res_latex}"
             )
 
         elif status == "dne":
             result = None
-            latex_str = f"\\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
+            latex_str = f"\\lim_{{{v_lat} \\to {pt_str}}} \\left({_to_latex(expr)}\\right) \\quad \\text{{(หาค่าไม่ได้)}}"
             if isinstance(left, AccumulationBounds) or isinstance(right, AccumulationBounds):
                 for side, direction, value in (("ซ้าย", "-", left), ("ขวา", "+", right)):
                     if isinstance(value, AccumulationBounds):
                         steps.append(
                             f"พิจารณาการแกว่งทาง{side}: ค่าฟังก์ชันไม่เข้าใกล้จำนวนเดียว "
-                            f"โดยระบบคืนขอบเขตสะสม {sp.latex(value)} ซึ่งไม่ใช่ค่าลิมิต "
+                            f"โดยระบบคืนขอบเขตสะสม {_to_latex(value)} ซึ่งไม่ใช่ค่าลิมิต "
                             f"ลิมิตทาง{side}ไม่มีอยู่เนื่องจากการแกว่ง"
                         )
                     else:
                         steps.append(
                             f"พิจารณาลิมิตทาง{side}: ด้านนี้มีค่าลิมิตที่คำนวณได้\n"
-                            rf"\lim_{{{v_lat} \to {pt_str}^{direction}}} f({v_lat}) = {sp.latex(value)}"
+                            rf"\lim_{{{v_lat} \to {pt_str}^{direction}}} f({v_lat}) = {_to_latex(value)}"
                         )
                 steps.append(
                     f"สรุป: ไม่มีลิมิตสองด้าน เพราะอย่างน้อยหนึ่งด้านไม่มีลิมิตจากการแกว่ง\n"
-                    rf"\lim_{{{v_lat} \to {pt_str}}} \left({sp.latex(expr)}\right) \quad \text{{(does not exist)}}"
+                    rf"\lim_{{{v_lat} \to {pt_str}}} \left({_to_latex(expr)}\right) \quad \\text{{(หาค่าไม่ได้)}}"
                 )
             else:
                 steps.append(
-                    f"พิจารณาลิมิตทางซ้าย (Left-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^-$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้าย (${v_lat} < {pt_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^-}} \\left({sp.latex(expr)}\\right) = {sp.latex(left)}"
+                    f"พิจารณาลิมิตทางซ้าย: สัญลักษณ์ ${v_lat} \\to {pt_str}^-$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งซ้าย (${v_lat} < {pt_str}$ เช่น ${v_lat} = {s_left_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^-}} \\left({_to_latex(expr)}\\right) = {_to_latex(left)}"
                 )
                 steps.append(
-                    f"พิจารณาลิมิตทางขวา (Right-hand limit): สัญลักษณ์ ${v_lat} \\to {pt_str}^+$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งขวา (${v_lat} > {pt_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^+}} \\left({sp.latex(expr)}\\right) = {sp.latex(right)}"
+                    f"พิจารณาลิมิตทางขวา: สัญลักษณ์ ${v_lat} \\to {pt_str}^+$ หมายถึงให้ค่า ${v_lat}$ ขยับเข้าใกล้ {pt_str} จากฝั่งขวา (${v_lat} > {pt_str}$ เช่น ${v_lat} = {s_right_ex} \\dots$)\n\\lim_{{{v_lat} \\to {pt_str}^+}} \\left({_to_latex(expr)}\\right) = {_to_latex(right)}"
                 )
                 steps.append(
-                    f"สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): เส้นกราฟจากฝั่งซ้ายและฝั่งขวาแยกออกจากกันและไม่มาบรรจบกันที่จุดเดียวกัน\n\\lim_{{{v_lat} \\to {pt_str}^-}} f({v_lat}) = {sp.latex(left)} \\neq \\lim_{{{v_lat} \\to {pt_str}^+}} f({v_lat}) = {sp.latex(right)}\n\\lim_{{{v_lat} \\to {pt_str}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(does not exist)}}"
+                    f"สรุปผล (ไม่มีลิมิตสองด้านเนื่องจากลิมิตซ้ายไม่เท่ากับลิมิตขวา): เส้นกราฟจากฝั่งซ้ายและฝั่งขวาแยกออกจากกันและไม่มาบรรจบกันที่จุดเดียวกัน\n\\lim_{{{v_lat} \\to {pt_str}^-}} f({v_lat}) = {_to_latex(left)} \\neq \\lim_{{{v_lat} \\to {pt_str}^+}} f({v_lat}) = {_to_latex(right)}\n\\lim_{{{v_lat} \\to {pt_str}}} \\left({_to_latex(expr)}\\right) \\quad \\text{{(หาค่าไม่ได้)}}"
                 )
 
         else:
             result = None
-            latex_str = f"\\lim_{{{v_lat} \\to {point}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(unsupported)}}"
+            latex_str = f"\\lim_{{{v_lat} \\to {point}}} \\left({_to_latex(expr)}\\right) \\quad \\text{{(unsupported)}}"
             steps.append(
-                f"ระบบไม่สามารถตัดสินหรือระบุค่าลิมิตได้: \\lim_{{{v_lat} \\to {point}}} \\left({sp.latex(expr)}\\right) \\quad \\text{{(unsupported)}}"
+                f"ระบบไม่สามารถตัดสินหรือระบุค่าลิมิตได้: \\lim_{{{v_lat} \\to {point}}} \\left({_to_latex(expr)}\\right) \\quad \\text{{(unsupported)}}"
             )
 
         return {
