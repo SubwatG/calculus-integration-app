@@ -60,38 +60,10 @@ with st.container(border=True):
         """
     )
 
-    with st.expander("อ่านรายละเอียดทฤษฎี จุดสังเกต และกรณีพิเศษ", expanded=False):
-        st.markdown("**จุดที่ควรสังเกตขณะทดลอง:**")
-        st.markdown(
-            """
-- **1. หาจุดตัดก่อนเสมอ ($f(x) = g(x)$):** จุดตัดคือขอบเขตธรรมชาติที่ปิดล้อมพื้นที่ หากกราฟตัดกันสลับบนล่าง ต้องแยกอินทิเกรตตามช่วงย่อย
-- **2. เส้นบน ลบ เส้นล่าง:** ตรวจสอบให้มั่นใจว่านำฟังก์ชันที่อยู่เหนือกว่า ลบด้วยฟังก์ชันที่อยู่ด้านล่าง เพื่อให้ได้ค่าพื้นที่เป็นบวก ($A > 0$) เสมอ
-- **3. กรณีที่กราฟไม่ตัดกัน:** หากไม่มีจุดตัด จะไม่เกิดพื้นที่ปิดล้อมโดยธรรมชาติ จำเป็นต้องระบุเส้นขอบเขต $a$ และ $b$ เพิ่มเติม
-            """
-        )
-
-with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
-    col_t1, col_t2 = st.columns(2)
-    with col_t1:
-        st.markdown("**เงื่อนไขการใช้งาน**")
-        for item in theory["conditions"]:
-            st.markdown(f"- {item}")
-        st.markdown("**สมบัติสำคัญ**")
-        for item in theory["properties"]:
-            st.markdown(f"- {item}")
-    with col_t2:
-        st.markdown("**ข้อควรระวัง**")
-        with st.container(border=True):
-            for caution in theory["cautions"]:
-                st.markdown(f"- {caution}")
-        st.markdown("**การประยุกต์ใช้**")
-        for item in theory["applications"]:
-            st.markdown(f"- {item}")
-
 st.divider()
 st.markdown("### ลองคำนวณ")
 
-st.markdown("**ตัวอย่างโจทย์ยอดนิยม:**")
+st.markdown("**ตัวอย่างโจทย์:**")
 
 
 def _set_area_preset(f_val: str, g_val: str, a_val: float, b_val: float) -> None:
@@ -108,13 +80,13 @@ def _apply_bounds(a_target: float, b_target: float) -> None:
 
 p_cols = st.columns(4)
 with p_cols[0]:
-    st.button("เส้นตรงกับพาราโบลา ($x$ และ $x^2$)", key="pre_area_1", use_container_width=True, on_click=_set_area_preset, args=("x", "x**2", 0.0, 1.0))
+    st.button("$x$ และ $x^2$", key="pre_area_1", use_container_width=True, on_click=_set_area_preset, args=("x", "x**2", 0.0, 1.0))
 with p_cols[1]:
-    st.button("พาราโบลาคว่ำ-หงาย ($2-x^2$ และ $x^2$)", key="pre_area_2", use_container_width=True, on_click=_set_area_preset, args=("2 - x**2", "x**2", -1.0, 1.0))
+    st.button("$2 - x^2$ และ $x^2$", key="pre_area_2", use_container_width=True, on_click=_set_area_preset, args=("2 - x**2", "x**2", -1.0, 1.0))
 with p_cols[2]:
-    st.button(r"คลื่นตรีโกณมิติ ($\cos(x)$ และ $x$)", key="pre_area_3", use_container_width=True, on_click=_set_area_preset, args=("cos(x)", "x", 0.0, 1.6))
+    st.button(r"$\cos(x)$ และ $x$", key="pre_area_3", use_container_width=True, on_click=_set_area_preset, args=("cos(x)", "x", 0.0, 1.6))
 with p_cols[3]:
-    st.button("รากที่สาม ($x^{1/3}$ และ $x$)", key="pre_area_4", use_container_width=True, on_click=_set_area_preset, args=("x**(1/3)", "x", -1.0, 1.0))
+    st.button("$x^{1/3}$ และ $x$", key="pre_area_4", use_container_width=True, on_click=_set_area_preset, args=("x**(1/3)", "x", -1.0, 1.0))
 
 col_f, col_g = st.columns(2)
 with col_f:
@@ -217,7 +189,6 @@ else:
         st.divider()
 
         st.markdown("### กราฟพื้นที่ระหว่างเส้นโค้ง")
-        st.caption("กราฟแบบ Interactive: ใช้ลูกกลิ้งเมาส์เพื่อซูมเข้า/ออก ลากเพื่อเลื่อนดูกราฟ หรือดับเบิลคลิกเพื่อรีเซ็ตมุมมอง")
 
         try:
             fig_plotly = plot_area_between_plotly(

@@ -1263,7 +1263,7 @@ def plot_limit_plotly(
         pass
 
     fig.update_layout(
-        title=f"การเข้าใกล้ลิมิตเมื่อ {var_name} -> {a_disp} (ระยะ d = {delta:.3f}) (Interactive)",
+        title=f"การเข้าใกล้ลิมิตเมื่อ {var_name} -> {a_disp} (Interactive)",
         xaxis_title=var_name,
         yaxis_title="y",
         template="plotly_white",

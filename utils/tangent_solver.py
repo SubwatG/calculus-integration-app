@@ -255,7 +255,8 @@ def _build_finite_tangent_steps(
         f"{normal_desc}"
     )
 
-    return [step1, step2, step3, step4, step5, step6, step7]
+    # Step 7 (แนวคิดเพิ่มเติมและเส้นแนวฉาก) ซ่อนไว้ชั่วคราวตามข้อกำหนด
+    return [step1, step2, step3, step4, step5, step6]
 
 
 def compute_tangent(expr_str: str, a: float) -> dict:

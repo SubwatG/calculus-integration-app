@@ -38,46 +38,58 @@ def _parse_input(expr_str: str) -> sp.Expr:
     return parse_expr(clean, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
 
 
-def detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, sp.Expr, str] | None:
+def _is_exponential(f: sp.Expr, var: sp.Symbol) -> bool:
+    if f.has(sp.exp):
+        return True
+    if f.is_Pow and f.exp.has(var) and not f.base.has(var):
+        return True
+    return False
+
+
+def _is_trigonometric(f: sp.Expr) -> bool:
+    return any(f.has(cls) for cls in (sp.sin, sp.cos, sp.tan))
+
+
+def detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, sp.Expr, str, bool] | None:
     """พิจารณาแยก expr = u * v' เพื่อทำการอินทิเกรตทีละส่วนตามกฎ LIATE
 
-    คืนค่า (u, dv_factor, reason) หรือ None
+    คืนค่า (u, dv_factor, reason, is_cyclic) หรือ None
     """
     # 1. ฟังก์ชันเดี่ยว: ln(x), arctan(x), arcsin(x)
     if isinstance(expr, sp.log) or expr.func in (sp.atan, sp.asin, sp.acos):
-        return expr, sp.Integer(1), "ฟังก์ชันลอการิทึมหรือตรีโกณมิติผกผันเดี่ยว (กำหนด dv = dx)"
+        return expr, sp.Integer(1), "ฟังก์ชันลอการิทึมหรือตรีโกณมิติผกผันเดี่ยว (กำหนด dv = dx)", False
 
     # 2. รูปแบบผลคูณ
     factors = list(expr.as_ordered_factors()) if expr.is_Mul else [expr]
     log_factors = [f for f in factors if f.has(sp.log)]
     inv_trig_factors = [f for f in factors if any(f.has(cls) for cls in (sp.atan, sp.asin, sp.acos))]
     poly_factors = [f for f in factors if f.is_polynomial(var)]
-    exp_factors = [f for f in factors if f.has(sp.exp)]
-    trig_factors = [f for f in factors if any(f.has(cls) for cls in (sp.sin, sp.cos, sp.tan))]
+    exp_factors = [f for f in factors if _is_exponential(f, var)]
+    trig_factors = [f for f in factors if _is_trigonometric(f)]
 
     # LIATE Rule:
     # L / I มาก่อน A
     if log_factors:
         u_cand = sp.Mul(*log_factors)
         dv_cand = sp.Mul(*[f for f in factors if f not in log_factors])
-        return u_cand, dv_cand, "ตามกฎ LIATE: เลือกฟังก์ชันลอการิทึม (L) เป็น u และส่วนที่เหลือเป็น dv"
+        return u_cand, dv_cand, "ตามกฎ LIATE: เลือกฟังก์ชันลอการิทึม (L) เป็น u และส่วนที่เหลือเป็น dv", False
     if inv_trig_factors:
         u_cand = sp.Mul(*inv_trig_factors)
         dv_cand = sp.Mul(*[f for f in factors if f not in inv_trig_factors])
-        return u_cand, dv_cand, "ตามกฎ LIATE: เลือกฟังก์ชันตรีโกณมิติผกผัน (I) เป็น u และส่วนที่เหลือเป็น dv"
+        return u_cand, dv_cand, "ตามกฎ LIATE: เลือกฟังก์ชันตรีโกณมิติผกผัน (I) เป็น u และส่วนที่เหลือเป็น dv", False
 
     # A มาก่อน T / E
     if poly_factors and (exp_factors or trig_factors):
         u_cand = sp.Mul(*poly_factors)
         other_factors = [f for f in factors if f not in poly_factors]
         dv_cand = sp.Mul(*other_factors)
-        return u_cand, dv_cand, "ตามกฎ LIATE: เลือกฟังก์ชันพีชคณิต (A) เป็น u เพื่อให้ดีกรีลดลงเมื่อหาอนุพันธ์"
+        return u_cand, dv_cand, "ตามกฎ LIATE: เลือกฟังก์ชันพีชคณิต (A) เป็น u เพื่อให้ดีกรีลดลงเมื่อหาอนุพันธ์", False
 
     # Cyclic E * T
     if exp_factors and trig_factors:
         u_cand = sp.Mul(*exp_factors)
         dv_cand = sp.Mul(*trig_factors)
-        return u_cand, dv_cand, "ฟังก์ชันเอกซ์โพเนนเชียลคูณกับตรีโกณมิติ (อินทิเกรตแบบวนลูป Cyclic Integration)"
+        return u_cand, dv_cand, "ฟังก์ชันเอกซ์โพเนนเชียลคูณกับตรีโกณมิติ (อินทิเกรตแบบวนลูป Cyclic Integration)", True
 
     return None
 
@@ -158,26 +170,68 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
                 "parts_info": None,
             }
 
-        u_p, dv_p, parts_reason = parts_cand
+        u_p, dv_p, parts_reason, is_cyclic = parts_cand
         du_p = sp.diff(u_p, var_sym)
         v_p = sp.integrate(dv_p, var_sym)
         v_du = sp.simplify(v_p * du_p)
-        rem_integral = sp.integrate(v_du, var_sym)
 
-        steps = [
-            f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
-            f"เลือกวิธี: การอินทิเกรตทีละส่วน (Integration by parts) ตามสูตร $\\int u \\, dv = uv - \\int v \\, du$",
-            f"วิเคราะห์ตามกฎ LIATE: {parts_reason}",
-            f"กำหนดตัวแปรและหาอนุพันธ์:\n"
-            f"- กำหนด $u = {_to_latex(u_p)} \\implies du = {_to_latex(du_p)} \\, d{v_lat}$\n"
-            f"- กำหนด $dv = {_to_latex(dv_p)} \\, d{v_lat} \\implies v = \\int {_to_latex(dv_p)} \\, d{v_lat} = {_to_latex(v_p)}$",
-            f"แทนค่าลงในสูตร By Parts:\n"
-            f"$$\\int u \\, dv = uv - \\int v \\, du$$\n"
-            f"$$= \\left({_to_latex(u_p)}\\right)\\left({_to_latex(v_p)}\\right) - \\int \\left({_to_latex(v_p)}\\right)\\left({_to_latex(du_p)}\\right) \\, d{v_lat}$$",
-            f"คำนวณปริพันธ์ที่เหลือ: $\\int {_to_latex(v_du)} \\, d{v_lat} = {_to_latex(rem_integral)}$",
-            f"สรุปผลลัพธ์: $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$",
-            domain_note,
-        ]
+        if is_cyclic:
+            expr_lat = _to_latex(expr)
+            u1_lat = _to_latex(u_p)
+            v1_lat = _to_latex(v_p)
+            du1_lat = _to_latex(du_p)
+
+            u2 = u_p
+            du2 = du_p
+            dv2 = v_p
+            v2 = sp.integrate(dv2, var_sym)
+            u2_lat = _to_latex(u2)
+            v2_lat = _to_latex(v2)
+            du2_lat = _to_latex(du2)
+
+            steps = [
+                f"กำหนดโจทย์อินทิกรัล: $\\int {expr_lat} \\, d{v_lat}$",
+                f"วิเคราะห์ตามกฎ LIATE: {parts_reason}",
+                (
+                    f"การอินทิเกรตทีละส่วนรอบที่ 1 (First Integration by Parts):\n"
+                    f"กำหนด $I = \\int {expr_lat} \\, d{v_lat}$\n"
+                    f"- ให้ $u = {u1_lat} \\implies du = {du1_lat} \\, d{v_lat}$\n"
+                    f"- ให้ $dv = {_to_latex(dv_p)} \\, d{v_lat} \\implies v = {v1_lat}$\n"
+                    f"แทนค่าลงในสูตร $I = uv - \\int v \\, du$:\n"
+                    f"$$I = ({u1_lat})({v1_lat}) - \\int ({v1_lat})({du1_lat}) \\, d{v_lat}$$"
+                ),
+                (
+                    f"การอินทิเกรตทีละส่วนรอบที่ 2 (Second Integration by Parts):\n"
+                    f"ทำ By Parts ซ้ำกับก้อนปริพันธ์ $\\int ({v1_lat})({du1_lat}) \\, d{v_lat}$ โดยคงบทบาทตัวแปรเดิม:\n"
+                    f"- ให้ $u = {u2_lat} \\implies du = {du2_lat} \\, d{v_lat}$\n"
+                    f"- ให้ $dv = {_to_latex(dv2)} \\, d{v_lat} \\implies v = {v2_lat}$\n"
+                    f"เมื่อแทนค่าและจัดรูป จะพบว่าปริพันธ์วนกลับมาเป็นพจน์ $I$ ตั้งต้น:\n"
+                    f"$$I = ({u1_lat})({v1_lat}) - \\left[ ({u2_lat})({v2_lat}) - \\int ({v2_lat})({du2_lat}) \\, d{v_lat} \\right]$$"
+                ),
+                (
+                    f"แก้สมการเชิงพีชคณิตหาค่า I (Solve for I):\n"
+                    f"ย้ายข้างสมการโดยรวมพจน์ $I$ ทั้งหมดไว้ทางซ้ายมือ และหารด้วยสัมประสิทธิ์:\n"
+                    f"$$\\int {expr_lat} \\, d{v_lat} = {_to_latex(antideriv)} + C$$"
+                ),
+                f"สรุปผลลัพธ์: $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$",
+                domain_note,
+            ]
+        else:
+            rem_integral = sp.integrate(v_du, var_sym)
+            steps = [
+                f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+                f"เลือกวิธี: การอินทิเกรตทีละส่วน (Integration by parts) ตามสูตร $\\int u \\, dv = uv - \\int v \\, du$",
+                f"วิเคราะห์ตามกฎ LIATE: {parts_reason}",
+                f"กำหนดตัวแปรและหาอนุพันธ์:\n"
+                f"- กำหนด $u = {_to_latex(u_p)} \\implies du = {_to_latex(du_p)} \\, d{v_lat}$\n"
+                f"- กำหนด $dv = {_to_latex(dv_p)} \\, d{v_lat} \\implies v = \\int {_to_latex(dv_p)} \\, d{v_lat} = {_to_latex(v_p)}$",
+                f"แทนค่าลงในสูตร By Parts:\n"
+                f"$$\\int u \\, dv = uv - \\int v \\, du$$\n"
+                f"$$= \\left({_to_latex(u_p)}\\right)\\left({_to_latex(v_p)}\\right) - \\int \\left({_to_latex(v_p)}\\right)\\left({_to_latex(du_p)}\\right) \\, d{v_lat}$$",
+                f"คำนวณปริพันธ์ที่เหลือ: $\\int {_to_latex(v_du)} \\, d{v_lat} = {_to_latex(rem_integral)}$",
+                f"สรุปผลลัพธ์: $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$",
+                domain_note,
+            ]
 
         return {
             "ok": True,

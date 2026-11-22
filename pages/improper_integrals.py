@@ -16,6 +16,51 @@ from utils.theory import THEORY_CONTENT
 inject_css()
 render_hero("ปริพันธ์ไม่ตรงแบบ", "สำรวจการลู่เข้าหรือลู่ออกของปริพันธ์บนช่วงอนันต์และจุดที่ฟังก์ชันไม่ต่อเนื่อง")
 
+# Responsive Table Styling Protection for Mobile
+st.markdown(
+    """
+    <style>
+    div[data-testid="stMarkdownContainer"]:has(table) {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding-bottom: 6px !important;
+    }
+    div[data-testid="stMarkdownContainer"] table {
+        width: 100% !important;
+        min-width: 520px !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        border: 2px solid #18181B !important;
+        border-radius: 12px !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        background-color: #FFFFFF !important;
+        margin: 10px 0 16px 0 !important;
+    }
+    div[data-testid="stMarkdownContainer"] table th {
+        background-color: #FEF08A !important;
+        color: #18181B !important;
+        font-weight: 700 !important;
+        border-bottom: 2px solid #18181B !important;
+        padding: 10px 14px !important;
+        text-align: left !important;
+    }
+    div[data-testid="stMarkdownContainer"] table td {
+        padding: 10px 14px !important;
+        border-bottom: 1px solid #E4E4E7 !important;
+        color: #18181B !important;
+        vertical-align: middle !important;
+    }
+    div[data-testid="stMarkdownContainer"] table tr:last-child td {
+        border-bottom: none !important;
+    }
+    div[data-testid="stMarkdownContainer"] table tr:hover {
+        background-color: #FEF9C3 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 theory = THEORY_CONTENT["improper"]
 
 # ---------------------------------------------------------------------------
@@ -48,36 +93,9 @@ with st.container(border=True):
 | ประเภทการพิจารณา | เงื่อนไขทางคณิตศาสตร์ | พฤติกรรมการลู่เข้า / ลู่ออก |
 | :---: | :--- | :--- |
 | ค่าของลิมิต | $\\lim_{t \\to \\infty} \\int_a^t f(x)\\,dx = L$ | มีค่าจริง = ลู่เข้า (Converges) / หาค่าไม่ได้ = ลู่ออก (Diverges) |
-| p-Integral Test | $\\int_1^\\infty \\frac{1}{x^p}\\,dx$ บนช่วง $[1, \\infty)$ | ลู่เข้าเมื่อ $p > 1$ และ ลู่ออกเมื่อ $p \\le 1$ |
+| การทดสอบด้วยปริพันธ์พี (p-Integral Test) | $\\int_1^\\infty \\frac{1}{x^p}\\,dx$ บนช่วง $[1, \\infty)$ | ลู่เข้าเมื่อ $p > 1$ และ ลู่ออกเมื่อ $p \\le 1$ |
         """
     )
-
-    with st.expander("อ่านรายละเอียดทฤษฎี จุดสังเกต และการทดสอบการลู่เข้า", expanded=False):
-        st.markdown("**จุดที่ควรสังเกตขณะทดลอง:**")
-        st.markdown(
-            """
-- **การลู่เข้าหรือลู่ออก:** สังเกตว่าเมื่อขอบเขตขยายสู่อนันต์ พื้นที่ใต้กราฟหยุดสะสมและคงที่ (ลู่เข้า) หรือโตขึ้นเรื่อย ๆ ไม่สิ้นสุด (ลู่ออก)
-- **การทดสอบด้วยอันดับ ($p$-Integral Test):** บนช่วง $[1, \\infty)$ ฟังก์ชัน $\\frac{1}{x^p}$ จะ **ลู่เข้าเมื่อ $p > 1$** และจะ **ลู่ออกเมื่อ $p \\le 1$**
-            """
-        )
-
-with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
-    col_t1, col_t2 = st.columns(2)
-    with col_t1:
-        st.markdown("**เงื่อนไขการใช้งาน**")
-        for item in theory["conditions"]:
-            st.markdown(f"- {item}")
-        st.markdown("**สมบัติสำคัญ**")
-        for item in theory["properties"]:
-            st.markdown(f"- {item}")
-    with col_t2:
-        st.markdown("**ข้อควรระวัง**")
-        with st.container(border=True):
-            for caution in theory["cautions"]:
-                st.markdown(f"- {caution}")
-        st.markdown("**การประยุกต์ใช้**")
-        for item in theory["applications"]:
-            st.markdown(f"- {item}")
 
 st.divider()
 st.markdown("### ลองคำนวณ")
@@ -87,16 +105,16 @@ def _set_improper_preset(expr_val: str, a_val: str, b_val: str) -> None:
     st.session_state["improper_a_str"] = a_val
     st.session_state["improper_b_str"] = b_val
 
-st.markdown("**ตัวอย่างโจทย์ยอดนิยม:**")
+st.markdown("**ตัวอย่างโจทย์:**")
 p_cols = st.columns(4)
 with p_cols[0]:
-    st.button("กำลังสอง $\\frac{1}{x^2}$ บน $[1, \\infty)$", key="pre_imp_1", use_container_width=True, on_click=_set_improper_preset, args=("1/x**2", "1", "inf"))
+    st.button("$\\frac{1}{x^2}$ บน $[1, \\infty)$", key="pre_imp_1", use_container_width=True, on_click=_set_improper_preset, args=("1/x**2", "1", "inf"))
 with p_cols[1]:
-    st.button("ฮาร์มอนิก $\\frac{1}{x}$ บน $[1, \\infty)$", key="pre_imp_2", use_container_width=True, on_click=_set_improper_preset, args=("1/x", "1", "inf"))
+    st.button("$\\frac{1}{x}$ บน $[1, \\infty)$", key="pre_imp_2", use_container_width=True, on_click=_set_improper_preset, args=("1/x", "1", "inf"))
 with p_cols[2]:
-    st.button("เอกซ์โพเนนเชียล $e^{-x}$ บน $[0, \\infty)$", key="pre_imp_3", use_container_width=True, on_click=_set_improper_preset, args=("exp(-x)", "0", "inf"))
+    st.button("$e^{-x}$ บน $[0, \\infty)$", key="pre_imp_3", use_container_width=True, on_click=_set_improper_preset, args=("exp(-x)", "0", "inf"))
 with p_cols[3]:
-    st.button("สองฝั่งอนันต์ $\\frac{1}{1+x^2}$ บน $(-\\infty, \\infty)$", key="pre_imp_4", use_container_width=True, on_click=_set_improper_preset, args=("1/(1+x**2)", "-inf", "inf"))
+    st.button("$\\frac{1}{1+x^2}$ บน $(-\\infty, \\infty)$", key="pre_imp_4", use_container_width=True, on_click=_set_improper_preset, args=("1/(1+x**2)", "-inf", "inf"))
 
 expr_input = st.text_input(
     "ฟังก์ชัน f(x)",
@@ -153,7 +171,6 @@ else:
         st.divider()
 
         st.markdown("### กราฟการลู่เข้าและพื้นที่ใต้กราฟ")
-        st.caption("กราฟแบบ Interactive: ใช้ลูกกลิ้งเมาส์เพื่อซูมเข้า/ออก ลากเพื่อเลื่อนดูกราฟ หรือดับเบิลคลิกเพื่อรีเซ็ตมุมมอง")
         try:
             fig_plotly = plot_improper_plotly(res["expr"], a_input, b_input)
             st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})

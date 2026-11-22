@@ -17,6 +17,92 @@ render_hero(
     "การอินทิเกรตทีละส่วน (Integration by Parts)",
     "หลักการเลือก u และ dv ตามกฎ LIATE พร้อมเทคนิคการอินทิเกรตแบบวนลูป",
 )
+# Custom Tactile Bauhaus styling & responsive table protection (matching Quiz UX)
+st.markdown(
+    r"""
+    <style>
+    /* Radio options styled as tactile Bauhaus cards (matching Quiz UX) */
+    div[data-testid="stRadio"] div[role="radiogroup"]:not([aria-orientation="horizontal"]) {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin-top: 8px !important;
+        margin-bottom: 14px !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"]:not([aria-orientation="horizontal"]) > label {
+        background-color: #FFFFFF !important;
+        border: 2px solid #18181B !important;
+        border-radius: 12px !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        padding: 12px 16px !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+        transition: all 0.12s ease-out !important;
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"]:not([aria-orientation="horizontal"]) > label:hover {
+        background-color: #FEF08A !important;
+        transform: translate(-1.5px, -1.5px) !important;
+        box-shadow: 4px 4px 0px #18181B !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"]:not([aria-orientation="horizontal"]) > label:has(input:checked) {
+        background-color: #FEF9C3 !important;
+        border: 2px solid #18181B !important;
+        box-shadow: 3.5px 3.5px 0px #18181B !important;
+    }
+    div[data-testid="stRadio"] div[role="radiogroup"]:not([aria-orientation="horizontal"]) > label p {
+        font-family: "Mali", "Outfit", sans-serif !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        line-height: 1.4 !important;
+        margin: 0 !important;
+        color: #18181B !important;
+    }
+
+    /* Responsive Table Styling: Prevent horizontal squishing on mobile */
+    div[data-testid="stMarkdownContainer"]:has(table) {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding-bottom: 6px !important;
+    }
+    div[data-testid="stMarkdownContainer"] table {
+        width: 100% !important;
+        min-width: 520px !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        border: 2px solid #18181B !important;
+        border-radius: 12px !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        background-color: #FFFFFF !important;
+        margin: 10px 0 16px 0 !important;
+    }
+    div[data-testid="stMarkdownContainer"] table th {
+        background-color: #FEF08A !important;
+        color: #18181B !important;
+        font-weight: 700 !important;
+        border-bottom: 2px solid #18181B !important;
+        padding: 10px 14px !important;
+        text-align: left !important;
+    }
+    div[data-testid="stMarkdownContainer"] table td {
+        padding: 10px 14px !important;
+        border-bottom: 1px solid #E4E4E7 !important;
+        color: #18181B !important;
+        vertical-align: middle !important;
+    }
+    div[data-testid="stMarkdownContainer"] table tr:last-child td {
+        border-bottom: none !important;
+    }
+    div[data-testid="stMarkdownContainer"] table tr:hover {
+        background-color: #FEF9C3 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # =============================================================================
 # 1. สรุปหลักการทั่วไปในการเลือก u และ dv (กฎ LIATE)
@@ -26,7 +112,7 @@ with st.container(border=True):
     col_badge, col_title = st.columns([1, 4])
     with col_badge:
         st.markdown(
-            """<span style="
+            r"""<span style="
                 background-color: #FEF08A;
                 border: 1.5px solid #18181B;
                 border-radius: 8px;
@@ -45,23 +131,22 @@ with st.container(border=True):
     st.latex(r"\int u \, dv = uv - \int v \, du")
 
     st.markdown(
-        """
+        r"""
 | ลำดับ LIATE | ประเภทฟังก์ชัน | บทบาทที่แนะนำ | เหตุผลทางคณิตศาสตร์ |
 | :---: | :--- | :---: | :--- |
 | L, I | ลอการิทึม / ตรีโกณผกผัน | เลือกเป็น $u$ เสมอ | อินทิเกรตตรงยาก แต่ดิฟแล้วกลายเป็นพีชคณิต |
-| A | พหุนาม / พีชคณิต $x^n$ | เลือกเป็น $u$ เมื่อคู่อื่น | ดิฟแล้วดีกรีลดลงเรื่อย ๆ จนกลายเป็นค่าคงที่ |
+| A | พหุนาม / พีชคณิต $x^n$ | เลือกเป็น $u$ เมื่อคูณกับ $T$ หรือ $E$ | ดิฟแล้วดีกรีลดลงเรื่อย ๆ จนกลายเป็นค่าคงที่ |
 | T, E | ตรีโกณมิติ / เลขชี้กำลัง | มักเลือกเป็น $dv$ | อินทิเกรตง่ายและวนกลับมารูปเดิม |
         """
     )
 
 with st.expander("อ่านหลักการตัดสินใจและเทคนิคการอินทิเกรตทีละส่วน", expanded=False):
     st.markdown(
-        """
+        r"""
 - **หลักการเลือก $u$:** ฟังก์ชันที่ **หาอนุพันธ์แล้วได้รูปที่ง่ายขึ้นหรือดีกรีลดลง**
 - **หลักการเลือก $dv$:** ฟังก์ชันที่ **หาปริพันธ์กลับเป็น $v$ ได้ง่ายโดยรูปไม่ซับซ้อนขึ้น**
-- **ลำดับความสำคัญตามกฎ LIATE (เลือกเป็น $u$ จากซ้ายไปขวา):**
-  $$\\mathbf{L} \\text{ (Log)} \\quad \\succ \\quad \\mathbf{I} \\text{ (Inv Trig)} \\quad \\succ \\quad \\mathbf{A} \\text{ (Algebra)} \\quad \\succ \\quad \\mathbf{T} \\text{ (Trig)} \\quad \\succ \\quad \\mathbf{E} \\text{ (Exp)}$$
-- **เทคนิคการวนซ้ำ:** กรณีฟังก์ชันตรีโกณมิติกับเอกซ์โพเนนเชียล เช่น $\\int e^x \\sin x\\,dx$ หลังทำ By Parts สองรอบจะได้รูปเดิม ให้ย้ายข้างสมการทางพีชคณิตเพื่อหาคำตอบ
+- **ลำดับความสำคัญตามกฎ LIATE (เลือกเป็น $u$ จากซ้ายไปขวา):** $L$ (Log), $I$ (Inv Trig), $A$ (Algebra), $T$ (Trig), $E$ (Exp)
+- **เทคนิคการวนซ้ำ:** กรณีฟังก์ชันตรีโกณมิติกับเอกซ์โพเนนเชียล เช่น $\\int e^x \\sin x\\,dx$ หรือ $\\int 2^x \\cos x\\,dx$ หลังทำ By Parts สองรอบจะได้รูปเดิม ให้ย้ายข้างสมการทางพีชคณิตเพื่อหาคำตอบ
         """
     )
 
@@ -70,7 +155,7 @@ st.divider()
 # =============================================================================
 # 2. กรณีศึกษาฝึกตัดสินใจ (Active Scaffolding)
 # =============================================================================
-st.markdown("### กรณีศึกษาฝึกตัดสินใจเลือก $u$ และ $dv$")
+st.markdown("### กรณีศึกษาฝึกตัดสินใจเลือก $u$ และ $dv$ (LIATE Decision Challenge)")
 
 case_parts = st.selectbox(
     "เลือกกรณีศึกษาที่ต้องการเรียนรู้:",
@@ -79,159 +164,286 @@ case_parts = st.selectbox(
         "กรณีที่ 2: ฟังก์ชันเดี่ยวที่หาอนุพันธ์ง่ายแต่อินทิเกรตยาก (ln x)",
         "กรณีที่ 3: พหุนามดีกรีสูงกว่า 1 ต้องทำซ้ำหลายชั้น (x² e^x)",
         "กรณีที่ 4: ฟังก์ชันวนลูปไม่รู้จบ (e^x cos x)",
+        "กรณีที่ 5: พีชคณิตคูณกับฟังก์ชันตรีโกณมิติ (x sin x)",
+        "กรณีที่ 6: พีชคณิตคูณกับลอการิทึม (x ln x)",
     ],
     index=0,
 )
 
 if "กรณีที่ 1" in case_parts:
-    st.markdown("#### กรณีที่ 1: พหุนามคูณกับเอกซ์โพเนนเชียล")
-    st.latex(r"\int x e^x \, dx")
-    st.caption("โจทย์ข้อนี้เกิดจากฟังก์ชันพีชคณิต (A: $x$) คูณกับเอกซ์โพเนนเชียล (E: $e^x$)")
-
-    parts_choice = st.radio(
-        "ตามกฎ LIATE ท่านควรเลือก u และ dv อย่างไร?",
-        options=[
-            "แนวทางที่ 1 (ถูกต้อง): ให้ u = x และ dv = e^x dx",
-            "แนวทางที่ 2: ให้ u = e^x และ dv = x dx",
-        ],
-        index=None,
-        key="radio_parts_case1",
-    )
-
-    if parts_choice is None:
-        st.info("กรุณาคลิกเลือกแนวทางด้านบน")
-    elif "แนวทางที่ 1" in parts_choice:
-        st.success("**ถูกต้องตามหลักการ (A มาก่อน E ในกฎ LIATE)**")
+    with st.container(border=True):
         st.markdown(
-            """
-            * **ขั้นที่ 1: คำนวณส่วนประกอบ**
-              * กำหนด $u = x \\implies du = dx$ (ดีกรีลดลงเหลือค่าคงที่)
-              * กำหนด $dv = e^x dx \\implies v = \\int e^x dx = e^x$
-            * **ขั้นที่ 2: แทนค่าลงในสูตร By Parts**
-              $$\\int u \\, dv = uv - \\int v \\, du$$
-              $$\\int x e^x \\, dx = x e^x - \\int e^x \\, dx$$
-            * **ขั้นที่ 3: คำนวณอินทิกรัลส่วนที่เหลือ**
-              $$= x e^x - e^x + C = e^x(x - 1) + C$$
-            """
+            r"""
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 1 / 6</span>
+                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">พหุนามคูณกับเอกซ์โพเนนเชียล</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-    else:
-        st.error("**[ข้อผิดพลาด] รูปสมการจะซับซ้อนขึ้น**")
-        st.markdown(
-            """
-            หากให้ $u = e^x$ จะได้ $du = e^x dx$ แต่ $dv = x dx \\implies v = \\frac{x^2}{2}$
-            เมื่อแทนในสูตรจะได้:
-            $$\\int x e^x dx = \\frac{x^2 e^x}{2} - \\int \\frac{x^2 e^x}{2} dx$$
-            สังเกตว่าพจน์อินทิกรัลใหม่กลายเป็น $x^2$ ซึ่ง **ดีกรีสูงขึ้นและยากกว่าเดิม**
-            """
+        st.latex(r"\int x e^x \, dx")
+        st.markdown("โจทย์ข้อนี้เกิดจากฟังก์ชันพีชคณิต ($A$: $x$) คูณกับเอกซ์โพเนนเชียล ($E$: $e^x$)")
+        st.markdown("**ตามกฎ LIATE ท่านควรเลือก $u$ และ $dv$ อย่างไร?**")
+
+        parts_choice = st.radio(
+            "ตามกฎ LIATE ท่านควรเลือก u และ dv อย่างไร?",
+            options=[
+                "แนวทางที่ 1: ให้ u = x และ dv = e^x dx",
+                "แนวทางที่ 2: ให้ u = e^x และ dv = x dx",
+            ],
+            index=0,
+            key="radio_parts_case1",
+            label_visibility="collapsed",
         )
+
+        p_choice = parts_choice or ""
+        if not p_choice or "แนวทางที่ 1" in p_choice:
+            st.success("**ถูกต้องตามหลักการ (A มาก่อน E ในกฎ LIATE):** ดิฟ $u = x$ ดีกรีลดลงเหลือ $1$ ส่วน $e^x$ อินทิเกรตง่ายและคงรูปเดิม")
+            st.markdown("##### ผลลัพธ์สุดท้าย")
+            st.latex(r"\int x e^x \, dx = e^x(x - 1) + C")
+            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+                st.markdown(
+                    r"""
+                    1. **คำนวณส่วนประกอบ:**
+                       * กำหนด $u = x \implies du = dx$ (ดีกรีลดลงเหลือค่าคงที่)
+                       * กำหนด $dv = e^x dx \implies v = \int e^x dx = e^x$
+                    2. **แทนค่าลงในสูตร By Parts:**
+                       $$\int u \, dv = uv - \int v \, du$$
+                       $$\int x e^x \, dx = x e^x - \int e^x \, dx$$
+                    3. **คำนวณอินทิกรัลส่วนที่เหลือ:**
+                       $$= x e^x - e^x + C = e^x(x - 1) + C$$
+                    """
+                )
+        else:
+            st.error(r"**รูปสมการจะซับซ้อนขึ้น:** หากเลือก $dv = x dx$ จะได้ $v = \frac{x^2}{2}$ ทำให้อินทิกรัลใหม่กลายเป็น $x^2 e^x$ ซึ่งดีกรีสูงขึ้นและยากกว่าเดิม")
 
 elif "กรณีที่ 2" in case_parts:
-    st.markdown("#### กรณีที่ 2: ฟังก์ชันเดี่ยวที่หาอนุพันธ์ง่ายแต่อินทิเกรตยาก")
-    st.latex(r"\int \ln(x) \, dx")
-    st.caption("ข้อสังเกต: แม้จะมีฟังก์ชันเดียว แต่สามารถมองเป็นผลคูณกับ 1 ได้เสมอ: $\\int \\ln(x) \\cdot 1 \\, dx$")
-
-    parts_choice = st.radio(
-        "ท่านจะแบ่งบทบาทอย่างไร?",
-        options=[
-            "แนวทางที่ 1: ให้ u = 1 และ dv = ln(x) dx",
-            "แนวทางที่ 2 (ถูกต้อง): ให้ u = ln(x) และ dv = 1 dx",
-        ],
-        index=None,
-        key="radio_parts_case2",
-    )
-
-    if parts_choice is None:
-        st.info("กรุณาคลิกเลือกแนวทางด้านบน")
-    elif "แนวทางที่ 2" in parts_choice:
-        st.success("**ถูกต้อง (L มาเป็นอันดับแรกในกฎ LIATE)**")
+    with st.container(border=True):
         st.markdown(
-            """
-            * **ขั้นที่ 1: กำหนดส่วนประกอบ**
-              * $u = \\ln(x) \\implies du = \\frac{1}{x} dx$ (เปลี่ยนลอการิทึมเป็นเศษส่วนพีชคณิต)
-              * $dv = dx \\implies v = x$
-            * **ขั้นที่ 2: แทนในสูตร By Parts**
-              $$\\int \\ln(x) \\, dx = (\\ln x)(x) - \\int x \\cdot \\frac{1}{x} \\, dx$$
-              $$= x \\ln(x) - \\int 1 \\, dx$$
-            * **ขั้นที่ 3: สรุปผลลัพธ์**
-              $$= x \\ln(x) - x + C = x(\\ln x - 1) + C \\quad (x > 0)$$
-            """
+            r"""
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 2 / 6</span>
+                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">ฟังก์ชันเดี่ยว (ln x)</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-    else:
-        st.error("**[ทางตัน] กลับไปสู่ปัญหาเดิม**")
-        st.markdown("หากเลือก $dv = \\ln(x) dx$ ท่านจะต้องหา $v = \\int \\ln(x) dx$ ซึ่งก็คือโจทย์ตั้งต้นนั่นเอง")
+        st.latex(r"\int \ln(x) \, dx")
+        st.markdown(r"**ตามกฎ LIATE ท่านควรแบ่งบทบาท $u$ และ $dv$ อย่างไรสำหรับ $\int \ln(x) \cdot 1 \, dx$?**")
+
+        parts_choice = st.radio(
+            "ท่านจะแบ่งบทบาทอย่างไร?",
+            options=[
+                "แนวทางที่ 1: ให้ u = 1 และ dv = ln(x) dx",
+                "แนวทางที่ 2: ให้ u = ln(x) และ dv = 1 dx",
+            ],
+            index=1,
+            key="radio_parts_case2",
+            label_visibility="collapsed",
+        )
+
+        p_choice = parts_choice or ""
+        if not p_choice or "แนวทางที่ 2" in p_choice:
+            st.success(r"**ถูกต้องตามหลักการ (L มาเป็นอันดับแรกในกฎ LIATE):** $\ln(x)$ อินทิเกรตตรงยาก แต่ดิฟได้ $\frac{1}{x}$ พีชคณิต ซึ่งตัดทอนกับ $v = x$ ได้ลงตัว")
+            st.markdown("##### ผลลัพธ์สุดท้าย")
+            st.latex(r"\int \ln(x) \, dx = x(\ln x - 1) + C")
+            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+                st.markdown(
+                    r"""
+                    1. **กำหนดส่วนประกอบ:**
+                       * $u = \ln(x) \implies du = \frac{1}{x} dx$ (เปลี่ยนลอการิทึมเป็นเศษส่วนพีชคณิต)
+                       * $dv = dx \implies v = x$
+                    2. **แทนในสูตร By Parts:**
+                       $$\int \ln(x) \, dx = (\ln x)(x) - \int x \cdot \frac{1}{x} \, dx = x \ln(x) - \int 1 \, dx$$
+                    3. **สรุปผลลัพธ์:**
+                       $$= x \ln(x) - x + C = x(\ln x - 1) + C \quad (x > 0)$$
+                    """
+                )
+        else:
+            st.error(r"**ทางตัน:** หากเลือก $dv = \ln(x) dx$ ท่านจะต้องหา $v = \int \ln(x) dx$ ซึ่งก็คือโจทย์ตั้งต้นนั่นเอง")
 
 elif "กรณีที่ 3" in case_parts:
-    st.markdown("#### กรณีที่ 3: พหุนามดีกรีสูงกว่า 1 (ทำซ้ำหลายชั้น)")
-    st.latex(r"\int x^2 e^x \, dx")
-    st.caption("ข้อสังเกต: เมื่อพหุนามมีดีกรี $n$ จะต้องทำ By Parts ซ้ำ $n$ ครั้งจนกว่าพจน์พหุนามจะถูกดิฟจนกลายเป็นค่าคงที่")
-
-    parts_choice = st.radio(
-        "ขั้นตอนการลดรูปควรเป็นอย่างไร?",
-        options=[
-            "แนวทาง A (ถูกต้อง): ทำรอบที่ 1 ลดเหลือ x e^x แล้วทำรอบที่ 2 ลดเหลือค่าคงที่",
-            "แนวทาง B: สลับ u และ dv ในรอบที่ 2 เพื่อความรวดเร็ว",
-        ],
-        index=None,
-        key="radio_parts_case3",
-    )
-
-    if parts_choice is None:
-        st.info("กรุณาคลิกเลือกแนวทางด้านบน")
-    elif "แนวทาง A" in parts_choice:
-        st.success("**ถูกต้อง: กฎการลดทอนดีกรีแบบต่อเนื่อง**")
+    with st.container(border=True):
         st.markdown(
-            """
-            * **รอบที่ 1:** ให้ $u = x^2 \\implies du = 2x dx$, $dv = e^x dx \\implies v = e^x$
-              $$\\int x^2 e^x dx = x^2 e^x - 2\\int x e^x dx$$
-            * **รอบที่ 2:** ทำ By Parts ต่อที่ก้อน $\\int x e^x dx$ โดยให้ $u = x \\implies du = dx$, $dv = e^x dx \\implies v = e^x$
-              $$\\int x e^x dx = x e^x - e^x$$
-            * **ประกอบผลลัพธ์:**
-              $$\\int x^2 e^x dx = x^2 e^x - 2(x e^x - e^x) + C = e^x(x^2 - 2x + 2) + C$$
-            """
+            r"""
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 3 / 6</span>
+                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">พหุนามดีกรีสูงกว่า 1</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-    else:
-        st.error("**[ข้อผิดพลาด] อย่าสลับบทบาทกลับไปมา**")
-        st.markdown("การสลับบทบาทในรอบถัดไปจะทำให้พจน์ตัดทอนกันหมดกลายเป็น $0 = 0$")
+        st.latex(r"\int x^2 e^x \, dx")
+        st.markdown("**ขั้นตอนการลดรูปพหุนามควรเป็นอย่างไร?**")
+
+        parts_choice = st.radio(
+            "ขั้นตอนการลดรูปควรเป็นอย่างไร?",
+            options=[
+                "แนวทาง A: ทำรอบที่ 1 ลดเหลือ x e^x แล้วทำรอบที่ 2 ลดเหลือค่าคงที่",
+                "แนวทาง B: สลับ u และ dv ในรอบที่ 2 เพื่อความรวดเร็ว",
+            ],
+            index=0,
+            key="radio_parts_case3",
+            label_visibility="collapsed",
+        )
+
+        p_choice = parts_choice or ""
+        if not p_choice or "แนวทาง A" in p_choice:
+            st.success(r"**ถูกต้องตามหลักการ (ลดทอนดีกรีแบบต่อเนื่อง):** พหุนามดีกรี 2 ต้องทำ 2 รอบ ($x^2 \to 2x \to 2$) จนกระทั่งเหลืออินทิกรัลพื้นฐาน")
+            st.markdown("##### ผลลัพธ์สุดท้าย")
+            st.latex(r"\int x^2 e^x \, dx = e^x(x^2 - 2x + 2) + C")
+            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+                st.markdown(
+                    r"""
+                    1. **รอบที่ 1:** ให้ $u = x^2 \implies du = 2x dx$, $dv = e^x dx \implies v = e^x$
+                       $$\int x^2 e^x dx = x^2 e^x - 2\int x e^x dx$$
+                    2. **รอบที่ 2 (ทำซ้ำกับก้อน $\int x e^x dx$):** ให้ $u = x \implies du = dx$, $dv = e^x dx \implies v = e^x$
+                       $$\int x e^x dx = x e^x - e^x$$
+                    3. **ประกอบผลลัพธ์:**
+                       $$\int x^2 e^x dx = x^2 e^x - 2(x e^x - e^x) + C = e^x(x^2 - 2x + 2) + C$$
+                    """
+                )
+        else:
+            st.error("**ข้อควรระวัง:** การสลับบทบาท $u$ และ $dv$ ในรอบถัดไปจะทำให้พจน์ตัดทอนกันหมดกลายเป็น $0 = 0$")
+
+elif "กรณีที่ 4" in case_parts:
+    with st.container(border=True):
+        st.markdown(
+            r"""
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 4 / 6</span>
+                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">ฟังก์ชันวนลูปไม่รู้จบ (Cyclic Integration)</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.latex(r"I = \int e^x \cos(x) \, dx")
+        st.markdown("**ท่านจะเริ่มต้นกำหนด $u$ และ $dv$ รอบแรกอย่างไร?**")
+
+        parts_choice = st.radio(
+            "ท่านจะเริ่มต้นกำหนด u และ dv รอบแรกอย่างไร?",
+            options=[
+                "แนวทางที่ 1: กำหนด u = cos(x) และ dv = e^x dx (แล้วทำรอบสองให้สอดคล้องกัน)",
+                "แนวทางที่ 2: กำหนด u = e^x และ dv = cos(x) dx (แล้วทำรอบสองให้สอดคล้องกัน)",
+                "แนวทางที่ 3: รอบแรกเลือก u = cos(x) แต่รอบสองสลับกลับมาเลือก u = e^x",
+            ],
+            index=0,
+            key="radio_parts_case4",
+            label_visibility="collapsed",
+        )
+
+        p_choice = parts_choice or ""
+        if p_choice and "แนวทางที่ 3" in p_choice:
+            st.error("**ข้อควรระวัง:** หากรอบแรกกำหนดฟังก์ชันหนึ่งเป็น $u$ แต่รอบที่สองสลับกลับมา ผลลัพธ์จะหักล้างกันกลายเป็น $I = I$ หรือ $0 = 0$")
+        else:
+            st.success(r"**ถูกต้องตามหลักการ (Cyclic By Parts):** ทั้ง $e^x$ และ $\cos(x)$ วนกลับมารูปเดิม ทำ By Parts 2 รอบแล้วย้ายข้างสมการทางพีชคณิตเพื่อหาคำตอบ")
+            st.markdown("##### ผลลัพธ์สุดท้าย")
+            st.latex(r"\int e^x \cos(x) \, dx = \frac{e^x(\sin x + \cos x)}{2} + C")
+            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+                st.markdown(
+                    r"""
+                    1. **รอบที่ 1 ($u = e^x, dv = \cos(x) dx$):**
+                       $$u = e^x \implies du = e^x dx, \quad dv = \cos(x) dx \implies v = \sin(x)$$
+                       $$I = e^x \sin(x) - \int e^x \sin(x) \, dx$$
+                    2. **รอบที่ 2 (ทำ By Parts ซ้ำกับ $\int e^x \sin x dx$ โดยคงบทบาทเดิม):**
+                       $$u = e^x \implies du = e^x dx, \quad dv = \sin(x) dx \implies v = -\cos(x)$$
+                       $$\int e^x \sin(x) \, dx = -e^x \cos(x) - \int (-e^x \cos x) \, dx = -e^x \cos(x) + I$$
+                    3. **นำผลรอบที่ 2 แทนกลับในสมการแรกแล้วย้ายข้าง:**
+                       $$I = e^x \sin(x) - \left[ -e^x \cos(x) + I \right] = e^x \sin(x) + e^x \cos(x) - I$$
+                       $$2I = e^x(\sin x + \cos x) \implies I = \frac{e^x}{2}(\sin x + \cos x) + C$$
+                    """
+                )
+
+elif "กรณีที่ 5" in case_parts:
+    with st.container(border=True):
+        st.markdown(
+            r"""
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 5 / 6</span>
+                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">พีชคณิตคูณกับตรีโกณมิติ</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.latex(r"\int x \sin(x) \, dx")
+        st.markdown("**ตามกฎ LIATE ท่านควรเลือก $u$ และ $dv$ อย่างไร?**")
+
+        parts_choice = st.radio(
+            "ท่านจะเลือกกำหนด u และ dv อย่างไร?",
+            options=[
+                "แนวทางที่ 1: ให้ u = x และ dv = sin(x) dx",
+                "แนวทางที่ 2: ให้ u = sin(x) และ dv = x dx",
+            ],
+            index=0,
+            key="radio_parts_case5",
+            label_visibility="collapsed",
+        )
+
+        p_choice = parts_choice or ""
+        if not p_choice or "แนวทางที่ 1" in p_choice:
+            st.success(r"**ถูกต้องตามกฎ LIATE (A มาก่อน T):** เลือก $u = x$ ทำให้ดิฟได้ $du = dx$ ดีกรีลดลง ส่วน $\sin(x)$ อินทิเกรตได้ $-\cos(x)$")
+            st.markdown("##### ผลลัพธ์สุดท้าย")
+            st.latex(r"\int x \sin(x) \, dx = -x\cos(x) + \sin(x) + C")
+            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+                st.markdown(
+                    r"""
+                    1. **กำหนดตัวแปรและหาอนุพันธ์/ปฏิยานุพันธ์:**
+                       * $u = x \implies du = dx$
+                       * $dv = \sin(x)dx \implies v = -\cos(x)$
+                    2. **แทนค่าในสูตร By Parts:**
+                       $$\int x\sin(x)\,dx = (x)(-\cos x) - \int (-\cos x)\,dx = -x\cos(x) + \int \cos(x)\,dx$$
+                    3. **คำนวณผลลัพธ์สุดท้าย:**
+                       $$= -x\cos(x) + \sin(x) + C$$
+                    """
+                )
+        else:
+            st.error(r"**รูปสมการจะซับซ้อนขึ้น:** หากเลือก $dv = x dx$ จะได้ $v = \frac{x^2}{2}$ ทำให้อินทิกรัลใหม่กลายเป็น $x^2 \cos(x)$ ซึ่งดีกรีสูงขึ้น")
 
 else:
-    st.markdown("#### กรณีที่ 4: ฟังก์ชันวนลูปไม่รู้จบ (Cyclic Integration)")
-    st.latex(r"I = \int e^x \cos(x) \, dx")
-    st.caption("ข้อสังเกต: ทั้ง $e^x$ และ $\\cos(x)$ เป็นฟังก์ชันที่หาอนุพันธ์หรือปริพันธ์แล้ววนกลับมา จึงใช้วิธีอินทิเกรตทีละส่วน 2 ครั้ง แล้วแก้สมการเชิงพีชคณิต")
+    with st.container(border=True):
+        st.markdown(
+            r"""
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 6 / 6</span>
+                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">พีชคณิตคูณกับลอการิทึม</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        st.latex(r"\int x \ln(x) \, dx")
+        st.markdown("**ตามกฎ LIATE ท่านควรเลือก $u$ เป็นฟังก์ชันใด?**")
 
-    parts_choice = st.radio(
-        "ท่านจะเริ่มต้นกำหนด u และ dv รอบแรกอย่างไร?",
-        options=[
-            "แนวทางที่ 1: กำหนด u = cos(x) และ dv = e^x dx (แล้วทำรอบสองให้สอดคล้องกัน)",
-            "แนวทางที่ 2: กำหนด u = e^x และ dv = cos(x) dx (แล้วทำรอบสองให้สอดคล้องกัน)",
-            "แนวทางที่ 3: รอบแรกเลือก u = cos(x) แต่รอบสองสลับกลับมาเลือก u = e^x",
-        ],
-        index=None,
-        key="radio_parts_case4",
-    )
+        parts_choice = st.radio(
+            "ตามกฎ LIATE ท่านควรเลือก u เป็นฟังก์ชันใด?",
+            options=[
+                "แนวทางที่ 1: ให้ u = ln(x) และ dv = x dx",
+                "แนวทางที่ 2: ให้ u = x และ dv = ln(x) dx",
+            ],
+            index=0,
+            key="radio_parts_case6",
+            label_visibility="collapsed",
+        )
 
-    if parts_choice is None:
-        st.info("กรุณาเลือกแนวทางด้านบน")
-    elif "แนวทางที่ 3" in parts_choice:
-        st.error("**ข้อควรระวัง: การสลับตัวแปรกลับไปมา**")
-        st.markdown("หากรอบแรกกำหนดฟังก์ชันหนึ่งเป็น $u$ แต่รอบที่สองสลับกลับมา ผลลัพธ์จะหักล้างกันกลายเป็น $I = I$ หรือ $0 = 0$ ทำให้ไม่ก้าวหน้าในการหาคำตอบ")
-    else:
-        st.success("**ถูกต้อง: การอินทิเกรตทีละส่วนแบบวนลูป**")
-        st.markdown("ทั้งแนวทางที่ 1 และ 2 สามารถแก้ได้สำเร็จ โดยมีขั้นตอนการทำ 2 รอบดังนี้:")
+        p_choice = parts_choice or ""
+        if not p_choice or "แนวทางที่ 1" in p_choice:
+            st.success(r"**ถูกต้องตามกฎ LIATE (L มาก่อน A เสมอ):** แม้ $x$ จะเป็นพหุนาม แต่ $\ln(x)$ อินทิเกรตยาก จึงต้องเลือกเป็น $u$ เพื่อดิฟให้เป็นพีชคณิต $\frac{1}{x}$")
+            st.markdown("##### ผลลัพธ์สุดท้าย")
+            st.latex(r"\int x \ln(x) \, dx = \frac{x^2}{4}(2\ln x - 1) + C")
+            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+                st.markdown(
+                    r"""
+                    1. **กำหนดตัวแปรและหาอนุพันธ์:**
+                       * $u = \ln(x) \implies du = \frac{1}{x}dx$
+                       * $dv = x dx \implies v = \frac{x^2}{2}$
+                    2. **แทนค่าลงในสูตร By Parts:**
+                       $$\int x\ln(x)\,dx = (\ln x)\left(\frac{x^2}{2}\right) - \int \frac{x^2}{2} \cdot \frac{1}{x}\,dx = \frac{x^2\ln x}{2} - \frac{1}{2}\int x\,dx$$
+                    3. **คำนวณผลลัพธ์สุดท้าย:**
+                       $$= \frac{x^2\ln x}{2} - \frac{x^2}{4} + C = \frac{x^2}{4}(2\ln x - 1) + C$$
+                    """
+                )
+        else:
+            st.error(r"**ทางตัน:** หากเลือก $dv = \ln(x)dx$ จะต้องหาปริพันธ์ของ $\ln(x)$ ซึ่งต้องใช้ By Parts ซ้ำซ้อนและผิดหลัก LIATE")
 
-        st.markdown("##### ขั้นตอนวิธีทำ (โดยวิธี u = e^x, dv = cos(x) dx):")
-        st.markdown("**รอบที่ 1:**")
-        st.latex(r"u = e^x \implies du = e^x \, dx, \quad dv = \cos(x) \, dx \implies v = \sin(x)")
-        st.latex(r"I = e^x \sin(x) - \int e^x \sin(x) \, dx")
-
-        st.markdown(r"**รอบที่ 2 (ทำ By Parts ซ้ำกับก้อน $\int e^x \sin x dx$ โดยคงบทบาทเดิม):**")
-        st.latex(r"u = e^x \implies du = e^x \, dx, \quad dv = \sin(x) \, dx \implies v = -\cos(x)")
-        st.latex(r"\int e^x \sin(x) \, dx = -e^x \cos(x) - \int (-e^x \cos x) \, dx = -e^x \cos(x) + I")
-
-        st.markdown("**นำผลรอบที่ 2 แทนกลับเข้าไปในสมการแรก:**")
-        st.latex(r"I = e^x \sin(x) - \left[ -e^x \cos(x) + I \right] = e^x \sin(x) + e^x \cos(x) - I")
-
-        st.markdown("**ย้ายข้างสมการทางพีชคณิต (บวก I ทั้งสองข้าง):**")
-        st.latex(r"2I = e^x(\sin x + \cos x) \implies I = \frac{e^x}{2}(\sin x + \cos x) + C")
 
 st.divider()
 
@@ -239,12 +451,11 @@ st.divider()
 # 3. เครื่องคิดเลข By Parts ด้วย SymPy
 # =============================================================================
 st.markdown("### คำนวณโจทย์การอินทิเกรตทีละส่วนด้วย SymPy")
-st.caption("ระบบจะจัดคู่ตัวแปร $u$ และ $dv$ ให้โดยอัตโนมัติตามกฎ LIATE พร้อมแสดงขั้นตอนอย่างละเอียด")
 
 def _set_byparts_preset(val: str) -> None:
     st.session_state["byparts_expr"] = val
 
-st.markdown("**ตัวอย่างโจทย์ยอดนิยม (คลิกเพื่อโหลดสูตร):**")
+st.markdown("**ตัวอย่างโจทย์:**")
 bp_cols = st.columns(4)
 with bp_cols[0]:
     st.button("x e^x", key="pre_bp_1", use_container_width=True, on_click=_set_byparts_preset, args=("x*exp(x)",))
@@ -255,13 +466,15 @@ with bp_cols[2]:
 with bp_cols[3]:
     st.button("e^x cos(x)", key="pre_bp_4", use_container_width=True, on_click=_set_byparts_preset, args=("exp(x)*cos(x)",))
 
-bp_cols2 = st.columns(3)
+bp_cols2 = st.columns(4)
 with bp_cols2[0]:
     st.button("ln(x)", key="pre_bp_5", use_container_width=True, on_click=_set_byparts_preset, args=("ln(x)",))
 with bp_cols2[1]:
     st.button("x cos(x)", key="pre_bp_6", use_container_width=True, on_click=_set_byparts_preset, args=("x*cos(x)",))
 with bp_cols2[2]:
     st.button("arctan(x)", key="pre_bp_7", use_container_width=True, on_click=_set_byparts_preset, args=("atan(x)",))
+with bp_cols2[3]:
+    st.button("2^x cos(x)", key="pre_bp_8", use_container_width=True, on_click=_set_byparts_preset, args=("2^x*cos(x)",))
 
 expr_input = st.text_input(
     "ใส่นิพจน์อินทิกรัลที่ต้องการคำนวณ",

@@ -26,7 +26,7 @@ home_page = st.Page("pages/home.py", title="หน้าหลัก", icon=":ma
 lessons_page = st.Page("pages/lessons.py", title="ภาพรวมบทเรียนและทฤษฎี", icon=":material/menu_book:")
 
 # -----------------------------------------------------------------------------
-# 2. โมดูลการเรียนรู้ (ลำดับตามหลักสูตรแคลคูลัส 6 หัวข้อ)
+# 2. หัวข้อการเรียนรู้ (ลำดับตามหลักสูตรแคลคูลัส 6 หัวข้อ)
 # -----------------------------------------------------------------------------
 limit_page = st.Page("pages/limit_approach.py", title="1. ลิมิต", icon=":material/adjust:")
 tangent_page = st.Page("pages/tangent.py", title="2. เส้นสัมผัสและอนุพันธ์", icon=":material/trending_up:")
@@ -56,7 +56,7 @@ creators_page = st.Page("pages/creators.py", title="ประวัติคณ�
 pg = st.navigation(
     {
         "ภาพรวมระบบ": [home_page, lessons_page],
-        "โมดูลการเรียนรู้": [
+        "หัวข้อการเรียนรู้": [
             limit_page,
             tangent_page,
             substitution_page,

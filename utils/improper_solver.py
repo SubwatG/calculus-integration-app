@@ -81,6 +81,19 @@ def _safe_float(value: sp.Expr):
     return float(numeric.real)
 
 
+def _format_part_outcome(status: str, part_val) -> str:
+    """Format step explanation for a single-sided improper branch in proper Thai math terminology."""
+    if status == "finite":
+        val_tex = _to_latex(part_val)
+        return f"ลู่เข้าสู่ค่าจริงจำกัด เท่ากับ ${val_tex}$"
+    elif status == "divergent":
+        val_tex = _to_latex(part_val) if part_val is not None else ""
+        if val_tex in (r"\infty", r"-\infty"):
+            return f"ลู่ออก (Diverges สู่ ${val_tex}$)"
+        return "ลู่ออก (Diverges หาค่าไม่ได้)"
+    return "ไม่สามารถสรุปค่าได้"
+
+
 def _parse_bound(val: float | int | str | sp.Expr | None, is_upper: bool = False) -> sp.Expr:
     if val is None:
         return sp.oo if is_upper else -sp.oo
@@ -230,10 +243,12 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             right_status = _classify_improper(right_part)
             res_val = None
 
+            left_desc = _format_part_outcome(left_status, left_part)
+            right_desc = _format_part_outcome(right_status, right_part)
             steps.append(
                 f"คำนวณลิมิตแต่ละฝั่งแยกกัน:\n"
-                f"- ฝั่งซ้าย: $\\lim_{{s \\to -\\infty}} \\int_{{s}}^{{{c_val}}} f({v_lat})\\,d{v_lat}$ มีสถานะ {left_status} ({_to_latex(left_part)})\n"
-                f"- ฝั่งขวา: $\\lim_{{t \\to \\infty}} \\int_{{{c_val}}}^{{t}} f({v_lat})\\,d{v_lat}$ มีสถานะ {right_status} ({_to_latex(right_part)})"
+                f"- ฝั่งซ้าย: $\\lim_{{s \\to -\\infty}} \\int_{{s}}^{{{c_val}}} f({v_lat})\\,d{v_lat}$ {left_desc}\n"
+                f"- ฝั่งขวา: $\\lim_{{t \\to \\infty}} \\int_{{{c_val}}}^{{t}} f({v_lat})\\,d{v_lat}$ {right_desc}"
             )
 
             if left_status == "divergent" or right_status == "divergent":
@@ -278,15 +293,29 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         # กรณีที่ 2: ขอบล่างเป็น -oo และขอบบนจำกัด
         # -------------------------------------------------------------
         if lower == -sp.oo and upper != sp.oo:
+            t_sym = sp.Symbol("t", negative=True)
             steps.append(
-                f"อินทิกรัลไม่ตรงแบบชนิดที่ 1 (ขอบล่างเป็นอนันต์): "
-                f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตเมื่อตัวแปรเข้าใกล้ $-\\infty$:\n"
-                f"$$\\lim_{{t \\to -\\infty}} \\int_{{t}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}$$"
+                f"อินทิกรัลไม่ตรงแบบชนิดที่ 1 (ขอบล่างเป็นอนันต์):\n"
+                f"\\lim_{{t \\to -\\infty}} \\int_{{t}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}\n"
+                f"(แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตเมื่อขอบล่างเข้าใกล้ $-\\infty$)"
             )
-            antideriv = sp.integrate(expr, var_sym)
+            antideriv = _abs_logs(sp.integrate(expr, var_sym))
+            upper_eval = antideriv.subs(var_sym, upper)
+            t_eval = antideriv.subs(var_sym, t_sym)
+            diff_t = sp.simplify(upper_eval - t_eval)
+
+            upper_sub_tex = _to_latex(upper_eval)
+            t_sub_tex = f"\\left({_to_latex(t_eval)}\\right)" if str(t_eval).startswith("-") else _to_latex(t_eval)
+            diff_t_tex = _to_latex(diff_t)
+            if diff_t_tex != f"{upper_sub_tex} - {t_sub_tex}":
+                bounds_eval_str = f"\\left({upper_sub_tex}\\right) - {t_sub_tex} = {diff_t_tex}"
+            else:
+                bounds_eval_str = f"\\left({upper_sub_tex}\\right) - {t_sub_tex}"
+
             steps.append(
-                f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
-                f"แล้วแทนค่าขอบเขต: $[F({v_lat})]_{{t}}^{{{bound_latex}}} = \\left({_to_latex(antideriv.subs(var_sym, upper))}\\right) - \\left({_to_latex(antideriv.subs(var_sym, sp.Symbol('t')))}\\right)$"
+                f"หาปฏิยานุพันธ์และแทนค่าขอบเขต $t$:\n"
+                f"\\int_{{t}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat} = "
+                f"\\left[ {_to_latex(antideriv)} \\right]_{{t}}^{{{bound_latex}}} = {bounds_eval_str}"
             )
 
             res_val = sp.integrate(expr, (var_sym, -sp.oo, upper))
@@ -294,13 +323,20 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             if status == "finite":
                 result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
-                steps.append(f"สรุปผลลัพธ์: ลิมิตลู่เข้าสู่ค่าจำกัด ได้ $V = {value_latex} \\approx {result:.6g}$")
+                steps.append(
+                    f"คำนวณค่าลิมิตเมื่อ $t \\to -\\infty$:\n"
+                    f"\\lim_{{t \\to -\\infty}} \\left({diff_t_tex}\\right) = {value_latex}"
+                )
+                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${value_latex} \\approx {result:.6g}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
             elif status == "divergent":
                 result = None
                 value_latex = "\\text{diverges}"
                 steps.append(
-                    r"ผลลัพธ์: ลิมิตไม่มีค่าจำกัดเมื่อ $t \to -\infty$ "
-                    r"จึงสรุปว่า **อินทิกรัลลู่ออก (Diverges)**"
+                    f"คำนวณค่าลิมิตเมื่อ $t \\to -\\infty$:\n"
+                    f"\\lim_{{t \\to -\\infty}} \\left({diff_t_tex}\\right) = \\infty"
+                )
+                steps.append(
+                    r"สรุปผลลัพธ์: ลิมิตไม่มีค่าจำกัดเมื่อ $t \to -\infty$ ดังนั้นอินทิกรัล **ลู่ออก (Diverges)**"
                 )
             else:
                 result = None
@@ -325,17 +361,29 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         # กรณีที่ 3: ขอบล่างจำกัด และขอบบนเป็น oo
         # -------------------------------------------------------------
         if lower != -sp.oo and upper == sp.oo:
+            t_sym = sp.Symbol("t", positive=True)
             steps.append(
-                f"อินทิกรัลไม่ตรงแบบชนิดที่ 1 (ขอบบนเป็นอนันต์): "
-                f"แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตเมื่อตัวแปรเข้าใกล้อนันต์:\n"
-                f"$$\\lim_{{t \\to \\infty}} \\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}$$"
+                f"อินทิกรัลไม่ตรงแบบชนิดที่ 1 (ขอบบนเป็นอนันต์):\n"
+                f"\\lim_{{t \\to \\infty}} \\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}\n"
+                f"(แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตเมื่อตัวแปรเข้าใกล้อนันต์)"
             )
-            antideriv = sp.integrate(expr, var_sym)
+            antideriv = _abs_logs(sp.integrate(expr, var_sym))
             lower_eval = antideriv.subs(var_sym, lower)
+            t_eval = antideriv.subs(var_sym, t_sym)
+            diff_t = sp.simplify(t_eval - lower_eval)
+
             lower_sub_tex = f"\\left({_to_latex(lower_eval)}\\right)" if str(lower_eval).startswith("-") else _to_latex(lower_eval)
+            t_sub_tex = _to_latex(t_eval)
+            diff_t_tex = _to_latex(diff_t)
+            if diff_t_tex != f"{t_sub_tex} - {lower_sub_tex}":
+                bounds_eval_str = f"\\left({t_sub_tex}\\right) - {lower_sub_tex} = {diff_t_tex}"
+            else:
+                bounds_eval_str = f"\\left({t_sub_tex}\\right) - {lower_sub_tex}"
+
             steps.append(
-                f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
-                f"แล้วแทนค่าขอบเขต: $[F({v_lat})]_{{{lower_latex}}}^{{t}} = \\left({_to_latex(antideriv.subs(var_sym, sp.Symbol('t')))}\\right) - {lower_sub_tex}$"
+                f"หาปฏิยานุพันธ์และแทนค่าขอบเขต $t$:\n"
+                f"\\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat} = "
+                f"\\left[ {_to_latex(antideriv)} \\right]_{{{lower_latex}}}^{{t}} = {bounds_eval_str}"
             )
 
             res_val = sp.integrate(expr, (var_sym, lower, sp.oo))
@@ -343,13 +391,21 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             if status == "finite":
                 result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
-                steps.append(f"สรุปผลลัพธ์: ลิมิตลู่เข้าสู่ค่าจำกัด ได้คำตอบ $V = {value_latex} \\approx {result:.6g}$")
+                steps.append(
+                    f"คำนวณค่าลิมิตเมื่อ $t \\to \\infty$:\n"
+                    f"\\lim_{{t \\to \\infty}} \\left({diff_t_tex}\\right) = {value_latex}"
+                )
+                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${value_latex} \\approx {result:.6g}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
             elif status == "divergent":
                 result = None
                 value_latex = "\\text{diverges}"
                 steps.append(
-                    f"ผลลัพธ์: ลิมิตลู่ออกสู่อนันต์ ({_divergence_reason(antideriv, var_sym)}) "
-                    "จึงสรุปว่า **อินทิกรัลลู่ออก (Diverges)**"
+                    f"คำนวณค่าลิมิตเมื่อ $t \\to \\infty$:\n"
+                    f"\\lim_{{t \\to \\infty}} \\left({diff_t_tex}\\right) = \\infty"
+                )
+                steps.append(
+                    f"สรุปผลลัพธ์: ลิมิตไม่มีค่าจำกัด ({_divergence_reason(antideriv, var_sym)}) "
+                    f"ดังนั้นอินทิกรัล **ลู่ออก (Diverges)**"
                 )
             else:
                 result = None
@@ -400,10 +456,12 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             right_status = _classify_improper(right_part)
             res_val = None
 
+            left_desc = _format_part_outcome(left_status, left_part)
+            right_desc = _format_part_outcome(right_status, right_part)
             steps.append(
-                f"พิจารณาลิมิตแต่ละฝั่งแยกกัน:\n"
-                f"- ฝั่งซ้ายเข้าใกล้ ${c_latex}^-$: สถานะเป็น {left_status}\n"
-                f"- ฝั่งขวาเข้าใกล้ ${c_latex}^+$: สถานะเป็น {right_status}"
+                f"คำนวณลิมิตแต่ละฝั่งแยกกัน:\n"
+                f"- ฝั่งซ้าย: $\\lim_{{t \\to {c_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat}$ {left_desc}\n"
+                f"- ฝั่งขวา: $\\lim_{{s \\to {c_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat}$ {right_desc}"
             )
 
             if left_status == "divergent" or right_status == "divergent":
@@ -450,18 +508,29 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
 
         # ฟังก์ชันไม่ต่อเนื่องที่ขอบล่าง a เท่านั้น (เช่น 1/sqrt(x) บน [0, 1])
         if lower_singular and not upper_singular:
+            t_sym = sp.Symbol("t")
             steps.append(
-                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดที่ฟังก์ชันไม่ต่อเนื่องที่ขอบล่าง ${v_lat} = {lower_latex}$ "
-                f"โดย $\\lim_{{{v_lat} \\to {lower_latex}^+}} f({v_lat}) = \\infty$ ในขณะที่ฟังก์ชันต่อเนื่องที่ขอบบน ${v_lat} = {bound_latex}$ "
-                f"จึงแปลงเป็นรูปลิมิตเข้าใกล้ทางขวา:\n"
-                f"$$\\lim_{{t \\to {lower_latex}^+}} \\int_{{t}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}$$"
+                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2 (จุดไม่ต่อเนื่องที่ขอบล่าง ${v_lat} = {lower_latex}$):\n"
+                f"\\lim_{{t \\to {lower_latex}^+}} \\int_{{t}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}\n"
+                f"(ฟังก์ชันมีลิมิตเข้าสู่อนันต์ที่ขอบล่าง ในขณะที่ฟังก์ชันต่อเนื่องที่ขอบบน จึงแปลงเป็นรูปลิมิตเข้าใกล้ทางขวา)"
             )
             antideriv = _abs_logs(sp.integrate(expr, var_sym))
             upper_eval = antideriv.subs(var_sym, upper)
-            t_eval = antideriv.subs(var_sym, sp.Symbol('t'))
+            t_eval = antideriv.subs(var_sym, t_sym)
+            diff_t = sp.simplify(upper_eval - t_eval)
+            diff_t_tex = _to_latex(diff_t)
+            upper_sub_tex = _to_latex(upper_eval)
+            t_sub_tex = f"\\left({_to_latex(t_eval)}\\right)" if str(t_eval).startswith("-") else _to_latex(t_eval)
+
+            if diff_t_tex != f"{upper_sub_tex} - {t_sub_tex}":
+                bounds_eval_str = f"\\left({upper_sub_tex}\\right) - {t_sub_tex} = {diff_t_tex}"
+            else:
+                bounds_eval_str = f"\\left({upper_sub_tex}\\right) - {t_sub_tex}"
+
             steps.append(
-                f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
-                f"และแทนค่าขอบเขต: $[F({v_lat})]_{{t}}^{{{bound_latex}}} = \\left({_to_latex(upper_eval)}\\right) - \\left({_to_latex(t_eval)}\\right)$"
+                f"หาปฏิยานุพันธ์และแทนค่าขอบเขต $t$:\n"
+                f"\\int_{{t}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat} = "
+                f"\\left[ {_to_latex(antideriv)} \\right]_{{t}}^{{{bound_latex}}} = {bounds_eval_str}"
             )
 
             res_val = sp.integrate(expr, (var_sym, lower, upper))
@@ -469,14 +538,23 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             if status == "finite":
                 result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
-                steps.append(f"สรุปผลลัพธ์: ลิมิตลู่เข้าสู่ค่าจำกัด: $\\lim_{{t \\to {lower_latex}^+}} \\int_{{t}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} = {value_latex} \\approx {result:.6g}$")
+                steps.append(
+                    f"คำนวณค่าลิมิตเมื่อ $t \\to {lower_latex}^+$:\n"
+                    f"\\lim_{{t \\to {lower_latex}^+}} \\left({diff_t_tex}\\right) = {value_latex}"
+                )
+                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${value_latex} \\approx {result:.6g}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
             elif status == "divergent":
                 result = None
                 value_latex = "\\text{diverges}"
-                steps.append("ผลลัพธ์: ลิมิตลู่ออกสู่อนันต์ จึงสรุปว่า **อินทิกรัลลู่ออก (Diverges)**")
+                steps.append(
+                    f"คำนวณค่าลิมิตเมื่อ $t \\to {lower_latex}^+$:\n"
+                    f"\\lim_{{t \\to {lower_latex}^+}} \\left({diff_t_tex}\\right) = \\infty"
+                )
+                steps.append("สรุปผลลัพธ์: ลิมิตลู่ออกสู่อนันต์ ดังนั้นอินทิกรัล **ลู่ออก (Diverges)**")
             else:
                 result = None
                 value_latex = "\\text{unsupported}"
+                steps.append("ระบบไม่สามารถคำนวณลิมิตในรูปแบบปิดได้")
 
             latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {_to_latex(expr)} \\, d{v_lat} = {value_latex}"
             return {
@@ -494,18 +572,29 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
 
         # ฟังก์ชันไม่ต่อเนื่องที่ขอบบน b เท่านั้น (เช่น 1/sqrt(1-x) บน [0, 1])
         if upper_singular and not lower_singular:
+            t_sym = sp.Symbol("t")
             steps.append(
-                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดที่ฟังก์ชันไม่ต่อเนื่องที่ขอบบน ${v_lat} = {bound_latex}$ "
-                f"โดย $\\lim_{{{v_lat} \\to {bound_latex}^-}} f({v_lat}) = \\infty$ ในขณะที่ฟังก์ชันต่อเนื่องที่ขอบล่าง ${v_lat} = {lower_latex}$ "
-                f"จึงแปลงเป็นรูปลิมิตเข้าใกล้ทางซ้าย:\n"
-                f"$$\\lim_{{t \\to {bound_latex}^-}} \\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}$$"
+                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2 (จุดไม่ต่อเนื่องที่ขอบบน ${v_lat} = {bound_latex}$):\n"
+                f"\\lim_{{t \\to {bound_latex}^-}} \\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}\n"
+                f"(ฟังก์ชันมีลิมิตเข้าสู่อนันต์ที่ขอบบน ในขณะที่ฟังก์ชันต่อเนื่องที่ขอบล่าง จึงแปลงเป็นรูปลิมิตเข้าใกล้ทางซ้าย)"
             )
             antideriv = _abs_logs(sp.integrate(expr, var_sym))
-            t_eval = antideriv.subs(var_sym, sp.Symbol('t'))
+            t_eval = antideriv.subs(var_sym, t_sym)
             lower_eval = antideriv.subs(var_sym, lower)
+            diff_t = sp.simplify(t_eval - lower_eval)
+            diff_t_tex = _to_latex(diff_t)
+            lower_sub_tex = f"\\left({_to_latex(lower_eval)}\\right)" if str(lower_eval).startswith("-") else _to_latex(lower_eval)
+            t_sub_tex = _to_latex(t_eval)
+
+            if diff_t_tex != f"{t_sub_tex} - {lower_sub_tex}":
+                bounds_eval_str = f"\\left({t_sub_tex}\\right) - {lower_sub_tex} = {diff_t_tex}"
+            else:
+                bounds_eval_str = f"\\left({t_sub_tex}\\right) - {lower_sub_tex}"
+
             steps.append(
-                f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
-                f"และแทนค่าขอบเขต: $[F({v_lat})]_{{{lower_latex}}}^{{t}} = \\left({_to_latex(t_eval)}\\right) - \\left({_to_latex(lower_eval)}\\right)$"
+                f"หาปฏิยานุพันธ์และแทนค่าขอบเขต $t$:\n"
+                f"\\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat} = "
+                f"\\left[ {_to_latex(antideriv)} \\right]_{{{lower_latex}}}^{{t}} = {bounds_eval_str}"
             )
 
             res_val = sp.integrate(expr, (var_sym, lower, upper))
@@ -513,14 +602,23 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             if status == "finite":
                 result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
-                steps.append(f"สรุปผลลัพธ์: ลิมิตลู่เข้าสู่ค่าจำกัด: $\\lim_{{t \\to {bound_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat} = {value_latex} \\approx {result:.6g}$")
+                steps.append(
+                    f"คำนวณค่าลิมิตเมื่อ $t \\to {bound_latex}^-$:\n"
+                    f"\\lim_{{t \\to {bound_latex}^-}} \\left({diff_t_tex}\\right) = {value_latex}"
+                )
+                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${value_latex} \\approx {result:.6g}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
             elif status == "divergent":
                 result = None
                 value_latex = "\\text{diverges}"
-                steps.append("ผลลัพธ์: ลิมิตลู่ออกสู่อนันต์ จึงสรุปว่า **อินทิกรัลลู่ออก (Diverges)**")
+                steps.append(
+                    f"คำนวณค่าลิมิตเมื่อ $t \\to {bound_latex}^-$:\n"
+                    f"\\lim_{{t \\to {bound_latex}^-}} \\left({diff_t_tex}\\right) = \\infty"
+                )
+                steps.append("สรุปผลลัพธ์: ลิมิตลู่ออกสู่อนันต์ ดังนั้นอินทิกรัล **ลู่ออก (Diverges)**")
             else:
                 result = None
                 value_latex = "\\text{unsupported}"
+                steps.append("ระบบไม่สามารถคำนวณลิมิตในรูปแบบปิดได้")
 
             latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {_to_latex(expr)} \\, d{v_lat} = {value_latex}"
             return {

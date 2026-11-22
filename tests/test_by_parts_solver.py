@@ -47,6 +47,25 @@ class TestByPartsSolver:
         assert res["status"] == "better_suited_for_substitution"
         assert "u-Substitution" in res["warning"] or "การแทนตัวแปร u" in res["warning"]
 
+    def test_solve_by_parts_cyclic_exp_cos(self):
+        res = solve_by_parts("exp(x)*cos(x)")
+        assert res["ok"] is True
+        assert res["status"] == "elementary"
+        steps_text = " ".join(res["steps"])
+        assert "Cyclic" in steps_text or "วนลูป" in steps_text
+        assert "รอบที่ 1" in steps_text
+        assert "รอบที่ 2" in steps_text
+
+    def test_solve_by_parts_cyclic_2_to_x_cos(self):
+        res = solve_by_parts("2^x*cos(x)")
+        assert res["ok"] is True
+        assert res["status"] == "elementary"
+        steps_text = " ".join(res["steps"])
+        assert "Cyclic" in steps_text or "วนลูป" in steps_text
+        assert "รอบที่ 1" in steps_text
+        assert "รอบที่ 2" in steps_text
+        assert "Solve for I" in steps_text or "แก้สมการ" in steps_text
+
     def test_solve_by_parts_invalid_input(self):
         res = solve_by_parts("")
         assert res["ok"] is False

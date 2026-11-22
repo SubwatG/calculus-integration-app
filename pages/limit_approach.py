@@ -91,52 +91,98 @@ def _short_case_feedback(res: dict) -> tuple[str, str]:
     if status == "finite" and result is not None:
         if res.get("is_infinite"):
             return "success", (
-                "**สรุปสั้น:** เมื่อตัวแปรมีขนาดใหญ่ขึ้นเรื่อย ๆ "
+                "**สรุป:** เมื่อตัวแปรมีขนาดใหญ่ขึ้นเรื่อย ๆ "
                 f"ค่าฟังก์ชันลู่เข้าสู่ค่าคงที่ {result:.4f} (พฤติกรรมระยะไกล)"
             )
         if _function_undefined_at_a(res):
             return "success", (
-                f"**สรุปสั้น:** ค่าลิมิตเท่ากับ {result:.4f} "
+                f"**สรุป:** ค่าลิมิตเท่ากับ {result:.4f} "
                 "แม้ฟังก์ชันไม่นิยามที่จุด a "
                 "ลิมิตจึงไม่ขึ้นกับค่าของฟังก์ชันที่จุดนั้น"
             )
-        return "success", f"**สรุปสั้น:** ค่าลิมิตเท่ากับ {result:.4f}"
+        return "success", f"**สรุป:** ค่าลิมิตเท่ากับ {result:.4f}"
 
     if status == "infinite":
         if res.get("is_infinite"):
             return "warning", (
-                "**สรุปสั้น:** เมื่อตัวแปรมีขนาดใหญ่ขึ้นเรื่อย ๆ "
+                "**สรุป:** เมื่อตัวแปรมีขนาดใหญ่ขึ้นเรื่อย ๆ "
                 "ค่าฟังก์ชันลู่ออกอย่างไม่มีขอบเขต จึงไม่มีค่าลิมิตเป็นจำนวนจริง"
             )
         return "warning", (
-            "**สรุปสั้น:** ค่าฟังก์ชันลู่ออกสู่อนันต์ทั้งสองฝั่งเมื่อเข้าใกล้จุด a "
+            "**สรุป:** ค่าฟังก์ชันลู่ออกสู่อนันต์ทั้งสองฝั่งเมื่อเข้าใกล้จุด a "
             "(เส้นกำกับแนวดิ่ง) ลิมิตจึงไม่เป็นจำนวนจริง"
         )
 
     if status == "dne":
         if res.get("is_oscillating"):
             return "warning", (
-                "**สรุปสั้น:** ค่าฟังก์ชันแกว่งกวัดไม่หยุดนิ่งเมื่อเข้าใกล้จุดนี้ "
+                "**สรุป:** ค่าฟังก์ชันแกว่งกวัดไม่หยุดนิ่งเมื่อเข้าใกล้จุดนี้ "
                 "จึงไม่ลู่เข้าหาค่าใดค่าหนึ่ง ลิมิตหาค่าไม่ได้"
             )
         left_s = _one_sided_limit_str(res.get("left_limit"))
         right_s = _one_sided_limit_str(res.get("right_limit"))
         if left_s is not None and right_s is not None:
             return "warning", (
-                f"**สรุปสั้น:** ลิมิตทางซ้าย ({left_s}) "
+                f"**สรุป:** ลิมิตทางซ้าย ({left_s}) "
                 f"ไม่เท่ากับลิมิตทางขวา ({right_s}) ลิมิตสองด้านจึงหาค่าไม่ได้"
             )
-        return "warning", "**สรุปสั้น:** ลิมิตสองด้านหาค่าไม่ได้"
+        return "warning", "**สรุป:** ลิมิตสองด้านหาค่าไม่ได้"
 
     if status == "right_only":
         return "info", (
-            "**สรุปสั้น:** ฟังก์ชันไม่นิยามทางซ้ายของจุดนี้ จึงพิจารณาเฉพาะลิมิตทางขวา"
+            "**สรุป:** ฟังก์ชันไม่นิยามทางซ้ายของจุดนี้ จึงพิจารณาเฉพาะลิมิตทางขวา"
         )
     if status == "left_only":
         return "info", (
-            "**สรุปสั้น:** ฟังก์ชันไม่นิยามทางขวาของจุดนี้ จึงพิจารณาเฉพาะลิมิตทางซ้าย"
+            "**สรุป:** ฟังก์ชันไม่นิยามทางขวาของจุดนี้ จึงพิจารณาเฉพาะลิมิตทางซ้าย"
         )
-    return "info", "**สรุปสั้น:** ระบบยังสรุปค่าไม่ได้ ต้องพิจารณาเพิ่มเติม"
+    return "info", "**สรุป:** ระบบยังสรุปค่าไม่ได้ ต้องพิจารณาเพิ่มเติม"
+
+
+# Responsive Table Styling Protection for Mobile
+st.markdown(
+    """
+    <style>
+    div[data-testid="stMarkdownContainer"]:has(table) {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding-bottom: 6px !important;
+    }
+    div[data-testid="stMarkdownContainer"] table {
+        width: 100% !important;
+        min-width: 520px !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        border: 2px solid #18181B !important;
+        border-radius: 12px !important;
+        box-shadow: 3px 3px 0px #18181B !important;
+        background-color: #FFFFFF !important;
+        margin: 10px 0 16px 0 !important;
+    }
+    div[data-testid="stMarkdownContainer"] table th {
+        background-color: #FEF08A !important;
+        color: #18181B !important;
+        font-weight: 700 !important;
+        border-bottom: 2px solid #18181B !important;
+        padding: 10px 14px !important;
+        text-align: left !important;
+    }
+    div[data-testid="stMarkdownContainer"] table td {
+        padding: 10px 14px !important;
+        border-bottom: 1px solid #E4E4E7 !important;
+        color: #18181B !important;
+        vertical-align: middle !important;
+    }
+    div[data-testid="stMarkdownContainer"] table tr:last-child td {
+        border-bottom: none !important;
+    }
+    div[data-testid="stMarkdownContainer"] table tr:hover {
+        background-color: #FEF9C3 !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -169,7 +215,7 @@ with st.container(border=True):
         """
 | ขั้นตอน | รูปแบบฟังก์ชัน | แนวทางการพิจารณาและคำนวณ |
 | :---: | :--- | :--- |
-| 1. ลองแทนค่าตรง | พหุนาม / ฟังก์ชันต่อเนื่อง | แทน $x = a$ ถ้าได้ค่าจริง $f(a) = L$ สรุปค่าลิมิตได้ทันที |
+| 1. ลองแทนค่าตรง | พหุนาม / ฟังก์ชันต่อเนื่อง ณ จุดนั้น | แทน $x = a$ ถ้าได้ค่าจริง $f(a) = L$ สรุปค่าลิมิตได้ทันที (เช่น พหุนาม, $\\sin x$, $\\cos x$ ซึ่งต่อเนื่องบน $\\mathbb{R}$) |
 | 2. จัดรูปพีชคณิต | รูปแบบยังไม่กำหนด $\\frac{0}{0}$ | แยกตัวประกอบ, คูณสังยุค หรือใช้เอกลักษณ์ $\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1$ |
 | 3. แยกพิจารณาสองด้าน | ค่าสัมบูรณ์ / ตัวส่วนลู่เข้าศูนย์ | คำนวณลิมิตซ้าย ($x \\to a^-$) และลิมิตขวา ($x \\to a^+$) เพื่อดูเครื่องหมาย |
         """
@@ -197,7 +243,7 @@ with st.expander("อ่านรายละเอียดทฤษฎี ข�
 # 2) ทดลองสำรวจ
 # ---------------------------------------------------------------------------
 st.markdown("### ลองสำรวจการลู่เข้าของลิมิต")
-st.caption("ตัวอย่างโจทย์ยอดนิยม ครอบคลุมทุกหมวดหมู่: แทนค่าตรง · 0/0 จัดรูป · ลิมิตตรีโกณ · ลิมิตอนันต์ · ค่าสัมบูรณ์ · พฤติกรรมระยะไกล")
+st.caption("ตัวอย่างโจทย์")
 col_pre1, col_pre2, col_pre3, col_pre4, col_pre5, col_pre6 = st.columns(6)
 with col_pre1:
     st.button(
@@ -247,8 +293,6 @@ with col_pre6:
         on_click=_set_limit_preset,
         args=("(2*x**2 + 1)/(3*x**2 - 5)", "inf"),
     )
-
-st.markdown(r"**สัญลักษณ์แคลคูลัส:** $\lim_{x \to a} f(x)$ โดยพิจารณาตัวแปรอิสระ $x \in \mathbb{R}$ บนเส้นจำนวนจริงและระนาบพิกัดฉาก $xy$")
 
 col_f, col_a = st.columns([2.4, 1.6])
 with col_f:
@@ -356,7 +400,6 @@ else:
 
         # กราฟวางติดกับตัวควบคุม delta เพื่อให้เห็นผลทันที
         st.markdown("### กราฟการเข้าใกล้ลิมิต")
-        st.caption("กราฟแบบ Interactive: ใช้ลูกกลิ้งเมาส์เพื่อซูมเข้า/ออก ลากเพื่อเลื่อนดูกราฟ หรือดับเบิลคลิกเพื่อรีเซ็ตมุมมอง")
         try:
             fig_plotly = plot_limit_plotly(res["expr"], a_input, delta=delta_val)
             st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})

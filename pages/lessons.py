@@ -25,11 +25,11 @@ INTERACTIVE_PAGES = {
     "by_parts": "pages/by_parts.py",
     "area_between": "pages/area_between.py",
     "improper": "pages/improper_integrals.py",
-    "riemann_sum": "pages/riemann.py",
-    "volume": "pages/volume_revolution.py",
 }
 
-# key ที่ยังไม่มีหน้า interactive (เผื่อเพิ่มในอนาคต)
+# หัวข้อเก่าที่ซ่อนไว้ตามความต้องการ (เช่น riemann_sum และ volume)
+HIDDEN_LESSON_KEYS = {"riemann_sum", "volume"}
+
 ALL_THEORY_KEYS = list(THEORY_CONTENT.keys())
 
 tab_interactive, tab_reference = st.tabs(
@@ -40,7 +40,10 @@ tab_interactive, tab_reference = st.tabs(
 # Tab 1: บทเรียน interactive (จาก theory.py)
 # ---------------------------------------------------------------------------
 with tab_interactive:
-    interactive_keys = [k for k in ALL_THEORY_KEYS if k in INTERACTIVE_PAGES]
+    interactive_keys = [
+        k for k in ALL_THEORY_KEYS
+        if k in INTERACTIVE_PAGES and k not in HIDDEN_LESSON_KEYS
+    ]
     if not interactive_keys:
         st.warning("ยังไม่มีบทเรียน interactive")
     else:

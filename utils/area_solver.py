@@ -32,14 +32,37 @@ X = sp.Symbol("x", real=True)
 
 def _to_latex(sym_obj, order: str = "none") -> str:
     try:
-        lat = sp.latex(sym_obj, inv_trig_style="full", order=order)
+        lat = sp.latex(sym_obj, inv_trig_style="full", order=order, ln_notation=True)
     except Exception:
-        lat = sp.latex(sym_obj, inv_trig_style="full")
+        lat = sp.latex(sym_obj, inv_trig_style="full", ln_notation=True)
     lat = lat.replace(r"\log", r"\ln")
     lat = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", lat)
     lat = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", lat)
     lat = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", lat)
+    lat = re.sub(r'\\sqrt\[(\d+)\]\{\\left\|\{?([a-zA-Z0-9_]+)\}?\\right\|\}[\s~]*\\operatorname\{sign\}\{\\left\(\2\s*\\right\)\}', r'\\sqrt[\1]{\2}', lat)
+    lat = re.sub(r'\\sqrt\[(\d+)\]\{\|([a-zA-Z0-9_]+)\|\}[\s~]*\\operatorname\{sign\}\(\2\)', r'\\sqrt[\1]{\2}', lat)
+    lat = re.sub(r'\\sqrt\{\\left\|\{?([a-zA-Z0-9_]+)\}?\\right\|\}[\s~]*\\operatorname\{sign\}\{\\left\(\1\s*\\right\)\}', r'\\sqrt{\1}', lat)
     return lat
+
+
+def _simplify_piecewise_on_interval(expr: sp.Expr, var: sp.Symbol, left: float, right: float) -> sp.Expr:
+    """คลี่คลาย Piecewise ที่เกิดจากการอินทิเกรต real_root ให้เหลือเฉพาะฟังก์ชันที่สอดคล้องกับช่วงจริง"""
+    if not expr.has(sp.Piecewise):
+        return expr
+    mid = (left + right) / 2.0
+    def _resolve(node):
+        if isinstance(node, sp.Piecewise):
+            for e, c in node.args:
+                if c is True:
+                    return e
+                try:
+                    if bool(c.subs(var, mid)):
+                        return e
+                except Exception:
+                    pass
+            return node.args[0][0]
+        return node
+    return expr.replace(lambda n: isinstance(n, sp.Piecewise), _resolve)
 
 
 def _format_evaluated_value(val_sym, val_float: float) -> str:
@@ -83,6 +106,23 @@ def _convert_real_roots(expr: sp.Expr) -> sp.Expr:
         lambda n: isinstance(n, sp.Pow) and isinstance(n.exp, sp.Rational) and n.exp.q % 2 == 1,
         _replace,
     )
+
+
+def _simplify_piecewise_on_interval(expr: sp.Expr, var: sp.Symbol, left: float, right: float) -> sp.Expr:
+    """หากผลลัพธ์การอินทิเกรตเป็น Piecewise ให้เลือกกิ่งเงื่อนไขที่ครอบคลุมช่วง [left, right]"""
+    if not isinstance(expr, sp.Piecewise):
+        return expr
+    try:
+        mid = (float(left) + float(right)) / 2.0
+        for branch_expr, cond in expr.args:
+            if cond == True or cond == sp.true:
+                return branch_expr
+            c_val = cond.subs(var, mid)
+            if c_val == True or c_val == sp.true:
+                return branch_expr
+    except Exception:
+        pass
+    return expr
 
 
 def _to_rational_bound(val: float | int | str) -> sp.Rational:
@@ -396,6 +436,7 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
 
             antideriv = sp.integrate(integrand, var_sym)
             if not antideriv.has(sp.Integral):
+                antideriv = _simplify_piecewise_on_interval(antideriv, var_sym, float(left), float(right))
                 anti_lat = _to_latex(antideriv, order="none")
                 sub_steps.append(
                     f"ช่วงย่อยที่ {i} $[{left_disp}, {right_disp}]$ ({curve_order_desc}): "
@@ -415,8 +456,9 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         # -------------------------------------------------------------
         if crossings_float:
             formula_step = (
-                f"ตั้งสูตรหาพื้นที่: $A = \\int_{{{a_disp}}}^{{{b_disp}}} |f({v_lat}) - g({v_lat})| \\, d{v_lat}$ "
-                f"เนื่องจากเส้นโค้งตัดกันภายในช่วง จึงต้องหาจุดตัดเพื่อแบ่งช่วงย่อย และนำ (เส้นโค้งบน ลบ เส้นโค้งล่าง) ในแต่ละช่วงย่อย"
+                f"ตั้งสูตรหาพื้นที่:\n"
+                f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |f({v_lat}) - g({v_lat})| \\, d{v_lat}\n"
+                f"(เนื่องจากเส้นโค้งตัดกันภายในช่วง จึงต้องหาจุดตัดเพื่อแบ่งช่วงย่อย และนำฟังก์ชันบนลบฟังก์ชันล่างในแต่ละช่วงย่อย)"
             )
             latex_ans = f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |{_to_latex(diff_expr, order='none')}| \\, d{v_lat} = {total_disp}"
         else:
@@ -427,23 +469,31 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             except Exception:
                 is_top = True
             if is_top:
-                formula_step = f"ตั้งสูตรหาพื้นที่: $A = \\int_{{{a_disp}}}^{{{b_disp}}} [f({v_lat}) - g({v_lat})] \\, d{v_lat}$ (เส้นโค้ง $f$ อยู่เหนือ $g$ ตลอดช่วง)"
+                formula_step = (
+                    f"ตั้งสูตรหาพื้นที่:\n"
+                    f"A = \\int_{{{a_disp}}}^{{{b_disp}}} [f({v_lat}) - g({v_lat})] \\, d{v_lat}\n"
+                    f"(เส้นโค้ง $f$ อยู่เหนือ $g$ ตลอดช่วง จึงคำนวณ $|f({v_lat}) - g({v_lat})| = f({v_lat}) - g({v_lat})$)"
+                )
                 latex_ans = f"A = \\int_{{{a_disp}}}^{{{b_disp}}} \\left[{_to_latex(f_raw, order='none')} - ({_to_latex(g_raw, order='none')})\\right] \\, d{v_lat} = {total_disp}"
             else:
-                formula_step = f"ตั้งสูตรหาพื้นที่: $A = \\int_{{{a_disp}}}^{{{b_disp}}} [g({v_lat}) - f({v_lat})] \\, d{v_lat}$ (เส้นโค้ง $g$ อยู่เหนือ $f$ ตลอดช่วง)"
+                formula_step = (
+                    f"ตั้งสูตรหาพื้นที่:\n"
+                    f"A = \\int_{{{a_disp}}}^{{{b_disp}}} [g({v_lat}) - f({v_lat})] \\, d{v_lat}\n"
+                    f"(เส้นโค้ง $g$ อยู่เหนือ $f$ ตลอดช่วง จึงคำนวณ $|f({v_lat}) - g({v_lat})| = g({v_lat}) - f({v_lat})$)"
+                )
                 latex_ans = f"A = \\int_{{{a_disp}}}^{{{b_disp}}} \\left[{_to_latex(g_raw, order='none')} - ({_to_latex(f_raw, order='none')})\\right] \\, d{v_lat} = {total_disp}"
 
         steps = [
-            f"กำหนดฟังก์ชัน: $f({v_lat}) = {_to_latex(f_raw, order='none')}, \\quad g({v_lat}) = {_to_latex(g_raw, order='none')}$ บนช่วง $[{a_disp}, {b_disp}]$",
+            f"กำหนดฟังก์ชันและช่วงที่พิจารณา: บนช่วง $[{a_disp}, {b_disp}]$\nf({v_lat}) = {_to_latex(f_raw, order='none')}, \\quad g({v_lat}) = {_to_latex(g_raw, order='none')}",
             formula_step,
-            f"หาผลต่างของฟังก์ชัน: $f({v_lat}) - g({v_lat}) = {_to_latex(diff_expr, order='none')}$",
+            f"หาผลต่างของฟังก์ชัน:\nf({v_lat}) - g({v_lat}) = {_to_latex(diff_expr, order='none')}",
         ]
 
         if crossings_float:
             roots_str = ", ".join(f"${v_lat} = {_format_bound_latex(r)}$" for r in cuts[1:-1])
             steps.append(
                 f"หาจุดตัดของเส้นโค้ง: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ พบจุดตัดภายในช่วงที่ {roots_str} "
-                f"จึงแบ่งการคำนวณออกเป็น {len(cuts) - 1} ช่วงย่อยเพื่อปลดเครื่องหมายค่าสัมบูรณ์ออกเป็น (บน ลบ ล่าง)"
+                f"จึงแบ่งการคำนวณออกเป็น {len(cuts) - 1} ช่วงย่อยเพื่อนำฟังก์ชันบนลบฟังก์ชันล่างในแต่ละช่วง"
             )
             steps.extend(sub_steps)
             # รวมผลบวกทุกช่วงย่อย
@@ -463,27 +513,28 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             if is_pos:
                 integrand = sp.expand(f_expr - g_expr)
                 steps.append(
-                    f"หาจุดตัดของเส้นโค้ง: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
+                    f"ตรวจสอบฟังก์ชันบน-ล่างและหาจุดตัด: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
                     f"โดยบนช่วงนี้ $f({v_lat}) \\geq g({v_lat})$ (กราฟ $f$ อยู่เหนือ $g$ ตลอดช่วง) "
-                    f"ดังนั้นปลดค่าสัมบูรณ์ได้เป็น $|f({v_lat}) - g({v_lat})| = f({v_lat}) - g({v_lat}) = {_to_latex(integrand, order='none')}$"
+                    f"จึงคำนวณปริพันธ์เส้นบนลบเส้นล่าง: $f({v_lat}) - g({v_lat}) = {_to_latex(integrand, order='none')}$"
                 )
             else:
                 integrand = sp.expand(g_expr - f_expr)
                 steps.append(
-                    f"หาจุดตัดของเส้นโค้ง: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
+                    f"ตรวจสอบฟังก์ชันบน-ล่างและหาจุดตัด: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
                     f"โดยบนช่วงนี้ $g({v_lat}) \\geq f({v_lat})$ (เส้นโค้ง $g$ อยู่เหนือ $f$ ตลอดช่วง) "
-                    f"ดังนั้นปลดค่าสัมบูรณ์โดยสลับเป็นเส้นบนลบเส้นล่าง: $|f({v_lat}) - g({v_lat})| = g({v_lat}) - f({v_lat}) = {_to_latex(integrand, order='none')}$"
+                    f"จึงคำนวณปริพันธ์เส้นบนลบเส้นล่าง: $g({v_lat}) - f({v_lat}) = {_to_latex(integrand, order='none')}$"
                 )
 
             antideriv = sp.integrate(integrand, var_sym)
             if not antideriv.has(sp.Integral):
+                antideriv = _simplify_piecewise_on_interval(antideriv, var_sym, float(a_sp), float(b_sp))
                 anti_lat = _to_latex(antideriv, order="none")
                 steps.append(
-                    f"คำนวณปริพันธ์บนช่วง: $A = \\int_{{{a_disp}}}^{{{b_disp}}} \\left({_to_latex(integrand, order='none')}\\right) \\, d{v_lat} = \\left[ {anti_lat} \\right]_{{{a_disp}}}^{{{b_disp}}} = {total_disp}$"
+                    f"คำนวณปริพันธ์บนช่วง:\nA = \\int_{{{a_disp}}}^{{{b_disp}}} \\left({_to_latex(integrand, order='none')}\\right) \\, d{v_lat} = \\left[ {anti_lat} \\right]_{{{a_disp}}}^{{{b_disp}}} = {total_disp}"
                 )
             else:
                 steps.append(
-                    f"คำนวณปริพันธ์บนช่วง: $A = \\int_{{{a_disp}}}^{{{b_disp}}} \\left({_to_latex(integrand, order='none')}\\right) \\, d{v_lat} = {total_disp}$"
+                    f"คำนวณปริพันธ์บนช่วง:\nA = \\int_{{{a_disp}}}^{{{b_disp}}} \\left({_to_latex(integrand, order='none')}\\right) \\, d{v_lat} = {total_disp}"
                 )
 
         steps.append(

@@ -221,8 +221,8 @@ st.markdown(
         <div class="stat-chip">
             <span class="material-symbols-rounded" style="font-size: 26px; color: #E11D48;">square_foot</span>
             <div>
-                <div style="font-family: 'Outfit', 'Fredoka', sans-serif; font-size: 15.5px; font-weight: 800; color: #18181B;">7 โมดูลจำลอง</div>
-                <div style="font-family: 'Mali', sans-serif; font-size: 12px; color: #4B5563;">Interactive Geometry</div>
+                <div style="font-family: 'Outfit', 'Fredoka', sans-serif; font-size: 15.5px; font-weight: 800; color: #18181B;">6 หัวข้อจำลอง</div>
+                <div style="font-family: 'Mali', sans-serif; font-size: 12px; color: #4B5563;">Interactive Calculus</div>
             </div>
         </div>
         <div class="stat-chip">
@@ -389,7 +389,7 @@ with bcol2:
                 </h4>
             </div>
             <ul style="font-family: 'Mali', sans-serif; font-size: 0.88rem; color: #374151; line-height: 1.65; padding-left: 18px; margin: 0;">
-                <li><b>7 โมดูลจำลองแคลคูลัส:</b> ลิมิต, เส้นสัมผัส, ผลรวมรีมันน์, u-Sub & By Parts, พื้นที่, ปริมาตรหมุน และปริพันธ์ไม่ตรงแบบ</li>
+                <li><b>6 หัวข้อจำลองแคลคูลัส:</b> ลิมิต, เส้นสัมผัส, u-Sub, By Parts, พื้นที่ระหว่างเส้นโค้ง และปริพันธ์ไม่ตรงแบบ</li>
                 <li><b>เครื่องคิดเลขสัญลักษณ์ SymPy:</b> ถอดขั้นตอนการอินทิเกรตและอนุพันธ์แบบสมบูรณ์</li>
                 <li><b>แบบทดสอบแนวคิด 80 ข้อ:</b> ครอบคลุม 8 บทเรียน พร้อมคำใบ้และสุ่มตัวเลือก</li>
             </ul>

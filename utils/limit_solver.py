@@ -1,4 +1,4 @@
-"""utils/limit_solver.py — ลิมิตเข้าใกล้จุด
+"""utils/limit_solver.py : ลิมิตเข้าใกล้จุด
 
 skeleton สำหรับนักศึกษา project
 TODO: ใส่ logic จริงให้ test ใน tests/ ผ่าน
@@ -245,7 +245,7 @@ def _steps_direct_substitution(expr: sp.Expr, a_str: str, v_lat: str, f_a: sp.Ex
 
 def _steps_indeterminate_factoring(expr: sp.Expr, var_sym: sp.Symbol, a_sp: sp.Expr,
                                    a_str: str, v_lat: str, lim_val: sp.Expr):
-    r"""Level 2: รูปแบบยังไม่กำหนด 0/0 — แยกตัวประกอบ/จัดรูป แล้วตัดทอนตัวร่วม"""
+    r"""Level 2: รูปแบบยังไม่กำหนด 0/0 : แยกตัวประกอบ/จัดรูป แล้วตัดทอนตัวร่วม"""
     expr_tex = _to_latex(expr)
     try:
         num_e, den_e = sp.fraction(sp.together(expr))
@@ -292,10 +292,13 @@ def _steps_indeterminate_factoring(expr: sp.Expr, var_sym: sp.Symbol, a_sp: sp.E
 
     if reduce_changed:
         steps.append(
-            f"การตัดทอนตัวร่วม: เพราะการหา $\\lim_{{{v_lat} \\to {a_str}}}$ หมายถึง ${v_lat} \\neq {a_str}$ (ค่าไม่เท่ากับ {a_str} พอดี) ตัวร่วมจึงไม่เป็นศูนย์และตัดทอนได้อย่างถูกต้อง เหลือรูปอย่างง่าย\n${expr_tex} = {reduced_tex} \\quad (\\text{{เมื่อ }} {v_lat} \\neq {a_str})$"
+            f"การตัดทอนตัวร่วม: เพราะการหา $\\lim_{{{v_lat} \\to {a_str}}}$ หมายถึง ${v_lat} \\neq {a_str}$ (ค่าไม่เท่ากับ {a_str} พอดี) ตัวร่วมจึงไม่เป็นศูนย์และตัดทอนได้อย่างถูกต้อง เหลือรูปอย่างง่าย\n"
+            f"${expr_tex} = {reduced_tex}$\n"
+            f"(เมื่อ ${v_lat} \\neq {a_str}$)"
         )
         steps.append(
-            f"แทนค่าลงในรูปที่จัดแล้ว: $\\lim_{{{v_lat} \\to {a_str}}} \\left({reduced_tex}\\right) = {val_tex}$ (แทนค่าโดยตรงได้แล้ว ไม่เกิดรูป $\\frac{{0}}{{0}}$ อีกต่อไป)"
+            f"แทนค่าลงในรูปที่จัดแล้ว:\n"
+            f"\\lim_{{{v_lat} \\to {a_str}}} \\left({reduced_tex}\\right) = {val_tex}"
         )
     else:
         steps.append(
@@ -372,7 +375,7 @@ def _steps_abs_piecewise(expr: sp.Expr, a_str: str, v_lat: str,
                          lim_left: sp.Expr, lim_right: sp.Expr,
                          a_dir_left: str, a_dir_right: str,
                          s_left_ex: str, s_right_ex: str, has_abs: bool):
-    r"""Level 5: ฟังก์ชันค่าสัมบูรณ์ / ฟังก์ชันแบ่งช่วง — แยกพิจารณาสองฝั่งอย่างชัดเจน"""
+    r"""Level 5: ฟังก์ชันค่าสัมบูรณ์ / ฟังก์ชันแบ่งช่วง : แยกพิจารณาสองฝั่งอย่างชัดเจน"""
     expr_tex = _to_latex(expr)
     left_tex = _to_latex(lim_left)
     right_tex = _to_latex(lim_right)

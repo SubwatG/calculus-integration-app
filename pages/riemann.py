@@ -160,7 +160,6 @@ else:
 
         # กราฟ (ใช้ expr ที่ solver parse แล้ว กันปัญหา symbol undefined)
         st.markdown("### กราฟผลบวกรีมันน์")
-        st.caption("กราฟแบบ Interactive: ใช้ลูกกลิ้งเมาส์เพื่อซูมเข้า/ออก ลากเพื่อเลื่อนดูกราฟ หรือดับเบิลคลิกเพื่อรีเซ็ตมุมมอง")
         try:
             expr = res["expr"]
             var_sym = sp.Symbol(v_name)

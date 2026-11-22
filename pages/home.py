@@ -77,7 +77,7 @@ st.markdown(
             </span>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span class="home-stat-pill">6 โมดูลจำลอง</span>
+            <span class="home-stat-pill">6 หัวข้อจำลอง</span>
             <span class="home-stat-pill">SymPy CAS</span>
             <span class="home-stat-pill">80 ข้อสอบ</span>
             <span class="home-stat-pill">KU KPS</span>

@@ -190,3 +190,17 @@ class TestComputeAreaBetween:
         steps_text = " ".join(res["steps"])
         assert "เงื่อนไขความต่อเนื่อง" not in steps_text
 
+    def test_step_formatting_centering_newlines(self):
+        res = compute_area_between("x", "x^2", 0, 1)
+        assert "\n" in res["steps"][0]
+        assert "\n" in res["steps"][2]
+        # Should not mention "ปลดค่าสัมบูรณ์"
+        assert "ปลดค่าสัมบูรณ์" not in " ".join(res["steps"])
+
+    def test_odd_roots_piecewise_simplified(self):
+        res = compute_area_between("x**(1/3)", "x", -1, 1)
+        steps_text = " ".join(res["steps"])
+        assert "Piecewise" not in steps_text
+        assert "cases" not in steps_text
+
+

@@ -151,7 +151,6 @@ else:
         st.divider()
 
         st.markdown("### ภาพตัดขวางทรงตันและการหมุนรอบแกน")
-        st.caption("กราฟแบบ Interactive: ใช้ลูกกลิ้งเมาส์เพื่อซูมเข้า/ออก ลากเพื่อเลื่อนดูกราฟ หรือดับเบิลคลิกเพื่อรีเซ็ตมุมมอง")
         try:
             fig_plotly = plot_volume_plotly(res["expr"], a_val, b_val, method_label, inner_expr=res.get("inner_expr"))
             st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})

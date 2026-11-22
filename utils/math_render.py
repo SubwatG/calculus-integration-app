@@ -23,11 +23,13 @@ _WRAPPED_INLINE = re.compile(r"^\s*\$(.*)\$\s*$", re.DOTALL)
 
 
 def format_inverse_trig(text: str) -> str:
-    """แปลงสัญลักษณ์ฟังก์ชันตรีโกณมิติผกผันจาก asin, acos, atan ให้เป็น \\arcsin, \\arccos, \\arctan ตามแบบหนังสือเรียน"""
+    """แปลงสัญลักษณ์ฟังก์ชันตรีโกณมิติผกผันและลอการิทึมธรรมชาติ (\\log เป็น \\ln) ตามแบบหนังสือเรียน"""
     if not text:
         return text
+    # 0. แปลง \\log เป็น \\ln สำหรับลอการิทึมธรรมชาติ
+    s = re.sub(r"\\log(?![a-zA-Z0-9_])", r"\\ln", text)
     # 1. จัดการ \\operatorname{asin}, \\operatorname{acos}, \\operatorname{atan}
-    s = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", text)
+    s = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", s)
     s = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", s)
     # 2. จัดการคำสั่งที่ไม่มี \ นำหน้าเมื่อตามด้วยวงเล็บ เช่น asin(...) หรือ asin{...}
     s = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", s)
@@ -219,7 +221,7 @@ def preview_math_expr(expr_str: str, label: str = "สมการที่ร�
         )
         local_dict = {"e": sp.E, "E": sp.E, "pi": sp.pi, "ln": sp.log}
         parsed = parse_expr(clean, transformations=transformations, local_dict=local_dict)
-        latex_str = format_inverse_trig(sp.latex(parsed, inv_trig_style="full"))
+        latex_str = format_inverse_trig(sp.latex(parsed, inv_trig_style="full", ln_notation=True))
 
         # กำหนดชื่อฟังก์ชัน เช่น f(x), g(x), R(x), r(x)
         if var_name is None:
@@ -236,7 +238,7 @@ def preview_math_expr(expr_str: str, label: str = "สมการที่ร�
         st.latex(f"{var_name}(x) = {latex_str}")
         return True
     except Exception:
-        st.caption("[คำแนะนำ] ตรวจสอบวงเล็บและรูปแบบฟังก์ชัน เช่น x^2, 2x, sin(x), e^x, sqrt(x)")
+        st.caption("[คำแนะนำ] ตรวจสอบวงเล็บและรูปแบบฟังก์ชัน เช่น x^2, 2x, sin(x), e^x, sqrt(x), ln(x), arctan(x)")
         return False
 
 
@@ -251,6 +253,7 @@ def render_syntax_guide() -> None:
             * **ลอการิทึมธรรมชาติ:** พิมพ์ `ln(x)` หรือ `log(x)`
             * **สแควร์รูท:** พิมพ์ `sqrt(x)` (เช่น `sqrt(x^2 + 1)`)
             * **ฟังก์ชันตรีโกณมิติ:** พิมพ์ `sin(x)`, `cos(x)`, `tan(x)`
+            * **ฟังก์ชันตรีโกณมิติผกผัน:** พิมพ์ `arcsin(x)` หรือ `asin(x)`, `arccos(x)` หรือ `acos(x)`, `arctan(x)` หรือ `atan(x)`
             * **เศษส่วน:** ให้ใส่วงเล็บกำกับ เช่น `1/(x+1)` หรือ `(x^2-4)/(x-2)`
             """
         )

@@ -109,3 +109,11 @@ class TestComputeImproper:
         assert res["ok"] is True
         assert res["status"] == "finite"
         assert res["result"] == pytest.approx(1.0)
+
+    def test_improper_step_by_step_limit_substitution(self):
+        res = compute_improper('1/x**2', 1, None)
+        steps_text = " ".join(res["steps"])
+        assert "\\lim_{t \\to \\infty}" in steps_text
+        assert "- \\frac{1}{x}" in steps_text
+        assert "\\lim_{t \\to \\infty}" in res["steps"][3]
+        assert "ลู่เข้า (Converges)" in res["steps"][4]

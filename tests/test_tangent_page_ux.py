@@ -69,8 +69,8 @@ def _visible_texts(at: AppTest) -> list:
 
 
 def _feedback(at: AppTest) -> str:
-    """The single short per-case feedback string, identified by its 'สรุปสั้น' marker."""
-    found = [v for v in _visible_texts(at) if "สรุปสั้น" in v]
+    """The single short per-case feedback string, identified by its 'สรุป' marker."""
+    found = [v for v in _visible_texts(at) if "สรุป:" in v or "สรุปสั้น" in v]
     assert len(found) == 1, found
     return found[0]
 
