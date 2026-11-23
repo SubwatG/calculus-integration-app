@@ -514,7 +514,7 @@ with tab_user:
         if candidates:
             st.session_state["user_u_input"] = candidates[0]
         else:
-            st.session_state["user_u_input"] = "x^2 + 1"
+            st.session_state["user_u_input"] = ""
 
     if candidates:
         st.markdown("**ตัวเลือกตัวแปร u ที่น่าสนใจในโจทย์นี้:**")
@@ -527,11 +527,13 @@ with tab_user:
                     use_container_width=True,
                 ):
                     st.session_state["user_u_input"] = cand_str
+    else:
+        st.info("โจทย์ข้อนี้เป็นรูปฟังก์ชันพื้นฐานของแคลคูลัส สามารถหาปริพันธ์ได้โดยตรงตามสูตรมาตรฐานโดยไม่ต้องใช้การแทนตัวแปร u (ท่านสามารถดูวิธีทำได้ที่แท็บ 'ระบบเฉลยวิธีทำโดยอัตโนมัติ')")
 
     u_input_val = st.text_input(
         "ระบุฟังก์ชัน u(x) ที่ท่านเลือก:",
-        value=st.session_state.get("user_u_input", candidates[0] if candidates else "x^2 + 1"),
-        placeholder="เช่น x^2 + 1, ln(x), x + 1",
+        value=st.session_state.get("user_u_input", candidates[0] if candidates else ""),
+        placeholder="เช่น x^2 + 1, ln(x), cos(x)" if candidates else "โจทย์นี้เป็นสูตรพื้นฐาน ไม่จำเป็นต้องแทนตัวแปร u",
         key="user_u_input",
     )
 

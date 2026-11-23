@@ -564,10 +564,12 @@ def get_suggested_u_candidates(expr_str: str, var: str | sp.Symbol | None = None
                 seen.add(s_code)
                 result.append(s_code)
 
-        result.append(str(var_sym))
-        return result[:6]
+        if result:
+            result.append(str(var_sym))
+            return result[:6]
+        return []
     except Exception:
-        return ["x"]
+        return []
 
 
 def verify_user_u_substitution(
