@@ -117,3 +117,28 @@ class TestComputeImproper:
         assert "- \\frac{1}{x}" in steps_text
         assert "\\lim_{t \\to \\infty}" in res["steps"][3]
         assert "ลู่เข้า (Converges)" in res["steps"][4]
+
+    def test_improper_math_11_cases(self):
+        # 1. ln(x)/sqrt(x) on [0, 1] -> -4
+        res1 = compute_improper('ln(x)/sqrt(x)', 0, 1)
+        assert res1["ok"] is True
+        assert res1["status"] == "finite"
+        assert res1["result"] == pytest.approx(-4.0)
+
+        # 2. sqrt(x)*ln(x) on [0, 1] -> -4/9
+        res2 = compute_improper('sqrt(x)*ln(x)', 0, 1)
+        assert res2["ok"] is True
+        assert res2["status"] == "finite"
+        assert res2["result"] == pytest.approx(-4 / 9)
+
+        # 3. 1/(x-1)**(2/3) on [0, 2] -> 6
+        res3 = compute_improper('1/(x-1)**(2/3)', 0, 2)
+        assert res3["ok"] is True
+        assert res3["status"] == "finite"
+        assert res3["result"] == pytest.approx(6.0)
+
+        # 4. 1/x**0.5 on [1, inf] -> divergent
+        res4 = compute_improper('1/x**0.5', 1, 'inf')
+        assert res4["ok"] is True
+        assert res4["status"] == "divergent"
+        assert res4["result"] is None

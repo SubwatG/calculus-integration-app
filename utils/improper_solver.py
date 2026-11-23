@@ -44,11 +44,32 @@ def _to_latex(sym_obj) -> str:
     return lat
 
 
+def _to_real_roots(e: sp.Expr) -> sp.Expr:
+    """แปลงรากที่ติดค่าลบที่มีดัชนีเป็นเลขคี่ ให้เป็นค่าจริงตามหลักแคลคูลัส (เช่น (-1)**(1/3) -> -1)"""
+    if e is None or not isinstance(e, sp.Basic):
+        return e
+
+    def repl(node):
+        if node.is_Pow and node.exp.is_Rational and node.exp.q % 2 == 1:
+            base = node.base
+            exp = node.exp
+            if base.is_number and base.is_negative:
+                return (-1) ** exp.p * sp.Pow(-base, exp)
+        return node
+
+    return e.replace(lambda a: a.is_Pow, repl)
+
+
 def _parse_input(expr_str: str) -> sp.Expr:
     clean = (expr_str or "").strip()
     if not clean:
         raise ValueError("Empty input string")
-    return parse_expr(clean, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
+    parsed = parse_expr(clean, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
+    try:
+        parsed = sp.nsimplify(parsed, rational=True)
+    except Exception:
+        pass
+    return parsed
 
 
 def _classify_improper(res_val: sp.Expr) -> str:
@@ -61,24 +82,52 @@ def _classify_improper(res_val: sp.Expr) -> str:
         return "divergent"
     if res_val.has(sp.oo, -sp.oo):
         return "divergent"
-    if getattr(res_val, "is_finite", False) is True and getattr(res_val, "is_real", False) is True:
+    res_real = _to_real_roots(res_val)
+    if getattr(res_real, "is_finite", False) is True and getattr(res_real, "is_real", False) is True:
         return "finite"
     # Special values such as Si(1) carry no is_finite flag, but a finite real
     # numeric value still proves convergence.
-    if _safe_float(res_val) is not None:
+    if _safe_float(res_real) is not None:
         return "finite"
     return "unsupported"
 
 
 def _safe_float(value: sp.Expr):
     """Real float value of a SymPy expression, or None when it is not finite/real."""
+    if value is None:
+        return None
     try:
-        numeric = complex(value.evalf(15))
+        real_val = _to_real_roots(value)
+        numeric = complex(real_val.evalf(15))
     except Exception:
         return None
     if abs(numeric.imag) > 1e-12 or not math.isfinite(numeric.real):
         return None
     return float(numeric.real)
+
+
+def _get_antiderivative(expr: sp.Expr, var: sp.Symbol) -> sp.Expr | None:
+    """หาปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐานที่สะอาด ไม่มี Piecewise หรือ Meijer G โดยใช้ manualintegrate ก่อน"""
+    try:
+        from sympy.integrals.manualintegrate import manualintegrate
+        anti = manualintegrate(expr, var)
+        if anti is not None and not anti.has(sp.Integral) and not anti.has(sp.meijerg) and not anti.has(sp.Piecewise):
+            return _abs_logs(_to_real_roots(anti))
+    except Exception:
+        pass
+    try:
+        anti = sp.integrate(expr, var)
+        if anti.has(sp.Piecewise):
+            try:
+                pos_sym = sp.Symbol("_pos_x", positive=True)
+                anti_pos = sp.integrate(expr.subs(var, pos_sym), pos_sym).subs(pos_sym, var)
+                if not anti_pos.has(sp.Piecewise):
+                    anti = anti_pos
+            except Exception:
+                pass
+        return _abs_logs(_to_real_roots(anti))
+    except Exception:
+        return None
 
 
 def _format_part_outcome(status: str, part_val) -> str:
@@ -237,10 +286,27 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"$$\\int_{{-\\infty}}^{{\\infty}} f({v_lat})\\,d{v_lat} = \\lim_{{s \\to -\\infty}} \\int_{{s}}^{{{c_val}}} f({v_lat})\\,d{v_lat} + \\lim_{{t \\to \\infty}} \\int_{{{c_val}}}^{{t}} f({v_lat})\\,d{v_lat}$$"
             )
 
-            left_part = sp.integrate(expr, (var_sym, -sp.oo, c_val))
-            right_part = sp.integrate(expr, (var_sym, c_val, sp.oo))
+            left_part = _to_real_roots(sp.integrate(expr, (var_sym, -sp.oo, c_val)))
+            right_part = _to_real_roots(sp.integrate(expr, (var_sym, c_val, sp.oo)))
             left_status = _classify_improper(left_part)
             right_status = _classify_improper(right_part)
+            if left_status == "unsupported" or right_status == "unsupported":
+                antideriv = _get_antiderivative(expr, var_sym)
+                if antideriv is not None:
+                    if left_status == "unsupported":
+                        s_sym = sp.Symbol("s", negative=True)
+                        lp = _to_real_roots(sp.limit(antideriv.subs(var_sym, c_val) - antideriv.subs(var_sym, s_sym), s_sym, -sp.oo))
+                        ls = _classify_improper(lp)
+                        if ls != "unsupported":
+                            left_part = lp
+                            left_status = ls
+                    if right_status == "unsupported":
+                        t_sym = sp.Symbol("t", positive=True)
+                        rp = _to_real_roots(sp.limit(antideriv.subs(var_sym, t_sym) - antideriv.subs(var_sym, c_val), t_sym, sp.oo))
+                        rs = _classify_improper(rp)
+                        if rs != "unsupported":
+                            right_part = rp
+                            right_status = rs
             res_val = None
 
             left_desc = _format_part_outcome(left_status, left_part)
@@ -299,7 +365,9 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"\\lim_{{t \\to -\\infty}} \\int_{{t}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}\n"
                 f"(แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตเมื่อขอบล่างเข้าใกล้ $-\\infty$)"
             )
-            antideriv = _abs_logs(sp.integrate(expr, var_sym))
+            antideriv = _get_antiderivative(expr, var_sym)
+            if antideriv is None:
+                antideriv = _abs_logs(sp.integrate(expr, var_sym))
             upper_eval = antideriv.subs(var_sym, upper)
             t_eval = antideriv.subs(var_sym, t_sym)
             diff_t = sp.simplify(upper_eval - t_eval)
@@ -318,8 +386,14 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"\\left[ {_to_latex(antideriv)} \\right]_{{t}}^{{{bound_latex}}} = {bounds_eval_str}"
             )
 
-            res_val = sp.integrate(expr, (var_sym, -sp.oo, upper))
+            res_val = _to_real_roots(sp.integrate(expr, (var_sym, -sp.oo, upper)))
             status = _classify_improper(res_val)
+            if status == "unsupported":
+                lim_val = _to_real_roots(sp.limit(diff_t, t_sym, -sp.oo))
+                lim_status = _classify_improper(lim_val)
+                if lim_status != "unsupported":
+                    res_val = lim_val
+                    status = lim_status
             if status == "finite":
                 result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
@@ -367,7 +441,9 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"\\lim_{{t \\to \\infty}} \\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}\n"
                 f"(แปลงเป็นรูปลิมิตของอินทิกรัลจำกัดเขตเมื่อตัวแปรเข้าใกล้อนันต์)"
             )
-            antideriv = _abs_logs(sp.integrate(expr, var_sym))
+            antideriv = _get_antiderivative(expr, var_sym)
+            if antideriv is None:
+                antideriv = _abs_logs(sp.integrate(expr, var_sym))
             lower_eval = antideriv.subs(var_sym, lower)
             t_eval = antideriv.subs(var_sym, t_sym)
             diff_t = sp.simplify(t_eval - lower_eval)
@@ -386,8 +462,14 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"\\left[ {_to_latex(antideriv)} \\right]_{{{lower_latex}}}^{{t}} = {bounds_eval_str}"
             )
 
-            res_val = sp.integrate(expr, (var_sym, lower, sp.oo))
+            res_val = _to_real_roots(sp.integrate(expr, (var_sym, lower, sp.oo)))
             status = _classify_improper(res_val)
+            if status == "unsupported":
+                lim_val = _to_real_roots(sp.limit(diff_t, t_sym, sp.oo))
+                lim_status = _classify_improper(lim_val)
+                if lim_status != "unsupported":
+                    res_val = lim_val
+                    status = lim_status
             if status == "finite":
                 result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
@@ -450,10 +532,33 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"\\lim_{{s \\to {c_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat}$$"
             )
 
-            left_part = sp.integrate(expr, (var_sym, lower, c_sp))
-            right_part = sp.integrate(expr, (var_sym, c_sp, upper))
+            left_part = _to_real_roots(sp.integrate(expr, (var_sym, lower, c_sp)))
+            right_part = _to_real_roots(sp.integrate(expr, (var_sym, c_sp, upper)))
             left_status = _classify_improper(left_part)
             right_status = _classify_improper(right_part)
+            if left_status == "unsupported" or right_status == "unsupported":
+                antideriv = _get_antiderivative(expr, var_sym)
+                if antideriv is None:
+                    antideriv = _abs_logs(sp.integrate(expr, var_sym))
+                if antideriv is not None:
+                    if left_status == "unsupported":
+                        t_sym = sp.Symbol("t", real=True)
+                        f_t = antideriv.subs(var_sym, t_sym)
+                        f_low = antideriv.subs(var_sym, lower)
+                        lp = _to_real_roots(sp.limit(f_t - f_low, t_sym, c_sp, "-"))
+                        ls = _classify_improper(lp)
+                        if ls != "unsupported":
+                            left_part = lp
+                            left_status = ls
+                    if right_status == "unsupported":
+                        s_sym = sp.Symbol("s", real=True)
+                        f_up = antideriv.subs(var_sym, upper)
+                        f_s = antideriv.subs(var_sym, s_sym)
+                        rp = _to_real_roots(sp.limit(f_up - f_s, s_sym, c_sp, "+"))
+                        rs = _classify_improper(rp)
+                        if rs != "unsupported":
+                            right_part = rp
+                            right_status = rs
             res_val = None
 
             left_desc = _format_part_outcome(left_status, left_part)
@@ -474,7 +579,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 )
                 steps.append("ผลลัพธ์: อินทิกรัลลู่ออก (Diverges)")
             elif left_status == "finite" and right_status == "finite":
-                res_val = left_part + right_part
+                res_val = _to_real_roots(left_part) + _to_real_roots(right_part)
                 status = "finite"
                 result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
@@ -514,7 +619,9 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"\\lim_{{t \\to {lower_latex}^+}} \\int_{{t}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}\n"
                 f"(ฟังก์ชันมีลิมิตเข้าสู่อนันต์ที่ขอบล่าง ในขณะที่ฟังก์ชันต่อเนื่องที่ขอบบน จึงแปลงเป็นรูปลิมิตเข้าใกล้ทางขวา)"
             )
-            antideriv = _abs_logs(sp.integrate(expr, var_sym))
+            antideriv = _get_antiderivative(expr, var_sym)
+            if antideriv is None:
+                antideriv = _abs_logs(sp.integrate(expr, var_sym))
             upper_eval = antideriv.subs(var_sym, upper)
             t_eval = antideriv.subs(var_sym, t_sym)
             diff_t = sp.simplify(upper_eval - t_eval)
@@ -533,8 +640,14 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"\\left[ {_to_latex(antideriv)} \\right]_{{t}}^{{{bound_latex}}} = {bounds_eval_str}"
             )
 
-            res_val = sp.integrate(expr, (var_sym, lower, upper))
+            res_val = _to_real_roots(sp.integrate(expr, (var_sym, lower, upper)))
             status = _classify_improper(res_val)
+            if status == "unsupported":
+                lim_val = _to_real_roots(sp.limit(diff_t, t_sym, lower, "+"))
+                lim_status = _classify_improper(lim_val)
+                if lim_status != "unsupported":
+                    res_val = lim_val
+                    status = lim_status
             if status == "finite":
                 result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
@@ -578,7 +691,9 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"\\lim_{{t \\to {bound_latex}^-}} \\int_{{{lower_latex}}}^{{t}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}\n"
                 f"(ฟังก์ชันมีลิมิตเข้าสู่อนันต์ที่ขอบบน ในขณะที่ฟังก์ชันต่อเนื่องที่ขอบล่าง จึงแปลงเป็นรูปลิมิตเข้าใกล้ทางซ้าย)"
             )
-            antideriv = _abs_logs(sp.integrate(expr, var_sym))
+            antideriv = _get_antiderivative(expr, var_sym)
+            if antideriv is None:
+                antideriv = _abs_logs(sp.integrate(expr, var_sym))
             t_eval = antideriv.subs(var_sym, t_sym)
             lower_eval = antideriv.subs(var_sym, lower)
             diff_t = sp.simplify(t_eval - lower_eval)
@@ -597,8 +712,14 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"\\left[ {_to_latex(antideriv)} \\right]_{{{lower_latex}}}^{{t}} = {bounds_eval_str}"
             )
 
-            res_val = sp.integrate(expr, (var_sym, lower, upper))
+            res_val = _to_real_roots(sp.integrate(expr, (var_sym, lower, upper)))
             status = _classify_improper(res_val)
+            if status == "unsupported":
+                lim_val = _to_real_roots(sp.limit(diff_t, t_sym, upper, "-"))
+                lim_status = _classify_improper(lim_val)
+                if lim_status != "unsupported":
+                    res_val = lim_val
+                    status = lim_status
             if status == "finite":
                 result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
@@ -645,7 +766,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 f"$$\\lim_{{t \\to {mid_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat}"
                 f" + \\lim_{{s \\to {mid_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat}$$"
             )
-            res_val = sp.integrate(expr, (var_sym, lower, upper))
+            res_val = _to_real_roots(sp.integrate(expr, (var_sym, lower, upper)))
             # A Piecewise antiderivative can leave an unevaluated Integral, a zoo or
             # an imaginary constant; that is not evidence of divergence, so refuse
             # to classify it instead of guessing.
@@ -653,6 +774,23 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 res_val.has(sp.Integral) or res_val.has(sp.zoo)
                 or res_val.has(sp.I) or res_val.has(sp.oo, -sp.oo)
             )
+            if unreliable:
+                antideriv = _get_antiderivative(expr, var_sym)
+                if antideriv is not None:
+                    t_sym = sp.Symbol("t", real=True)
+                    s_sym = sp.Symbol("s", real=True)
+                    f_mid = antideriv.subs(var_sym, mid)
+                    lp = _to_real_roots(sp.limit(f_mid - antideriv.subs(var_sym, t_sym), t_sym, lower, "+"))
+                    rp = _to_real_roots(sp.limit(antideriv.subs(var_sym, s_sym) - f_mid, s_sym, upper, "-"))
+                    ls = _classify_improper(lp)
+                    rs = _classify_improper(rp)
+                    if ls == "finite" and rs == "finite":
+                        res_val = lp + rp
+                        status = "finite"
+                        unreliable = False
+                    elif ls == "divergent" or rs == "divergent":
+                        status = "divergent"
+                        unreliable = False
             if unreliable:
                 status = "unsupported"
                 result = None
