@@ -167,6 +167,40 @@ class TestSolveSubstitution:
         cands = get_suggested_u_candidates("2*x*sqrt(x**2 + 1)")
         assert "x**2 + 1" in cands or any("x**2" in c for c in cands)
 
+    def test_solve_substitution_log_absolute_values(self):
+        """MATH-08: ปฏิยานุพันธ์ของ 1/u, tan(x), 1/(ax+b) ต้องมีค่าสัมบูรณ์ในพจน์ log"""
+        x = sp.Symbol("x")
+        # 1/x -> ln|x| + C
+        res = solve_substitution("1/x")
+        assert res["ok"] is True
+        assert res["result"] == sp.log(sp.Abs(x))
+        assert r"\ln" in res["latex"]
+        assert "|" in res["latex"]
+
+        # tan(x) -> -ln|cos(x)| + C
+        res_tan = solve_substitution("tan(x)")
+        assert res_tan["ok"] is True
+        assert res_tan["result"] == -sp.log(sp.Abs(sp.cos(x)))
+        assert "|" in res_tan["latex"]
+
+        # 1/(2x+1) -> 1/2 ln|2x+1| + C
+        res_lin = solve_substitution("1/(2*x+1)")
+        assert res_lin["ok"] is True
+        assert res_lin["result"] == sp.log(sp.Abs(2 * x + 1)) / 2
+
+        # 1/(x*log(x)) -> ln|ln(x)| + C
+        res_loglog = solve_substitution("1/(x*log(x))")
+        assert res_loglog["ok"] is True
+        assert res_loglog["result"] == sp.log(sp.Abs(sp.log(x)))
+
+    def test_solve_substitution_sec2_over_tan(self):
+        """MATH-09: sec(x)**2/tan(x) ต้องรวมเป็น ln|tan(x)| + C"""
+        x = sp.Symbol("x")
+        res = solve_substitution("sec(x)**2/tan(x)")
+        assert res["ok"] is True
+        assert res["result"] == sp.log(sp.Abs(sp.tan(x)))
+        assert "tan" in str(res["result"])
+
 
 def test_substitution_page_apptest_render():
     from pathlib import Path

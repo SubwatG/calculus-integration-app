@@ -70,3 +70,42 @@ class TestByPartsSolver:
         res = solve_by_parts("")
         assert res["ok"] is False
         assert res["status"] == "error"
+
+    def test_solve_by_parts_log_absolute_values(self):
+        """MATH-08: by parts สำหรับ x*sec(x)**2 และ x*csc(x)**2 ต้องมีค่าสัมบูรณ์ในพจน์ log"""
+        x = sp.Symbol("x")
+        res_sec = solve_by_parts("x*sec(x)**2")
+        assert res_sec["ok"] is True
+        assert res_sec["result"] == x * sp.tan(x) + sp.log(sp.Abs(sp.cos(x)))
+        assert "|" in res_sec["latex"]
+
+        res_csc = solve_by_parts("x*csc(x)**2")
+        assert res_csc["ok"] is True
+        assert res_csc["result"] == -x * sp.cot(x) + sp.log(sp.Abs(sp.sin(x)))
+        assert "|" in res_csc["latex"]
+
+    def test_solve_by_parts_non_elementary_rejected(self):
+        """MATH-10: x*tan(x) และ x*sec(x) ไม่มีปฏิยานุพันธ์มูลฐาน ต้องไม่คืน Integral"""
+        res_tan = solve_by_parts("x*tan(x)")
+        assert res_tan["ok"] is False
+        assert res_tan["result"] is None
+        assert res_tan["status"] == "unsupported"
+        assert "ไม่มีปฏิยานุพันธ์" in res_tan["error"]
+
+        res_sec = solve_by_parts("x*sec(x)")
+        assert res_sec["ok"] is False
+        assert res_sec["result"] is None
+        assert res_sec["status"] == "unsupported"
+        assert "ไม่มีปฏิยานุพันธ์" in res_sec["error"]
+
+    def test_solve_by_parts_sec2_csc2_multiple_angle(self):
+        """x*sec(2*x)**2 และ x*csc(2*x)**2 สามารถคำนวณ By Parts ได้"""
+        res_sec2 = solve_by_parts("x*sec(2*x)**2")
+        assert res_sec2["ok"] is True
+        assert res_sec2["result"] is not None
+        assert not res_sec2["result"].has(sp.Integral)
+
+        res_csc2 = solve_by_parts("x*csc(2*x)**2")
+        assert res_csc2["ok"] is True
+        assert res_csc2["result"] is not None
+        assert not res_csc2["result"].has(sp.Integral)

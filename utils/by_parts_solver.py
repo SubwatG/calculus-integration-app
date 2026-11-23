@@ -13,7 +13,7 @@ from sympy.parsing.sympy_parser import (
     standard_transformations,
 )
 
-from utils.substitution_solver import _detect_u_candidate, _get_domain_note, _to_latex
+from utils.substitution_solver import _detect_u_candidate, _get_domain_note, _to_latex, _wrap_new_logs
 from utils.sympy_solver import _clean_calculus_input, _get_variable
 
 TRANSFORMATIONS = standard_transformations + (
@@ -47,7 +47,7 @@ def _is_exponential(f: sp.Expr, var: sp.Symbol) -> bool:
 
 
 def _is_trigonometric(f: sp.Expr) -> bool:
-    return any(f.has(cls) for cls in (sp.sin, sp.cos, sp.tan))
+    return any(f.has(cls) for cls in (sp.sin, sp.cos, sp.tan, sp.sec, sp.csc, sp.cot))
 
 
 def detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, sp.Expr, str, bool] | None:
@@ -133,6 +133,7 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
             u_temp = sp.Symbol("_u_temp")
             ratio_u = ratio.subs(u_cand, u_temp)
             if not ratio.has(var_sym) or not ratio_u.has(var_sym):
+                antideriv = _wrap_new_logs(antideriv, expr)
                 return {
                     "ok": True,
                     "result": antideriv,
@@ -152,7 +153,23 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
 
         parts_cand = detect_parts_candidate(expr, var_sym)
         if parts_cand is None:
+            if antideriv.has(sp.Integral):
+                return {
+                    "ok": False,
+                    "result": None,
+                    "latex": "",
+                    "steps": [
+                        f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+                        "ระบบไม่สามารถหาปฏิยานุพันธ์ของฟังก์ชันนี้ได้ในรูปแบบปิด หรือฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน",
+                    ],
+                    "status": "unsupported",
+                    "warning": "ไม่สามารถหาปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐานได้",
+                    "error": "ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน",
+                    "variable": str(var_sym.name),
+                    "parts_info": None,
+                }
             # ไม่เข้าข่าย By Parts ทั่วไป
+            antideriv = _wrap_new_logs(antideriv, expr)
             return {
                 "ok": True,
                 "result": antideriv,
@@ -189,6 +206,8 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
             v2_lat = _to_latex(v2)
             du2_lat = _to_latex(du2)
 
+            antideriv = _wrap_new_logs(antideriv, expr)
+
             steps = [
                 f"กำหนดโจทย์อินทิกรัล: $\\int {expr_lat} \\, d{v_lat}$",
                 f"วิเคราะห์ตามกฎ LIATE: {parts_reason}",
@@ -218,6 +237,33 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
             ]
         else:
             rem_integral = sp.integrate(v_du, var_sym)
+            if rem_integral.has(sp.Integral) or antideriv.has(sp.Integral):
+                if not rem_integral.has(sp.Integral):
+                    antideriv = u_p * v_p - rem_integral
+                else:
+                    return {
+                        "ok": False,
+                        "result": None,
+                        "latex": "",
+                        "steps": [
+                            f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+                            f"วิเคราะห์ตามกฎ LIATE: {parts_reason}",
+                            f"เมื่อแทนค่าลงในสูตร By Parts ปริพันธ์ที่เหลือ $\\int {_to_latex(v_du)} \\, d{v_lat}$ ไม่สามารถหาปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐานได้",
+                        ],
+                        "status": "unsupported",
+                        "warning": "ไม่สามารถหาปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐานได้",
+                        "error": "ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน",
+                        "variable": str(var_sym.name),
+                        "parts_info": {
+                            "u": u_p,
+                            "dv": dv_p,
+                            "du": du_p,
+                            "v": v_p,
+                            "remainder": v_du,
+                        },
+                    }
+            antideriv = _wrap_new_logs(antideriv, expr)
+            rem_integral_disp = _wrap_new_logs(rem_integral, v_du)
             steps = [
                 f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
                 f"เลือกวิธี: การอินทิเกรตทีละส่วน (Integration by parts) ตามสูตร $\\int u \\, dv = uv - \\int v \\, du$",
@@ -228,7 +274,7 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
                 f"แทนค่าลงในสูตร By Parts:\n"
                 f"$$\\int u \\, dv = uv - \\int v \\, du$$\n"
                 f"$$= \\left({_to_latex(u_p)}\\right)\\left({_to_latex(v_p)}\\right) - \\int \\left({_to_latex(v_p)}\\right)\\left({_to_latex(du_p)}\\right) \\, d{v_lat}$$",
-                f"คำนวณปริพันธ์ที่เหลือ: $\\int {_to_latex(v_du)} \\, d{v_lat} = {_to_latex(rem_integral)}$",
+                f"คำนวณปริพันธ์ที่เหลือ: $\\int {_to_latex(v_du)} \\, d{v_lat} = {_to_latex(rem_integral_disp)}$",
                 f"สรุปผลลัพธ์: $\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv)} + C$",
                 domain_note,
             ]

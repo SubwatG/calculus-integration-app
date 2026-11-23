@@ -54,7 +54,27 @@ def _to_latex(sym_obj) -> str:
     lat = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", lat)
     lat = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", lat)
     lat = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", lat)
+    lat = re.sub(r"\\ln\{\\left\(\\left\|(.*?)\\right\| \\right\)\}", r"\\ln{\\left|\1\\right|}", lat)
     return lat
+
+
+def _wrap_new_logs(antideriv: sp.Expr, orig_expr: sp.Expr) -> sp.Expr:
+    r"""ใส่วงเล็บค่าสัมบูรณ์ในฟังก์ชัน log ที่เกิดจากการคำนวณปริพันธ์ใหม่ (เช่น \int 1/u du = \ln|u|)"""
+    if antideriv is None:
+        return None
+    orig_logs = orig_expr.atoms(sp.log) if orig_expr is not None else set()
+
+    def repl(node):
+        if not isinstance(node, sp.log):
+            return node
+        arg = node.args[0]
+        if getattr(arg, "func", None) is sp.Abs:
+            return node
+        if node in orig_logs:
+            return node
+        return sp.log(sp.Abs(arg))
+
+    return antideriv.replace(sp.log, lambda a: repl(sp.log(a)))
 
 
 def _parse_input(expr_str: str) -> sp.Expr:
@@ -307,6 +327,10 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
             v_p = sp.integrate(dv_p, var_sym)
             v_du = sp.simplify(v_p * du_p)
             rem_integral = sp.integrate(v_du, var_sym)
+            if not rem_integral.has(sp.Integral) and antideriv.has(sp.Integral):
+                antideriv = u_p * v_p - rem_integral
+            antideriv = _wrap_new_logs(antideriv, orig_expr)
+            rem_integral_disp = _wrap_new_logs(rem_integral, v_du)
 
             steps.append(
                 f"เลือกวิธี: การอินทิเกรตทีละส่วน (Integration by parts) ตามสูตร $\\int u \\, dv = uv - \\int v \\, du$ ({parts_reason})"
@@ -320,7 +344,7 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
                 f"แทนค่าลงในสูตร By Parts: $\\int u \\, dv = uv - \\int v \\, du = \\left({_to_latex(u_p)}\\right)\\left({_to_latex(v_p)}\\right) - \\int \\left({_to_latex(v_p)}\\right)\\left({_to_latex(du_p)}\\right) \\, d{v_lat}$"
             )
             steps.append(
-                f"คำนวณปริพันธ์ที่เหลือ: จัดรูปและหาค่า $\\int v \\, du = \\int {_to_latex(v_du)} \\, d{v_lat} = {_to_latex(rem_integral)}$"
+                f"คำนวณปริพันธ์ที่เหลือ: จัดรูปและหาค่า $\\int v \\, du = \\int {_to_latex(v_du)} \\, d{v_lat} = {_to_latex(rem_integral_disp)}$"
             )
             steps.append(domain_note)
             steps.append(
@@ -351,11 +375,18 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
 
         # เส้นทาง A: การแทนค่า u (u-Substitution)
         if u_cand is not None and du_cand is not None:
-            u_sym = sp.Symbol("u")
+            u_sym = sp.Symbol("u", real=True)
             expr_u = expr.subs(u_cand, u_sym)
             ratio = sp.simplify(expr_u / du_cand)
             integrand_u = ratio if not ratio.has(var_sym) else sp.simplify(sp.simplify(expr / du_cand).subs(u_cand, u_sym))
             integral_u = sp.integrate(integrand_u, u_sym)
+            if not integral_u.has(sp.Integral):
+                subbed_antideriv = _wrap_new_logs(integral_u.subs(u_sym, u_cand), orig_expr)
+                if antideriv.has(sp.Integral) or str(antideriv).count("log") > str(subbed_antideriv).count("log") or "tan" in str(orig_expr):
+                    antideriv = subbed_antideriv
+
+            antideriv = _wrap_new_logs(antideriv, orig_expr)
+            integral_u_disp = _wrap_new_logs(integral_u, integrand_u)
 
             steps.append(
                 f"เลือกวิธี: การเปลี่ยนตัวแปร (Integration by Substitution) โดยเลือกฟังก์ชันก้อนในที่มีอนุพันธ์คูณร่วมอยู่"
@@ -367,7 +398,7 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
                 f"เปลี่ยนรูปปริพันธ์: แทนค่า $u$ และ $d{v_lat}$ ในโจทย์ ทำให้เหลือเฉพาะตัวแปร $u$:\n$\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(integrand_u)} \\, du$"
             )
             steps.append(
-                f"คำนวณปริพันธ์เทียบกับตัวแปร u: $\\int {_to_latex(integrand_u)} \\, du = {_to_latex(integral_u)} + C$"
+                f"คำนวณปริพันธ์เทียบกับตัวแปร u: $\\int {_to_latex(integrand_u)} \\, du = {_to_latex(integral_u_disp)} + C$"
             )
             steps.append(
                 f"แทนค่ากลับ: แทนค่า $u = {_to_latex(u_cand)}$ กลับคืน:\n${_to_latex(antideriv)} + C$"
@@ -393,6 +424,7 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
             }
 
         # เส้นทางทั่วไป (Standard rules)
+        antideriv = _wrap_new_logs(antideriv, orig_expr)
         steps.append(
             "คำนวณปริพันธ์โดยใช้สูตรพื้นฐานของแคลคูลัส"
         )
