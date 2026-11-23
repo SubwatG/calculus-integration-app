@@ -542,9 +542,11 @@ with tab_user:
     else:
         st.info("โจทย์ข้อนี้เป็นรูปฟังก์ชันพื้นฐานของแคลคูลัส สามารถหาปริพันธ์ได้โดยตรงตามสูตรมาตรฐานโดยไม่ต้องใช้การแทนตัวแปร u (ท่านสามารถดูวิธีทำได้ที่แท็บ 'ระบบเฉลยวิธีทำโดยอัตโนมัติ')")
 
+    if "user_u_input" not in st.session_state:
+        st.session_state["user_u_input"] = candidates[0] if candidates else ""
+
     u_input_val = st.text_input(
         "ระบุฟังก์ชัน u(x) ที่ท่านเลือก:",
-        value=st.session_state.get("user_u_input", candidates[0] if candidates else ""),
         placeholder="เช่น x^2 + 1, ln(x), cos(x)" if candidates else "โจทย์นี้เป็นสูตรพื้นฐาน ไม่จำเป็นต้องแทนตัวแปร u",
         key="user_u_input",
     )
