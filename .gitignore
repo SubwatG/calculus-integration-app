@@ -38,6 +38,7 @@ docs/*.pdf
 docs/*.tex
 docs/*.html
 docs/*_files/
+PR3-FIX-KIT/results-*.json
 # ยกเว้นเอกสารสำคัญที่ต้องการให้ขึ้น git ด้วย
 !docs/markdown-latex-guide.pdf
 !docs/markdown-latex-guide.html
