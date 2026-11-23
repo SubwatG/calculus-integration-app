@@ -109,20 +109,32 @@ def _convert_real_roots(expr: sp.Expr) -> sp.Expr:
 
 
 def _simplify_piecewise_on_interval(expr: sp.Expr, var: sp.Symbol, left: float, right: float) -> sp.Expr:
-    """หากผลลัพธ์การอินทิเกรตเป็น Piecewise ให้เลือกกิ่งเงื่อนไขที่ครอบคลุมช่วง [left, right]"""
-    if not isinstance(expr, sp.Piecewise):
+    """หากผลลัพธ์การอินทิเกรตมี Piecewise ให้เลือกกิ่งเงื่อนไขที่ครอบคลุมช่วง [left, right]"""
+    if expr is None or not isinstance(expr, sp.Basic):
         return expr
+    if not expr.has(sp.Piecewise):
+        return expr
+    mid = (float(left) + float(right)) / 2.0
+
+    def _replace_pw(node):
+        if isinstance(node, sp.Piecewise):
+            for branch_expr, cond in node.args:
+                if cond == True or cond == sp.true:
+                    return branch_expr
+                try:
+                    c_val = cond.subs(var, mid)
+                    if c_val == True or c_val == sp.true:
+                        return branch_expr
+                except Exception:
+                    pass
+            if node.args:
+                return node.args[0][0]
+        return node
+
     try:
-        mid = (float(left) + float(right)) / 2.0
-        for branch_expr, cond in expr.args:
-            if cond == True or cond == sp.true:
-                return branch_expr
-            c_val = cond.subs(var, mid)
-            if c_val == True or c_val == sp.true:
-                return branch_expr
+        return expr.replace(lambda n: isinstance(n, sp.Piecewise), _replace_pw)
     except Exception:
-        pass
-    return expr
+        return expr
 
 
 def _to_rational_bound(val: float | int | str) -> sp.Rational:
@@ -146,6 +158,51 @@ def _format_bound_latex(val: float | int | sp.Rational) -> str:
         return _to_latex(val)
 
 
+def _check_domain_validity(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: float, n_samples: int = 401) -> bool:
+    """ตรวจสอบว่าฟังก์ชันมีค่าจริงและจำกัดตลอดช่วงปิด [a, b]"""
+    # 1. ตรวจสอบจุดเอกฐานจากตัวส่วน
+    denom = sp.denom(expr.rewrite(sp.cos))
+    if denom != 1:
+        try:
+            for r in sp.solve(denom, var):
+                if getattr(r, "is_real", False) and a_val <= float(r) <= b_val:
+                    return False
+        except Exception:
+            pass
+
+    # 2. ตรวจสอบแบบ vector ด้วย numpy lambdify
+    try:
+        import numpy as np
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            fn = sp.lambdify(var, expr, modules=["numpy", {"real_root": np.cbrt}])
+            xs = np.linspace(a_val, b_val, n_samples)
+            ys = fn(xs)
+            if np.iscomplexobj(ys):
+                if np.any(np.abs(np.imag(ys)) > 1e-9):
+                    return False
+            if not np.all(np.isfinite(ys)) or np.any(np.isnan(ys)):
+                return False
+            return True
+    except Exception:
+        pass
+
+    # 3. Fallback จุดต่อจุด
+    for i in range(n_samples + 1):
+        xv = a_val + (b_val - a_val) * i / n_samples
+        try:
+            val = expr.subs(var, xv).evalf()
+            if getattr(val, "is_infinite", False) or val in (sp.zoo, sp.oo, -sp.oo, sp.nan):
+                return False
+            c = complex(val)
+            if abs(c.imag) > 1e-9 or not math.isfinite(c.real) or abs(c.real) > 1e12:
+                return False
+        except Exception:
+            return False
+    return True
+
+
 def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = X) -> list[float]:
     """ค้นหาจุดตัด f(x) - g(x) = 0 บนช่วงเปิด (a, b)"""
     roots = []
@@ -166,8 +223,54 @@ def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = 
     if a_val < 0.0 < b_val and (diff.has(sp.real_root) or diff.has(sp.sign) or diff.has(sp.Abs)):
         roots.append(0.0)
 
-    # 3. สแกนการเปลี่ยนเครื่องหมายและทำ Bisection
-    xs = [a_val + (b_val - a_val) * i / 60.0 for i in range(61)]
+    # 3. สแกนการเปลี่ยนเครื่องหมายด้วยความหนาแน่นสูง (รองรับฟังก์ชันความถี่สูง)
+    n_samples = 2401
+    try:
+        import numpy as np
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            fn = sp.lambdify(var, diff, modules=["numpy", {"real_root": np.cbrt}])
+            xs_np = np.linspace(a_val, b_val, n_samples)
+            ys_np = fn(xs_np)
+            if np.iscomplexobj(ys_np):
+                ys_np = np.real_if_close(ys_np)
+
+            for i in range(n_samples - 1):
+                y1 = float(ys_np[i])
+                y2 = float(ys_np[i + 1])
+                x1 = float(xs_np[i])
+                x2 = float(xs_np[i + 1])
+                if not math.isfinite(y1) or not math.isfinite(y2):
+                    continue
+                if abs(y1) < 1e-12:
+                    if a_val < x1 < b_val and not any(abs(x1 - r) < 1e-4 for r in roots):
+                        roots.append(x1)
+                elif y1 * y2 < 0.0:
+                    xl, xr = x1, x2
+                    yl, yr = y1, y2
+                    xm = (xl + xr) / 2.0
+                    for _ in range(25):
+                        xm = (xl + xr) / 2.0
+                        try:
+                            ym = float(fn(xm))
+                        except Exception:
+                            break
+                        if abs(ym) < 1e-12 or (xr - xl) < 1e-9:
+                            break
+                        if yl * ym <= 0.0:
+                            xr, yr = xm, ym
+                        else:
+                            xl, yl = xm, ym
+                    if a_val < xm < b_val and not any(abs(xm - r) < 1e-4 for r in roots):
+                        roots.append(xm)
+            if roots:
+                return sorted(roots)
+    except Exception:
+        pass
+
+    # Fallback สแกน 1,001 จุด
+    xs = [a_val + (b_val - a_val) * i / 1000.0 for i in range(1001)]
     ys = []
     for xi in xs:
         try:
@@ -180,7 +283,7 @@ def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = 
         y1, y2 = ys[i], ys[i + 1]
         if math.isnan(y1) or math.isnan(y2):
             continue
-        if y1 == 0.0:
+        if abs(y1) < 1e-12:
             if a_val < xs[i] < b_val and not any(abs(xs[i] - r) < 1e-4 for r in roots):
                 roots.append(float(xs[i]))
         elif y1 * y2 < 0.0:
@@ -355,25 +458,10 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
                 "variable": str(var_sym.name),
             }
 
-        # ตรวจสอบจุดเอกฐานบนโดเมน (ตัวส่วนเป็นศูนย์ หรือค่าเป็นอนันต์)
-        denom_diff = sp.denom(diff_expr.rewrite(sp.cos))
-        if denom_diff != 1:
-            try:
-                for r in sp.solve(denom_diff, var_sym):
-                    if getattr(r, "is_real", False) and float(a_sp) <= float(r) <= float(b_sp):
-                        raise ValueError(f"ไม่สามารถคำนวณพื้นที่จำกัดได้บนช่วงที่กำหนด (พบจุดเอกฐานที่ {var_sym} = {r})")
-            except ValueError:
-                raise
-            except Exception:
-                pass
-
-        check_pts = [float(a_sp), float(b_sp), (float(a_sp) + float(b_sp)) / 2.0]
-        if float(a_sp) < 0.0 < float(b_sp):
-            check_pts.append(0.0)
-        for pt in check_pts:
-            val_pt = diff_expr.subs(var_sym, pt)
-            if val_pt in (sp.zoo, sp.oo, -sp.oo) or getattr(val_pt, "is_infinite", False):
-                raise ValueError("ไม่สามารถคำนวณพื้นที่จำกัดได้บนช่วงที่กำหนด (พบจุดเอกฐาน หรือไม่อยู่ในโดเมนจำนวนจริง)")
+        # ตรวจสอบความถูกต้องของโดเมนบนช่วงปิด [a, b] (ต้องเป็นจำนวนจริงและมีค่าจำกัดตลอดช่วง)
+        if not _check_domain_validity(f_expr, var_sym, float(a_sp), float(b_sp)) or \
+           not _check_domain_validity(g_expr, var_sym, float(a_sp), float(b_sp)):
+            raise ValueError("ไม่สามารถคำนวณพื้นที่ได้เนื่องจากฟังก์ชันไม่อยู่ในโดเมนของจำนวนจริง หรือมีจุดเอกฐานบนช่วงที่กำหนด")
 
         # -------------------------------------------------------------
         # ค้นหาจุดตัด f(x) - g(x) = 0 ทั้งหมดบนช่วงเปิด (a, b)
@@ -403,10 +491,18 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         total_area = sp.S.Zero
         piece_areas = []
 
+        # หาปฏิยานุพันธ์หลักล่วงหน้าครั้งเดียวเพื่อประสิทธิภาพสูง (ลดเวลาจาก O(N) integrate เหลือ O(1))
+        antideriv_f_minus_g = None
+        try:
+            anti_cand = sp.integrate(diff_expr, var_sym)
+            if not anti_cand.has(sp.Integral):
+                antideriv_f_minus_g = anti_cand
+        except Exception:
+            antideriv_f_minus_g = None
+
         for i, (left, right) in enumerate(zip(cuts, cuts[1:]), start=1):
             left_disp = _format_bound_latex(left)
             right_disp = _format_bound_latex(right)
-            # ตรวจสอบว่าเส้นโค้งใดอยู่บน-ล่างบนช่วงย่อย
             mid = (left + right) / 2
             mid_val = diff_expr.subs(var_sym, mid)
             is_pos = True
@@ -418,35 +514,60 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             if is_pos:
                 integrand = sp.expand(f_expr - g_expr)
                 curve_order_desc = f"$f({v_lat}) \\geq g({v_lat})$ (เส้นโค้ง $f$ อยู่บน $g$)"
+                antideriv = antideriv_f_minus_g
             else:
                 integrand = sp.expand(g_expr - f_expr)
                 curve_order_desc = f"$g({v_lat}) \\geq f({v_lat})$ (เส้นโค้ง $g$ อยู่บน $f$ สลับเป็น $g - f$)"
+                antideriv = -antideriv_f_minus_g if antideriv_f_minus_g is not None else None
 
-            piece_integral = sp.integrate(integrand, (var_sym, left, right))
-            if piece_integral.has(sp.Integral) or not (
+            piece_integral = None
+            if antideriv is not None:
+                try:
+                    piece_integral = antideriv.subs(var_sym, right) - antideriv.subs(var_sym, left)
+                except Exception:
+                    piece_integral = None
+
+            if piece_integral is None or piece_integral.has(sp.Integral) or not (
                 getattr(piece_integral, "is_real", False) and getattr(piece_integral, "is_finite", False)
             ):
-                piece_integral = sp.Integral(integrand, (var_sym, left, right)).evalf()
+                piece_integral = sp.integrate(integrand, (var_sym, left, right))
+                if piece_integral.has(sp.Integral) or not (
+                    getattr(piece_integral, "is_real", False) and getattr(piece_integral, "is_finite", False)
+                ):
+                    piece_integral = sp.Integral(integrand, (var_sym, left, right)).evalf()
+
+            try:
+                num_val = complex(piece_integral.evalf())
+                if abs(num_val.imag) > 1e-9:
+                    raise ValueError("ผลการอินทิเกรตไม่เป็นจำนวนจริง (ฟังก์ชันอยู่นอกโดเมนของจำนวนจริง)")
+            except ValueError:
+                raise
+            except Exception:
+                pass
+
             piece_area = abs(piece_integral)
             total_area += piece_area
             piece_areas.append(piece_area)
 
-            piece_float = float(piece_area.evalf() if hasattr(piece_area, "evalf") else piece_area)
-            piece_disp = _format_evaluated_value(piece_area, piece_float)
-
-            antideriv = sp.integrate(integrand, var_sym)
-            if not antideriv.has(sp.Integral):
-                antideriv = _simplify_piecewise_on_interval(antideriv, var_sym, float(left), float(right))
-                anti_lat = _to_latex(antideriv, order="none")
-                sub_steps.append(
-                    f"ช่วงย่อยที่ {i} $[{left_disp}, {right_disp}]$ ({curve_order_desc}): "
-                    f"$A_{i} = \\int_{{{left_disp}}}^{{{right_disp}}} \\left({_to_latex(integrand, order='none')}\\right) \\, d{v_lat} = \\left[ {anti_lat} \\right]_{{{left_disp}}}^{{{right_disp}}} = {piece_disp}$"
-                )
-            else:
-                sub_steps.append(
-                    f"ช่วงย่อยที่ {i} $[{left_disp}, {right_disp}]$ ({curve_order_desc}): "
-                    f"$A_{i} = \\int_{{{left_disp}}}^{{{right_disp}}} \\left({_to_latex(integrand, order='none')}\\right) \\, d{v_lat} = {piece_disp}$"
-                )
+            if len(cuts) <= 9 or i <= 3 or i == len(cuts) - 1:
+                piece_float = float(piece_area.evalf() if hasattr(piece_area, "evalf") else piece_area)
+                piece_disp = _format_evaluated_value(piece_area, piece_float)
+                if antideriv is None:
+                    antideriv = sp.integrate(integrand, var_sym)
+                if not antideriv.has(sp.Integral):
+                    antideriv = _simplify_piecewise_on_interval(antideriv, var_sym, float(left), float(right))
+                    anti_lat = _to_latex(antideriv, order="none")
+                    sub_steps.append(
+                        f"ช่วงย่อยที่ {i} $[{left_disp}, {right_disp}]$ ({curve_order_desc}): "
+                        f"$A_{i} = \\int_{{{left_disp}}}^{{{right_disp}}} \\left({_to_latex(integrand, order='none')}\\right) \\, d{v_lat} = \\left[ {anti_lat} \\right]_{{{left_disp}}}^{{{right_disp}}} = {piece_disp}$"
+                    )
+                else:
+                    sub_steps.append(
+                        f"ช่วงย่อยที่ {i} $[{left_disp}, {right_disp}]$ ({curve_order_desc}): "
+                        f"$A_{i} = \\int_{{{left_disp}}}^{{{right_disp}}} \\left({_to_latex(integrand, order='none')}\\right) \\, d{v_lat} = {piece_disp}$"
+                    )
+            elif i == 4 and len(cuts) > 9:
+                sub_steps.append(f"... (คำนวณช่วงย่อยที่ 4 ถึง {len(cuts) - 2} ในลักษณะเดียวกัน) ...")
 
         res_float = float(total_area.evalf() if hasattr(total_area, "evalf") else total_area)
         total_disp = _format_evaluated_value(total_area, res_float)
@@ -497,11 +618,19 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             )
             steps.extend(sub_steps)
             # รวมผลบวกทุกช่วงย่อย
-            sum_str = " + ".join(f"A_{i}" for i in range(1, len(cuts)))
-            pieces_val_str = " + ".join(f"{_format_evaluated_value(p, float(p.evalf()))}" for p in piece_areas)
-            steps.append(
-                f"รวมพื้นที่ทุกช่วงย่อย: $A = {sum_str} = {pieces_val_str} = {total_disp}$"
-            )
+            if len(cuts) <= 9:
+                sum_str = " + ".join(f"A_{i}" for i in range(1, len(cuts)))
+                pieces_val_str = " + ".join(f"{_format_evaluated_value(p, float(p.evalf()))}" for p in piece_areas)
+                steps.append(
+                    f"รวมพื้นที่ทุกช่วงย่อย: $A = {sum_str} = {pieces_val_str} = {total_disp}$"
+                )
+            else:
+                sum_str = f"A_1 + A_2 + A_3 + \\dots + A_{{{len(cuts)-1}}}"
+                first_vals = " + ".join(f"{_format_evaluated_value(piece_areas[k], float(piece_areas[k].evalf()))}" for k in range(3))
+                last_val = f"{_format_evaluated_value(piece_areas[-1], float(piece_areas[-1].evalf()))}"
+                steps.append(
+                    f"รวมพื้นที่ทุกช่วงย่อย: $A = {sum_str} = {first_vals} + \\dots + {last_val} = {total_disp}$"
+                )
         else:
             # ไม่มีจุดตัดภายในช่วง
             mid_full = (a_sp + b_sp) / 2

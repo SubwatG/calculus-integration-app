@@ -203,4 +203,23 @@ class TestComputeAreaBetween:
         assert "Piecewise" not in steps_text
         assert "cases" not in steps_text
 
+    def test_math_01_high_frequency_sine_crossing(self):
+        import math
+        res = compute_area_between("sin(120*pi*x)", "0", 0, 1)
+        assert res["ok"] is True
+        assert res["result"] == pytest.approx(2.0 / math.pi, rel=1e-5)
+        assert len(res["crossings"]) >= 100
+
+    def test_math_02_negative_domain_rejected(self):
+        res = compute_area_between("sqrt(x)", "0", -2, -1)
+        assert res["ok"] is False
+        assert res["result"] is None
+        assert "โดเมน" in res["error"] or "ไม่สามารถคำนวณได้" in res["error"]
+
+    def test_math_03_partial_negative_domain_rejected(self):
+        res = compute_area_between("sqrt(x)", "0", -1, 1)
+        assert res["ok"] is False
+        assert res["result"] is None
+        assert "โดเมน" in res["error"] or "ไม่สามารถคำนวณได้" in res["error"]
+
 
