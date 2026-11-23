@@ -42,7 +42,6 @@ RIGHT_ARROW = "\u2192"
 NAMED_EXPANDERS = {
     "แนวคิดหลัก: ความชันเส้นสัมผัสมาจากลิมิตของเส้นตัดอย่างไร?",
     "รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม",
-    "วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)",
 }
 
 
@@ -118,8 +117,7 @@ class TestPageLayout:
 
     def test_named_expanders_present(self):
         at = _render("x^2", 1.0)
-        labels = {e.label for e in at.expander}
-        assert "วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)" in labels
+        assert "วิธีทำทีละขั้นตอน" in " ".join(_visible_texts(at))
 
     def test_concept_anchor_is_open_container(self):
         at = _render("x^2", 1.0)
@@ -133,9 +131,9 @@ class TestPageLayout:
 
     def test_full_worked_solution_is_collapsed_in_named_expander(self):
         at = _render("x^2", 1.0)
-        assert "วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)" in {e.label for e in at.expander}
-        assert 'st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)", expanded=False):' in PAGE_SRC
-        i_expander = PAGE_SRC.index("วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)")
+        assert "วิธีทำทีละขั้นตอน" in " ".join(_visible_texts(at))
+        assert "render_steps(res" in PAGE_SRC
+        i_expander = PAGE_SRC.index("วิธีทำทีละขั้นตอน")
         i_render_steps = PAGE_SRC.index("render_steps(res")
         assert i_expander < i_render_steps
         assert PAGE_SRC.count("render_steps(res") == 1  # single call site

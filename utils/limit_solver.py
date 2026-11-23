@@ -464,7 +464,7 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
                 result = None
                 latex_str = f"\\lim_{{{v_lat} \\to {dir_tex}}} {_to_latex(expr)} \\quad \\text{{(does not exist)}}"
                 steps = [
-                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร ${v_lat}$ {x_desc}\n\\lim_{{{v_lat} \\to {dir_tex}}} \\left({_to_latex(expr)}\\right)",
+                    f"กำหนดโจทย์ลิมิตที่อนันต์ (End Behavior): เมื่อตัวแปร ${v_lat}$ {x_desc}\n\\lim_{{{v_lat} \\to {dir_tex}}} \\left({_to_latex(expr)}\\right)",
                     f"การวิเคราะห์พฤติกรรม: ฟังก์ชันมีการแกว่งกวัดขึ้นลงไม่สิ้นสุด (Oscillating) เมื่อ ${v_lat} \\to {dir_tex}$ จึงไม่ลู่เข้าหาค่าคงที่ใด",
                     f"สรุปผล (ไม่มีลิมิตเนื่องจากการแกว่งกวัด): \\lim_{{{v_lat} \\to {dir_tex}}} \\left({_to_latex(expr)}\\right) \\quad \\text{{(does not exist)}}",
                 ]
@@ -473,7 +473,7 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
                 result = None
                 latex_str = f"\\lim_{{{v_lat} \\to {dir_tex}}} {_to_latex(expr)} = {_to_latex(lim_val)}"
                 steps = [
-                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร ${v_lat}$ {x_desc}\n\\lim_{{{v_lat} \\to {dir_tex}}} \\left({_to_latex(expr)}\\right)",
+                    f"กำหนดโจทย์ลิมิตที่อนันต์ (End Behavior): เมื่อตัวแปร ${v_lat}$ {x_desc}\n\\lim_{{{v_lat} \\to {dir_tex}}} \\left({_to_latex(expr)}\\right)",
                     f"การวิเคราะห์พฤติกรรม: ค่าฟังก์ชันเพิ่มขึ้น/ลดลงอย่างไม่มีขอบเขต พุ่งไปสู่ ${_to_latex(lim_val)}$",
                     f"สรุปผล (ลิมิตลู่ออกสู่อนันต์): \\lim_{{{v_lat} \\to {dir_tex}}} \\left({_to_latex(expr)}\\right) = {_to_latex(lim_val)}",
                 ]
@@ -482,7 +482,7 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
                 result = float(lim_val.evalf())
                 latex_str = f"\\lim_{{{v_lat} \\to {dir_tex}}} {_to_latex(expr)} = {_to_latex(lim_val)}"
                 steps = [
-                    f"กำหนดโจทย์ลิมิตที่อนันต์: ศึกษาพฤติกรรมระยะไกล (End Behavior) เมื่อตัวแปร ${v_lat}$ {x_desc}\n\\lim_{{{v_lat} \\to {dir_tex}}} \\left({_to_latex(expr)}\\right)",
+                    f"กำหนดโจทย์ลิมิตที่อนันต์ (End Behavior): เมื่อตัวแปร ${v_lat}$ {x_desc}\n\\lim_{{{v_lat} \\to {dir_tex}}} \\left({_to_latex(expr)}\\right)",
                     f"การวิเคราะห์พฤติกรรมและการจัดรูป: เมื่อ ${v_lat} \\to {dir_tex}$ พจน์ที่มีกำลังต่ำกว่าจะถูกครอบงำด้วยพจน์กำลังสูงสุด ส่งผลให้ค่าฟังก์ชันลู่เข้าสู่ค่าคงที่ ${_to_latex(lim_val)}$ เกิดเป็นเส้นกำกับแนวนอน $y = {_to_latex(lim_val)}$",
                     f"พิจารณาค่าลิมิต: \\lim_{{{v_lat} \\to {dir_tex}}} \\left({_to_latex(expr)}\\right) = {_to_latex(lim_val)}",
                     f"สรุปผลค่าลิมิตที่อนันต์ (เส้นกำกับแนวนอน): \\lim_{{{v_lat} \\to {dir_tex}}} \\left({_to_latex(expr)}\\right) = {_to_latex(lim_val)}",

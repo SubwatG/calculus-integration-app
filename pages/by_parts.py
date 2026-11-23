@@ -146,7 +146,7 @@ with st.expander("อ่านหลักการตัดสินใจแ�
 - **หลักการเลือก $u$:** ฟังก์ชันที่ **หาอนุพันธ์แล้วได้รูปที่ง่ายขึ้นหรือดีกรีลดลง**
 - **หลักการเลือก $dv$:** ฟังก์ชันที่ **หาปริพันธ์กลับเป็น $v$ ได้ง่ายโดยรูปไม่ซับซ้อนขึ้น**
 - **ลำดับความสำคัญตามกฎ LIATE (เลือกเป็น $u$ จากซ้ายไปขวา):** $L$ (Log), $I$ (Inv Trig), $A$ (Algebra), $T$ (Trig), $E$ (Exp)
-- **เทคนิคการวนซ้ำ:** กรณีฟังก์ชันตรีโกณมิติกับเอกซ์โพเนนเชียล เช่น $\\int e^x \\sin x\\,dx$ หรือ $\\int 2^x \\cos x\\,dx$ หลังทำ By Parts สองรอบจะได้รูปเดิม ให้ย้ายข้างสมการทางพีชคณิตเพื่อหาคำตอบ
+- **เทคนิคการวนซ้ำ:** กรณีฟังก์ชันตรีโกณมิติกับเอกซ์โพเนนเชียล เช่น $\int e^x \sin x\,dx$ หรือ $\int 2^x \cos x\,dx$ หลังทำ By Parts สองรอบจะได้รูปเดิม ให้ย้ายข้างสมการทางพีชคณิตเพื่อหาคำตอบ
         """
     )
 
@@ -203,7 +203,8 @@ if "กรณีที่ 1" in case_parts:
             st.success("**ถูกต้องตามหลักการ (A มาก่อน E ในกฎ LIATE):** ดิฟ $u = x$ ดีกรีลดลงเหลือ $1$ ส่วน $e^x$ อินทิเกรตง่ายและคงรูปเดิม")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int x e^x \, dx = e^x(x - 1) + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **คำนวณส่วนประกอบ:**
@@ -251,7 +252,8 @@ elif "กรณีที่ 2" in case_parts:
             st.success(r"**ถูกต้องตามหลักการ (L มาเป็นอันดับแรกในกฎ LIATE):** $\ln(x)$ อินทิเกรตตรงยาก แต่ดิฟได้ $\frac{1}{x}$ พีชคณิต ซึ่งตัดทอนกับ $v = x$ ได้ลงตัว")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int \ln(x) \, dx = x(\ln x - 1) + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **กำหนดส่วนประกอบ:**
@@ -298,7 +300,8 @@ elif "กรณีที่ 3" in case_parts:
             st.success(r"**ถูกต้องตามหลักการ (ลดทอนดีกรีแบบต่อเนื่อง):** พหุนามดีกรี 2 ต้องทำ 2 รอบ ($x^2 \to 2x \to 2$) จนกระทั่งเหลืออินทิกรัลพื้นฐาน")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int x^2 e^x \, dx = e^x(x^2 - 2x + 2) + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **รอบที่ 1:** ให้ $u = x^2 \implies du = 2x dx$, $dv = e^x dx \implies v = e^x$
@@ -347,7 +350,8 @@ elif "กรณีที่ 4" in case_parts:
             st.success(r"**ถูกต้องตามหลักการ (Cyclic By Parts):** ทั้ง $e^x$ และ $\cos(x)$ วนกลับมารูปเดิม ทำ By Parts 2 รอบแล้วย้ายข้างสมการทางพีชคณิตเพื่อหาคำตอบ")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int e^x \cos(x) \, dx = \frac{e^x(\sin x + \cos x)}{2} + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **รอบที่ 1 ($u = e^x, dv = \cos(x) dx$):**
@@ -394,7 +398,8 @@ elif "กรณีที่ 5" in case_parts:
             st.success(r"**ถูกต้องตามกฎ LIATE (A มาก่อน T):** เลือก $u = x$ ทำให้ดิฟได้ $du = dx$ ดีกรีลดลง ส่วน $\sin(x)$ อินทิเกรตได้ $-\cos(x)$")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int x \sin(x) \, dx = -x\cos(x) + \sin(x) + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **กำหนดตัวแปรและหาอนุพันธ์/ปฏิยานุพันธ์:**
@@ -441,7 +446,8 @@ else:
             st.success(r"**ถูกต้องตามกฎ LIATE (L มาก่อน A เสมอ):** แม้ $x$ จะเป็นพหุนาม แต่ $\ln(x)$ อินทิเกรตยาก จึงต้องเลือกเป็น $u$ เพื่อดิฟให้เป็นพีชคณิต $\frac{1}{x}$")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int x \ln(x) \, dx = \frac{x^2}{4}(2\ln x - 1) + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **กำหนดตัวแปรและหาอนุพันธ์:**
@@ -499,7 +505,8 @@ render_syntax_guide()
 
 render_math_keypad(target_key="byparts_expr", key_prefix="byparts_kp", expanded=False)
 
-if st.button("คำนวณผลลัพธ์", type="primary", key="btn_byparts_calc"):
+btn_calc = st.button("คำนวณผลลัพธ์", type="primary", key="btn_byparts_calc")
+if expr_input.strip() or btn_calc:
     if not expr_input.strip():
         st.error("กรุณาใส่นิพจน์ก่อน")
     else:

@@ -146,8 +146,8 @@ with st.container(border=True):
 with st.expander("อ่านเป้าหมายและหลักการเปลี่ยนตัวแปร u เพิ่มเติม", expanded=False):
     st.markdown(
         r"""
-- **เป้าหมายหลัก:** แปลงอินทิกรัลให้อยู่ในรูปพื้นฐาน $\\int f(u)\\,du$ โดยมีหลักสำคัญคือ **ตัวแปร $x$ จะต้องถูกตัดทอนได้หมด**
-- **วิธีตรวจสอบ:** เมื่อดิฟ $u$ ได้ $du = g'(x) dx$ แล้วแทน $dx = \\frac{du}{g'(x)}$ ตัวแปร $x$ ทั้งหมดต้องตัดทอนกันหายไป เหลือเฉพาะตัวแปร $u$
+- **เป้าหมายหลัก:** แปลงอินทิกรัลให้อยู่ในรูปพื้นฐาน $\int f(u)\,du$ โดยมีหลักสำคัญคือ **ตัวแปร $x$ จะต้องถูกตัดทอนได้หมด**
+- **วิธีตรวจสอบ:** เมื่อดิฟ $u$ ได้ $du = g'(x)\,dx$ แล้วแทน $dx = \frac{du}{g'(x)}$ ตัวแปร $x$ ทั้งหมดต้องตัดทอนกันหายไป เหลือเฉพาะตัวแปร $u$
 - **หากตัวแปร $x$ ไม่หมด:** ให้พิจารณาว่าสามารถจัดรูป $x$ ในเทอมของ $u$ มาแทนค่าเพิ่มได้หรือไม่ หากไม่ได้ อาจต้องใช้วิธีอื่น เช่น อินทิเกรตทีละส่วน (By Parts)
         """
     )
@@ -205,7 +205,8 @@ if "กรณีที่ 1" in case_sub:
             st.success(r"**ถูกต้องตามหลักการ:** เมื่อเลือก $u = x^2 + 1$ จะได้ $du = 2x\,dx$ ซึ่งพจน์ $2x$ จะตัดทอนกับตัวคูณด้านหน้าหมดพอดี")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int 2x\sqrt{x^2+1} \, dx = \frac{2}{3}(x^2+1)^{3/2} + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **กำหนดตัวแปรและหาอนุพันธ์:**
@@ -256,7 +257,8 @@ elif "กรณีที่ 2" in case_sub:
             st.success(r"**ถูกต้องตามหลักการ:** อนุพันธ์ของ $\ln(x)$ คือ $\frac{1}{x}$ ซึ่งจะตัดกับตัวส่วน $x$ หายไปหมดพอดี")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int \frac{\ln x}{x} \, dx = \frac{(\ln x)^2}{2} + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **กำหนดตัวแปรและหาอนุพันธ์:**
@@ -307,7 +309,8 @@ elif "กรณีที่ 3" in case_sub:
             st.success(r"**ถูกต้องตามหลักการ:** ดิฟ $u = \sin(x)$ ได้ $du = \cos(x)\,dx$ ซึ่งตัดกับ $\cos(x)$ ด้านหน้าหมดพอดี")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int \cos(x) e^{\sin(x)} \, dx = e^{\sin(x)} + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **กำหนดตัวแปรและหาอนุพันธ์:**
@@ -359,7 +362,8 @@ elif "กรณีที่ 4" in case_sub:
             st.success("**ถูกต้องตามหลักการ:** จัดรูป $x = u - 1$ แล้วคูณกระจาย $(u - 1)u^{1/2} = u^{3/2} - u^{1/2}$ ทำให้หาอินทิกรัลทีละพจน์ได้")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int x\sqrt{x+1} \, dx = \frac{2}{5}(x+1)^{5/2} - \frac{2}{3}(x+1)^{3/2} + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **สลับรูปตัวแปร:**
@@ -410,7 +414,8 @@ elif "กรณีที่ 5" in case_sub:
             st.success(r"**ถูกต้องตามหลักการ:** ตัวเศษ $2x$ คืออนุพันธ์ของตัวส่วนพอดี ได้รูปพื้นฐาน $\int \frac{1}{u}\,du = \ln|u| + C$")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int \frac{2x}{x^2+1} \, dx = \ln(x^2+1) + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **กำหนดตัวแปรและหาอนุพันธ์:**
@@ -459,7 +464,8 @@ else:
             st.success(r"**ถูกต้องตามหลักการ:** ดิฟฐาน $u = x^3 + 5$ ได้ $du = 3x^2\,dx$ ตัดกับ $3x^2$ ด้านหน้าหมด เหลือเพียง $\int u^4\,du$")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int 3x^2 (x^3+5)^4 \, dx = \frac{(x^3+5)^5}{5} + C")
-            with st.expander("ดูวิธีทำทีละขั้นตอนอย่างละเอียด", expanded=False):
+            with st.container(border=True):
+                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
                 st.markdown(
                     r"""
                     1. **กำหนดตัวแปรและหาอนุพันธ์:**
@@ -562,30 +568,25 @@ with tab_user:
                 st.success(f"**{ver_res['status_th']}** : {ver_res['message']}")
                 st.markdown("##### ผลลัพธ์สุดท้าย")
                 render_latex(ver_res["latex"])
-                with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม", expanded=True):
-                    render_steps(ver_res["steps"], title=None)
+                render_steps(ver_res["steps"], title="วิธีทำทีละขั้นตอน")
 
             elif ver_res["status"] == "algebraic_adjustment":
                 st.info(f"**{ver_res['status_th']}** : {ver_res['message']}")
                 st.markdown("##### ผลลัพธ์สุดท้าย")
                 render_latex(ver_res["latex"])
-                with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม (พร้อมการจัดรูปพีชคณิต)", expanded=True):
-                    render_steps(ver_res["steps"], title=None)
+                render_steps(ver_res["steps"], title="วิธีทำทีละขั้นตอน (พร้อมการจัดรูปพีชคณิต)")
 
             elif ver_res["status"] == "incompatible":
                 st.error(f"**{ver_res['status_th']}** : {ver_res['message']}")
-                with st.expander("รายละเอียดว่าเหตุใดการเลือกนี้จึงไม่สามารถแก้ได้", expanded=True):
-                    render_steps(ver_res["steps"], title=None)
+                render_steps(ver_res["steps"], title="รายละเอียดว่าเหตุใดการเลือกนี้จึงไม่สามารถแก้ได้")
 
             elif ver_res["status"] == "trivial":
                 st.warning(f"**{ver_res['status_th']}** : {ver_res['message']}")
-                with st.expander("คำอธิบาย", expanded=True):
-                    render_steps(ver_res["steps"], title=None)
+                render_steps(ver_res["steps"], title="คำอธิบาย")
 
             elif ver_res["status"] == "unsuitable_for_substitution":
                 st.warning(f"**{ver_res['status_th']}** : {ver_res['message']}")
-                with st.expander("คำแนะนำแนวทางที่เหมาะสม", expanded=True):
-                    render_steps(ver_res["steps"], title=None)
+                render_steps(ver_res["steps"], title="คำแนะนำแนวทางที่เหมาะสม")
             else:
                 st.error(ver_res.get("message", "เกิดข้อผิดพลาดในการคำนวณ"))
 
@@ -593,7 +594,8 @@ with tab_auto:
     st.markdown("#### ระบบวิเคราะห์และเฉลยวิธีทำโดยอัตโนมัติ")
     st.caption("ระบบจะค้นหาตัวแปร u ที่เหมาะสมที่สุด หรือแนะนำเทคนิคที่ตรงกับโจทย์")
 
-    if st.button("คำนวณและแสดงวิธีทำ", type="primary", key="btn_substitution_calc"):
+    btn_calc = st.button("คำนวณและแสดงวิธีทำ", type="primary", key="btn_substitution_calc")
+    if expr_input.strip() or btn_calc:
         if not expr_input.strip():
             st.error("กรุณาใส่นิพจน์ก่อน")
         else:

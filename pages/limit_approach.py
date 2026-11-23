@@ -8,7 +8,6 @@
 """
 
 import numpy as np
-import pandas as pd
 import streamlit as st
 import sympy as sp
 
@@ -92,7 +91,7 @@ def _short_case_feedback(res: dict) -> tuple[str, str]:
         if res.get("is_infinite"):
             return "success", (
                 "**สรุป:** เมื่อตัวแปรมีขนาดใหญ่ขึ้นเรื่อย ๆ "
-                f"ค่าฟังก์ชันลู่เข้าสู่ค่าคงที่ {result:.4f} (พฤติกรรมระยะไกล)"
+                f"ค่าฟังก์ชันลู่เข้าสู่ค่าคงที่ {result:.4f}"
             )
         if _function_undefined_at_a(res):
             return "success", (
@@ -235,7 +234,7 @@ with st.expander("อ่านรายละเอียดทฤษฎี ข�
         """
 - **นิยามการมีลิมิต:** $\\lim_{x \\to a} f(x) = L$ มีค่าได้ ก็ต่อเมื่อ ลิมิตซ้ายเท่ากับลิมิตขวา
 - **พฤติกรรมรอบจุด ไม่ใช่ที่จุด:** ลิมิตพิจารณาค่าที่ฟังก์ชัน **วิ่งเข้าหา** เมื่อ $x$ เข้าใกล้ $a$ ไม่ได้ขึ้นกับว่าที่จุด $x = a$ ฟังก์ชันมีค่าหรือไม่ (ตรงจุดนั้นฟังก์ชันอาจไม่นิยาม แต่ลิมิตอาจหาค่าได้)
-- **ลิมิตที่อนันต์ ($x \\to \\pm\\infty$):** ศึกษาพฤติกรรมระยะไกลเมื่อ $x$ เพิ่มขึ้นไม่สิ้นสุด หากลู่เข้าหาค่าคงที่ $L$ เส้นตรง $y = L$ จะเป็นเส้นกำกับแนวนอน
+- **ลิมิตที่อนันต์ ($x \\to \\pm\\infty$):** ศึกษาแนวโน้มเมื่อ $x$ เพิ่มขึ้นไม่สิ้นสุด หากลู่เข้าหาค่าคงที่ $L$ เส้นตรง $y = L$ จะเป็นเส้นกำกับแนวนอน
         """
     )
 
@@ -340,24 +339,7 @@ with col_a:
 s_a_clean = str(a_input).strip().lower().replace(" ", "")
 is_inf_target = s_a_clean in ("inf", "+inf", "-inf", "oo", "+oo", "-oo")
 
-# ระยะก้าวเข้าใกล้ d วางไว้ติดกับกราฟด้านล่าง เพื่อให้ปรับแล้วเห็นการเปลี่ยนแปลงทันที
-col_delta, col_delta_note = st.columns([1, 2])
-with col_delta:
-    if is_inf_target:
-        st.info("โหมดลิมิตที่อนันต์ ($x \\to \\pm\\infty$) ไม่ต้องกำหนดระยะ d")
-        delta_val = 0.5
-    else:
-        delta_val = st.slider(
-            "ระยะก้าวเข้าใกล้ d",
-            min_value=0.01,
-            max_value=2.0,
-            value=0.4,
-            step=0.01,
-            key="limit_delta",
-        )
-with col_delta_note:
-    if not is_inf_target:
-        st.caption("ระยะ d ควบคุมช่วงที่กราฟแสดงการเข้าใกล้จุด a โดยตรง ปรับแล้วกราฟด้านล่างจะอัปเดตตามทันที")
+delta_val = 0.4
 
 # Math Keypad Reusable Component
 render_math_keypad(target_key="limit_expr", key_prefix="lim_kp", expanded=False)
@@ -411,68 +393,10 @@ else:
             except Exception as e2:
                 st.warning(f"ไม่สามารถวาดกราฟได้: {e2}")
 
-        is_infinite = res.get("is_infinite", False)
-
         # -------------------------------------------------------------
-        # ตารางการเข้าใกล้เชิงตัวเลข (Numerical Inspection)
+        # วิธีทำฉบับเต็ม (Worked Solution): แสดงขั้นตอนทันทีโดยไม่พับเก็บ
         # -------------------------------------------------------------
-        if is_infinite:
-            with st.expander("ตารางการเข้าใกล้เชิงตัวเลขเมื่อตัวแปรขยายสู่ขนาดใหญ่ (Numerical Inspection)", expanded=False):
-                st.caption(f"สังเกตพฤติกรรมตัวเลข: เมื่อค่า {v_name} เพิ่มขึ้นสู่ขนาดใหญ่ ให้สังเกตว่าค่า f({v_name}) วิ่งลู่เข้าหาค่าคงที่ใด")
-                is_pos = (s_a_clean in ("inf", "+inf", "oo", "+oo"))
-                test_xs = [5.0, 10.0, 50.0, 100.0, 500.0, 1000.0] if is_pos else [-5.0, -10.0, -50.0, -100.0, -500.0, -1000.0]
-                table_rows = []
-                target_L = res.get("result")
-                for tx in test_xs:
-                    try:
-                        y_val = float(res["expr"].subs(var_sym, tx).evalf())
-                        y_str = f"{y_val:.6f}"
-                        diff_str = f"{abs(y_val - target_L):.6f}" if target_L is not None else "-"
-                    except Exception:
-                        y_str = "N/A"
-                        diff_str = "-"
-                    table_rows.append({
-                        f"ค่าตัวแปร {v_name}": f"{tx:g}",
-                        f"ค่าฟังก์ชัน f({v_name})": y_str,
-                        f"ผลต่างจากค่าลิมิต |f({v_name}) - L|": diff_str,
-                    })
-                st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
-        else:
-            with st.expander("ตารางการเข้าใกล้เชิงตัวเลข (Numerical Inspection)", expanded=False):
-                try:
-                    a_num_val = float(res.get("a_sp", 0).evalf())
-                except Exception:
-                    a_num_val = 0.0
-                st.caption(f"สังเกตพฤติกรรมตัวเลข: เมื่อระยะห่าง d ลดลงเรื่อย ๆ (${v_name}$ ขยับเข้าใกล้จุด $a$ มากขึ้น) ให้สังเกตว่าค่า f({v_name}) ฝั่งซ้าย และ f({v_name}) ฝั่งขวา กำลังบีบเข้าหาตัวเลขใด")
-                deltas = [delta_val, delta_val / 2, delta_val / 5, delta_val / 10, delta_val / 100]
-                table_rows = []
-                for d in deltas:
-                    xl = a_num_val - d
-                    xr = a_num_val + d
-                    try:
-                        yl = float(res["expr"].subs(var_sym, xl).evalf())
-                        yl_str = f"{yl:.6f}"
-                    except Exception:
-                        yl_str = "N/A"
-                    try:
-                        yr = float(res["expr"].subs(var_sym, xr).evalf())
-                        yr_str = f"{yr:.6f}"
-                    except Exception:
-                        yr_str = "N/A"
-                    table_rows.append({
-                        "ระยะห่าง d": f"{d:.4f}",
-                        f"ฝั่งซ้าย {v_name} = a - d": f"{xl:.4f}",
-                        f"ค่า f({v_name}) ซ้าย": yl_str,
-                        f"ฝั่งขวา {v_name} = a + d": f"{xr:.4f}",
-                        f"ค่า f({v_name}) ขวา": yr_str,
-                    })
-                st.dataframe(pd.DataFrame(table_rows), use_container_width=True, hide_index=True)
-
-        # -------------------------------------------------------------
-        # วิธีทำฉบับเต็ม (Worked Solution): อยู่ใน expander ที่ตั้งชื่อชัดเจน
-        # -------------------------------------------------------------
-        with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)", expanded=False):
-            render_steps(res["steps"])
+        render_steps(res["steps"])
     else:
         st.error(res["error"])
 

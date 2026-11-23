@@ -238,9 +238,9 @@ else:
             except Exception as e2:
                 st.warning(f"ไม่สามารถวาดกราฟได้: {e2}")
 
-        # วิธีทำฉบับเต็มอยู่ใน expander ที่ตั้งชื่อชัดเจน
-        with st.expander("วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)", expanded=False):
-            render_steps(res["steps"], title=None)
+        # วิธีทำฉบับเต็มแสดงขั้นตอนทันทีโดยไม่พับเก็บ
+        st.markdown("### วิธีทำทีละขั้นตอน")
+        render_steps(res["steps"], title=None)
     else:
         st.error(res["error"])
         feedback_kind, feedback_text = _short_case_feedback(res)
