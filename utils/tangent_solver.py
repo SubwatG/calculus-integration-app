@@ -58,6 +58,22 @@ def _parse_input(expr_str: str) -> sp.Expr:
     return parse_expr(clean, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
 
 
+def _to_real_roots(e: sp.Expr) -> sp.Expr:
+    """แปลงรากที่ติดค่าลบที่มีดัชนีเป็นเลขคี่ ให้เป็นค่าจริงตามหลักแคลคูลัส (เช่น (-1)**(1/3) -> -1)"""
+    if e is None or not isinstance(e, sp.Basic):
+        return e
+
+    def repl(node):
+        if node.is_Pow and node.exp.is_Rational and node.exp.q % 2 == 1:
+            base = node.base
+            exp = node.exp
+            if base.is_number and base.is_negative:
+                return (-1) ** exp.p * sp.Pow(-base, exp)
+        return node
+
+    return e.replace(lambda a: a.is_Pow, repl)
+
+
 def _explain_diff_rule(expr: sp.Expr, var: sp.Symbol) -> str:
     """อธิบายกฎและสูตรการหาอนุพันธ์ที่ใช้กับนิพจน์นี้อย่างเข้าใจง่ายและเน้นสมการ"""
     v_str = str(var.name)
@@ -159,7 +175,7 @@ def _format_tangent_algebra(v_lat: str, a_sym: sp.Expr, fa_sym: sp.Expr, slope_s
 def _format_substitution(expr: sp.Expr, var_sym: sp.Symbol, a_sym: sp.Expr) -> str:
     """จัดรูปแบบการแทนค่าลงในนิพจน์ แสดงการแทนค่าก่อนผลลัพธ์ เช่น f(0) = 0 + 2 = 2"""
     try:
-        val = expr.subs(var_sym, a_sym)
+        val = _to_real_roots(expr.subs(var_sym, a_sym))
         val_lat = _to_latex(val)
         sub_expr = expr.subs(var_sym, sp.UnevaluatedExpr(a_sym))
         sub_lat = _to_latex(sub_expr)
@@ -167,7 +183,7 @@ def _format_substitution(expr: sp.Expr, var_sym: sp.Symbol, a_sym: sp.Expr) -> s
             return f"{sub_lat} = {val_lat}"
         return val_lat
     except Exception:
-        return _to_latex(expr.subs(var_sym, a_sym))
+        return _to_latex(_to_real_roots(expr.subs(var_sym, a_sym)))
 
 
 def _build_finite_tangent_steps(
@@ -277,7 +293,7 @@ def compute_tangent(expr_str: str, a: float) -> dict:
         a_lat = _to_latex(a_sym)
 
         try:
-            fa_sym = expr.subs(var_sym, a_sym)
+            fa_sym = _to_real_roots(expr.subs(var_sym, a_sym))
         except Exception as e:
             return {
                 "ok": False,
@@ -311,7 +327,7 @@ def compute_tangent(expr_str: str, a: float) -> dict:
 
         df = sp.diff(expr, var_sym)
         try:
-            slope_sym = df.subs(var_sym, a_sym)
+            slope_sym = _to_real_roots(df.subs(var_sym, a_sym))
         except Exception:
             slope_sym = sp.nan
 
@@ -324,8 +340,8 @@ def compute_tangent(expr_str: str, a: float) -> dict:
         else:
             diff_quot = (expr.subs(var_sym, a_sym + H) - fa_sym) / H
             try:
-                left_m = sp.limit(diff_quot, H, 0, dir="-")
-                right_m = sp.limit(diff_quot, H, 0, dir="+")
+                left_m = _to_real_roots(sp.limit(diff_quot, H, 0, dir="-"))
+                right_m = _to_real_roots(sp.limit(diff_quot, H, 0, dir="+"))
             except Exception:
                 left_m, right_m = sp.nan, sp.nan
 

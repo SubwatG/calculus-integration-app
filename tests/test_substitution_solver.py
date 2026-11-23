@@ -243,6 +243,29 @@ class TestSolveSubstitution:
 
         cands_tan = get_suggested_u_candidates("tan(x)")
         assert "cos(x)" in cands_tan
+        assert cands_tan[0] == "cos(x)"
+
+    def test_verify_user_u_rejects_spurious_reciprocal(self):
+        """การใส่ u = 1/x กับโจทย์ที่ไม่เข้าพวกต้องถูกปฏิเสธเป็น incompatible"""
+        from utils.substitution_solver import verify_user_u_substitution
+        res_lin = verify_user_u_substitution("1/(2*x+1)", "1/x")
+        assert res_lin["ok"] is False
+        assert res_lin["status"] == "incompatible"
+
+        res_loglog = verify_user_u_substitution("1/(x*log(x))", "1/x")
+        assert res_loglog["ok"] is False
+        assert res_loglog["status"] == "incompatible"
+
+        res_basic = verify_user_u_substitution("1/x", "1/x")
+        assert res_basic["ok"] is False
+
+    def test_step_titles_do_not_duplicate_prefix(self):
+        """ข้อความขั้นตอนต้องไม่มี 'ขั้นที่ 1:' นำหน้าซ้ำซ้อน"""
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("2*x*sqrt(x**2 + 1)", "x**2 + 1")
+        for s in res["steps"]:
+            assert not s.startswith("ขั้นที่ 1:")
+            assert not s.startswith("ขั้นที่ 2:")
 
 
 def test_substitution_page_apptest_render():

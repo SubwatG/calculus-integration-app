@@ -137,10 +137,11 @@ def render_steps(steps, title: Optional[str] = "### วิธีทำทีล�
 
     for i, step in enumerate(steps, 1):
         if isinstance(step, dict):
-            title_text = step.get("title", f"ขั้นตอนที่ {i}")
+            raw_title = step.get("title", f"ขั้นตอนที่ {i}")
+            clean_title = re.sub(r"^(?:ขั้น(?:ตอน)?ที่\s*\d+\s*[:.]?\s*)", "", raw_title).strip() or raw_title
             latex_expr = step.get("latex", "")
             desc = step.get("desc", "")
-            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title_text)}**")
+            st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(clean_title)}**")
             if desc:
                 st.markdown(format_math_spacing(desc))
             if latex_expr:
@@ -155,9 +156,12 @@ def render_steps(steps, title: Optional[str] = "### วิธีทำทีล�
         if not s:
             continue
 
+        # ตัดคำนำหน้า "ขั้นที่ X:" หรือ "ขั้นตอนที่ X:" ออก เพื่อป้องกันการแสดง "ขั้นที่ 2: ขั้นที่ 1"
+        clean_s = re.sub(r"^(?:ขั้น(?:ตอน)?ที่\s*\d+\s*[:.]?\s*)", "", s).strip()
+
         # ตรวจสอบรูปแบบ "คำอธิบายภาษาไทย: สมการ LaTeX"
-        if ":" in s:
-            parts = s.split(":", 1)
+        if ":" in clean_s:
+            parts = clean_s.split(":", 1)
             title_text = parts[0].strip()
             math_part = parts[1].strip()
 
@@ -188,17 +192,17 @@ def render_steps(steps, title: Optional[str] = "### วิธีทำทีล�
                         st.markdown(f"$${core_math}$$")
         else:
             # กรณีไม่มีเครื่องหมายโคลอน (:)
-            if "$" in s:
+            if "$" in clean_s:
                 st.markdown(f"**ขั้นที่ {i}**")
-                st.markdown(format_math_spacing(s))
-            elif is_pure_latex(s) or ("\\" in s) or ("=" in s):
+                st.markdown(format_math_spacing(clean_s))
+            elif is_pure_latex(clean_s) or ("\\" in clean_s) or ("=" in clean_s):
                 st.markdown(f"**ขั้นที่ {i}**")
                 try:
-                    st.latex(strip_math_delimiters(s))
+                    st.latex(strip_math_delimiters(clean_s))
                 except Exception:
-                    st.markdown(f"$${s}$$")
+                    st.markdown(f"$${clean_s}$$")
             else:
-                st.markdown(f"**ขั้นที่ {i}:** {format_math_spacing(s)}")
+                st.markdown(f"**ขั้นที่ {i}:** {format_math_spacing(clean_s)}")
 
 
 def preview_math_expr(expr_str: str, label: str = "สมการที่ระบบเข้าใจ", var_name: Optional[str] = None) -> bool:

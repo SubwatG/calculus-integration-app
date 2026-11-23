@@ -66,7 +66,7 @@ def _short_case_feedback(res: dict) -> tuple[str, str]:
             "กราฟกำลังลดลงที่จุดนี้ เส้นสัมผัสจึงลาดลงจากซ้ายไปขวา"
         )
 
-    if status == "vertical":
+    if status == "vertical" or res.get("is_vertical"):
         return "warning", (
             "**สรุป:** เส้นสัมผัสเป็นแนวดิ่ง "
             "ความชันไม่มีค่าจำกัดเป็นจำนวนจริง ณ จุดนี้"
@@ -194,7 +194,7 @@ else:
             status = res.get("status")
             if status == "finite" and res["result"] is not None:
                 m_str = f"{res['result']:.4f}"
-            elif status == "vertical":
+            elif status == "vertical" or res.get("is_vertical"):
                 m_str = "∞ (แนวดิ่ง)"
             elif status == "non_differentiable":
                 m_str = "ไม่มีค่า (หาอนุพันธ์ไม่ได้)"
@@ -216,12 +216,13 @@ else:
 
         # กราฟวางติดกับตัวควบคุมด้านบน เพื่อให้เห็นผลทันทีหลังเลื่อนจุด a
         st.markdown("### กราฟเส้นโค้งและเส้นสัมผัส")
+        plot_status = "vertical" if res.get("is_vertical") else res.get("status", "finite")
         try:
             fig_plotly = plot_tangent_plotly(
                 res["expr"],
                 a_val,
                 slope=res.get("result"),
-                status=res.get("status", "finite"),
+                status=plot_status,
             )
             st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
@@ -231,7 +232,7 @@ else:
                     res["expr"],
                     a_val,
                     slope=res.get("result"),
-                    status=res.get("status", "finite"),
+                    status=plot_status,
                 )
                 st.pyplot(fig)
             except Exception as e2:

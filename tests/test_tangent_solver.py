@@ -30,6 +30,26 @@ class TestComputeTangent:
         assert res["ok"] is True
         assert res["latex"].startswith("y =")
 
+    def test_compute_tangent_vertical_slope(self):
+        """Case 10: x**(1/3) at 0 has vertical slope and non_differentiable status"""
+        res = compute_tangent("x**(1/3)", 0)
+        assert res["ok"] is True
+        assert res["status"] == "non_differentiable"
+        assert res.get("is_vertical") is True
+        assert res["result"] is None
+
+    def test_compute_tangent_odd_rational_powers_math_15(self):
+        """MATH-15: x**(1/3) at -1 and x**(2/3) at -1 evaluate in real numbers"""
+        res1 = compute_tangent("x**(1/3)", -1)
+        assert res1["ok"] is True
+        assert res1["status"] == "finite"
+        assert pytest.approx(res1["result"], rel=1e-5) == 1/3
+
+        res2 = compute_tangent("x**(2/3)", -1)
+        assert res2["ok"] is True
+        assert res2["status"] == "finite"
+        assert pytest.approx(res2["result"], rel=1e-5) == -2/3
+
     def test_compute_tangent_corner_non_differentiable(self):
         res = compute_tangent("abs(x)", 0)
         assert res["ok"] is True

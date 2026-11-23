@@ -564,10 +564,7 @@ def get_suggested_u_candidates(expr_str: str, var: str | sp.Symbol | None = None
                 seen.add(s_code)
                 result.append(s_code)
 
-        if result:
-            result.append(str(var_sym))
-            return result[:6]
-        return []
+        return result[:6]
     except Exception:
         return []
 
@@ -644,7 +641,13 @@ def verify_user_u_substitution(
         du = sp.diff(u_expr, var_sym)
         ratio = sp.simplify(expr / du)
         u_sym = sp.Symbol("u")
-        ratio_u = sp.simplify(ratio.subs(u_expr, u_sym))
+
+        # ป้องกันไม่ให้ SymPy แปลง x เป็น 1/u อัตโนมัติเมื่อ u_expr เป็น 1/x หรือพจน์ยกกำลัง
+        ratio_u = ratio.replace(u_expr, u_sym)
+        if ratio_u.has(var_sym) and not u_expr.is_Pow and u_expr != 1 / var_sym:
+            cand_ratio_u = sp.simplify(ratio.subs(u_expr, u_sym))
+            if not cand_ratio_u.has(var_sym):
+                ratio_u = cand_ratio_u
 
         # -------------------------------------------------------------
         # 1. กรณี Direct Substitution (ทำได้โดยตรง)
@@ -659,15 +662,10 @@ def verify_user_u_substitution(
                 antideriv_x = _wrap_new_logs(antideriv_x, expr)
                 steps = [
                     f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
-                    f"ขั้นที่ 1: กำหนดตัวแปรและคำนวณอนุพันธ์\n"
-                    f"$$u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = \\frac{{du}}{{{_to_latex(du)}}}$$",
-                    f"ขั้นที่ 2: แทนค่าลงในอินทิกรัลและสังเกตการตัดทอน\n"
-                    f"$$\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int {_to_latex(ratio_u)} \\, du$$\n"
-                    f"ตัวแปร ${v_lat}$ ถูกตัดทอนหมด เหลือเพียงฟังก์ชันของตัวแปร $u$",
-                    f"ขั้นที่ 3: คำนวณปริพันธ์เทียบกับตัวแปร u\n"
-                    f"$$\\int {_to_latex(ratio_u)} \\, du = {_to_latex(antideriv_u_disp)} + C$$",
-                    f"ขั้นที่ 4: แทนค่า $u = {_to_latex(u_expr)}$ กลับในผลลัพธ์:\n"
-                    f"$$= {_to_latex(antideriv_x)} + C$$",
+                    f"กำหนดตัวแปรและคำนวณอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = \\frac{{du}}{{{_to_latex(du)}}}$",
+                    f"แทนค่าลงในอินทิกรัลและสังเกตการตัดทอน: $\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int {_to_latex(ratio_u)} \\, du$\nตัวแปร ${v_lat}$ ถูกตัดทอนหมด เหลือเพียงฟังก์ชันของตัวแปร $u$",
+                    f"คำนวณปริพันธ์เทียบกับตัวแปร u: $\\int {_to_latex(ratio_u)} \\, du = {_to_latex(antideriv_u_disp)} + C$",
+                    f"แทนค่าตัวแปรกลับในผลลัพธ์: แทนค่า $u = {_to_latex(u_expr)}$ ได้เป็น ${_to_latex(antideriv_x)} + C$",
                     domain_note,
                 ]
                 return {
@@ -687,51 +685,43 @@ def verify_user_u_substitution(
         # -------------------------------------------------------------
         # 2. กรณี Algebraic Adjustment (ต้องจัดรูปพีชคณิตเสริมก่อน)
         # -------------------------------------------------------------
-        sols = sp.solve(sp.Eq(u_sym, u_expr), var_sym)
-        if sols:
-            for x_sol in sols:
-                subbed = sp.simplify(ratio_u.subs(var_sym, x_sol))
-                if not subbed.has(var_sym):
-                    int_u = sp.integrate(subbed, u_sym)
-                    if not int_u.has(sp.Integral) and not any(int_u.has(f) for f in SPECIAL_FUNCS):
-                        if check_standard_form(subbed, u_sym):
-                            int_u_disp = _wrap_new_logs(int_u, subbed)
-                            antideriv_x = sp.simplify(int_u.subs(u_sym, u_expr))
-                            antideriv_x = sp.expand_log(antideriv_x, force=True)
-                            antideriv_x = sp.simplify(antideriv_x)
-                            antideriv_x = _wrap_new_logs(antideriv_x, expr)
-                            steps = [
-                                f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
-                                f"ขั้นที่ 1: กำหนดตัวแปรและหาอนุพันธ์\n"
-                                f"$$u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = \\frac{{du}}{{{_to_latex(du)}}}$$",
-                                f"ขั้นที่ 2: แทนค่าลงในอินทิกรัล (พบตัวแปรตกค้าง)\n"
-                                f"$$\\int {_to_latex(expr)} \\, d{v_lat} = \\int \\left({_to_latex(ratio)}\\right) du$$\n"
-                                f"สังเกตว่าตัวแปร ${v_lat}$ ด้านหน้ายังตัดทอนไม่หมด",
-                                f"ขั้นที่ 3: จัดรูปพีชคณิตเสริมโดยแก้สมการย้อนกลับ\n"
-                                f"จาก $u = {_to_latex(u_expr)}$ แก้สมการหาค่า ${v_lat}$ ในรูปของ $u$ ได้เป็น:\n"
-                                f"$${v_lat} = {_to_latex(x_sol)}$$\n"
-                                f"นำค่า ${v_lat}$ ไปแทนที่ในอินทิกรัล แล้วคูณกระจาย จะได้ฟังก์ชันของ $u$ ล้วน:\n"
-                                f"$$\\int {_to_latex(subbed)} \\, du$$",
-                                f"ขั้นที่ 4: คำนวณปริพันธ์เทียบกับตัวแปร u\n"
-                                f"$$\\int {_to_latex(subbed)} \\, du = {_to_latex(int_u_disp)} + C$$",
-                                f"ขั้นที่ 5: แทนค่า $u = {_to_latex(u_expr)}$ กลับในผลลัพธ์:\n"
-                                f"$$= {_to_latex(antideriv_x)} + C$$",
-                                domain_note,
-                            ]
-                            return {
-                                "ok": True,
-                                "status": "algebraic_adjustment",
-                                "status_th": "ทำได้โดยต้องจัดรูปพีชคณิตเสริมก่อน",
-                                "message": f"ทำได้สำเร็จ: เมื่อแทนค่าแล้วตัวแปร ${v_lat}$ ยังตัดไม่หมด ต้องจัดรูปแก้สมการกลับ ${v_lat} = {_to_latex(x_sol)}$ แทนลงไปเพื่อคูณกระจาย",
-                                "steps": steps,
-                                "latex": f"\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv_x)} + C",
-                                "result": antideriv_x,
-                                "u_expr": u_expr,
-                                "du_expr": du,
-                                "x_sol": x_sol,
-                                "integrand_u": subbed,
-                                "variable": str(var_sym.name),
-                            }
+        if u_expr != 1 / var_sym and not check_standard_form(expr, var_sym):
+            sols = sp.solve(sp.Eq(u_sym, u_expr), var_sym)
+            if sols:
+                for x_sol in sols:
+                    subbed = sp.simplify(ratio.subs(var_sym, x_sol))
+                    if not subbed.has(var_sym):
+                        int_u = sp.integrate(subbed, u_sym)
+                        if not int_u.has(sp.Integral) and not any(int_u.has(f) for f in SPECIAL_FUNCS):
+                            if check_standard_form(subbed, u_sym):
+                                int_u_disp = _wrap_new_logs(int_u, subbed)
+                                antideriv_x = sp.simplify(int_u.subs(u_sym, u_expr))
+                                antideriv_x = sp.expand_log(antideriv_x, force=True)
+                                antideriv_x = sp.simplify(antideriv_x)
+                                antideriv_x = _wrap_new_logs(antideriv_x, expr)
+                                steps = [
+                                    f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
+                                    f"กำหนดตัวแปรและหาอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = \\frac{{du}}{{{_to_latex(du)}}}$",
+                                    f"แทนค่าลงในอินทิกรัล (พบตัวแปรตกค้าง): $\\int {_to_latex(expr)} \\, d{v_lat} = \\int \\left({_to_latex(ratio)}\\right) du$\nสังเกตว่าตัวแปร ${v_lat}$ ด้านหน้ายังตัดทอนไม่หมด",
+                                    f"จัดรูปพีชคณิตเสริมโดยแก้สมการย้อนกลับ: จาก $u = {_to_latex(u_expr)}$ แก้สมการหาค่า ${v_lat}$ ในรูปของ $u$ ได้เป็น $${v_lat} = {_to_latex(x_sol)}$$\nนำค่า ${v_lat}$ ไปแทนที่ในอินทิกรัล แล้วคูณกระจาย จะได้ฟังก์ชันของ $u$ ล้วน:\n$$\\int {_to_latex(subbed)} \\, du$$",
+                                    f"คำนวณปริพันธ์เทียบกับตัวแปร u: $\\int {_to_latex(subbed)} \\, du = {_to_latex(int_u_disp)} + C$",
+                                    f"แทนค่าตัวแปรกลับในผลลัพธ์: แทนค่า $u = {_to_latex(u_expr)}$ ได้เป็น ${_to_latex(antideriv_x)} + C$",
+                                    domain_note,
+                                ]
+                                return {
+                                    "ok": True,
+                                    "status": "algebraic_adjustment",
+                                    "status_th": "ทำได้โดยต้องจัดรูปพีชคณิตเสริมก่อน",
+                                    "message": f"ทำได้สำเร็จ: เมื่อแทนค่าแล้วตัวแปร ${v_lat}$ ยังตัดไม่หมด ต้องจัดรูปแก้สมการกลับ ${v_lat} = {_to_latex(x_sol)}$ แทนลงไปเพื่อคูณกระจาย",
+                                    "steps": steps,
+                                    "latex": f"\\int {_to_latex(expr)} \\, d{v_lat} = {_to_latex(antideriv_x)} + C",
+                                    "result": antideriv_x,
+                                    "u_expr": u_expr,
+                                    "du_expr": du,
+                                    "x_sol": x_sol,
+                                    "integrand_u": subbed,
+                                    "variable": str(var_sym.name),
+                                }
 
         # -------------------------------------------------------------
         # 3. กรณี Incompatible (ทำไม่ได้ด้วย u นี้) หรือโจทย์ต้องใช้ By Parts
@@ -762,9 +752,9 @@ def verify_user_u_substitution(
             "message": f"การเลือก $u = {_to_latex(u_expr)}$ ไม่สามารถแก้ได้: ตัวแปร ${v_lat}$ ไม่สามารถตัดทอนให้หมดไปได้ (ตัดทอนไม่หมด) และไม่ช่วยลดรูปอินทิกรัล",
             "steps": [
                 f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
-                f"ขั้นที่ 1: กำหนดตัวแปรและหาอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat}$",
-                f"ขั้นที่ 2: เมื่อนำไปแทนค่าในโจทย์จะได้รูป:\n$$\\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int \\left({_to_latex(ratio)}\\right) du$$",
-                f"ขั้นที่ 3: สังเกตว่าพจน์ของตัวแปร ${v_lat}$ ยังคงตกค้างอยู่ และไม่สามารถเขียนแทนด้วยตัวแปร $u$ ได้อย่างสะดวก จึงไม่สามารถอินทิเกรตต่อได้",
+                f"กำหนดตัวแปรและหาอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat}$",
+                f"แทนค่าลงในโจทย์: $$\\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int \\left({_to_latex(ratio)}\\right) du$$",
+                f"ข้อสังเกต: สังเกตว่าพจน์ของตัวแปร ${v_lat}$ ยังคงตกค้างอยู่ และไม่สามารถเขียนแทนด้วยตัวแปร $u$ ได้อย่างสะดวก จึงไม่สามารถอินทิเกรตต่อได้",
             ],
             "latex": "",
             "result": None,
