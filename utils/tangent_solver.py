@@ -291,6 +291,7 @@ def compute_tangent(expr_str: str, a: float) -> dict:
         else:
             a_sym = sp.Rational(str(a))
         a_lat = _to_latex(a_sym)
+        is_vertical = False
 
         try:
             fa_sym = _to_real_roots(expr.subs(var_sym, a_sym))
@@ -345,9 +346,11 @@ def compute_tangent(expr_str: str, a: float) -> dict:
             except Exception:
                 left_m, right_m = sp.nan, sp.nan
 
+            is_vertical = False
             if left_m == right_m:
                 if left_m in (sp.oo, -sp.oo):
-                    status = "vertical"
+                    status = "non_differentiable"
+                    is_vertical = True
                     slope = None
                     latex_str = f"{v_lat} = {a_lat}"
                     steps = [
@@ -400,6 +403,7 @@ def compute_tangent(expr_str: str, a: float) -> dict:
             "expr": expr,
             "error": None,
             "status": status,
+            "is_vertical": is_vertical,
             "variable": str(var_sym.name),
         }
     except Exception as e:

@@ -122,7 +122,7 @@ def compute_riemann(
                         if a_f <= r_f <= b_f:
                             raise ValueError(
                                 f"ฟังก์ชันไม่ต่อเนื่องบนช่วง [{_fmt_num(a_f)}, {_fmt_num(b_f)}] "
-                                f"เนื่องจากมีจุดเอกฐาน (ตัวส่วนเป็นศูนย์) ที่ {v_lat} = {_fmt_num(r_f)}"
+                                f"เนื่องจากมีจุดไม่ต่อเนื่องแบบอนันต์ (หารด้วยศูนย์) ที่ {v_lat} = {_fmt_num(r_f)}"
                             )
         except ValueError:
             raise
@@ -141,7 +141,7 @@ def compute_riemann(
         for xv in xs:
             val_sub = expr.subs(var_sym, xv)
             if val_sub in (sp.zoo, sp.oo, -sp.oo) or getattr(val_sub, "is_infinite", False):
-                raise ValueError(f"ฟังก์ชันมีจุดเอกฐาน (หารด้วยศูนย์) ที่จุดสุ่มตัวอย่าง {v_lat} = {_fmt_num(xv)}")
+                raise ValueError(f"ฟังก์ชันมีจุดไม่ต่อเนื่องแบบอนันต์ (หารด้วยศูนย์) ที่จุดสุ่มตัวอย่าง {v_lat} = {_fmt_num(xv)}")
             try:
                 f_val = float(val_sub.evalf())
                 if not math.isfinite(f_val):

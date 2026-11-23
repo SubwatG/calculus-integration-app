@@ -193,13 +193,15 @@ if "กรณีที่ 1" in case_sub:
                 "แนวทาง B: ให้ u = 2x (ฟังก์ชันสัมประสิทธิ์ด้านนอก)",
                 "แนวทาง C: ให้ u = x (ตัวแปรเดิม)",
             ],
-            index=0,
+            index=None,
             key="radio_u_case1",
             label_visibility="collapsed",
         )
 
         parts_choice = u_choice or ""
-        if not parts_choice or "แนวทาง A" in parts_choice:
+        if not parts_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทาง A" in parts_choice:
             st.success(r"**ถูกต้องตามหลักการ:** เมื่อเลือก $u = x^2 + 1$ จะได้ $du = 2x\,dx$ ซึ่งพจน์ $2x$ จะตัดทอนกับตัวคูณด้านหน้าหมดพอดี")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int 2x\sqrt{x^2+1} \, dx = \frac{2}{3}(x^2+1)^{3/2} + C")
@@ -242,13 +244,15 @@ elif "กรณีที่ 2" in case_sub:
                 "แนวทาง B: ให้ u = ln(x) (ตัวเศษ)",
                 "แนวทาง C: ให้ u = 1/x",
             ],
-            index=1,
+            index=None,
             key="radio_u_case2",
             label_visibility="collapsed",
         )
 
         parts_choice = u_choice or ""
-        if not parts_choice or "แนวทาง B" in parts_choice:
+        if not parts_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทาง B" in parts_choice:
             st.success(r"**ถูกต้องตามหลักการ:** อนุพันธ์ของ $\ln(x)$ คือ $\frac{1}{x}$ ซึ่งจะตัดกับตัวส่วน $x$ หายไปหมดพอดี")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int \frac{\ln x}{x} \, dx = \frac{(\ln x)^2}{2} + C")
@@ -291,13 +295,15 @@ elif "กรณีที่ 3" in case_sub:
                 "แนวทาง B: ให้ u = cos(x) (สัมประสิทธิ์ด้านหน้า)",
                 "แนวทาง C: ให้ u = e^(sin x)",
             ],
-            index=0,
+            index=None,
             key="radio_u_case3",
             label_visibility="collapsed",
         )
 
         parts_choice = u_choice or ""
-        if not parts_choice or "แนวทาง A" in parts_choice:
+        if not parts_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทาง A" in parts_choice:
             st.success(r"**ถูกต้องตามหลักการ:** ดิฟ $u = \sin(x)$ ได้ $du = \cos(x)\,dx$ ซึ่งตัดกับ $\cos(x)$ ด้านหน้าหมดพอดี")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int \cos(x) e^{\sin(x)} \, dx = e^{\sin(x)} + C")
@@ -339,15 +345,17 @@ elif "กรณีที่ 4" in case_sub:
                 "แนวทาง C: ถือว่าทำไม่ได้ด้วย u-Substitution ต้องเปลี่ยนไปใช้วิธีอื่นทันที",
                 "แนวทาง D: ให้ u = √(x+1)",
             ],
-            index=0,
+            index=None,
             key="radio_u_case4",
             label_visibility="collapsed",
         )
 
         parts_choice = u_choice or ""
-        if parts_choice and "แนวทาง B" in parts_choice:
+        if not parts_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทาง B" in parts_choice:
             st.error(r"**ข้อควรระวัง:** ห้ามดึงตัวแปรที่กำลังอินทิเกรต ($x$) ออกนอกเครื่องหมาย $\int$ ดึงได้เฉพาะค่าคงที่เท่านั้น")
-        elif not parts_choice or "แนวทาง A" in parts_choice:
+        elif "แนวทาง A" in parts_choice:
             st.success("**ถูกต้องตามหลักการ:** จัดรูป $x = u - 1$ แล้วคูณกระจาย $(u - 1)u^{1/2} = u^{3/2} - u^{1/2}$ ทำให้หาอินทิกรัลทีละพจน์ได้")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int x\sqrt{x+1} \, dx = \frac{2}{5}(x+1)^{5/2} - \frac{2}{3}(x+1)^{3/2} + C")
@@ -390,13 +398,15 @@ elif "กรณีที่ 5" in case_sub:
                 "แนวทาง B: ให้ u = 2x (ตัวเศษ)",
                 "แนวทาง C: ให้ u = x",
             ],
-            index=0,
+            index=None,
             key="radio_u_case5",
             label_visibility="collapsed",
         )
 
         parts_choice = u_choice or ""
-        if not parts_choice or "แนวทาง A" in parts_choice:
+        if not parts_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทาง A" in parts_choice:
             st.success(r"**ถูกต้องตามหลักการ:** ตัวเศษ $2x$ คืออนุพันธ์ของตัวส่วนพอดี ได้รูปพื้นฐาน $\int \frac{1}{u}\,du = \ln|u| + C$")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int \frac{2x}{x^2+1} \, dx = \ln(x^2+1) + C")
@@ -437,13 +447,15 @@ else:
                 "แนวทาง B: ให้ u = 3x² (สัมประสิทธิ์ด้านหน้า)",
                 "แนวทาง C: ให้ u = (x³ + 5)⁴",
             ],
-            index=0,
+            index=None,
             key="radio_u_case6",
             label_visibility="collapsed",
         )
 
         parts_choice = u_choice or ""
-        if not parts_choice or "แนวทาง A" in parts_choice:
+        if not parts_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทาง A" in parts_choice:
             st.success(r"**ถูกต้องตามหลักการ:** ดิฟฐาน $u = x^3 + 5$ ได้ $du = 3x^2\,dx$ ตัดกับ $3x^2$ ด้านหน้าหมด เหลือเพียง $\int u^4\,du$")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int 3x^2 (x^3+5)^4 \, dx = \frac{(x^3+5)^5}{5} + C")

@@ -79,7 +79,7 @@ def test_area_between_interior_singularity_rejected():
     res = compute_area_between("1/(x-2)", "0", 0, 3)
     assert res["ok"] is False
     assert res["result"] is None
-    assert "เอกฐาน" in res["error"]
+    assert "ไม่ต่อเนื่อง" in res["error"]
 
 
 def test_substitution_arctan_not_forced_into_fake_usub():

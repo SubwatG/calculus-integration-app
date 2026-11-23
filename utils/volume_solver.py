@@ -120,7 +120,7 @@ def compute_volume(
             if vol_val.has(sp.Integral) or not (
                 getattr(vol_val, "is_real", False) and getattr(vol_val, "is_finite", False)
             ):
-                raise ValueError("ไม่สามารถคำนวณปริมาตรจำกัดได้บนช่วงที่กำหนด (อาจมีจุดเอกฐาน)")
+                raise ValueError("ไม่สามารถคำนวณปริมาตรจำกัดได้บนช่วงที่กำหนด (อาจมีจุดไม่ต่อเนื่องแบบอนันต์)")
 
             res_float = float(vol_val.evalf())
 
@@ -160,7 +160,7 @@ def compute_volume(
             if vol_val.has(sp.Integral) or not (
                 getattr(vol_val, "is_real", False) and getattr(vol_val, "is_finite", False)
             ):
-                raise ValueError("ไม่สามารถคำนวณปริมาตรจำกัดได้บนช่วงที่กำหนด (อาจมีจุดเอกฐาน หรือไม่อยู่ในโดเมนจำนวนจริง)")
+                raise ValueError("ไม่สามารถคำนวณปริมาตรจำกัดได้บนช่วงที่กำหนด (อาจมีจุดไม่ต่อเนื่องแบบอนันต์ หรือไม่อยู่ในโดเมนจำนวนจริง)")
 
             res_float = float(vol_val.evalf())
 

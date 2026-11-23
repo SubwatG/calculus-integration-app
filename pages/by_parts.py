@@ -191,13 +191,15 @@ if "กรณีที่ 1" in case_parts:
                 "แนวทางที่ 1: ให้ u = x และ dv = e^x dx",
                 "แนวทางที่ 2: ให้ u = e^x และ dv = x dx",
             ],
-            index=0,
+            index=None,
             key="radio_parts_case1",
             label_visibility="collapsed",
         )
 
         p_choice = parts_choice or ""
-        if not p_choice or "แนวทางที่ 1" in p_choice:
+        if not p_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทางที่ 1" in p_choice:
             st.success("**ถูกต้องตามหลักการ (A มาก่อน E ในกฎ LIATE):** ดิฟ $u = x$ ดีกรีลดลงเหลือ $1$ ส่วน $e^x$ อินทิเกรตง่ายและคงรูปเดิม")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int x e^x \, dx = e^x(x - 1) + C")
@@ -237,13 +239,15 @@ elif "กรณีที่ 2" in case_parts:
                 "แนวทางที่ 1: ให้ u = 1 และ dv = ln(x) dx",
                 "แนวทางที่ 2: ให้ u = ln(x) และ dv = 1 dx",
             ],
-            index=1,
+            index=None,
             key="radio_parts_case2",
             label_visibility="collapsed",
         )
 
         p_choice = parts_choice or ""
-        if not p_choice or "แนวทางที่ 2" in p_choice:
+        if not p_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทางที่ 2" in p_choice:
             st.success(r"**ถูกต้องตามหลักการ (L มาเป็นอันดับแรกในกฎ LIATE):** $\ln(x)$ อินทิเกรตตรงยาก แต่ดิฟได้ $\frac{1}{x}$ พีชคณิต ซึ่งตัดทอนกับ $v = x$ ได้ลงตัว")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int \ln(x) \, dx = x(\ln x - 1) + C")
@@ -282,13 +286,15 @@ elif "กรณีที่ 3" in case_parts:
                 "แนวทาง A: ทำรอบที่ 1 ลดเหลือ x e^x แล้วทำรอบที่ 2 ลดเหลือค่าคงที่",
                 "แนวทาง B: สลับ u และ dv ในรอบที่ 2 เพื่อความรวดเร็ว",
             ],
-            index=0,
+            index=None,
             key="radio_parts_case3",
             label_visibility="collapsed",
         )
 
         p_choice = parts_choice or ""
-        if not p_choice or "แนวทาง A" in p_choice:
+        if not p_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทาง A" in p_choice:
             st.success(r"**ถูกต้องตามหลักการ (ลดทอนดีกรีแบบต่อเนื่อง):** พหุนามดีกรี 2 ต้องทำ 2 รอบ ($x^2 \to 2x \to 2$) จนกระทั่งเหลืออินทิกรัลพื้นฐาน")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int x^2 e^x \, dx = e^x(x^2 - 2x + 2) + C")
@@ -327,13 +333,15 @@ elif "กรณีที่ 4" in case_parts:
                 "แนวทางที่ 2: กำหนด u = e^x และ dv = cos(x) dx (แล้วทำรอบสองให้สอดคล้องกัน)",
                 "แนวทางที่ 3: รอบแรกเลือก u = cos(x) แต่รอบสองสลับกลับมาเลือก u = e^x",
             ],
-            index=0,
+            index=None,
             key="radio_parts_case4",
             label_visibility="collapsed",
         )
 
         p_choice = parts_choice or ""
-        if p_choice and "แนวทางที่ 3" in p_choice:
+        if not p_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทางที่ 3" in p_choice:
             st.error("**ข้อควรระวัง:** หากรอบแรกกำหนดฟังก์ชันหนึ่งเป็น $u$ แต่รอบที่สองสลับกลับมา ผลลัพธ์จะหักล้างกันกลายเป็น $I = I$ หรือ $0 = 0$")
         else:
             st.success(r"**ถูกต้องตามหลักการ (Cyclic By Parts):** ทั้ง $e^x$ และ $\cos(x)$ วนกลับมารูปเดิม ทำ By Parts 2 รอบแล้วย้ายข้างสมการทางพีชคณิตเพื่อหาคำตอบ")
@@ -374,13 +382,15 @@ elif "กรณีที่ 5" in case_parts:
                 "แนวทางที่ 1: ให้ u = x และ dv = sin(x) dx",
                 "แนวทางที่ 2: ให้ u = sin(x) และ dv = x dx",
             ],
-            index=0,
+            index=None,
             key="radio_parts_case5",
             label_visibility="collapsed",
         )
 
         p_choice = parts_choice or ""
-        if not p_choice or "แนวทางที่ 1" in p_choice:
+        if not p_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทางที่ 1" in p_choice:
             st.success(r"**ถูกต้องตามกฎ LIATE (A มาก่อน T):** เลือก $u = x$ ทำให้ดิฟได้ $du = dx$ ดีกรีลดลง ส่วน $\sin(x)$ อินทิเกรตได้ $-\cos(x)$")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int x \sin(x) \, dx = -x\cos(x) + \sin(x) + C")
@@ -419,13 +429,15 @@ else:
                 "แนวทางที่ 1: ให้ u = ln(x) และ dv = x dx",
                 "แนวทางที่ 2: ให้ u = x และ dv = ln(x) dx",
             ],
-            index=0,
+            index=None,
             key="radio_parts_case6",
             label_visibility="collapsed",
         )
 
         p_choice = parts_choice or ""
-        if not p_choice or "แนวทางที่ 1" in p_choice:
+        if not p_choice:
+            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
+        elif "แนวทางที่ 1" in p_choice:
             st.success(r"**ถูกต้องตามกฎ LIATE (L มาก่อน A เสมอ):** แม้ $x$ จะเป็นพหุนาม แต่ $\ln(x)$ อินทิเกรตยาก จึงต้องเลือกเป็น $u$ เพื่อดิฟให้เป็นพีชคณิต $\frac{1}{x}$")
             st.markdown("##### ผลลัพธ์สุดท้าย")
             st.latex(r"\int x \ln(x) \, dx = \frac{x^2}{4}(2\ln x - 1) + C")
