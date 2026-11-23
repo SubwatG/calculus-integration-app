@@ -509,6 +509,13 @@ with tab_user:
     st.markdown("#### ทดลองกำหนดตัวแปร u ด้วยตนเอง")
 
     candidates = get_suggested_u_candidates(expr_input)
+    if st.session_state.get("_prev_sub_expr") != expr_input:
+        st.session_state["_prev_sub_expr"] = expr_input
+        if candidates:
+            st.session_state["user_u_input"] = candidates[0]
+        else:
+            st.session_state["user_u_input"] = "x^2 + 1"
+
     if candidates:
         st.markdown("**ตัวเลือกตัวแปร u ที่น่าสนใจในโจทย์นี้:**")
         cand_cols = st.columns(min(len(candidates), 5))

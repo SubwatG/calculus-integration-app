@@ -104,8 +104,12 @@ class TestByPartsSolver:
         assert res_sec2["ok"] is True
         assert res_sec2["result"] is not None
         assert not res_sec2["result"].has(sp.Integral)
+        assert r"\tan" in res_sec2["latex"]
+        assert r"\cos" in res_sec2["latex"]
+        assert "|" in res_sec2["latex"]
 
         res_csc2 = solve_by_parts("x*csc(2*x)**2")
         assert res_csc2["ok"] is True
         assert res_csc2["result"] is not None
         assert not res_csc2["result"].has(sp.Integral)
+        assert "|" in res_csc2["latex"]

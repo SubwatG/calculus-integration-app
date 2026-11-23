@@ -50,6 +50,17 @@ def _is_trigonometric(f: sp.Expr) -> bool:
     return any(f.has(cls) for cls in (sp.sin, sp.cos, sp.tan, sp.sec, sp.csc, sp.cot))
 
 
+def _clean_trig(e: sp.Expr) -> sp.Expr:
+    if e is None:
+        return None
+    res = sp.trigsimp(e)
+    res = res.replace(
+        lambda a: a.is_Pow and getattr(a.base, "func", None) is sp.tan and a.exp == -1,
+        lambda a: sp.cot(a.base.args[0]),
+    )
+    return res
+
+
 def detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, sp.Expr, str, bool] | None:
     """พิจารณาแยก expr = u * v' เพื่อทำการอินทิเกรตทีละส่วนตามกฎ LIATE
 
@@ -189,8 +200,8 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
 
         u_p, dv_p, parts_reason, is_cyclic = parts_cand
         du_p = sp.diff(u_p, var_sym)
-        v_p = sp.integrate(dv_p, var_sym)
-        v_du = sp.simplify(v_p * du_p)
+        v_p = _clean_trig(sp.integrate(dv_p, var_sym))
+        v_du = _clean_trig(sp.simplify(v_p * du_p))
 
         if is_cyclic:
             expr_lat = _to_latex(expr)
@@ -201,11 +212,12 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
             u2 = u_p
             du2 = du_p
             dv2 = v_p
-            v2 = sp.integrate(dv2, var_sym)
+            v2 = _clean_trig(sp.integrate(dv2, var_sym))
             u2_lat = _to_latex(u2)
             v2_lat = _to_latex(v2)
             du2_lat = _to_latex(du2)
 
+            antideriv = _clean_trig(antideriv)
             antideriv = _wrap_new_logs(antideriv, expr)
 
             steps = [
@@ -239,7 +251,7 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
             rem_integral = sp.integrate(v_du, var_sym)
             if rem_integral.has(sp.Integral) or antideriv.has(sp.Integral):
                 if not rem_integral.has(sp.Integral):
-                    antideriv = u_p * v_p - rem_integral
+                    antideriv = _clean_trig(u_p * v_p - rem_integral)
                 else:
                     return {
                         "ok": False,
@@ -262,8 +274,10 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
                             "remainder": v_du,
                         },
                     }
+            else:
+                antideriv = _clean_trig(antideriv)
             antideriv = _wrap_new_logs(antideriv, expr)
-            rem_integral_disp = _wrap_new_logs(rem_integral, v_du)
+            rem_integral_disp = _wrap_new_logs(_clean_trig(rem_integral), v_du)
             steps = [
                 f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
                 f"เลือกวิธี: การอินทิเกรตทีละส่วน (Integration by parts) ตามสูตร $\\int u \\, dv = uv - \\int v \\, du$",

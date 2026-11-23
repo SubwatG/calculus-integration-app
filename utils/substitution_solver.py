@@ -91,14 +91,22 @@ def _detect_u_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr | No
     for node in expr.atoms(sp.Pow):
         if node.base != var and node.base.has(var) and not node.base.is_number:
             candidates.append(node.base)
-    # 2. ฟังก์ชันภายใน exp, sin, cos, tan
+    # 2. ฟังก์ชันภายใน exp, sin, cos, tan, cot
     for node in expr.atoms(sp.exp):
         if node.args[0] != var and node.args[0].has(var):
             candidates.append(node.args[0])
-    for cls in (sp.sin, sp.cos, sp.tan):
+    for cls in (sp.sin, sp.cos, sp.tan, sp.cot):
         for node in expr.atoms(cls):
             if node.args[0] != var and node.args[0].has(var):
                 candidates.append(node.args[0])
+    for node in expr.atoms(sp.tan):
+        arg = node.args[0]
+        if arg.has(var):
+            candidates.append(sp.cos(arg))
+    for node in expr.atoms(sp.cot):
+        arg = node.args[0]
+        if arg.has(var):
+            candidates.append(sp.sin(arg))
     # 3. ฟังก์ชัน log
     for node in expr.atoms(sp.log):
         if node.has(var):
@@ -506,14 +514,25 @@ def get_suggested_u_candidates(expr_str: str, var: str | sp.Symbol | None = None
         for node in expr.atoms(sp.Pow):
             if node.base != var_sym and node.base.has(var_sym) and not node.base.is_number:
                 cands.append(node.base)
-            if node.has(var_sym) and not node.is_number and node != var_sym:
+            if node.exp.is_Rational and not node.exp.is_Integer and node.has(var_sym):
                 cands.append(node)
 
-        for cls in (sp.sin, sp.cos, sp.tan):
+        for cls in (sp.sin, sp.cos, sp.tan, sp.sec, sp.csc, sp.cot):
             for node in expr.atoms(cls):
                 if node.args[0] != var_sym and node.args[0].has(var_sym):
                     cands.append(node.args[0])
                 cands.append(node)
+
+        for node in expr.atoms(sp.tan):
+            arg = node.args[0]
+            if arg.has(var_sym):
+                cands.append(sp.cos(arg))
+                cands.append(sp.sin(arg))
+        for node in expr.atoms(sp.cot):
+            arg = node.args[0]
+            if arg.has(var_sym):
+                cands.append(sp.sin(arg))
+                cands.append(sp.cos(arg))
 
         for node in expr.atoms(sp.exp):
             if node.args[0] != var_sym and node.args[0].has(var_sym):
@@ -533,6 +552,8 @@ def get_suggested_u_candidates(expr_str: str, var: str | sp.Symbol | None = None
         if expr.is_Mul:
             for f in expr.args:
                 if f.has(var_sym) and f != var_sym:
+                    if f.is_Pow and (f.exp.is_negative or f.exp.is_Integer):
+                        continue
                     cands.append(f)
 
         seen = set()
@@ -629,7 +650,11 @@ def verify_user_u_substitution(
         if not ratio_u.has(var_sym):
             antideriv_u = sp.integrate(ratio_u, u_sym)
             if not antideriv_u.has(sp.Integral) and not any(antideriv_u.has(f) for f in SPECIAL_FUNCS):
+                antideriv_u_disp = _wrap_new_logs(antideriv_u, ratio_u)
                 antideriv_x = sp.simplify(antideriv_u.subs(u_sym, u_expr))
+                antideriv_x = sp.expand_log(antideriv_x, force=True)
+                antideriv_x = sp.simplify(antideriv_x)
+                antideriv_x = _wrap_new_logs(antideriv_x, expr)
                 steps = [
                     f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
                     f"ขั้นที่ 1: กำหนดตัวแปรและคำนวณอนุพันธ์\n"
@@ -638,7 +663,7 @@ def verify_user_u_substitution(
                     f"$$\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int {_to_latex(ratio_u)} \\, du$$\n"
                     f"ตัวแปร ${v_lat}$ ถูกตัดทอนหมด เหลือเพียงฟังก์ชันของตัวแปร $u$",
                     f"ขั้นที่ 3: คำนวณปริพันธ์เทียบกับตัวแปร u\n"
-                    f"$$\\int {_to_latex(ratio_u)} \\, du = {_to_latex(antideriv_u)} + C$$",
+                    f"$$\\int {_to_latex(ratio_u)} \\, du = {_to_latex(antideriv_u_disp)} + C$$",
                     f"ขั้นที่ 4: แทนค่า $u = {_to_latex(u_expr)}$ กลับในผลลัพธ์:\n"
                     f"$$= {_to_latex(antideriv_x)} + C$$",
                     domain_note,
@@ -668,7 +693,11 @@ def verify_user_u_substitution(
                     int_u = sp.integrate(subbed, u_sym)
                     if not int_u.has(sp.Integral) and not any(int_u.has(f) for f in SPECIAL_FUNCS):
                         if check_standard_form(subbed, u_sym):
+                            int_u_disp = _wrap_new_logs(int_u, subbed)
                             antideriv_x = sp.simplify(int_u.subs(u_sym, u_expr))
+                            antideriv_x = sp.expand_log(antideriv_x, force=True)
+                            antideriv_x = sp.simplify(antideriv_x)
+                            antideriv_x = _wrap_new_logs(antideriv_x, expr)
                             steps = [
                                 f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
                                 f"ขั้นที่ 1: กำหนดตัวแปรและหาอนุพันธ์\n"
@@ -682,7 +711,7 @@ def verify_user_u_substitution(
                                 f"นำค่า ${v_lat}$ ไปแทนที่ในอินทิกรัล แล้วคูณกระจาย จะได้ฟังก์ชันของ $u$ ล้วน:\n"
                                 f"$$\\int {_to_latex(subbed)} \\, du$$",
                                 f"ขั้นที่ 4: คำนวณปริพันธ์เทียบกับตัวแปร u\n"
-                                f"$$\\int {_to_latex(subbed)} \\, du = {_to_latex(int_u)} + C$$",
+                                f"$$\\int {_to_latex(subbed)} \\, du = {_to_latex(int_u_disp)} + C$$",
                                 f"ขั้นที่ 5: แทนค่า $u = {_to_latex(u_expr)}$ กลับในผลลัพธ์:\n"
                                 f"$$= {_to_latex(antideriv_x)} + C$$",
                                 domain_note,

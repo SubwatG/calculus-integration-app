@@ -201,6 +201,49 @@ class TestSolveSubstitution:
         assert res["result"] == sp.log(sp.Abs(sp.tan(x)))
         assert "tan" in str(res["result"])
 
+    def test_verify_user_u_log_absolute_values(self):
+        """MATH-08 (UI): verify_user_u_substitution ต้องมีค่าสัมบูรณ์ในพจน์ log"""
+        from utils.substitution_solver import verify_user_u_substitution
+        # sec^2(x)/tan(x) with u = tan(x)
+        res_sec = verify_user_u_substitution("sec(x)**2/tan(x)", "tan(x)")
+        assert res_sec["ok"] is True
+        assert "|" in res_sec["latex"]
+        assert "tan" in str(res_sec["result"])
+
+        # 1/(x*ln(x)) with u = ln(x)
+        res_loglog = verify_user_u_substitution("1/(x*log(x))", "log(x)")
+        assert res_loglog["ok"] is True
+        assert "|" in res_loglog["latex"]
+
+        # tan(x) with u = cos(x)
+        res_tan = verify_user_u_substitution("tan(x)", "cos(x)")
+        assert res_tan["ok"] is True
+        assert "|" in res_tan["latex"]
+
+        # 1/(2*x+1) with u = 2*x+1
+        res_lin = verify_user_u_substitution("1/(2*x+1)", "2*x+1")
+        assert res_lin["ok"] is True
+        assert "|" in res_lin["latex"]
+
+    def test_get_suggested_u_candidates_sanitized(self):
+        """ตัวเลือก u ไม่ควรมีพจน์ส่วนกลับที่ผิดวิสัย เช่น 1/x, 1/(2x+1), 1/tan(x)"""
+        from utils.substitution_solver import get_suggested_u_candidates
+        cands_1_x = get_suggested_u_candidates("1/x")
+        assert "1/x" not in cands_1_x
+
+        cands_lin = get_suggested_u_candidates("1/(2*x+1)")
+        assert "1/(2*x + 1)" not in cands_lin
+        assert "1/x" not in cands_lin
+        assert "2*x + 1" in cands_lin
+
+        cands_loglog = get_suggested_u_candidates("1/(x*log(x))")
+        assert "1/x" not in cands_loglog
+        assert "1/log(x)" not in cands_loglog
+        assert "log(x)" in cands_loglog
+
+        cands_tan = get_suggested_u_candidates("tan(x)")
+        assert "cos(x)" in cands_tan
+
 
 def test_substitution_page_apptest_render():
     from pathlib import Path
