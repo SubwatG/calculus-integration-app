@@ -130,6 +130,21 @@ def _get_antiderivative(expr: sp.Expr, var: sp.Symbol) -> sp.Expr | None:
         return None
 
 
+def _format_approx_eq(val_tex: str, num_val: float | None) -> str:
+    """Format exact value and optional approx float string without redundant approximations like 1 approx 1."""
+    if num_val is None:
+        return val_tex
+    num_str = f"{num_val:.6g}"
+    if val_tex == num_str or (val_tex.isdigit() and str(int(num_val)) == val_tex):
+        return val_tex
+    try:
+        if abs(float(val_tex) - num_val) < 1e-12:
+            return val_tex
+    except Exception:
+        pass
+    return f"{val_tex} \\approx {num_str}"
+
+
 def _format_part_outcome(status: str, part_val) -> str:
     """Format step explanation for a single-sided improper branch in proper Thai math terminology."""
     if status == "finite":
@@ -333,7 +348,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 value_latex = _to_latex(res_val)
                 steps.append(
                     f"สรุปผลลัพธ์: ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด รวมกันได้: "
-                    f"$\\int_{{-\\infty}}^{{\\infty}} \\left({_to_latex(expr)}\\right) \\, d{v_lat} = {value_latex} \\approx {result:.6g}$"
+                    f"$\\int_{{-\\infty}}^{{\\infty}} \\left({_to_latex(expr)}\\right) \\, d{v_lat} = {_format_approx_eq(value_latex, result)}$"
                 )
             else:
                 status = "unsupported"
@@ -401,7 +416,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                     f"คำนวณค่าลิมิตเมื่อ $t \\to -\\infty$:\n"
                     f"\\lim_{{t \\to -\\infty}} \\left({diff_t_tex}\\right) = {value_latex}"
                 )
-                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${value_latex} \\approx {result:.6g}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
+                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${_format_approx_eq(value_latex, result)}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
             elif status == "divergent":
                 result = None
                 value_latex = "\\text{diverges}"
@@ -477,7 +492,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                     f"คำนวณค่าลิมิตเมื่อ $t \\to \\infty$:\n"
                     f"\\lim_{{t \\to \\infty}} \\left({diff_t_tex}\\right) = {value_latex}"
                 )
-                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${value_latex} \\approx {result:.6g}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
+                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${_format_approx_eq(value_latex, result)}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
             elif status == "divergent":
                 result = None
                 value_latex = "\\text{diverges}"
@@ -655,7 +670,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                     f"คำนวณค่าลิมิตเมื่อ $t \\to {lower_latex}^+$:\n"
                     f"\\lim_{{t \\to {lower_latex}^+}} \\left({diff_t_tex}\\right) = {value_latex}"
                 )
-                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${value_latex} \\approx {result:.6g}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
+                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${_format_approx_eq(value_latex, result)}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
             elif status == "divergent":
                 result = None
                 value_latex = "\\text{diverges}"
@@ -727,7 +742,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                     f"คำนวณค่าลิมิตเมื่อ $t \\to {bound_latex}^-$:\n"
                     f"\\lim_{{t \\to {bound_latex}^-}} \\left({diff_t_tex}\\right) = {value_latex}"
                 )
-                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${value_latex} \\approx {result:.6g}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
+                steps.append(f"สรุปผลลัพธ์: ลิมิตมีค่าจริงจำกัด เท่ากับ ${_format_approx_eq(value_latex, result)}$ ดังนั้นอินทิกรัล **ลู่เข้า (Converges)**")
             elif status == "divergent":
                 result = None
                 value_latex = "\\text{diverges}"
@@ -802,7 +817,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                     result = _safe_float(res_val)
                     value_latex = _to_latex(res_val)
                     steps.append(
-                        f"สรุปผลลัพธ์: สองลิมิตลู่เข้าสู่ค่าจำกัด รวมได้ $\\int_{{{lower_latex}}}^{{{bound_latex}}} {_to_latex(expr)} \\, d{v_lat} = {value_latex} \\approx {result:.6g}$"
+                        f"สรุปผลลัพธ์: สองลิมิตลู่เข้าสู่ค่าจำกัด รวมได้ $\\int_{{{lower_latex}}}^{{{bound_latex}}} {_to_latex(expr)} \\, d{v_lat} = {_format_approx_eq(value_latex, result)}$"
                     )
                 elif status == "divergent":
                     result = None
@@ -847,7 +862,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             steps.append("ผลลัพธ์: ลิมิตลู่ออกสู่อนันต์ จึงสรุปว่า **อินทิกรัลลู่ออก (Diverges)**")
         elif status == "finite" and result is not None:
             steps.append(
-                f"สรุปผลลัพธ์: $\\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat} = {value_latex} \\approx {result:.6g}$"
+                f"สรุปผลลัพธ์: $\\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat} = {_format_approx_eq(value_latex, result)}$"
             )
         else:
             steps.append(

@@ -556,7 +556,7 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
                 antideriv = antideriv_f_minus_g
             else:
                 integrand = sp.expand(g_expr - f_expr)
-                curve_order_desc = f"$g({v_lat}) \\geq f({v_lat})$ (เส้นโค้ง $g$ อยู่บน $f$ สลับเป็น $g - f$)"
+                curve_order_desc = f"$g({v_lat}) \\geq f({v_lat})$ (เส้นโค้ง $g$ อยู่บน $f$ จึงใช้ $g - f$)"
                 antideriv = -antideriv_f_minus_g if antideriv_f_minus_g is not None else None
 
             piece_integral = None

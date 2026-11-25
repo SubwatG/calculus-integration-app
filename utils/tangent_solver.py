@@ -138,32 +138,38 @@ def _format_tangent_algebra(v_lat: str, a_sym: sp.Expr, fa_sym: sp.Expr, slope_s
     m_lat = _to_latex(slope_sym)
     fa_lat = _to_latex(fa_sym)
     a_lat = _to_latex(a_sym)
-    a_disp = f"({a_lat})" if a_sym < 0 else a_lat
+    a_disp = f"({a_lat})" if (getattr(a_sym, "is_negative", False) or (a_sym.is_number and a_sym < 0)) else a_lat
+    fa_sub_disp = f"({fa_lat})" if (getattr(fa_sym, "is_negative", False) or (fa_sym.is_number and fa_sym < 0)) else fa_lat
     simp_lat = _to_latex(sp.simplify(tangent_eq))
 
     if slope_sym == 0:
-        lines.append(f"y - ({fa_lat}) = 0")
+        lines.append(f"y - {fa_sub_disp} = 0")
         lines.append(f"y = {fa_lat}")
         return lines
 
-    lines.append(f"y - ({fa_lat}) = {m_lat}\\left({v_lat} - {a_disp}\\right)")
+    lines.append(f"y - {fa_sub_disp} = {m_lat}\\left({v_lat} - {a_disp}\\right)")
 
     if a_sym == 0:
         if fa_sym == 0:
             lines.append(f"y = {simp_lat}")
         else:
-            lines.append(f"y - ({fa_lat}) = {m_lat}{v_lat}")
-            lines.append(f"y = {m_lat}{v_lat} + ({fa_lat})")
-            if simp_lat != f"{m_lat}{v_lat} + ({fa_lat})":
+            lines.append(f"y - {fa_sub_disp} = {m_lat}{v_lat}")
+            if getattr(fa_sym, "is_negative", False) or (fa_sym.is_number and fa_sym < 0):
+                lines.append(f"y = {m_lat}{v_lat} + ({fa_lat})")
+            else:
+                lines.append(f"y = {m_lat}{v_lat} + {fa_lat}")
+            if simp_lat != f"{m_lat}{v_lat} + {fa_lat}" and simp_lat != f"{m_lat}{v_lat} + ({fa_lat})":
                 lines.append(f"y = {simp_lat}")
     else:
         ma_sym = sp.simplify(slope_sym * a_sym)
         ma_lat = _to_latex(ma_sym)
-        lines.append(f"y - ({fa_lat}) = {m_lat}{v_lat} - ({ma_lat})")
+        ma_sub_disp = f"({ma_lat})" if (getattr(ma_sym, "is_negative", False) or (ma_sym.is_number and ma_sym < 0)) else ma_lat
+        lines.append(f"y - {fa_sub_disp} = {m_lat}{v_lat} - {ma_sub_disp}")
         if fa_sym == 0:
             lines.append(f"y = {simp_lat}")
         else:
-            lines.append(f"y = {m_lat}{v_lat} - ({ma_lat}) + ({fa_lat})")
+            fa_add = f"({fa_lat})" if (getattr(fa_sym, "is_negative", False) or (fa_sym.is_number and fa_sym < 0)) else fa_lat
+            lines.append(f"y = {m_lat}{v_lat} - {ma_sub_disp} + {fa_add}")
             lines.append(f"y = {simp_lat}")
 
     return lines
@@ -194,7 +200,8 @@ def _build_finite_tangent_steps(
 ) -> list[str]:
     v_lat = _to_latex(var_sym)
     a_lat = _to_latex(a_sym)
-    a_disp = f"({a_lat})" if a_sym < 0 else a_lat
+    a_disp = f"({a_lat})" if (getattr(a_sym, "is_negative", False) or (a_sym.is_number and a_sym < 0)) else a_lat
+    fa_sub_disp = f"({_to_latex(fa_sym)})" if (getattr(fa_sym, "is_negative", False) or (fa_sym.is_number and fa_sym < 0)) else _to_latex(fa_sym)
     slope = float(slope_sym)
 
     # Step 1: Problem statement and objective
@@ -234,7 +241,7 @@ def _build_finite_tangent_steps(
     step5 = (
         f"แทนค่าในสมการรูปจุดและความชัน: "
         f"แทนจุด $({a_lat}, {_to_latex(fa_sym)})$ และความชัน $m = {_to_latex(slope_sym)}$ ลงในสูตร $y - f(a) = m({v_lat} - a)$:\n"
-        f"y - ({_to_latex(fa_sym)}) = {_to_latex(slope_sym)}\\left({v_lat} - {a_disp}\\right)"
+        f"y - {fa_sub_disp} = {_to_latex(slope_sym)}\\left({v_lat} - {a_disp}\\right)"
     )
 
     # Step 6: Rearrange into Slope-Intercept form y = mx + c
@@ -255,7 +262,7 @@ def _build_finite_tangent_steps(
         normal_simp = sp.simplify(normal_eq)
         normal_desc = (
             f"2. เส้นแนวฉาก: ความชันตั้งฉาก $m_{{\\perp}} = -\\frac{{1}}{{m}} = {_to_latex(normal_m)}$\n"
-            f"y - ({_to_latex(fa_sym)}) = {_to_latex(normal_m)}\\left({v_lat} - {a_disp}\\right) \\implies y = {_to_latex(normal_simp)}"
+            f"y - {fa_sub_disp} = {_to_latex(normal_m)}\\left({v_lat} - {a_disp}\\right) \\implies y = {_to_latex(normal_simp)}"
         )
     else:
         normal_desc = (
