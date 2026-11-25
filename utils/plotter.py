@@ -1,9 +1,8 @@
 """
-utils/plotter.py : ฟังก์ชันวาดกราฟสำหรับบทเรียน interactive แคลคูลัส
+utils/plotter.py: Plotting functions for interactive calculus lessons.
 
-ใช้ matplotlib (Agg) คืน (fig, ax) สำหรับ st.pyplot
-label ในกราฟเป็นภาษาอังกฤษ เพื่อความน่าเชื่อถือของ matplotlib
-สีอ้างอิงจาก stat-distribution-solver/modules/theme.py (KU green palette)
+Uses matplotlib (Agg) returning (fig, ax) for st.pyplot.
+Uses Plotly for interactive figures when available.
 """
 
 from typing import Any
@@ -15,6 +14,13 @@ from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle
 import numpy as np
 import sympy as sp
+
+try:
+    import plotly.graph_objects as go
+    HAS_PLOTLY = True
+except ImportError:
+    go = None  # type: ignore
+    HAS_PLOTLY = False
 
 from utils.riemann_solver import X
 from utils.sympy_solver import _get_variable
@@ -28,8 +34,39 @@ GRID = "#E2E8F0"       # Subtle structural grid
 TEXT = "#18181B"       # Stark Charcoal Black
 
 
+def _require_plotly() -> None:
+    """Ensure Plotly is installed and imported, or raise ImportError to trigger UI fallback."""
+    if not HAS_PLOTLY or go is None:
+        raise ImportError("Plotly is required for interactive plots but is not available.")
+
+
+def _apply_default_layout(
+    fig: Any,
+    title: str,
+    xaxis_title: str = "x",
+    yaxis_title: str = "y",
+    height: int | None = None,
+    **kwargs: Any,
+) -> Any:
+    """Apply unified clean layout configuration to Plotly figure."""
+    layout_params: dict[str, Any] = {
+        "title": title,
+        "xaxis_title": xaxis_title,
+        "yaxis_title": yaxis_title,
+        "template": "plotly_white",
+        "hovermode": "closest",
+        "margin": dict(l=40, r=40, t=50, b=40),
+        "legend": dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+    }
+    if height is not None:
+        layout_params["height"] = height
+    layout_params.update(kwargs)
+    fig.update_layout(**layout_params)
+    return fig
+
+
 def _create_figure(figsize: tuple[float, float] = (8, 4.5)) -> tuple[Figure, Any]:
-    """สร้าง Figure และ Axes แบบ Object-Oriented ป้องกัน Matplotlib Memory Leak"""
+    """Create Figure and Axes in Object-Oriented style to prevent memory leaks."""
     fig = Figure(figsize=figsize)
     ax = fig.add_subplot(111)
     return fig, ax
@@ -693,7 +730,7 @@ def plot_area_between_plotly(
     crossings: list[float] | None = None,
 ):
     """สร้างกราฟแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ สเกลโฟกัสช่วง [a, b] เส้นทึบ และหมุดจุดตัด"""
-    import plotly.graph_objects as go
+    _require_plotly()
 
     MODULE_MAP = [{"real_root": lambda base, n: np.sign(base) * (np.abs(base) ** (1.0 / n))}, "numpy"]
     var = _get_plot_var(f_expr, g_expr)
@@ -820,16 +857,12 @@ def plot_area_between_plotly(
         pad = max(0.4, 0.15 * (y_high - y_low))
         fig.update_yaxes(range=[y_low - pad, y_high + pad])
 
-    fig.update_layout(
+    return _apply_default_layout(
+        fig,
         title=f"กราฟพื้นที่ระหว่างเส้นโค้งบนช่วง [{a:g}, {b:g}] (Interactive)",
         xaxis_title=var_name,
         yaxis_title="y",
-        template="plotly_white",
-        hovermode="closest",
-        margin=dict(l=40, r=40, t=50, b=40),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
-    return fig
 
 
 def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | str | sp.Expr | None = None) -> tuple:
@@ -935,7 +968,7 @@ def plot_riemann_plotly(
     exact: float | None = None,
 ):
     """สร้างกราฟผลบวกรีมันน์แบบ interactive ด้วย Plotly: ซูม/แพนอิสระ สเกลแท่งสี่เหลี่ยม และเส้นโค้ง"""
-    import plotly.graph_objects as go
+    _require_plotly()
 
     var = _get_plot_var(expr)
     var_name = var.name
@@ -1016,16 +1049,12 @@ def plot_riemann_plotly(
     if exact is not None:
         title_str += f" | ค่าจริง = {exact:.4f}"
 
-    fig.update_layout(
+    return _apply_default_layout(
+        fig,
         title=f"{title_str} (Interactive)",
         xaxis_title=var_name,
         yaxis_title="y",
-        template="plotly_white",
-        hovermode="closest",
-        margin=dict(l=40, r=40, t=50, b=40),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
-    return fig
 
 
 def plot_tangent_plotly(
@@ -1036,7 +1065,7 @@ def plot_tangent_plotly(
     status: str = "finite",
 ):
     """สร้างกราฟเส้นสัมผัสแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ จุดสัมผัส และเส้นสัมผัส"""
-    import plotly.graph_objects as go
+    _require_plotly()
 
     var = _get_plot_var(expr)
     var_name = var.name
@@ -1124,16 +1153,12 @@ def plot_tangent_plotly(
             hovertemplate=f"จุดสัมผัส: ({var_name}={a_num:.2f}, y={fa:.2f})<extra></extra>",
         ))
 
-    fig.update_layout(
+    return _apply_default_layout(
+        fig,
         title=f"{title_str} (Interactive)",
         xaxis_title=var_name,
         yaxis_title="y",
-        template="plotly_white",
-        hovermode="closest",
-        margin=dict(l=40, r=40, t=50, b=40),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
-    return fig
 
 
 def plot_limit_plotly(
@@ -1143,7 +1168,7 @@ def plot_limit_plotly(
     span: float = 2.0,
 ):
     """สร้างกราฟการเข้าใกล้ลิมิตแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ จุดเข้าใกล้ทางซ้าย/ขวา และค่าเป้าหมาย L"""
-    import plotly.graph_objects as go
+    _require_plotly()
 
     var = _get_plot_var(expr)
     var_name = var.name
@@ -1191,16 +1216,12 @@ def plot_limit_plotly(
             )
 
         l_str = f"{lim_val:.4f}" if lim_val is not None else str(lim_sym)
-        fig.update_layout(
+        return _apply_default_layout(
+            fig,
             title=f"พฤติกรรมกราฟเมื่อ {var_name} เข้าสู่อนันต์ ({var_name} -> {title_dir}) | L = {l_str} (Interactive)",
             xaxis_title=var_name,
             yaxis_title="y",
-            template="plotly_white",
-            hovermode="closest",
-            margin=dict(l=40, r=40, t=50, b=40),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
         )
-        return fig
 
     # Finite point
     try:
@@ -1296,16 +1317,12 @@ def plot_limit_plotly(
     except Exception:
         pass
 
-    fig.update_layout(
+    return _apply_default_layout(
+        fig,
         title=f"การเข้าใกล้ลิมิตเมื่อ {var_name} -> {a_disp} (Interactive)",
         xaxis_title=var_name,
         yaxis_title="y",
-        template="plotly_white",
-        hovermode="closest",
-        margin=dict(l=40, r=40, t=50, b=40),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
-    return fig
 
 
 def plot_volume_plotly(
@@ -1316,7 +1333,7 @@ def plot_volume_plotly(
     inner_expr=None,
 ):
     """สร้างกราฟภาพตัดขวางและการหมุนรอบแกนแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ และจำลองการหมุน 360 องศา"""
-    import plotly.graph_objects as go
+    _require_plotly()
 
     is_washer = (method or "disk").lower() == "washer" and inner_expr is not None
     var = _get_plot_var(expr, inner_expr)
@@ -1473,16 +1490,12 @@ def plot_volume_plotly(
     fig.add_hline(y=0, line=dict(color="#475569", width=1.2, dash="dash"), annotation_text="แกนหมุน (y = 0)")
 
     method_label = "Washer Method" if is_washer else "Disk Method"
-    fig.update_layout(
+    return _apply_default_layout(
+        fig,
         title=f"ภาพตัดขวางและการหมุนทรงตันรอบแกน ({method_label}) บนช่วง [{a:g}, {b:g}] (Interactive)",
         xaxis_title=var_name,
         yaxis_title="y",
-        template="plotly_white",
-        hovermode="closest",
-        margin=dict(l=40, r=40, t=50, b=40),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
-    return fig
 
 
 def plot_improper_plotly(
@@ -1491,7 +1504,7 @@ def plot_improper_plotly(
     b: float | int | str | sp.Expr | None = None,
 ):
     """สร้างกราฟแบบ interactive ด้วย Plotly สำหรับอินทิกรัลไม่ตรงแบบ: ซูม/แพนอิสระ และแรเงาพื้นที่"""
-    import plotly.graph_objects as go
+    _require_plotly()
 
     var = _get_plot_var(expr)
     var_name = var.name
@@ -1601,15 +1614,11 @@ def plot_improper_plotly(
                 bordercolor="#CBD5E1",
             )
 
-    fig.update_layout(
+    return _apply_default_layout(
+        fig,
         title=f"กราฟอินทิกรัลไม่ตรงแบบ ({shade_label}) (Interactive)",
         xaxis_title=var_name,
         yaxis_title="y",
-        template="plotly_white",
-        hovermode="closest",
-        margin=dict(l=40, r=40, t=50, b=40),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
     )
-    return fig
 
 

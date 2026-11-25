@@ -151,4 +151,37 @@ def test_plot_limit_invalid_inputs_raise_value_error():
         plot_limit_plotly(x**2, "not_a_number")
 
 
+def test_apply_default_layout_and_require_plotly():
+    import plotly.graph_objects as go
+    from utils.plotter import _apply_default_layout, _require_plotly
+    import utils.plotter as plotter_mod
+
+    # Verify default layout application
+    fig = go.Figure()
+    _apply_default_layout(fig, title="Test Plot", xaxis_title="u", yaxis_title="v", height=450)
+    assert fig.layout.title.text == "Test Plot"
+    assert fig.layout.xaxis.title.text == "u"
+    assert fig.layout.yaxis.title.text == "v"
+    assert fig.layout.template is not None
+    assert fig.layout.height == 450
+    assert fig.layout.margin.l == 40
+    assert fig.layout.legend.orientation == "h"
+
+    # Verify _require_plotly succeeds when available
+    _require_plotly()
+
+    # Verify _require_plotly raises ImportError when unavailable
+    orig_has = plotter_mod.HAS_PLOTLY
+    orig_go = plotter_mod.go
+    try:
+        plotter_mod.HAS_PLOTLY = False
+        plotter_mod.go = None
+        with pytest.raises(ImportError, match="Plotly is required"):
+            _require_plotly()
+    finally:
+        plotter_mod.HAS_PLOTLY = orig_has
+        plotter_mod.go = orig_go
+
+
+
 
