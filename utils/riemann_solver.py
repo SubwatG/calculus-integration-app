@@ -23,7 +23,7 @@ from sympy.parsing.sympy_parser import (
 )
 from utils.sympy_solver import sanitize_math_input
 
-# NOTE: ห้ามใส่ auto_symbol — พังใน sympy 1.14.0 (เหมือน sympy_solver.py)
+# NOTE: Do not use auto_symbol - broken in sympy 1.14.0 (same as sympy_solver.py)
 TRANSFORMATIONS = standard_transformations + (
     implicit_multiplication_application,
     convert_xor,
@@ -49,7 +49,7 @@ def _to_latex(sym_obj) -> str:
     lat = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", lat)
     return lat
 
-# วิธีที่รองรับ: key -> (ชื่อไทย, latex subscript ที่ใช้ในสูตร)
+# Supported methods: key -> (Thai display name, latex subscript used in formula)
 METHODS = {
     "left": ("จุดปลายซ้าย", r"L_n"),
     "right": ("จุดปลายขวา", r"R_n"),
@@ -111,7 +111,7 @@ def compute_riemann(
         dx = (b_f - a_f) / n_i
         method_latex = METHODS[method][1]
 
-        # ตรวจสอบจุดเอกฐานเชิงวิเคราะห์ (Analytic Pole Detection) บนช่วง [a, b]
+        # Analytic pole detection on interval [a, b]
         try:
             denom = sp.denom(sp.together(expr))
             if denom != 1 and denom != 1.0 and var_sym in denom.free_symbols:
@@ -129,7 +129,7 @@ def compute_riemann(
         except Exception:
             pass
 
-        # หา sample points
+        # Compute sample points
         if method == "left":
             xs = [a_f + i * dx for i in range(n_i)]
         elif method == "right":
@@ -298,7 +298,7 @@ def compute_riemann(
 
         sample_symbol = rf"\bar{{{v_lat}}}_i" if method == "midpoint" else f"{v_lat}_i"
 
-        # สูตรจุดสุ่มตัวอย่างและสูตรซิกม่า
+        # Sample point formula and sigma formula
         if method == "left":
             sample_rule = f"{sample_symbol} = a + i\\,\\Delta {v_lat} \\quad (i = 0, 1, \\dots, {n_i-1})"
             sample_name = "ขอบซ้าย"
@@ -323,7 +323,7 @@ def compute_riemann(
 
         expanded_formula = f"= \\Delta {v_lat} \\left[ {terms_latex} \\right]"
 
-        # การแสดงจุดสุ่มตัวอย่าง
+        # Display sample points
         if n_i <= 8:
             pts_disp = ", ".join(_fmt_num(xv) for xv in xs)
             pts_latex = f"{sample_symbol} \\in \\{{{pts_disp}\\}}"
@@ -331,7 +331,7 @@ def compute_riemann(
             first_few = ", ".join(_fmt_num(xv) for xv in xs[:3])
             pts_latex = f"{sample_symbol} \\in \\{{{first_few}, \\dots, {_fmt_num(xs[-1])}\\}} \\quad (n = {n_i})"
 
-        # การแสดงค่าฟังก์ชันแต่ละจุด
+        # Display function values at sample points
         if n_i <= 6:
             f_eval_list = [f"f({_fmt_num(xv)}) = {_fmt_num(tv)}" for xv, tv in zip(xs, terms)]
             f_eval_str = ", \\quad ".join(f_eval_list)
@@ -349,7 +349,7 @@ def compute_riemann(
         sub_line = f"= ({_fmt_num(dx)}) \\cdot ({sum_h_str})"
         res_line = f"= {total:.6f}"
 
-        # เปรียบเทียบกับค่าจริงปริพันธ์จำกัดเขต
+        # Compare with exact definite integral value
         try:
             exact_sym = sp.integrate(expr, (var_sym, a_f, b_f))
             if getattr(exact_sym, "is_real", False) and getattr(exact_sym, "is_finite", False):

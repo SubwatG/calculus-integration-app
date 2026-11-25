@@ -87,11 +87,11 @@ def _parse_input(expr_str: str) -> sp.Expr:
 def _detect_u_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr | None, sp.Expr | None]:
     """สกัดตัวแปร u = g(var) และ du = g'(var)d(var) ที่กำจัดตัวแปรเดิมได้จริง"""
     candidates = []
-    # 1. ฐานของเลขยกกำลัง
+    # 1. Base of power expression
     for node in expr.atoms(sp.Pow):
         if node.base != var and node.base.has(var) and not node.base.is_number:
             candidates.append(node.base)
-    # 2. ฟังก์ชันภายใน exp, sin, cos, tan, cot
+    # 2. Inner function of exp, sin, cos, tan, cot
     for node in expr.atoms(sp.exp):
         if node.args[0] != var and node.args[0].has(var):
             candidates.append(node.args[0])
@@ -107,19 +107,19 @@ def _detect_u_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr | No
         arg = node.args[0]
         if arg.has(var):
             candidates.append(sp.sin(arg))
-    # 3. ฟังก์ชัน log
+    # 3. Logarithmic function
     for node in expr.atoms(sp.log):
         if node.has(var):
             candidates.append(node)
             if node.args[0] != var and node.args[0].has(var):
                 candidates.append(node.args[0])
 
-    # 4. ส่วนของเศษส่วน (ตัวส่วน)
+    # 4. Denominator of fraction
     numer, denom = expr.as_numer_denom()
     if denom != 1 and denom.has(var) and denom != var:
         candidates.append(denom)
 
-    # ทดสอบว่า candidate ใดเมื่อหาร du แล้ว ตัดทอนตัวแปรเดิมได้จริง
+    # Test which candidate cancels original variable when divided by du
     u_sym = sp.Symbol("_u_temp")
     for c in candidates:
         du = sp.diff(c, var)
@@ -158,11 +158,11 @@ def _detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr,
 
     คืนค่า (u, dv_factor, reason) หรือ None
     """
-    # 1. ฟังก์ชันเดี่ยว: ln(x), arctan(x), arcsin(x)
+    # 1. Single function: ln(x), arctan(x), arcsin(x)
     if isinstance(expr, sp.log) or expr.func in (sp.atan, sp.asin, sp.acos):
         return expr, sp.Integer(1), "ฟังก์ชันลอการิทึมหรือตรีโกณมิติผกผันเดี่ยว (กำหนด dv = dx)"
 
-    # 2. รูปแบบผลคูณ
+    # 2. Product forms
     factors = list(expr.as_ordered_factors()) if expr.is_Mul else [expr]
     log_factors = [f for f in factors if f.has(sp.log)]
     inv_trig_factors = [f for f in factors if any(f.has(cls) for cls in (sp.atan, sp.asin, sp.acos))]
@@ -171,7 +171,7 @@ def _detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr,
     trig_factors = [f for f in factors if any(f.has(cls) for cls in (sp.sin, sp.cos, sp.tan))]
 
     # LIATE Rule:
-    # L / I มาก่อน A
+    # L / I before A
     if log_factors:
         u_cand = sp.Mul(*log_factors)
         dv_cand = sp.Mul(*[f for f in factors if f not in log_factors])
@@ -181,7 +181,7 @@ def _detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr,
         dv_cand = sp.Mul(*[f for f in factors if f not in inv_trig_factors])
         return u_cand, dv_cand, "ตามแนวทาง LIATE: เลือกฟังก์ชันตรีโกณมิติผกผัน (I) เป็น u"
 
-    # A มาก่อน T / E
+    # A before T / E
     if poly_factors and (exp_factors or trig_factors):
         u_cand = sp.Mul(*poly_factors)
         other_factors = [f for f in factors if f not in poly_factors]
@@ -200,14 +200,26 @@ def _detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr,
 def _get_domain_note(expr: sp.Expr, var: sp.Symbol = X) -> str:
     """สร้างคำอธิบายเงื่อนไขโดเมนตาม Universal Step Contract"""
     notes = []
+    has_pos_x = False
     if expr.has(sp.log):
         for node in expr.atoms(sp.log):
             notes.append(f"${_to_latex(node.args[0])} > 0$")
+            if node.args[0] == var:
+                has_pos_x = True
     numer, denom = expr.as_numer_denom()
     if denom != 1 and denom.has(var):
-        notes.append(f"${_to_latex(denom)} \\neq 0$")
+        if not (has_pos_x and denom == var):
+            notes.append(f"${_to_latex(denom)} \\neq 0$")
     for node in expr.atoms(sp.Pow):
         if node.exp.is_Rational and node.exp.q % 2 == 0:
+            try:
+                poly = sp.Poly(node.base, var)
+                if poly.is_quadratic:
+                    a_c, b_c, c_c = poly.all_coeffs()
+                    if a_c > 0 and (b_c**2 - 4 * a_c * c_c) < 0:
+                        continue
+            except Exception:
+                pass
             notes.append(f"${_to_latex(node.base)} \\geq 0$")
 
     if notes:
@@ -324,7 +336,7 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
             }
 
         # -------------------------------------------------------------
-        # ตรวจสอบว่าควรแก้ด้วย u-Substitution หรือ By Parts
+        # Determine whether to solve with u-Substitution or By Parts
         # -------------------------------------------------------------
         u_cand, du_cand = _detect_u_candidate(expr, var_sym)
         is_clean_usub = False
@@ -342,7 +354,7 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
         if not is_clean_usub:
             parts_cand = _detect_parts_candidate(expr, var_sym)
 
-        # เส้นทาง B: การอินทิเกรตทีละส่วน (Integration by Parts)
+        # Route B: Integration by Parts
         if parts_cand is not None:
             u_p, dv_p, parts_reason = parts_cand
             du_p = sp.diff(u_p, var_sym)
@@ -395,7 +407,7 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
                 },
             }
 
-        # เส้นทาง A: การแทนค่า u (u-Substitution)
+        # Route A: u-Substitution
         if u_cand is not None and du_cand is not None:
             u_sym = sp.Symbol("u", real=True)
             expr_u = expr.subs(u_cand, u_sym)
@@ -446,7 +458,7 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
                 "method": "substitution",
             }
 
-        # เส้นทางทั่วไป (Standard rules)
+        # Standard rules route
         antideriv = _wrap_new_logs(antideriv, orig_expr)
         steps.append(
             "คำนวณปริพันธ์โดยใช้สูตรพื้นฐานของแคลคูลัส"
@@ -620,7 +632,7 @@ def verify_user_u_substitution(
         v_lat = _to_latex(var_sym)
         domain_note = _get_domain_note(expr, var_sym)
 
-        # ตรวจสอบว่า u มีตัวแปร x หรือไม่
+        # Check if u contains variable x
         if not u_expr.has(var_sym):
             return {
                 "ok": False,
@@ -636,7 +648,7 @@ def verify_user_u_substitution(
                 "variable": str(var_sym.name),
             }
 
-        # ตรวจสอบกรณี trivial u = x
+        # Check trivial case u = x
         if u_expr == var_sym:
             return {
                 "ok": True,
@@ -657,7 +669,7 @@ def verify_user_u_substitution(
         ratio = sp.simplify(expr / du)
         u_sym = sp.Symbol("u")
 
-        # ป้องกันไม่ให้ SymPy แปลง x เป็น 1/u อัตโนมัติเมื่อ u_expr เป็น 1/x หรือพจน์ยกกำลัง
+        # Prevent SymPy from automatically converting x to 1/u when u_expr is 1/x or power term
         ratio_u = ratio.replace(u_expr, u_sym)
         if ratio_u.has(var_sym) and not u_expr.is_Pow and u_expr != 1 / var_sym:
             cand_ratio_u = sp.simplify(ratio.subs(u_expr, u_sym))
@@ -665,7 +677,7 @@ def verify_user_u_substitution(
                 ratio_u = cand_ratio_u
 
         # -------------------------------------------------------------
-        # 1. กรณี Direct Substitution (ทำได้โดยตรง)
+        # 1. Direct Substitution case
         # -------------------------------------------------------------
         if not ratio_u.has(var_sym):
             antideriv_u = sp.integrate(ratio_u, u_sym)
@@ -699,7 +711,7 @@ def verify_user_u_substitution(
                 }
 
         # -------------------------------------------------------------
-        # 2. กรณี Algebraic Adjustment (ต้องจัดรูปพีชคณิตเสริมก่อน)
+        # 2. Algebraic Adjustment case
         # -------------------------------------------------------------
         if u_expr != 1 / var_sym and not check_standard_form(expr, var_sym):
             sols = sp.solve(sp.Eq(u_sym, u_expr), var_sym)
@@ -741,7 +753,7 @@ def verify_user_u_substitution(
                                 }
 
         # -------------------------------------------------------------
-        # 3. กรณี Incompatible (ทำไม่ได้ด้วย u นี้) หรือโจทย์ต้องใช้ By Parts
+        # 3. Incompatible case (cannot solve with this u) or requires By Parts
         # -------------------------------------------------------------
         from utils.by_parts_solver import detect_parts_candidate
         parts_c = detect_parts_candidate(expr, var_sym)

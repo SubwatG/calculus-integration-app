@@ -185,12 +185,24 @@ def test_ped_03_substitution_case_4_option_c_feedback():
         sb.select(opt_case4).run(timeout=5)
         r = at.radio(key="radio_u_case4")
         if r:
-            # Select Option C (index 2: "แนวทาง C: ถือว่าทำไม่ได้...")
+            # Select Option C (index 2: Option C indicating incompatible)
             r.set_value(r.options[2]).run(timeout=5)
             assert not at.exception
             assert len(at.warning) >= 1
             assert "ยังไม่ถูกต้อง" in at.warning[0].value
             assert "x = u - 1" in at.warning[0].value
+
+
+def test_ped_05_no_informal_phrases_in_pages_and_utils():
+    import glob
+    files = glob.glob("pages/*.py") + glob.glob("utils/*.py")
+    informal_phrases = ["ไส้ใน", "เมื่อ x ไม่หมด"]
+    for f in files:
+        with open(f, "r", encoding="utf-8") as fp:
+            content = fp.read()
+            for phrase in informal_phrases:
+                assert phrase not in content, f"Informal phrase '{phrase}' found in {f}"
+
 
 
 

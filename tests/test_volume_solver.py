@@ -13,7 +13,7 @@ class TestComputeVolume:
     def test_compute_volume_basic(self):
         res = compute_volume('x', 0, 2, 'disk')
         assert res["ok"] is True
-        # TODO: ตรวจค่า result ตามหัวข้อ
+        # TODO: Validate result per topic
         assert res["result"] is not None
         assert len(res["steps"]) >= 3
 

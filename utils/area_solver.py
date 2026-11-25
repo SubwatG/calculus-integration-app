@@ -69,7 +69,7 @@ def _format_evaluated_value(val_sym, val_float: float) -> str:
 def _parse_input(expr_str: str) -> sp.Expr:
     clean = (expr_str or "").strip()
     if not clean:
-        raise ValueError("Empty input string")
+        raise ValueError("กรุณาระบุฟังก์ชัน (ข้อความเป็นค่าว่าง)")
     return parse_expr(clean, transformations=TRANSFORMATIONS, local_dict=LOCAL_MATH_DICT)
 
 
@@ -120,11 +120,14 @@ def _simplify_piecewise_on_interval(expr: sp.Expr, var: sp.Symbol, left: float, 
 def _to_rational_bound(val: float | int | str) -> sp.Rational:
     try:
         fval = float(val)
-        if not math.isfinite(fval):
-            raise ValueError(f"Bound must be finite, got {val}")
-    except (TypeError, ValueError) as e:
-        raise ValueError(f"Invalid bound {val}: {e}")
-    return sp.Rational(str(val))
+    except (TypeError, ValueError):
+        raise ValueError(f"ขอบเขตต้องเป็นตัวเลขจริง (เช่น 0 ถึง 3.14) ระบบอ่านค่า '{val}' ไม่ได้")
+    if not math.isfinite(fval):
+        raise ValueError(f"ขอบเขตต้องเป็นจำนวนจริงจำกัด (ได้รับ '{val}')")
+    try:
+        return sp.Rational(str(val))
+    except Exception:
+        return sp.Rational(str(fval))
 
 
 def _format_bound_latex(val: float | int | sp.Rational) -> str:
@@ -140,7 +143,7 @@ def _format_bound_latex(val: float | int | sp.Rational) -> str:
 
 def _check_domain_validity(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: float, n_samples: int = 401) -> bool:
     """ตรวจสอบว่าฟังก์ชันมีค่าจริงและจำกัดตลอดช่วงปิด [a, b]"""
-    # 1. ตรวจสอบจุดเอกฐานจากตัวส่วน
+    # 1. Check poles and denominator roots
     denom = sp.denom(expr.rewrite(sp.cos))
     if denom != 1:
         try:
@@ -150,7 +153,7 @@ def _check_domain_validity(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: f
         except Exception:
             pass
 
-    # 2. ตรวจสอบแบบ vector ด้วย numpy lambdify
+    # 2. Vectorized check using numpy lambdify
     try:
         import numpy as np
         import warnings
@@ -168,7 +171,7 @@ def _check_domain_validity(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: f
     except Exception:
         pass
 
-    # 3. Fallback จุดต่อจุด
+    # 3. Pointwise fallback check
     for i in range(n_samples + 1):
         xv = a_val + (b_val - a_val) * i / n_samples
         try:
@@ -186,7 +189,7 @@ def _check_domain_validity(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: f
 def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = X) -> list[float]:
     """ค้นหาจุดตัด f(x) - g(x) = 0 บนช่วงเปิด (a, b)"""
     roots = []
-    # 1. ตรวจสอบรากพหุนาม
+    # 1. Check polynomial real roots
     try:
         poly = sp.Poly(diff, var)
         if all(c.is_Rational for c in poly.all_coeffs()):
@@ -199,11 +202,11 @@ def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = 
     except Exception:
         pass
 
-    # 2. กรณีฟังก์ชันที่มีรากคี่หรือจุด x = 0 อยู่กลางช่วง
+    # 2. Odd-degree root or x = 0 origin crossing
     if a_val < 0.0 < b_val and (diff.has(sp.real_root) or diff.has(sp.sign) or diff.has(sp.Abs)):
         roots.append(0.0)
 
-    # 3. สแกนการเปลี่ยนเครื่องหมายด้วยความหนาแน่นสูง (รองรับฟังก์ชันความถี่สูง)
+    # 3. Dense sign-change scan (supports high-frequency functions)
     n_samples = 2401
     try:
         import numpy as np
@@ -249,7 +252,7 @@ def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = 
     except Exception:
         pass
 
-    # Fallback สแกน 1,001 จุด
+    # Fallback 1,001-point scan
     xs = [a_val + (b_val - a_val) * i / 1000.0 for i in range(1001)]
     ys = []
     for xi in xs:
@@ -286,6 +289,61 @@ def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = 
                 roots.append(xm)
 
     return sorted(roots)
+
+
+def _eval_interval_sign(diff_expr: sp.Expr, var_sym: sp.Symbol, left: sp.Rational, right: sp.Rational) -> int:
+    """Evaluate sign of diff_expr on open interval (left, right).
+
+    Returns 1 if strictly positive, -1 if strictly negative, or falls back to testing offsets.
+    """
+    mid = (left + right) / 2
+    try:
+        val = float(diff_expr.subs(var_sym, mid).evalf())
+        if abs(val) > 1e-12:
+            return 1 if val > 0 else -1
+    except Exception:
+        pass
+    # If midpoint is zero or near-zero (e.g. at tangency root), test quarter points
+    for fraction in (0.25, 0.75, 0.1, 0.9):
+        pt = left + (right - left) * fraction
+        try:
+            val = float(diff_expr.subs(var_sym, pt).evalf())
+            if abs(val) > 1e-12:
+                return 1 if val > 0 else -1
+        except Exception:
+            pass
+    return 1
+
+
+def _classify_interior_roots(
+    diff_expr: sp.Expr,
+    var_sym: sp.Symbol,
+    a_sp: sp.Rational,
+    b_sp: sp.Rational,
+    interior_roots: list[sp.Rational],
+) -> tuple[list[sp.Rational], list[sp.Rational]]:
+    """Classify interior roots into true crossings (sign change) and tangency points (no sign change)."""
+    sorted_roots = sorted(set(interior_roots))
+    if not sorted_roots:
+        return [], []
+
+    z_points = [a_sp] + sorted_roots + [b_sp]
+    interval_signs = [
+        _eval_interval_sign(diff_expr, var_sym, z_points[i], z_points[i + 1])
+        for i in range(len(z_points) - 1)
+    ]
+
+    true_crossings = []
+    tangent_points = []
+    for i, r in enumerate(sorted_roots):
+        s_left = interval_signs[i]
+        s_right = interval_signs[i + 1]
+        if s_left * s_right < 0:
+            true_crossings.append(r)
+        else:
+            tangent_points.append(r)
+
+    return true_crossings, tangent_points
 
 
 def find_curve_intersections(f_str: str, g_str: str, span: tuple[float, float] = (-15.0, 15.0)) -> dict:
@@ -417,7 +475,7 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
                 raise ValueError(f"พบตัวแปรมากกว่า 1 ตัวแปรในสมการ: {all_free} (กรุณาใช้ตัวแปรเดียวกันสำหรับ f และ g)")
 
         v_lat = _to_latex(var_sym)
-        # กระจายพจน์ผลต่าง ไม่ดึงตัวประกอบออกเป็น x(1-x) เพื่อให้อ่านเข้าใจง่าย
+        # Expand difference expression without factoring for clear readability
         diff_expr = sp.expand(f_expr - g_expr)
 
         if diff_expr.is_zero or diff_expr == 0:
@@ -438,13 +496,13 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
                 "variable": str(var_sym.name),
             }
 
-        # ตรวจสอบความถูกต้องของโดเมนบนช่วงปิด [a, b] (ต้องเป็นจำนวนจริงและมีค่าจำกัดตลอดช่วง)
+        # Validate domain on closed interval [a, b] (must be real and finite throughout)
         if not _check_domain_validity(f_expr, var_sym, float(a_sp), float(b_sp)) or \
            not _check_domain_validity(g_expr, var_sym, float(a_sp), float(b_sp)):
             raise ValueError("ไม่สามารถคำนวณพื้นที่ได้เนื่องจากฟังก์ชันไม่อยู่ในโดเมนของจำนวนจริง หรือมีจุดไม่ต่อเนื่องแบบอนันต์บนช่วงที่กำหนด")
 
         # -------------------------------------------------------------
-        # ค้นหาจุดตัด f(x) - g(x) = 0 ทั้งหมดบนช่วงเปิด (a, b)
+        # Find all intersection points f(x) - g(x) = 0 on open interval (a, b)
         # -------------------------------------------------------------
         interior_roots_sym = []
         is_poly = False
@@ -463,15 +521,21 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
                 if not any(abs(float(ir) - r) < 1e-4 for ir in interior_roots_sym):
                     interior_roots_sym.append(sp.Rational(str(round(r, 6))))
 
-        # จุดแบ่งทั้งหมด
-        cuts = [a_sp] + sorted(set(interior_roots_sym)) + [b_sp]
-        crossings_float = [float(r) for r in cuts[1:-1]]
+        # Classify interior roots into true crossings (sign change) and tangency points (no sign change)
+        true_crossings_sym, tangent_points_sym = _classify_interior_roots(
+            diff_expr, var_sym, a_sp, b_sp, interior_roots_sym
+        )
+
+        # Definite integral subintervals are split strictly at true crossings
+        cuts = [a_sp] + sorted(set(true_crossings_sym)) + [b_sp]
+        crossings_float = [float(r) for r in true_crossings_sym]
+        tangent_points_float = [float(r) for r in tangent_points_sym]
 
         sub_steps = []
         total_area = sp.S.Zero
         piece_areas = []
 
-        # หาปฏิยานุพันธ์หลักล่วงหน้าครั้งเดียวเพื่อประสิทธิภาพสูง (ลดเวลาจาก O(N) integrate เหลือ O(1))
+        # Precompute antiderivative once for performance (reduces O(N) integrate to O(1))
         antideriv_f_minus_g = None
         try:
             anti_cand = sp.integrate(diff_expr, var_sym)
@@ -483,13 +547,8 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         for i, (left, right) in enumerate(zip(cuts, cuts[1:]), start=1):
             left_disp = _format_bound_latex(left)
             right_disp = _format_bound_latex(right)
-            mid = (left + right) / 2
-            mid_val = diff_expr.subs(var_sym, mid)
-            is_pos = True
-            try:
-                is_pos = (float(mid_val.evalf()) >= 0)
-            except Exception:
-                is_pos = True
+            sign_interval = _eval_interval_sign(diff_expr, var_sym, left, right)
+            is_pos = (sign_interval >= 0)
 
             if is_pos:
                 integrand = sp.expand(f_expr - g_expr)
@@ -553,7 +612,7 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         total_disp = _format_evaluated_value(total_area, res_float)
 
         # -------------------------------------------------------------
-        # สร้าง Steps ตาม Universal Step Contract
+        # Build steps according to Universal Step Contract
         # -------------------------------------------------------------
         if crossings_float:
             num_sub = len(cuts) - 1
@@ -572,24 +631,30 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             )
             latex_ans = f"A = {sub_sum_sym} = {total_disp}"
         else:
-            mid_full = (a_sp + b_sp) / 2
-            mid_val = diff_expr.subs(var_sym, mid_full)
-            try:
-                is_top = (float(mid_val.evalf()) >= 0)
-            except Exception:
-                is_top = True
+            sign_interval = _eval_interval_sign(diff_expr, var_sym, a_sp, b_sp)
+            is_top = (sign_interval >= 0)
             if is_top:
+                reason = (
+                    f"(เส้นโค้ง $f$ อยู่เหนือหรือสัมผัส $g$ ตลอดช่วง จึงคำนวณ |f({v_lat}) - g({v_lat})| = f({v_lat}) - g({v_lat}))"
+                    if tangent_points_float
+                    else f"(เส้นโค้ง $f$ อยู่เหนือ $g$ ตลอดช่วง จึงคำนวณ |f({v_lat}) - g({v_lat})| = f({v_lat}) - g({v_lat}))"
+                )
                 formula_step = (
                     f"ตั้งสูตรหาพื้นที่:\n"
                     f"A = \\int_{{{a_disp}}}^{{{b_disp}}} [f({v_lat}) - g({v_lat})] \\, d{v_lat}\n"
-                    f"(เส้นโค้ง $f$ อยู่เหนือ $g$ ตลอดช่วง จึงคำนวณ $|f({v_lat}) - g({v_lat})| = f({v_lat}) - g({v_lat})$)"
+                    f"{reason}"
                 )
                 latex_ans = f"A = \\int_{{{a_disp}}}^{{{b_disp}}} \\left[{_to_latex(f_raw, order='none')} - ({_to_latex(g_raw, order='none')})\\right] \\, d{v_lat} = {total_disp}"
             else:
+                reason = (
+                    f"(เส้นโค้ง $g$ อยู่เหนือหรือสัมผัส $f$ ตลอดช่วง จึงคำนวณ |f({v_lat}) - g({v_lat})| = g({v_lat}) - f({v_lat}))"
+                    if tangent_points_float
+                    else f"(เส้นโค้ง $g$ อยู่เหนือ $f$ ตลอดช่วง จึงคำนวณ |f({v_lat}) - g({v_lat})| = g({v_lat}) - f({v_lat}))"
+                )
                 formula_step = (
                     f"ตั้งสูตรหาพื้นที่:\n"
                     f"A = \\int_{{{a_disp}}}^{{{b_disp}}} [g({v_lat}) - f({v_lat})] \\, d{v_lat}\n"
-                    f"(เส้นโค้ง $g$ อยู่เหนือ $f$ ตลอดช่วง จึงคำนวณ $|f({v_lat}) - g({v_lat})| = g({v_lat}) - f({v_lat})$)"
+                    f"{reason}"
                 )
                 latex_ans = f"A = \\int_{{{a_disp}}}^{{{b_disp}}} \\left[{_to_latex(g_raw, order='none')} - ({_to_latex(f_raw, order='none')})\\right] \\, d{v_lat} = {total_disp}"
 
@@ -600,13 +665,18 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         ]
 
         if crossings_float:
-            roots_str = ", ".join(f"${v_lat} = {_format_bound_latex(r)}$" for r in cuts[1:-1])
+            roots_str = ", ".join(f"${v_lat} = {_format_bound_latex(r)}$" for r in true_crossings_sym)
+            if tangent_points_sym:
+                tang_str = ", ".join(f"${v_lat} = {_format_bound_latex(r)}$" for r in tangent_points_sym)
+                note_tang = f" (และพบจุดสัมผัสที่ไม่ตัดสลับฝั่งที่ {tang_str})"
+            else:
+                note_tang = ""
             steps.append(
-                f"หาจุดตัดของเส้นโค้ง: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ พบจุดตัดภายในช่วงที่ {roots_str} "
+                f"หาจุดตัดของเส้นโค้ง: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ พบจุดตัดสลับฝั่งภายในช่วงที่ {roots_str}{note_tang} "
                 f"จึงแบ่งการคำนวณออกเป็น {len(cuts) - 1} ช่วงย่อยเพื่อนำฟังก์ชันบนลบฟังก์ชันล่างในแต่ละช่วง"
             )
             steps.extend(sub_steps)
-            # รวมผลบวกทุกช่วงย่อย
+            # Sum all sub-interval areas
             if len(cuts) <= 9:
                 sum_str = " + ".join(f"A_{i}" for i in range(1, len(cuts)))
                 pieces_val_str = " + ".join(f"{_format_evaluated_value(p, float(p.evalf()))}" for p in piece_areas)
@@ -621,27 +691,39 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
                     f"รวมพื้นที่ทุกช่วงย่อย: $A = {sum_str} = {first_vals} + \\dots + {last_val} = {total_disp}$"
                 )
         else:
-            # ไม่มีจุดตัดภายในช่วง
-            mid_full = (a_sp + b_sp) / 2
-            mid_val = diff_expr.subs(var_sym, mid_full)
-            try:
-                is_pos = (float(mid_val.evalf()) >= 0)
-            except Exception:
-                is_pos = True
+            # No interior crossings
+            sign_interval = _eval_interval_sign(diff_expr, var_sym, a_sp, b_sp)
+            is_pos = (sign_interval >= 0)
             if is_pos:
                 integrand = sp.expand(f_expr - g_expr)
-                steps.append(
-                    f"ตรวจสอบฟังก์ชันบน-ล่างและหาจุดตัด: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
-                    f"โดยบนช่วงนี้ $f({v_lat}) \\geq g({v_lat})$ (กราฟ $f$ อยู่เหนือ $g$ ตลอดช่วง) "
-                    f"จึงคำนวณปริพันธ์เส้นบนลบเส้นล่าง: $f({v_lat}) - g({v_lat}) = {_to_latex(integrand, order='none')}$"
-                )
+                if tangent_points_float:
+                    tang_str = ", ".join(f"${v_lat} = {_format_bound_latex(r)}$" for r in tangent_points_sym)
+                    steps.append(
+                        f"ตรวจสอบฟังก์ชันบน-ล่างและหาจุดตัด: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ พบจุดสัมผัสที่ {tang_str} "
+                        f"โดยเส้นโค้งสัมผัสกันแต่ไม่ตัดสลับฝั่ง ทำให้ $f({v_lat}) \\geq g({v_lat})$ ตลอดช่วง "
+                        f"จึงไม่ต้องแบ่งช่วงย่อย และคำนวณปริพันธ์เส้นบนลบเส้นล่าง: $f({v_lat}) - g({v_lat}) = {_to_latex(integrand, order='none')}$"
+                    )
+                else:
+                    steps.append(
+                        f"ตรวจสอบฟังก์ชันบน-ล่างและหาจุดตัด: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
+                        f"โดยบนช่วงนี้ $f({v_lat}) \\geq g({v_lat})$ (กราฟ $f$ อยู่เหนือ $g$ ตลอดช่วง) "
+                        f"จึงคำนวณปริพันธ์เส้นบนลบเส้นล่าง: $f({v_lat}) - g({v_lat}) = {_to_latex(integrand, order='none')}$"
+                    )
             else:
                 integrand = sp.expand(g_expr - f_expr)
-                steps.append(
-                    f"ตรวจสอบฟังก์ชันบน-ล่างและหาจุดตัด: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
-                    f"โดยบนช่วงนี้ $g({v_lat}) \\geq f({v_lat})$ (เส้นโค้ง $g$ อยู่เหนือ $f$ ตลอดช่วง) "
-                    f"จึงคำนวณปริพันธ์เส้นบนลบเส้นล่าง: $g({v_lat}) - f({v_lat}) = {_to_latex(integrand, order='none')}$"
-                )
+                if tangent_points_float:
+                    tang_str = ", ".join(f"${v_lat} = {_format_bound_latex(r)}$" for r in tangent_points_sym)
+                    steps.append(
+                        f"ตรวจสอบฟังก์ชันบน-ล่างและหาจุดตัด: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ พบจุดสัมผัสที่ {tang_str} "
+                        f"โดยเส้นโค้งสัมผัสกันแต่ไม่ตัดสลับฝั่ง ทำให้ $g({v_lat}) \\geq f({v_lat})$ ตลอดช่วง "
+                        f"จึงไม่ต้องแบ่งช่วงย่อย และคำนวณปริพันธ์เส้นบนลบเส้นล่าง: $g({v_lat}) - f({v_lat}) = {_to_latex(integrand, order='none')}$"
+                    )
+                else:
+                    steps.append(
+                        f"ตรวจสอบฟังก์ชันบน-ล่างและหาจุดตัด: แก้สมการ $f({v_lat}) - g({v_lat}) = 0$ ไม่พบจุดตัดภายในช่วงเปิด $({a_disp}, {b_disp})$ "
+                        f"โดยบนช่วงนี้ $g({v_lat}) \\geq f({v_lat})$ (เส้นโค้ง $g$ อยู่เหนือ $f$ ตลอดช่วง) "
+                        f"จึงคำนวณปริพันธ์เส้นบนลบเส้นล่าง: $g({v_lat}) - f({v_lat}) = {_to_latex(integrand, order='none')}$"
+                    )
 
             antideriv = sp.integrate(integrand, var_sym)
             if not antideriv.has(sp.Integral):
@@ -668,6 +750,7 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
             "f_expr": f_expr,
             "g_expr": g_expr,
             "crossings": crossings_float,
+            "touch_points": tangent_points_float,
             "error": None,
             "variable": str(var_sym.name),
         }

@@ -272,7 +272,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         interior_sings: list[float] = []
 
         # -------------------------------------------------------------
-        # กรณีที่ 1: สองฝั่งเป็นอนันต์ (-oo, oo)
+        # Case 1: Infinite bounds on both sides (-oo, oo)
         # -------------------------------------------------------------
         if lower == -sp.oo and upper == sp.oo:
             c_val = 0
@@ -356,7 +356,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             }
 
         # -------------------------------------------------------------
-        # กรณีที่ 2: ขอบล่างเป็น -oo และขอบบนจำกัด
+        # Case 2: Lower bound is -oo and upper bound is finite
         # -------------------------------------------------------------
         if lower == -sp.oo and upper != sp.oo:
             t_sym = sp.Symbol("t", negative=True)
@@ -432,7 +432,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             }
 
         # -------------------------------------------------------------
-        # กรณีที่ 3: ขอบล่างจำกัด และขอบบนเป็น oo
+        # Case 3: Lower bound is finite and upper bound is oo
         # -------------------------------------------------------------
         if lower != -sp.oo and upper == sp.oo:
             t_sym = sp.Symbol("t", positive=True)
@@ -509,8 +509,8 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             }
 
         # -------------------------------------------------------------
-        # กรณีที่ 4: ขอบเขตจำกัดทั้งคู่ [a, b]
-        # ตรวจสอบจุดเอกฐาน: ภายใน (Interior) หรือ ที่ขอบเขต (Endpoints)
+        # Case 4: Both bounds are finite [a, b]
+        # Check singularity: Interior or Endpoints
         # -------------------------------------------------------------
         f_a = float(lower.evalf())
         f_b = float(upper.evalf())
@@ -519,7 +519,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
 
         interior_sings = _find_interior_singularities(expr, f_a, f_b, var=var_sym)
 
-        # 4.1 มีจุดเอกฐานภายในช่วงเปิด (a, b)
+        # 4.1 Singularity exists inside open interval (a, b)
         if interior_sings:
             c_val = interior_sings[0]
             c_sp = sp.nsimplify(c_val)
@@ -607,11 +607,11 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "variable": str(var_sym.name),
             }
 
-        # 4.2 ตรวจสอบจุดเอกฐานที่ขอบเขต (Endpoint Singularities)
+        # 4.2 Check endpoint singularities
         lower_singular = _is_singular_at_point(expr, lower, "+", var=var_sym)
         upper_singular = _is_singular_at_point(expr, upper, "-", var=var_sym)
 
-        # ฟังก์ชันไม่ต่อเนื่องที่ขอบล่าง a เท่านั้น (เช่น 1/sqrt(x) บน [0, 1])
+        # Discontinuous only at lower bound a (e.g. 1/sqrt(x) on [0, 1])
         if lower_singular and not upper_singular:
             t_sym = sp.Symbol("t")
             steps.append(
@@ -683,7 +683,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "variable": str(var_sym.name),
             }
 
-        # ฟังก์ชันไม่ต่อเนื่องที่ขอบบน b เท่านั้น (เช่น 1/sqrt(1-x) บน [0, 1])
+        # Discontinuous only at upper bound b (e.g. 1/sqrt(1-x) on [0, 1])
         if upper_singular and not lower_singular:
             t_sym = sp.Symbol("t")
             steps.append(
@@ -755,7 +755,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "variable": str(var_sym.name),
             }
 
-        # 4.2b ฟังก์ชันไม่ต่อเนื่องที่ขอบทั้งสอง (เช่น 1/sqrt(x*(1-x)) บน [0, 1])
+        # 4.2b Discontinuous at both bounds (e.g. 1/sqrt(x*(1-x)) on [0, 1])
         if lower_singular and upper_singular:
             mid = sp.nsimplify((lower + upper) / 2)
             mid_latex = _to_latex(mid)
@@ -826,7 +826,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 "variable": str(var_sym.name),
             }
 
-        # 4.3 ไม่มีจุดเอกฐานใด ๆ บนช่วง [a, b] (อินทิกรัลจำกัดเขตปกติ)
+        # 4.3 No singularities on [a, b] (standard definite integral)
         steps.append(
             f"ข้อสังเกต: ฟังก์ชันมีความต่อเนื่องตลอดช่วงปิด $[{lower_latex}, {bound_latex}]$ "
             f"จึงจัดเป็นอินทิกรัลจำกัดเขตปกติ (Proper Definite Integral)"

@@ -193,7 +193,7 @@ class TestTruthfulWording:
         assert "จุดนิ่ง" in fb
         assert "ไม่จำเป็นต้องเป็นจุดวกกลับ" in fb
         assert "แนวนอน" in fb
-        # every mention of "จุดวกกลับ" in the page is the corrective statement
+        # every mention of inflection/turning point in the page is the corrective statement
         assert PAGE_SRC.count("จุดวกกลับ") == PAGE_SRC.count("ไม่จำเป็นต้องเป็นจุดวกกลับ") == 2
         assert "(จุดวกกลับ/จุดวิกฤต)" not in PAGE_SRC
 

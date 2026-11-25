@@ -26,12 +26,12 @@ def format_inverse_trig(text: str) -> str:
     """แปลงสัญลักษณ์ฟังก์ชันตรีโกณมิติผกผันและลอการิทึมธรรมชาติ (\\log เป็น \\ln) ตามแบบหนังสือเรียน"""
     if not text:
         return text
-    # 0. แปลง \\log เป็น \\ln สำหรับลอการิทึมธรรมชาติ
+    # 0. Convert \log to \ln for natural logarithm
     s = re.sub(r"\\log(?![a-zA-Z0-9_])", r"\\ln", text)
-    # 1. จัดการ \\operatorname{asin}, \\operatorname{acos}, \\operatorname{atan}
+    # 1. Handle \operatorname{asin}, \operatorname{acos}, \operatorname{atan}
     s = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", s)
     s = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", s)
-    # 2. จัดการคำสั่งที่ไม่มี \ นำหน้าเมื่อตามด้วยวงเล็บ เช่น asin(...) หรือ asin{...}
+    # 2. Handle commands without leading backslash followed by parentheses e.g. asin(...) or asin{...}
     s = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", s)
     return s
 
@@ -94,14 +94,14 @@ def format_math_spacing(text: str) -> str:
     """เว้นวรรคหน้าและหลังสมการ ($...$ หรือ $$...$$) เมื่ออยู่ติดกับข้อความภาษาไทย และห่อสัญลักษณ์ LaTeX ลอย ๆ"""
     if not text:
         return text
-    # 0. แปลงฟังก์ชันตรีโกณมิติผกผัน และห่อสัญลักษณ์ LaTeX ลอย ๆ
+    # 0. Convert inverse trig functions and wrap bare LaTeX symbols
     text = format_inverse_trig(text)
     text = auto_wrap_bare_latex(text)
     if not has_thai(text):
         return text
-    # 1. ภาษาไทยติดกับเครื่องหมาย $ เริ่มต้นสมการ เช่น "และ$x$" -> "และ $x$"
+    # 1. Thai character adjacent to opening $ (insert space)
     s = re.sub(r"([\u0e00-\u0e7f])(\$+)", r"\1 \2", text)
-    # 2. ปิดสมการ $ ติดกับภาษาไทย เช่น "$x$ต่อไป" -> "$x$ ต่อไป"
+    # 2. Closing $ adjacent to Thai character (insert space)
     s = re.sub(r"(\$+)([\u0e00-\u0e7f])", r"\1 \2", s)
     return s
 
@@ -156,10 +156,10 @@ def render_steps(steps, title: Optional[str] = "### วิธีทำทีล�
         if not s:
             continue
 
-        # ตัดคำนำหน้า "ขั้นที่ X:" หรือ "ขั้นตอนที่ X:" ออก เพื่อป้องกันการแสดง "ขั้นที่ 2: ขั้นที่ 1"
+        # Strip step prefix to avoid redundant numbering like "Step 2: Step 1"
         clean_s = re.sub(r"^(?:ขั้น(?:ตอน)?ที่\s*\d+\s*[:.]?\s*)", "", s).strip()
 
-        # ตรวจสอบรูปแบบ "คำอธิบายภาษาไทย: สมการ LaTeX"
+        # Check format "Thai description: LaTeX equation"
         if ":" in clean_s:
             parts = clean_s.split(":", 1)
             title_text = parts[0].strip()
@@ -167,7 +167,7 @@ def render_steps(steps, title: Optional[str] = "### วิธีทำทีล�
 
             st.markdown(f"**ขั้นที่ {i}: {format_math_spacing(title_text)}**")
 
-            # หากมีหลายบรรทัด ให้แยกบรรทัดข้อความอธิบาย (markdown) กับสมการคณิตศาสตร์ (latex)
+            # If multi-line, separate markdown explanations from LaTeX equations
             if "\n" in math_part:
                 sub_lines = [line.strip() for line in math_part.split("\n") if line.strip()]
                 for sub_line in sub_lines:
@@ -182,7 +182,7 @@ def render_steps(steps, title: Optional[str] = "### วิธีทำทีล�
             else:
                 core_math = strip_math_delimiters(math_part)
 
-                # ถ้ามีภาษาไทย หรือไม่ใช่ pure LaTeX ให้แสดงผลเป็น markdown เสมอ ห้ามส่งเข้า st.latex
+                # If containing Thai or not pure LaTeX, always render as markdown, never pass to st.latex
                 if has_thai(core_math) or not is_pure_latex(core_math):
                     st.markdown(format_math_spacing(math_part))
                 elif core_math:
@@ -191,7 +191,7 @@ def render_steps(steps, title: Optional[str] = "### วิธีทำทีล�
                     except Exception:
                         st.markdown(f"$${core_math}$$")
         else:
-            # กรณีไม่มีเครื่องหมายโคลอน (:)
+            # Case without colon (:)
             if "$" in clean_s:
                 st.markdown(f"**ขั้นที่ {i}**")
                 st.markdown(format_math_spacing(clean_s))
@@ -227,7 +227,7 @@ def preview_math_expr(expr_str: str, label: str = "สมการที่ร�
         parsed = parse_expr(clean, transformations=transformations, local_dict=local_dict)
         latex_str = format_inverse_trig(sp.latex(parsed, inv_trig_style="full", ln_notation=True))
 
-        # กำหนดชื่อฟังก์ชัน เช่น f(x), g(x), R(x), r(x)
+        # Define function names e.g. f(x), g(x), R(x), r(x)
         if var_name is None:
             if "g(x)" in label:
                 var_name = "g"

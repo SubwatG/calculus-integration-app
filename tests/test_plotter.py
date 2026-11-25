@@ -123,3 +123,32 @@ def test_interactive_plotly_functions():
     assert len(fig_area.data) >= 3
 
 
+def test_plot_tangent_invalid_inputs_raise_value_error():
+    from utils.plotter import plot_tangent, plot_tangent_plotly
+    x = sp.Symbol("x")
+
+    # Invalid non-numeric point a
+    with pytest.raises(ValueError, match="ไม่สามารถแปลงจุดสัมผัส"):
+        plot_tangent(x**2, "invalid_point")
+    with pytest.raises(ValueError, match="ไม่สามารถแปลงจุดสัมผัส"):
+        plot_tangent_plotly(x**2, "invalid_point")
+
+    # Point not in real domain of f(a)
+    with pytest.raises(ValueError, match="ไม่สามารถคำนวณพิกัด f"):
+        plot_tangent(1 / x, 0.0)
+    with pytest.raises(ValueError, match="ไม่สามารถคำนวณพิกัด f"):
+        plot_tangent_plotly(1 / x, 0.0)
+
+
+def test_plot_limit_invalid_inputs_raise_value_error():
+    from utils.plotter import plot_limit_near, plot_limit_plotly
+    x = sp.Symbol("x")
+
+    # Invalid unparseable point a
+    with pytest.raises(ValueError, match="ไม่สามารถแปลงจุดเข้าใกล้"):
+        plot_limit_near(x**2, "not_a_number")
+    with pytest.raises(ValueError, match="ไม่สามารถแปลงจุดเข้าใกล้"):
+        plot_limit_plotly(x**2, "not_a_number")
+
+
+

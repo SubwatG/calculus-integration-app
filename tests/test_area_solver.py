@@ -42,6 +42,14 @@ class TestComputeAreaBetween:
         assert res["result"] is None
         assert res["error"]
 
+    def test_compute_area_between_invalid_bound_string(self):
+        res = compute_area_between('x', 'x**2', 0, 'pi')
+        assert res["ok"] is False
+        assert res["result"] is None
+        assert "ขอบเขตต้องเป็นตัวเลขจริง" in res["error"]
+        assert "Invalid bound" not in res["error"]
+        assert "could not convert string to float" not in res["error"]
+
     def test_compute_area_between_invalid_domain_singular(self):
         res = compute_area_between('1/x', '0', -1, 1)
         assert res["ok"] is False
@@ -194,7 +202,7 @@ class TestComputeAreaBetween:
         res = compute_area_between("x", "x^2", 0, 1)
         assert "\n" in res["steps"][0]
         assert "\n" in res["steps"][2]
-        # Should not mention "ปลดค่าสัมบูรณ์"
+        # Should not mention absolute value removal in Thai
         assert "ปลดค่าสัมบูรณ์" not in " ".join(res["steps"])
 
     def test_odd_roots_piecewise_simplified(self):
@@ -221,5 +229,30 @@ class TestComputeAreaBetween:
         assert res["ok"] is False
         assert res["result"] is None
         assert "โดเมน" in res["error"] or "ไม่สามารถคำนวณได้" in res["error"]
+
+    def test_math_14_tangency_point_not_split(self):
+        # MATH-14: x = 0 is a tangency point with no sign change across [-1, 1]
+        res = compute_area_between("x**2", "0", -1, 1)
+        assert res["ok"] is True
+        assert res["result"] == pytest.approx(2.0 / 3.0)
+        assert res["crossings"] == []
+        assert res.get("touch_points") == [0.0]
+        steps_text = " ".join(res["steps"])
+        assert "จุดสัมผัส" in steps_text
+        assert "ไม่ต้องแบ่งช่วงย่อย" in steps_text
+        assert "ช่วงย่อยที่ 1" not in steps_text
+
+    def test_math_14_tangency_with_crossing_mixed(self):
+        # Mixed: x = 0 is tangency, x = 2 is true crossing on [-1, 3]
+        res = compute_area_between("x**2*(x-2)", "0", -1, 3)
+        assert res["ok"] is True
+        assert res["crossings"] == [2.0]
+        assert res.get("touch_points") == [0.0]
+        steps_text = " ".join(res["steps"])
+        assert "จุดสัมผัสที่ไม่ตัดสลับฝั่ง" in steps_text
+        assert "ช่วงย่อยที่ 1" in steps_text
+        assert "ช่วงย่อยที่ 2" in steps_text
+        assert "ช่วงย่อยที่ 3" not in steps_text
+
 
 

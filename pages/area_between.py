@@ -26,7 +26,7 @@ if "area_b" not in st.session_state:
 theory = THEORY_CONTENT["area_between"]
 
 # ---------------------------------------------------------------------------
-# Concept Anchor & What to Observe (แนวคิดหลักและจุดสังเกต)
+# Concept Anchor & What to Observe
 # ---------------------------------------------------------------------------
 with st.container(border=True):
     col_badge, col_concept = st.columns([1, 4])
@@ -110,7 +110,7 @@ from utils.keypad import render_math_keypad
 render_math_keypad(target_key="area_f", key_prefix="area_f_kp", title="แผงปุ่มลัดสัญลักษณ์คณิตศาสตร์ (พิมพ์ลงใน f(x))", expanded=False)
 
 # ---------------------------------------------------------------------------
-# ขั้นตอนที่ 1: วิเคราะห์จุดตัดของเส้นโค้งก่อนเลือกช่วงอินทิเกรต
+# Step 1: Analyze intersection points before choosing integration interval
 # ---------------------------------------------------------------------------
 if f_input.strip() and g_input.strip():
     inter_res = find_curve_intersections(f_input, g_input)
@@ -127,7 +127,7 @@ if f_input.strip() and g_input.strip():
                 roots_disp = ", ".join(f"${v} = {rl}$" for rl in roots_latex)
                 st.success(f"พบจุดตัด {count} จุดที่ {roots_disp}: เส้นโค้งตัดกันและปิดล้อมพื้นที่จำกัดโดยธรรมชาติ")
 
-                # ปุ่มลัดเลือกช่วงอินทิเกรตตามจุดตัดที่ตรวจพบ
+                # Shortcut buttons to select integration interval based on detected intersections
                 nat_a, nat_b = inter_res["natural_bounds"]
                 btn_cols = st.columns(min(len(roots), 3))
                 with btn_cols[0]:
@@ -164,7 +164,7 @@ if f_input.strip() and g_input.strip():
             st.warning(f"ไม่สามารถหาจุดตัดได้อัตโนมัติ: {inter_res.get('error')}")
 
 # ---------------------------------------------------------------------------
-# ขั้นตอนที่ 2: เลือกหรือระบุช่วงอินทิเกรต [a, b]
+# Step 2: Select or specify integration interval [a, b]
 # ---------------------------------------------------------------------------
 st.markdown("#### เลือกช่วงอินทิเกรตที่ต้องการ $[a, b]$")
 col_a, col_b = st.columns(2)
@@ -200,7 +200,7 @@ else:
             )
             st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"แสดงผลกราฟ interactive ขัดข้อง: {e} กำลังสลับไปใช้กราฟสำรอง")
+            st.warning("แสดงผลกราฟ interactive ขัดข้อง กำลังสลับไปใช้กราฟสำรอง")
             try:
                 fig, ax = plot_area_between(res["f_expr"], res["g_expr"], a_val, b_val)
                 st.pyplot(fig)

@@ -11,7 +11,12 @@ cautions, applications และ decision_guide
 """
 
 # ---------------------------------------------------------------------------
-# THEORY_CONTENT: ข้อมูลทฤษฎีสำหรับแต่ละบทเรียน interactive
+# Hidden lesson keys excluded from active navigation per requirements
+# ---------------------------------------------------------------------------
+HIDDEN_LESSON_KEYS = {"riemann_sum", "volume"}
+
+# ---------------------------------------------------------------------------
+# THEORY_CONTENT: Theory data for interactive lessons
 # ---------------------------------------------------------------------------
 THEORY_CONTENT = {
     "riemann_sum": {
@@ -52,9 +57,9 @@ THEORY_CONTENT = {
         ),
     },
     # ------------------------------------------------------------------
-    # บทเรียน interactive เพิ่มเติม (skeleton สำหรับนักศึกษา)
-    # TODO: เติม/ปรับปรุงรายละเอียดแต่ละหัวข้อให้สมบูรณ์
-    # อ้างอิงเนื้อหาจาก data/lessons/ ตาม docs/interactive-lessons-plan.md
+    # Additional interactive lessons skeleton
+    # TODO: Populate/refine details for each topic
+    # Reference content from data/lessons/ per docs/interactive-lessons-plan.md
     # ------------------------------------------------------------------
     "tangent": {
         "title": "เส้นสัมผัสและอนุพันธ์ (Tangent Line and Derivative)",

@@ -23,7 +23,7 @@ render_hero("พื้นที่ภายใต้เส้นโค้ง", "
 theory = THEORY_CONTENT["riemann_sum"]
 
 # ---------------------------------------------------------------------------
-# Concept Anchor & What to Observe (แนวคิดหลักและจุดสังเกต)
+# Concept Anchor & What to Observe
 # ---------------------------------------------------------------------------
 with st.container(border=True):
     col_badge, col_concept = st.columns([1, 4])
@@ -125,7 +125,7 @@ with col_n:
     n_val = st.slider("จำนวนช่วง n", min_value=1, max_value=50, value=8, key="riemann_n")
 
 # ---------------------------------------------------------------------------
-# คำนวณและแสดงผลแบบโต้ตอบสด (Real-time Interactive Update)
+# Real-time interactive calculation and display
 # ---------------------------------------------------------------------------
 if not expr_input.strip():
     st.info("กรุณาระบุฟังก์ชัน f(x) หรือคลิกเลือกตัวอย่างด้านบน")
@@ -158,7 +158,7 @@ else:
         render_latex(res["latex"])
         st.divider()
 
-        # กราฟ (ใช้ expr ที่ solver parse แล้ว กันปัญหา symbol undefined)
+        # Plot (use parsed expr from solver to prevent undefined symbols)
         st.markdown("### กราฟผลบวกรีมันน์")
         try:
             expr = res["expr"]
@@ -168,7 +168,7 @@ else:
             fig_plotly = plot_riemann_plotly(expr, a_val, b_val, n_val, method_label, exact_val)
             st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"แสดงผลกราฟ interactive ขัดข้อง: {e} กำลังสลับไปใช้กราฟสำรอง")
+            st.warning("แสดงผลกราฟ interactive ขัดข้อง กำลังสลับไปใช้กราฟสำรอง")
             try:
                 fig, _ = plot_riemann(expr, a_val, b_val, n_val, method_label, exact_val)
                 st.pyplot(fig)

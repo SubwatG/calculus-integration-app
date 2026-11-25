@@ -41,21 +41,21 @@ def _clean_calculus_input(expr_str: str) -> tuple[str, str | None]:
     if not clean:
         return "", None
 
-    # ลบเครื่องหมายอินทิกรัลนำหน้า เช่น \int, int, \int_{0}^{1}
+    # Remove leading integral symbol e.g. \int, int, \int_{0}^{1}
     clean = re.sub(
         r"^(?:\\int|int)(?:_\{[^}]*\}\^\{[^}]*\}|_[^\s^]+\^[^\s]+)?\s*",
         "",
         clean,
     ).strip()
 
-    # กรณีผู้ใช้พิมพ์แค่ 'dt' หรือ 'dx' เดี่ยว ๆ
+    # Handle standalone differential like 'dt' or 'dx'
     exact_m = re.match(r"^d([a-zA-Z]+|\\[a-zA-Z]+)$", clean)
     if exact_m:
         var_name = exact_m.group(1).lstrip("\\")
         if var_name.lower() in ("x", "t", "y", "u", "z", "s", "r", "v", "w", "theta", "phi", "a", "b", "c", "k"):
             return "1", var_name
 
-    # ตรวจหาผลคูณต่อท้าย เช่น '3t^2 dt', '3t^2*dt', '3t^2\,dt'
+    # Detect trailing product e.g. '3t^2 dt', '3t^2*dt', '3t^2\,dt'
     diff_pattern = r"(?:\\,|[\s*])d([a-zA-Z]+|\\[a-zA-Z]+)\s*$"
     m = re.search(diff_pattern, clean)
     detected_diff_var = None
@@ -78,11 +78,11 @@ def sanitize_math_input(expr_str: str, max_length: int = 500) -> str:
     if len(clean) > max_length:
         raise ValueError(f"ข้อความสูตรยาวเกินกำหนด (สูงสุด {max_length} ตัวอักษร)")
 
-    # นิพจน์คณิตศาสตร์ต้องไม่มี quotes, backticks, หรือ semicolons
+    # Mathematical expressions must not contain quotes, backticks, or semicolons
     if any(c in clean for c in ('"', "'", '`', ';')):
         raise ValueError("ไม่อนุญาตให้ใส่เครื่องหมายคำพูด (quotes) หรือเซมิโคลอนในสูตรคณิตศาสตร์")
 
-    # กรองคีย์เวิร์ดอันตรายระดับซับสตริง
+    # Filter dangerous keywords at substring level
     dangerous_substrings = (
         "__", "import", "exec", "eval", "open", "print", "system", "builtins",
         "globals", "locals", "subprocess", "shutil", "lambda", "compile",
@@ -92,7 +92,7 @@ def sanitize_math_input(expr_str: str, max_length: int = 500) -> str:
         if sub in clean:
             raise ValueError(f"ตรวจพบคีย์เวิร์ดที่ไม่ได้รับอนุญาต: '{sub}'")
 
-    # กรองคำเฉพาะที่เป็นโมดูลหรือคำสั่งสั้นๆ (ใช้ word boundary เพื่อไม่ให้ชนคำเช่น cos, sinh)
+    # Filter specific modules/short commands using word boundaries to avoid false positives (e.g. cos, sinh)
     for word in ("os", "sys", "io", "re", "sh"):
         if re.search(r"\b" + word + r"\b", clean):
             raise ValueError(f"ตรวจพบตัวระบุที่ไม่ได้รับอนุญาต: '{word}'")

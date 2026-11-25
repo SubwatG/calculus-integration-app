@@ -28,7 +28,7 @@ if "volume_inner" not in st.session_state:
 theory = THEORY_CONTENT["volume"]
 
 # ---------------------------------------------------------------------------
-# Concept Anchor & What to Observe (แนวคิดหลักและจุดสังเกต)
+# Concept Anchor & What to Observe
 # ---------------------------------------------------------------------------
 with st.container(border=True):
     col_badge, col_concept = st.columns([1, 4])
@@ -155,7 +155,7 @@ else:
             fig_plotly = plot_volume_plotly(res["expr"], a_val, b_val, method_label, inner_expr=res.get("inner_expr"))
             st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"แสดงผลกราฟ interactive ขัดข้อง: {e} กำลังสลับไปใช้กราฟสำรอง")
+            st.warning("แสดงผลกราฟ interactive ขัดข้อง กำลังสลับไปใช้กราฟสำรอง")
             try:
                 fig, ax = plot_volume(res["expr"], a_val, b_val, method_label, inner_expr=res.get("inner_expr"))
                 st.pyplot(fig)

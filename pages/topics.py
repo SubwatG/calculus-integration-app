@@ -29,7 +29,7 @@ topics = [
     "ฟังก์ชันหลายตัวแปร (Multivariable)",
 ]
 
-# ใช้ title ตรงๆ (auto-discovery) ไม่ hardcode filename
+# Use title directly (auto-discovery) instead of hardcoding filename
 topic_mapping = {
     "ค่าจำกัด (Limit)": [find_lesson("1.1", "ปฏิยานุพันธ์")],
     "อนุพันธ์ (Derivative)": [find_lesson("2.1", "การอินทิเกรตโดยการแทน")],

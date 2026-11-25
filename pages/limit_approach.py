@@ -184,7 +184,7 @@ st.markdown(
 
 
 # ---------------------------------------------------------------------------
-# 1) ทฤษฎีบทและหลักการสำคัญ (เปิดแสดงในกล่องสีขาว ไม่ใช้การซ่อน)
+# 1) Key theorems and principles (displayed openly)
 # ---------------------------------------------------------------------------
 st.divider()
 st.markdown("### ทฤษฎีบทและหลักการสำคัญ")
@@ -238,7 +238,7 @@ with st.expander("อ่านรายละเอียดทฤษฎี ข�
     )
 
 # ---------------------------------------------------------------------------
-# 2) ทดลองสำรวจ
+# 2) Interactive exploration
 # ---------------------------------------------------------------------------
 st.markdown("### ลองสำรวจการลู่เข้าของลิมิต")
 st.caption("ตัวอย่างโจทย์")
@@ -370,7 +370,7 @@ else:
         with col_m2:
             render_latex(res["latex"])
 
-        # ข้อความสรุปสั้นต่อกรณี (พร้อมค่าลิมิต) ชิดกับผลลัพธ์
+        # Concise summary per case (with limit value) placed near result
         feedback_kind, feedback_text = _short_case_feedback(res)
         if feedback_kind == "success":
             st.success(feedback_text)
@@ -379,13 +379,13 @@ else:
         else:
             st.info(feedback_text)
 
-        # กราฟวางติดกับตัวควบคุม delta เพื่อให้เห็นผลทันที
+        # Plot placed next to delta control for immediate feedback
         st.markdown("### กราฟการเข้าใกล้ลิมิต")
         try:
             fig_plotly = plot_limit_plotly(res["expr"], a_input, delta=delta_val)
             st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"แสดงผลกราฟ interactive ขัดข้อง: {e} กำลังสลับไปใช้กราฟสำรอง")
+            st.warning("แสดงผลกราฟ interactive ขัดข้อง กำลังสลับไปใช้กราฟสำรอง")
             try:
                 fig, _ = plot_limit_near(res["expr"], a_input, delta=delta_val)
                 st.pyplot(fig)
@@ -393,7 +393,7 @@ else:
                 st.warning(f"ไม่สามารถวาดกราฟได้: {e2}")
 
         # -------------------------------------------------------------
-        # วิธีทำฉบับเต็ม (Worked Solution): แสดงขั้นตอนทันทีโดยไม่พับเก็บ
+        # Worked solution: display steps immediately without collapsing
         # -------------------------------------------------------------
         render_steps(res["steps"])
     else:

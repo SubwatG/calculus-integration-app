@@ -85,7 +85,7 @@ def _short_case_feedback(res: dict) -> tuple[str, str]:
 
 
 # ---------------------------------------------------------------------------
-# 1) แนวคิดหลักและทฤษฎี (เปิดแสดงในกล่องสีขาว ไม่ใช้การซ่อน)
+# 1) Key concepts and theory (openly displayed)
 # ---------------------------------------------------------------------------
 st.divider()
 st.markdown("### แนวคิดหลักและทฤษฎี")
@@ -134,7 +134,7 @@ with st.expander("อ่านรายละเอียดทฤษฎี จ�
     )
 
 # ---------------------------------------------------------------------------
-# 2) ทดลองสำรวจ
+# 2) Interactive exploration
 # ---------------------------------------------------------------------------
 st.markdown("### ลองสำรวจเส้นสัมผัส")
 st.caption("ตัวอย่างโจทย์:")
@@ -202,7 +202,7 @@ else:
         with col_m2:
             render_latex(res["latex"])
 
-        # ข้อความสรุปสั้นต่อกรณี (พร้อมค่าความชัน) ชิดกับผลลัพธ์
+        # Concise summary per case (with slope value) placed near result
         feedback_kind, feedback_text = _short_case_feedback(res)
         if feedback_kind == "success":
             st.success(feedback_text)
@@ -211,7 +211,7 @@ else:
         else:
             st.info(feedback_text)
 
-        # กราฟวางติดกับตัวควบคุมด้านบน เพื่อให้เห็นผลทันทีหลังเลื่อนจุด a
+        # Plot placed next to controls for immediate feedback
         st.markdown("### กราฟเส้นโค้งและเส้นสัมผัส")
         plot_status = "vertical" if res.get("is_vertical") else res.get("status", "finite")
         try:
@@ -223,7 +223,7 @@ else:
             )
             st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"แสดงผลกราฟ interactive ขัดข้อง: {e} กำลังสลับไปใช้กราฟสำรอง")
+            st.warning("แสดงผลกราฟ interactive ขัดข้อง กำลังสลับไปใช้กราฟสำรอง")
             try:
                 fig, _ = plot_tangent(
                     res["expr"],
@@ -235,7 +235,7 @@ else:
             except Exception as e2:
                 st.warning(f"ไม่สามารถวาดกราฟได้: {e2}")
 
-        # วิธีทำฉบับเต็มแสดงขั้นตอนทันทีโดยไม่พับเก็บ
+        # Full worked solution displayed without collapsing
         st.markdown("### วิธีทำทีละขั้นตอน")
         render_steps(res["steps"], title=None)
     else:

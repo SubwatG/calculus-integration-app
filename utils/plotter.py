@@ -87,7 +87,7 @@ def plot_riemann(
     with np.errstate(all="ignore"):
         ys_smooth = _as_curve(f(xs_smooth), xs_smooth)
 
-    # sample points ตามวิธี
+    # Sample points according to method
     if method == "left":
         xs_rect = np.array([a + i * dx for i in range(n)])
     elif method == "right":
@@ -102,12 +102,12 @@ def plot_riemann(
     ax.plot(xs_smooth, ys_smooth, color=CURVE, lw=2, label=f"y = f({var_name})")
     ax.axhline(0, color="#999", lw=0.8)
 
-    # สี่เหลี่ยม: ใช้ x ของเหลี่ยมนั้นเป็นฐาน
+    # Rectangles: use rectangle x as base
     for i in range(n):
         if method == "left":
             x0 = a + i * dx
         elif method == "right":
-            x0 = a + i * dx  # right ใช้ความสูงขอบขวา แต่เหลี่ยมเริ่มที่ x0
+            x0 = a + i * dx  # Right Riemann uses right height, but box starts at x0
         else:
             x0 = a + i * dx
         y = ys_rect[i]
@@ -122,7 +122,7 @@ def plot_riemann(
         )
         ax.add_patch(rect)
 
-    # แรเงาพื้นที่ใต้กราฟจริง (สำหรับเทียบกับ exact)
+    # Shade area under actual curve (to compare with exact)
     xs_area = np.linspace(a, b, 300)
     with np.errstate(all="ignore"):
         ys_area = _as_curve(f(xs_area), xs_area)
@@ -149,9 +149,9 @@ def plot_riemann(
 
 
 # ---------------------------------------------------------------------------
-# Plotter stubs สำหรับบทเรียน interactive ที่นักศึกษาจะเติม
-# TODO: ใส่ logic วาดกราฟจริงให้แต่ละฟังก์ชัน (อ้างอิง plot_riemann ข้างบน)
-# ข้อควรจำ: label ในกราฟต้องเป็นภาษาอังกฤษเท่านั้น (matplotlib ไม่มีฟอนต์ไทย)
+# Plotter stubs for interactive lessons
+# TODO: Implement actual plotting logic for each function (refer to plot_riemann above)
+# Note: plot labels must be English only (matplotlib lacks Thai fonts)
 # ---------------------------------------------------------------------------
 
 def _stub_figure(title: str) -> tuple:
@@ -187,22 +187,35 @@ def plot_tangent(
     var_name = var.name
     f = sp.lambdify(var, expr, modules=["numpy"])
 
-    fa_sym = expr.subs(var, a)
     try:
-        fa = float(fa_sym)
-    except (TypeError, ValueError):
-        fa = 0.0
+        a_num = float(a)
+        if not np.isfinite(a_num):
+            raise ValueError(f"จุด a ต้องเป็นจำนวนจริงจำกัด (ได้รับ {a})")
+    except Exception as e:
+        raise ValueError(f"ไม่สามารถแปลงจุดสัมผัส '{a}' เป็นค่าจำนวนจริงได้: {e}") from e
+
+    fa_sym = expr.subs(var, a_num)
+    try:
+        fa_eval = complex(fa_sym.evalf())
+        if abs(fa_eval.imag) > 1e-9 or not np.isfinite(fa_eval.real):
+            raise ValueError(f"ค่า f({a_num}) ไม่อยู่ในโดเมนจำนวนจริง ({fa_sym})")
+        fa = float(fa_eval.real)
+    except Exception as e:
+        raise ValueError(f"ไม่สามารถคำนวณพิกัด f({a_num}) ที่จุดสัมผัสได้: {e}") from e
 
     if slope is None and status == "finite":
         df = sp.diff(expr, var)
-        slope_sym = df.subs(var, a)
+        slope_sym = df.subs(var, a_num)
         try:
-            slope = float(slope_sym)
-        except (TypeError, ValueError):
-            slope = 0.0
+            slope_eval = complex(slope_sym.evalf())
+            if abs(slope_eval.imag) > 1e-9 or not np.isfinite(slope_eval.real):
+                raise ValueError(f"ความชันที่จุด {var_name} = {a_num} ไม่อยู่ในโดเมนจำนวนจริงจำกัด")
+            slope = float(slope_eval.real)
+        except Exception as e:
+            raise ValueError(f"ไม่สามารถคำนวณความชันที่จุด {var_name} = {a_num} ได้: {e}") from e
 
-    x_min = a - span
-    x_max = a + span
+    x_min = a_num - span
+    x_max = a_num + span
     xs = np.linspace(x_min, x_max, 400)
 
     with np.errstate(all="ignore"):
@@ -214,34 +227,34 @@ def plot_tangent(
 
     if status == "vertical":
         ax.axvline(
-            a,
+            a_num,
             color="#D96B27",
             lw=2,
             linestyle="--",
-            label=f"Vertical Tangent at {var_name}={a:.2f}",
+            label=f"Vertical Tangent at {var_name}={a_num:.2f}",
         )
-        title_str = f"Vertical Tangent at {var_name} = {a:.2f}  |  Slope m = ∞"
+        title_str = f"Vertical Tangent at {var_name} = {a_num:.2f}  |  Slope m = ∞"
     elif status == "non_differentiable":
-        title_str = f"Non-Differentiable at {var_name} = {a:.2f} (Corner Point)"
+        title_str = f"Non-Differentiable at {var_name} = {a_num:.2f}"
     elif status == "finite" and slope is not None:
-        ys_tangent = slope * (xs - a) + fa
+        ys_tangent = slope * (xs - a_num) + fa
         ax.plot(
             xs,
             ys_tangent,
             color="#D96B27",
             lw=2,
             linestyle="--",
-            label=f"Tangent at {var_name}={a:.2f} (m={slope:.2f})",
+            label=f"Tangent at {var_name}={a_num:.2f} (m={slope:.2f})",
         )
-        title_str = f"Tangent Line at {var_name} = {a:.2f}  |  Slope m = {slope:.4f}"
+        title_str = f"Tangent Line at {var_name} = {a_num:.2f}  |  Slope m = {slope:.4f}"
     else:
-        title_str = f"Point at {var_name} = {a:.2f}"
+        title_str = f"Point at {var_name} = {a_num:.2f}"
 
-    point_label = f"Point ({a:.2f}, {fa:.2f})"
+    point_label = f"Point ({a_num:.2f}, {fa:.2f})"
     if status == "non_differentiable":
-        point_label += " (Corner)"
+        point_label += " (Non-diff)"
     ax.scatter(
-        [a],
+        [a_num],
         [fa],
         color="#C0392B",
         s=65,
@@ -310,7 +323,7 @@ def plot_limit_near(
         if lim_val is not None and np.isfinite(lim_val):
             ax.axhline(lim_val, color="#E74C3C", lw=1.6, linestyle="--", label=f"Horizontal Asymptote y = {lim_val:.4f}")
 
-        # ปรับ y-scale ให้มองเห็นเส้นกำกับและเส้นกราฟชัดเจน ไม่ถูก squash จากจุด singularity / y -> inf
+        # Adjust y-scale to keep asymptotes and curve visible, preventing squashing from singularities
         finite_ys = ys[np.isfinite(ys)]
         if len(finite_ys) > 0:
             if lim_val is not None and np.isfinite(lim_val):
@@ -353,10 +366,10 @@ def plot_limit_near(
             a_target = _parse_target_a(a)
             a_num = float(a_target.evalf())
             a_disp = f"${sp.latex(a_target)}$"
-    except Exception:
-        a_num = 0.0
-        a_disp = "0"
-        a_target = sp.Integer(0)
+        if not np.isfinite(a_num):
+            raise ValueError(f"จุดเข้าใกล้ a ต้องเป็นจำนวนจริงจำกัด (ได้รับ {a})")
+    except Exception as e:
+        raise ValueError(f"ไม่สามารถแปลงจุดเข้าใกล้ '{a}' เป็นค่าจำนวนจริงได้: {e}") from e
 
     f = sp.lambdify(var, expr, modules=["numpy"])
     try:
@@ -370,7 +383,7 @@ def plot_limit_near(
 
     x_min = a_num - span
     x_max = a_num + span
-    # หลีกเลี่ยงจุด a เล็กน้อยเพื่อป้องกัน division by zero ของ numerical evaluation
+    # Slightly avoid point a to prevent numerical division by zero
     xs_left = np.linspace(x_min, a_num - 1e-4, 200)
     xs_right = np.linspace(a_num + 1e-4, x_max, 200)
     xs = np.concatenate([xs_left, xs_right])
@@ -382,11 +395,11 @@ def plot_limit_near(
     fig, ax = _create_figure()
     ax.plot(xs, ys, color=CURVE, lw=2.5, label=f"y = f({var_name})")
 
-    # เส้นแนวดิ่งที่ var = a
+    # Vertical line at var = a
     ax.axvline(a_num, color="#9ca3af", lw=1.2, linestyle="--", label=f"{var_name} = {a_disp}")
     ax.axhline(0, color="#999", lw=0.8, linestyle=":")
 
-    # จุดเป้าหมายลิมิตที่ var = a
+    # Target limit point at var = a
     if lim_finite and lim_val is not None:
         ax.plot(
             [a_num],
@@ -401,7 +414,7 @@ def plot_limit_near(
         )
         ax.axhline(lim_val, color="#E5E7EB", lw=1, linestyle=":")
 
-    # จุดเข้าใกล้ทางซ้าย x_L = a - delta และทางขวา x_R = a + delta (ระยะห่าง d)
+    # Approaching points: left x_L = a - delta, right x_R = a + delta (distance d)
     x_l = a_num - delta
     x_r = a_num + delta
 
@@ -435,7 +448,7 @@ def plot_limit_near(
                 arrowprops=dict(arrowstyle="->", color="#E67E22", lw=1.5),
             )
 
-    # ควบคุมสเกลแกน y ไม่ให้พุ่งสู่อนันต์จนเส้นกราฟและจุดทดสอบถูกบีบจนมองไม่เห็น
+    # Control y-axis limits to prevent infinite spikes from squashing the curve and test points
     finite_ys = ys[np.isfinite(ys)]
     if len(finite_ys) > 0:
         focus_pts = [0.0]
@@ -528,17 +541,17 @@ def plot_volume(
     fig, ax = _create_figure()
 
     if is_washer:
-        # เส้นขอบนอกและเส้นขอบใน
+        # Outer and inner boundary curves
         ax.plot(xs_solid, ys_solid, color=CURVE, lw=2.2, label=f"Outer Radius R({var_name})")
         ax.plot(xs_solid, -ys_solid, color=CURVE, lw=1.8, linestyle="--", label=f"Reflection -R({var_name})")
         ax.plot(xs_solid, ys_inner, color="#2563EB", lw=2.0, label=f"Inner Radius r({var_name})")
         ax.plot(xs_solid, -ys_inner, color="#2563EB", lw=1.6, linestyle=":", label=f"Reflection -r({var_name})")
 
-        # แรเงาเนื้อทรงตันวงแหวน
+        # Shade washer solid region
         ax.fill_between(xs_solid, ys_solid, ys_inner, where=(ys_solid >= ys_inner), color=CURVE, alpha=0.3, label="Solid Washer")
         ax.fill_between(xs_solid, -ys_inner, -ys_solid, where=(ys_solid >= ys_inner), color=CURVE, alpha=0.3)
 
-        # วาดตัวแทนแผ่นวงแหวน (Washer cross-section slice)
+        # Draw representative washer cross-section slice
         n_slices = 5
         sample_xs = np.linspace(x_start + 0.1 * span, x_end - 0.1 * span, n_slices)
         for sx in sample_xs:
@@ -553,14 +566,14 @@ def plot_volume(
                     inner_el = Ellipse((sx, 0), width, 2 * abs(sy_in), edgecolor="#2563EB", facecolor="white", alpha=0.9, lw=1.0)
                     ax.add_patch(inner_el)
     else:
-        # เส้นขอบบนและเส้นสะท้อนขอบล่างรอบแกน (Disk)
+        # Upper curve and lower reflected curve around axis (Disk)
         ax.plot(xs_solid, ys_solid, color=CURVE, lw=2.2, label=f"Radius R({var_name})")
         ax.plot(xs_solid, -ys_solid, color=CURVE, lw=1.8, linestyle="--", label=f"Reflection -R({var_name})")
 
-        # แรเงาเนื้อทรงตันหมุน
+        # Shade solid of revolution region
         ax.fill_between(xs_solid, ys_solid, -ys_solid, color=CURVE, alpha=0.25, label="Solid of Revolution")
 
-        # วาดตัวแทนแผ่นดิสก์ (Disk cross-section slices)
+        # Draw representative disk cross-section slices
         n_slices = 5
         sample_xs = np.linspace(x_start + 0.1 * span, x_end - 0.1 * span, n_slices)
         for sx in sample_xs:
@@ -573,7 +586,7 @@ def plot_volume(
                 ellipse = Ellipse((sx, 0), width, height, edgecolor="#D97706", facecolor="#FDE68A", alpha=0.35, lw=1.2)
                 ax.add_patch(ellipse)
 
-    # แกนหมุน
+    # Axis of revolution
     ax.axhline(0, color="#DC2626", lw=1.2, linestyle="-.", label="Axis of Revolution (y = 0)")
     ax.axvline(a, color="#9ca3af", lw=1, linestyle=":")
     ax.axvline(b, color="#9ca3af", lw=1, linestyle=":")
@@ -622,11 +635,11 @@ def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
         ys_g_area = _as_curve(g(xs_area), xs_area)
 
     fig, ax = _create_figure()
-    # ใช้เส้นทึบทั้งสองฟังก์ชัน (ไม่ใช้เส้นประ)
+    # Solid line for both functions (no dashed lines)
     ax.plot(xs_full, ys_f_full, color=CURVE, lw=2.2, linestyle="-", label=f"y = f({var_name})")
     ax.plot(xs_full, ys_g_full, color="#2563EB", lw=2.2, linestyle="-", label=f"y = g({var_name})")
 
-    # แรเงาพื้นที่ระหว่าง f และ g
+    # Shade area between f and g
     ax.fill_between(
         xs_area,
         ys_f_area,
@@ -701,7 +714,7 @@ def plot_area_between_plotly(
 
     fig = go.Figure()
 
-    # แบ่งช่วงย่อยตามจุดตัด เพื่อแรเงาพื้นที่แต่ละช่วงอย่างถูกต้อง
+    # Subdivide interval by intersection points to correctly shade each region
     cuts = [x_start]
     if crossings:
         for c in crossings:
@@ -746,7 +759,7 @@ def plot_area_between_plotly(
             hovertemplate=f"{label_area}<br>{var_name}: %{{x:.3f}}<extra></extra>",
         ))
 
-    # กราฟเส้นหลัก f(x) และ g(x) เป็นเส้นทึบทั้งสองเส้น (ไม่ใช้เส้นประ)
+    # Main curves f(x) and g(x) are both solid lines (no dashed lines)
     fig.add_trace(go.Scatter(
         x=xs_full,
         y=ys_f_full,
@@ -764,7 +777,7 @@ def plot_area_between_plotly(
         hovertemplate=f"g(%{{x:.3f}}) = %{{y:.3f}}<extra></extra>",
     ))
 
-    # มาร์กเกอร์จุดตัดของเส้นโค้ง
+    # Intersection markers of the curves
     if crossings:
         pts_x = [c for c in crossings if (x_min - 0.1 * span) <= c <= (x_max + 0.1 * span)]
         if pts_x:
@@ -779,7 +792,7 @@ def plot_area_between_plotly(
                 hovertemplate=f"จุดตัด: ({var_name}=%{{x:.4g}}, y=%{{y:.4g}})<extra></extra>",
             ))
 
-    # เส้นขอบเขตแนวตั้ง x = a และ x = b
+    # Vertical boundary lines x = a and x = b
     fig.add_vline(
         x=a,
         line=dict(color="#64748B", width=1.5, dash="dot"),
@@ -793,7 +806,7 @@ def plot_area_between_plotly(
         annotation_position="top right",
     )
 
-    # ควบคุมช่วงแกน y เริ่มต้นให้อยู่ในกรอบสมเหตุสมผลตามช่วง [a, b]
+    # Bound initial y-axis range reasonably within [a, b]
     xs_int = np.linspace(x_start, x_end, 200)
     with np.errstate(all="ignore"):
         ys_int = np.concatenate([_as_curve(f(xs_int), xs_int), _as_curve(g(xs_int), xs_int)])
@@ -946,7 +959,7 @@ def plot_riemann_plotly(
 
     fig = go.Figure()
 
-    # วาดแท่งสี่เหลี่ยมรีมันน์
+    # Draw Riemann rectangle bars
     for i in range(n):
         x0 = a + i * dx
         x1 = x0 + dx
@@ -963,7 +976,7 @@ def plot_riemann_plotly(
             fillcolor="rgba(225, 29, 72, 0.25)",
         )
 
-    # จุดตัวแทน f(x*) บนหัวแท่ง
+    # Representative sample points f(x*) on top of bars
     fig.add_trace(go.Scatter(
         x=xs_rect,
         y=ys_rect,
@@ -973,7 +986,7 @@ def plot_riemann_plotly(
         hovertemplate=f"จุดตัวแทน: ({var_name}=%{{x:.4f}}, y=%{{y:.4f}})<extra></extra>",
     ))
 
-    # เส้นกราฟ f(var)
+    # Curve f(var)
     fig.add_trace(go.Scatter(
         x=xs_smooth,
         y=ys_smooth,
@@ -983,7 +996,7 @@ def plot_riemann_plotly(
         hovertemplate=f"f(%{{x:.4f}}) = %{{y:.4f}}<extra></extra>",
     ))
 
-    # แรเงาพื้นที่ใต้กราฟจริงเพื่อเปรียบเทียบ
+    # Shade area under actual curve for comparison
     xs_area = np.linspace(a, b, 200)
     with np.errstate(all="ignore"):
         ys_area = _as_curve(f(xs_area), xs_area)
@@ -1029,22 +1042,35 @@ def plot_tangent_plotly(
     var_name = var.name
     f = sp.lambdify(var, expr, modules=["numpy"])
 
-    fa_sym = expr.subs(var, a)
     try:
-        fa = float(fa_sym)
-    except (TypeError, ValueError):
-        fa = 0.0
+        a_num = float(a)
+        if not np.isfinite(a_num):
+            raise ValueError(f"จุด a ต้องเป็นจำนวนจริงจำกัด (ได้รับ {a})")
+    except Exception as e:
+        raise ValueError(f"ไม่สามารถแปลงจุดสัมผัส '{a}' เป็นค่าจำนวนจริงได้: {e}") from e
+
+    fa_sym = expr.subs(var, a_num)
+    try:
+        fa_eval = complex(fa_sym.evalf())
+        if abs(fa_eval.imag) > 1e-9 or not np.isfinite(fa_eval.real):
+            raise ValueError(f"ค่า f({a_num}) ไม่อยู่ในโดเมนจำนวนจริง ({fa_sym})")
+        fa = float(fa_eval.real)
+    except Exception as e:
+        raise ValueError(f"ไม่สามารถคำนวณพิกัด f({a_num}) ที่จุดสัมผัสได้: {e}") from e
 
     if slope is None and status == "finite":
         df = sp.diff(expr, var)
-        slope_sym = df.subs(var, a)
+        slope_sym = df.subs(var, a_num)
         try:
-            slope = float(slope_sym)
-        except (TypeError, ValueError):
-            slope = 0.0
+            slope_eval = complex(slope_sym.evalf())
+            if abs(slope_eval.imag) > 1e-9 or not np.isfinite(slope_eval.real):
+                raise ValueError(f"ความชันที่จุด {var_name} = {a_num} ไม่อยู่ในโดเมนจำนวนจริงจำกัด")
+            slope = float(slope_eval.real)
+        except Exception as e:
+            raise ValueError(f"ไม่สามารถคำนวณความชันที่จุด {var_name} = {a_num} ได้: {e}") from e
 
-    x_min = a - span
-    x_max = a + span
+    x_min = a_num - span
+    x_max = a_num + span
     xs = np.linspace(x_min, x_max, 400)
 
     with np.errstate(all="ignore"):
@@ -1053,7 +1079,7 @@ def plot_tangent_plotly(
 
     fig = go.Figure()
 
-    # เส้นกราฟ f(var)
+    # Curve f(var)
     fig.add_trace(go.Scatter(
         x=xs,
         y=ys,
@@ -1063,18 +1089,18 @@ def plot_tangent_plotly(
         hovertemplate=f"f(%{{x:.4f}}) = %{{y:.4f}}<extra></extra>",
     ))
 
-    # เส้นสัมผัส
+    # Tangent line
     if status == "vertical":
         fig.add_vline(
-            x=a,
+            x=a_num,
             line=dict(color="#D96B27", width=2.2, dash="dash"),
-            annotation_text=f"เส้นสัมผัสแนวดิ่ง {var_name}={a:.2f}",
+            annotation_text=f"เส้นสัมผัสแนวดิ่ง {var_name}={a_num:.2f}",
         )
-        title_str = f"เส้นสัมผัสแนวดิ่งที่ {var_name} = {a:.2f} (ความชัน m = ∞)"
+        title_str = f"เส้นสัมผัสแนวดิ่งที่ {var_name} = {a_num:.2f} (ความชัน m = ∞)"
     elif status == "non_differentiable":
-        title_str = f"หาอนุพันธ์ไม่ได้ที่ {var_name} = {a:.2f} (จุดหักมุม)"
+        title_str = f"หาอนุพันธ์ไม่ได้ที่ {var_name} = {a_num:.2f} (จุดหักมุม)"
     elif status == "finite" and slope is not None:
-        ys_tangent = slope * (xs - a) + fa
+        ys_tangent = slope * (xs - a_num) + fa
         fig.add_trace(go.Scatter(
             x=xs,
             y=ys_tangent,
@@ -1083,19 +1109,19 @@ def plot_tangent_plotly(
             name=f"เส้นสัมผัส (m={slope:.2f})",
             hovertemplate=f"เส้นสัมผัส: y = %{{y:.4f}}<extra></extra>",
         ))
-        title_str = f"เส้นสัมผัสที่ {var_name} = {a:.2f} (ความชัน m = {slope:.4f})"
+        title_str = f"เส้นสัมผัสที่ {var_name} = {a_num:.2f} (ความชัน m = {slope:.4f})"
     else:
-        title_str = f"จุดบนเส้นโค้งที่ {var_name} = {a:.2f}"
+        title_str = f"จุดบนเส้นโค้งที่ {var_name} = {a_num:.2f}"
 
-    # จุดสัมผัส (a, f(a))
+    # Tangency point (a, f(a))
     if np.isfinite(fa):
         fig.add_trace(go.Scatter(
-            x=[a],
+            x=[a_num],
             y=[fa],
             mode="markers",
             marker=dict(color="#1E3A8A", size=10, line=dict(color="white", width=2)),
-            name=f"จุดสัมผัส ({a:.2f}, {fa:.2f})",
-            hovertemplate=f"จุดสัมผัส: ({var_name}={a:.2f}, y={fa:.2f})<extra></extra>",
+            name=f"จุดสัมผัส ({a_num:.2f}, {fa:.2f})",
+            hovertemplate=f"จุดสัมผัส: ({var_name}={a_num:.2f}, y={fa:.2f})<extra></extra>",
         ))
 
     fig.update_layout(
@@ -1187,10 +1213,10 @@ def plot_limit_plotly(
             a_target = _parse_target_a(a)
             a_num = float(a_target.evalf())
             a_disp = str(a_target)
-    except Exception:
-        a_num = 0.0
-        a_disp = "0"
-        a_target = sp.Integer(0)
+        if not np.isfinite(a_num):
+            raise ValueError(f"จุดเข้าใกล้ a ต้องเป็นจำนวนจริงจำกัด (ได้รับ {a})")
+    except Exception as e:
+        raise ValueError(f"ไม่สามารถแปลงจุดเข้าใกล้ '{a}' เป็นค่าจำนวนจริงได้: {e}") from e
 
     f = sp.lambdify(var, expr, modules=["numpy"])
     try:
@@ -1221,14 +1247,14 @@ def plot_limit_plotly(
         hovertemplate=f"f(%{{x:.3f}}) = %{{y:.3f}}<extra></extra>",
     ))
 
-    # เส้นแนวดิ่งที่ var = a
+    # Vertical line at var = a
     fig.add_vline(
         x=a_num,
         line=dict(color="#9CA3AF", width=1.5, dash="dash"),
         annotation_text=f"{var_name} = {a_disp}",
     )
 
-    # จุดเป้าหมาย L
+    # Target point L
     if lim_finite and lim_val is not None:
         fig.add_trace(go.Scatter(
             x=[a_num],
@@ -1239,7 +1265,7 @@ def plot_limit_plotly(
             hovertemplate=f"เป้าหมาย L: ({var_name}={a_disp}, y={lim_val:.4f})<extra></extra>",
         ))
 
-    # จุดเข้าใกล้ทางซ้าย x_l และทางขวา x_r
+    # Approaching points: left x_l and right x_r
     x_l = a_num - delta
     x_r = a_num + delta
     try:
@@ -1321,7 +1347,7 @@ def plot_volume_plotly(
     fig = go.Figure()
 
     if is_washer:
-        # แรเงาพื้นที่เนื้อทรงตันด้านบน
+        # Shade upper solid region
         fig.add_trace(go.Scatter(
             x=xs_solid,
             y=ys_inner,
@@ -1341,7 +1367,7 @@ def plot_volume_plotly(
             hovertemplate=f"เนื้อทรงตัน<br>{var_name}: %{{x:.3f}}<extra></extra>",
         ))
 
-        # แรเงาภาพสะท้อนด้านล่าง (-R ถึง -r)
+        # Shade lower reflection region (-R to -r)
         fig.add_trace(go.Scatter(
             x=xs_solid,
             y=-ys_solid,
@@ -1361,7 +1387,7 @@ def plot_volume_plotly(
             hoverinfo="skip",
         ))
 
-        # เส้นขอบนอก R และเส้นขอบใน r
+        # Outer boundary R and inner boundary r
         fig.add_trace(go.Scatter(
             x=xs_solid,
             y=ys_solid,
@@ -1517,7 +1543,7 @@ def plot_improper_plotly(
 
     fig = go.Figure()
 
-    # แรเงาพื้นที่
+    # Shade area
     fig.add_trace(go.Scatter(
         x=xs_shade,
         y=np.zeros_like(xs_shade),
@@ -1537,7 +1563,7 @@ def plot_improper_plotly(
         hovertemplate=f"พื้นที่ {shade_label}<br>{var_name}: %{{x:.3f}}<extra></extra>",
     ))
 
-    # กราฟเส้นหลัก f(var)
+    # Main curve f(var)
     fig.add_trace(go.Scatter(
         x=xs,
         y=ys,

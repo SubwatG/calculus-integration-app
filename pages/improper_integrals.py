@@ -64,7 +64,7 @@ st.markdown(
 theory = THEORY_CONTENT["improper"]
 
 # ---------------------------------------------------------------------------
-# Concept Anchor & What to Observe (แนวคิดหลักและจุดสังเกต)
+# Concept Anchor & What to Observe
 # ---------------------------------------------------------------------------
 with st.container(border=True):
     col_badge, col_concept = st.columns([1, 4])
@@ -175,7 +175,7 @@ else:
             fig_plotly = plot_improper_plotly(res["expr"], a_input, b_input)
             st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"แสดงผลกราฟ interactive ขัดข้อง: {e} กำลังสลับไปใช้กราฟสำรอง")
+            st.warning("แสดงผลกราฟ interactive ขัดข้อง กำลังสลับไปใช้กราฟสำรอง")
             try:
                 fig, ax = plot_improper(res["expr"], a_input, b_input)
                 st.pyplot(fig)

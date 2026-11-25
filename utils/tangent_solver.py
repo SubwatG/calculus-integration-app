@@ -200,7 +200,7 @@ def _build_finite_tangent_steps(
     a_disp = f"({a_lat})" if a_sym < 0 else a_lat
     slope = float(slope_sym)
 
-    # Step 1: ปัญหาและเป้าหมาย
+    # Step 1: Problem statement and objective
     step1 = (
         f"กำหนดโจทย์และเป้าหมาย: "
         f"กำหนดฟังก์ชันและจุดที่พิจารณา:\n"
@@ -208,7 +208,7 @@ def _build_finite_tangent_steps(
         f"เป้าหมาย: หาสมการเส้นตรงสัมผัส $y - f(a) = f'(a)({v_lat} - a)$"
     )
 
-    # Step 2: จุดสัมผัส (แสดงขั้นตอนการแทนค่าลงในสมการ)
+    # Step 2: Tangency point (substitution into equation)
     sub_fa_lat = _format_substitution(expr, var_sym, a_sym)
     step2 = (
         f"คำนวณพิกัด y ของจุดสัมผัส: "
@@ -217,7 +217,7 @@ def _build_finite_tangent_steps(
         f"ได้จุดสัมผัส $(a, f(a)) = ({a_lat}, {_to_latex(fa_sym)})$"
     )
 
-    # Step 3: หาฟังก์ชันอนุพันธ์
+    # Step 3: Find derivative function
     rule_desc = _explain_diff_rule(expr, var_sym)
     step3 = (
         f"หาอนุพันธ์ f'({v_lat}) เพื่อเป็นสูตรความชัน: "
@@ -225,7 +225,7 @@ def _build_finite_tangent_steps(
         f"f'({v_lat}) = \\frac{{d}}{{d{v_lat}}}\\left[{_to_latex(expr)}\\right] = {_to_latex(df)}"
     )
 
-    # Step 4: คำนวณความชันเฉพาะจุด m = f'(a) (ตัดความหมายเรขาคณิตออกตามข้อเสนอแนะ)
+    # Step 4: Evaluate point slope m = f'(a)
     sub_df_lat = _format_substitution(df, var_sym, a_sym)
     step4 = (
         f"แทนค่าจุดสัมผัสหาความชัน m = f'(a): "
@@ -233,14 +233,14 @@ def _build_finite_tangent_steps(
         f"m = f'({a_lat}) = {sub_df_lat}"
     )
 
-    # Step 5: แทนค่าลงในสูตร Point-Slope
+    # Step 5: Substitute into Point-Slope formula
     step5 = (
         f"แทนค่าในสมการรูปจุดและความชัน: "
         f"แทนจุด $({a_lat}, {_to_latex(fa_sym)})$ และความชัน $m = {_to_latex(slope_sym)}$ ลงในสูตร $y - f(a) = m({v_lat} - a)$:\n"
         f"y - ({_to_latex(fa_sym)}) = {_to_latex(slope_sym)}\\left({v_lat} - {a_disp}\\right)"
     )
 
-    # Step 6: จัดรูปสมการ Slope-Intercept Form y = mx + c
+    # Step 6: Rearrange into Slope-Intercept form y = mx + c
     algebra_lines = _format_tangent_algebra(v_lat, a_sym, fa_sym, slope_sym, tangent_eq)
     algebra_display = "\n".join(algebra_lines)
     c_val = sp.simplify(tangent_eq.subs(var_sym, 0))
@@ -251,7 +251,7 @@ def _build_finite_tangent_steps(
         f"สมการเส้นสัมผัสคือ $y = {_to_latex(sp.simplify(tangent_eq))}$ (จุดตัดแกน $y$ คือ $(0, {_to_latex(c_val)})$)"
     )
 
-    # Step 7: แนวคิดเพิ่มเติม Local Linear Approximation และ Normal Line
+    # Step 7: Additional concepts: Local Linear Approximation and Normal Line
     if slope_sym != 0:
         normal_m = -1 / slope_sym
         normal_eq = normal_m * (var_sym - a_sym) + fa_sym
@@ -271,7 +271,7 @@ def _build_finite_tangent_steps(
         f"{normal_desc}"
     )
 
-    # Step 7 (แนวคิดเพิ่มเติมและเส้นแนวฉาก) ซ่อนไว้ชั่วคราวตามข้อกำหนด
+    # Step 7 (additional concepts and normal line) temporarily hidden per requirements
     return [step1, step2, step3, step4, step5, step6]
 
 

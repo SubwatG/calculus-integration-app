@@ -66,11 +66,11 @@ def detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, 
 
     คืนค่า (u, dv_factor, reason, is_cyclic) หรือ None
     """
-    # 1. ฟังก์ชันเดี่ยว: ln(x), arctan(x), arcsin(x)
+    # 1. Single function: ln(x), arctan(x), arcsin(x)
     if isinstance(expr, sp.log) or expr.func in (sp.atan, sp.asin, sp.acos):
         return expr, sp.Integer(1), "ฟังก์ชันลอการิทึมหรือตรีโกณมิติผกผันเดี่ยว (กำหนด dv = dx)", False
 
-    # 2. รูปแบบผลคูณ
+    # 2. Product forms
     factors = list(expr.as_ordered_factors()) if expr.is_Mul else [expr]
     log_factors = [f for f in factors if f.has(sp.log)]
     inv_trig_factors = [f for f in factors if any(f.has(cls) for cls in (sp.atan, sp.asin, sp.acos))]
@@ -79,7 +79,7 @@ def detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, 
     trig_factors = [f for f in factors if _is_trigonometric(f)]
 
     # LIATE Rule:
-    # L / I มาก่อน A
+    # L / I before A
     if log_factors:
         u_cand = sp.Mul(*log_factors)
         dv_cand = sp.Mul(*[f for f in factors if f not in log_factors])
@@ -89,7 +89,7 @@ def detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, 
         dv_cand = sp.Mul(*[f for f in factors if f not in inv_trig_factors])
         return u_cand, dv_cand, "ตามกฎ LIATE: เลือกฟังก์ชันตรีโกณมิติผกผัน (I) เป็น u และส่วนที่เหลือเป็น dv", False
 
-    # A มาก่อน T / E
+    # A before T / E
     if poly_factors and (exp_factors or trig_factors):
         u_cand = sp.Mul(*poly_factors)
         other_factors = [f for f in factors if f not in poly_factors]
@@ -137,7 +137,7 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
         domain_note = _get_domain_note(expr, var_sym)
         antideriv = sp.integrate(expr, var_sym)
 
-        # ตรวจสอบก่อนว่าโจทย์นี้เหมาะกับ u-sub ชัดเจนหรือไม่
+        # Check whether the problem clearly fits u-substitution first
         u_cand, du_cand = _detect_u_candidate(expr, var_sym)
         if u_cand is not None and du_cand is not None:
             ratio = sp.simplify(expr / du_cand)
@@ -179,7 +179,7 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
                     "variable": str(var_sym.name),
                     "parts_info": None,
                 }
-            # ไม่เข้าข่าย By Parts ทั่วไป
+            # Does not fit standard By Parts pattern
             antideriv = _wrap_new_logs(antideriv, expr)
             return {
                 "ok": True,

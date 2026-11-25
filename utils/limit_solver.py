@@ -150,14 +150,14 @@ def _format_samples(a_sp: sp.Expr) -> tuple[str, str]:
 
 
 # ---------------------------------------------------------------------------
-# ลำดับชั้นการเฉลยลิมิตเข้าใกล้จุดตามหลักการสอน (Pedagogical Decision Hierarchy)
-#   Level 1: Direct Substitution        แทนค่าโดยตรง (ฟังก์ชันต่อเนื่อง ณ จุดนั้น)
-#   Level 2: Indeterminate 0/0          แยกตัวประกอบ จัดรูป และตัดทอนตัวร่วม
+# Pedagogical Decision Hierarchy for limit approach
+#   Level 1: Direct Substitution        (continuous function at that point)
+#   Level 2: Indeterminate 0/0          factorization and cancellation
 #   Level 3: Special Trig Limit         lim sin(g)/g = 1 (Fundamental Trig Limit)
-#   Level 4: Infinite Limit c/0         วิเคราะห์เครื่องหมายตัวส่วนสองฝั่ง -> ±∞
-#   Level 5: Absolute Value / Piecewise แยกพิจารณาลิมิตซ้ายและขวาอย่างชัดเจน
-#   Level 6: Oscillating                แกว่งกวัด ไม่มีลิมิต
-#   Level 7: End Behavior (±∞)          เส้นกำกับแนวนอน (สาขา a -> ±∞)
+#   Level 4: Infinite Limit c/0         two-sided denominator sign analysis -> ±∞
+#   Level 5: Absolute Value / Piecewise explicit left/right limit evaluation
+#   Level 6: Oscillating                no limit exists due to oscillation
+#   Level 7: End Behavior (±∞)          horizontal asymptote (branch a -> ±∞)
 # ---------------------------------------------------------------------------
 
 
@@ -442,7 +442,7 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
         a_sp = _parse_target_a(a)
 
         # ---------------------------------------------------------
-        # Level 7: กรณีลิมิตที่อนันต์ var -> +oo หรือ var -> -oo (คงเดิม)
+        # Level 7: Limits at infinity var -> +oo or var -> -oo
         # ---------------------------------------------------------
         if a_sp in (sp.oo, -sp.oo):
             is_pos_inf = (a_sp == sp.oo)
@@ -513,7 +513,7 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
             }
 
         # ---------------------------------------------------------
-        # กรณีลิมิตเข้าใกล้จุดจำกัด var -> a (ตัวเลขหรือสัญลักษณ์จำกัด)
+        # Finite point limit var -> a (finite number or symbol)
         # ---------------------------------------------------------
         a_num = float(a_sp.evalf())
         left_real, right_real = _check_real_domain(expr, a_num, var=var_sym)
@@ -526,13 +526,13 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
             lim_left, lim_right = None, None
             status = "unsupported"
 
-        # ตรวจสอบว่าโดเมนจำนวนจริงมีเพียงฝั่งเดียวหรือไม่ (One-sided Domain Boundary)
+        # Check if real domain is one-sided only (One-sided Domain Boundary)
         if not left_real and right_real:
             status = "right_only"
         elif left_real and not right_real:
             status = "left_only"
 
-        # ตรวจสอบการแกว่งกวัดความถี่สูง (Oscillating) เช่น sin(1/var)
+        # Check high-frequency oscillation (Oscillating) e.g. sin(1/var)
         is_oscillating = isinstance(lim_left, AccumulationBounds) or isinstance(lim_right, AccumulationBounds)
 
         a_str = _format_point_str(a_sp)
@@ -580,7 +580,7 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
             latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {expr_tex} \\quad \\text{{(does not exist)}}"
         else:
             # -----------------------------------------------------
-            # ลำดับชั้นการเฉลยตามหลักการสอน (Levels 1-5)
+            # Pedagogical Decision Hierarchy (Levels 1-5)
             # -----------------------------------------------------
             try:
                 f_a = _safe_simplify(expr.subs(var_sym, a_sp))
@@ -614,25 +614,25 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
             sides_infinite = (lim_left in (sp.oo, -sp.oo)) or (lim_right in (sp.oo, -sp.oo))
 
             if is_jump:
-                # Level 5: ค่าสัมบูรณ์ / ฟังก์ชันแบ่งช่วง
+                # Level 5: Absolute Value / Piecewise
                 body_steps, result, latex_str = _steps_abs_piecewise(
                     expr, a_str, v_lat, lim_left, lim_right,
                     a_dir_left, a_dir_right, s_left_ex, s_right_ex, has_abs,
                 )
                 steps += body_steps
             elif status == "finite" and f_a_num is not None:
-                # Level 1: แทนค่าโดยตรง
+                # Level 1: Direct Substitution
                 body_steps, result, latex_str = _steps_direct_substitution(expr, a_str, v_lat, f_a)
                 steps += body_steps
             elif status == "finite":
                 trig_pair = _detect_special_trig_limit(expr, var_sym, a_sp)
                 if trig_pair is not None:
-                    # Level 3: ลิมิตตรีโกณมิติพื้นฐาน
+                    # Level 3: Fundamental Trigonometric Limit
                     g, L_val = trig_pair
                     body_steps, result, latex_str = _steps_special_trig(expr, a_str, v_lat, g, L_val)
                     steps += body_steps
                 elif is_00:
-                    # Level 2: รูปแบบยังไม่กำหนด 0/0 -> แยกตัวประกอบ/ตัดทอน
+                    # Level 2: Indeterminate Form 0/0 -> Factor and Cancel
                     body_steps, result, latex_str = _steps_indeterminate_factoring(
                         expr, var_sym, a_sp, a_str, v_lat, lim_left,
                     )
@@ -645,7 +645,7 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
                     body_steps, result, latex_str = _steps_generic_finite(expr, a_str, v_lat, lim_val)
                     steps += body_steps
             elif status == "infinite" or (status == "dne" and sides_infinite):
-                # Level 4: ลิมิตอนันต์ / เส้นกำกับแนวดิ่ง
+                # Level 4: Infinite Limit / Vertical Asymptote
                 body_steps, result, latex_str = _steps_infinite_asymptote(
                     expr, a_str, v_lat, lim_left, lim_right,
                     a_dir_left, a_dir_right, s_left_ex, s_right_ex,
