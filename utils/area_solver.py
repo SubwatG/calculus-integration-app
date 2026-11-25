@@ -48,6 +48,12 @@ def _to_latex(sym_obj, order: str = "none") -> str:
 def _format_evaluated_value(val_sym, val_float: float) -> str:
     """Format evaluated value concisely as exact fraction or short decimal."""
     try:
+        f = float(val_float)
+        if abs(f - round(f)) < 1e-6:
+            return str(int(round(f)))
+    except Exception:
+        pass
+    try:
         if isinstance(val_sym, sp.Integer) or (isinstance(val_sym, sp.Rational) and val_sym.q < 5000):
             return _to_latex(val_sym)
         if hasattr(val_sym, "is_rational") and val_sym.is_rational:
@@ -63,7 +69,10 @@ def _format_evaluated_value(val_sym, val_float: float) -> str:
             return lat
     except Exception:
         pass
-    return f"{val_float:.4f}"
+    s = f"{val_float:.4f}"
+    if "." in s:
+        s = s.rstrip("0").rstrip(".")
+    return s
 
 
 def _parse_input(expr_str: str) -> sp.Expr:
@@ -130,12 +139,34 @@ def _to_rational_bound(val: float | int | str) -> sp.Rational:
         return sp.Rational(str(fval))
 
 
-def _format_bound_latex(val: float | int | sp.Rational) -> str:
-    """Format upper/lower integration bound as concise LaTeX."""
+def _format_bound_latex(val: float | int | sp.Rational | sp.Expr) -> str:
+    """Format upper/lower integration bound as concise LaTeX, recognizing rational multiples of pi."""
     try:
+        if isinstance(val, sp.Expr) and val.has(sp.pi):
+            return _to_latex(val)
         f = float(val)
+        if abs(f) < 1e-12:
+            return "0"
         if f.is_integer():
             return str(int(f))
+        ratio = f / math.pi
+        for d in [1, 2, 3, 4, 6, 8, 12]:
+            n = round(ratio * d)
+            if abs(ratio - n / d) < 1e-4:
+                if d == 1:
+                    if n == 1:
+                        return r"\pi"
+                    elif n == -1:
+                        return r"-\pi"
+                    else:
+                        return rf"{n}\pi"
+                else:
+                    sign = "-" if n < 0 else ""
+                    abs_n = abs(n)
+                    if abs_n == 1:
+                        return rf"{sign}\frac{{\pi}}{{{d}}}"
+                    else:
+                        return rf"{sign}\frac{{{abs_n}\pi}}{{{d}}}"
         return f"{f:g}"
     except Exception:
         return _to_latex(val)
@@ -737,9 +768,14 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
                     f"คำนวณปริพันธ์บนช่วง:\nA = \\int_{{{a_disp}}}^{{{b_disp}}} \\left({_to_latex(integrand, order='none')}\\right) \\, d{v_lat} = {total_disp}"
                 )
 
-        steps.append(
-            f"สรุปผลลัพธ์: พื้นที่รวม $A = {total_disp} \\approx {res_float:.6g}$ ตารางหน่วย"
-        )
+        if total_disp == f"{res_float:.6g}" or total_disp == str(int(round(res_float))):
+            steps.append(
+                f"สรุปผลลัพธ์: พื้นที่รวม $A = {total_disp}$ ตารางหน่วย"
+            )
+        else:
+            steps.append(
+                f"สรุปผลลัพธ์: พื้นที่รวม $A = {total_disp} \\approx {res_float:.6g}$ ตารางหน่วย"
+            )
 
         return {
             "ok": True,

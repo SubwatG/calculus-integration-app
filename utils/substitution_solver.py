@@ -415,8 +415,8 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
             integral_u = sp.integrate(integrand_u, u_sym)
             if not integral_u.has(sp.Integral):
                 subbed_antideriv = _wrap_new_logs(integral_u.subs(u_sym, u_cand), orig_expr)
-                if antideriv.has(sp.Integral) or str(antideriv).count("log") > str(subbed_antideriv).count("log") or "tan" in str(orig_expr):
-                    antideriv = subbed_antideriv
+                # EXPL-04: Prefer clean factored substitution result over expanded polynomial/radical products
+                antideriv = subbed_antideriv
 
             antideriv = _wrap_new_logs(antideriv, orig_expr)
             integral_u_disp = _wrap_new_logs(integral_u, integrand_u)
