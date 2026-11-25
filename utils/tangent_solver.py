@@ -1,16 +1,13 @@
-"""utils/tangent_solver.py : เส้นสัมผัสและอนุพันธ์
+"""utils/tangent_solver.py: Tangent lines and derivatives solver.
 
-skeleton สำหรับนักศึกษา project
-TODO: ใส่ logic จริงให้ test ใน tests/ ผ่าน
-อ้างอิง blueprint: utils/riemann_solver.py และ docs/interactive-lessons-plan.md
-
-โครงสร้างผลลัพธ์ (เหมือน utils/riemann_solver.py):
+Computes tangent line equation y = f'(a)(x - a) + f(a) and slope f'(a),
+returning structured steps under the Universal Step Contract:
   {
       "ok": bool,
       "result": float | None,
-      "latex": str,          # สูตรผลลัพธ์ LaTeX
-      "steps": list[str],    # ขั้นตอน LaTeX
-      "expr": sympy.Expr,    # นิพจน์ที่ parse แล้ว
+      "latex": str,
+      "steps": list[str],
+      "expr": sympy.Expr,
       "error": str | None,
   }
 """
@@ -59,7 +56,7 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def _to_real_roots(e: sp.Expr) -> sp.Expr:
-    """แปลงรากที่ติดค่าลบที่มีดัชนีเป็นเลขคี่ ให้เป็นค่าจริงตามหลักแคลคูลัส (เช่น (-1)**(1/3) -> -1)"""
+    """Convert odd-degree roots of negative numbers to real values (e.g. (-1)**(1/3) -> -1)."""
     if e is None or not isinstance(e, sp.Basic):
         return e
 
@@ -75,7 +72,7 @@ def _to_real_roots(e: sp.Expr) -> sp.Expr:
 
 
 def _explain_diff_rule(expr: sp.Expr, var: sp.Symbol) -> str:
-    """อธิบายกฎและสูตรการหาอนุพันธ์ที่ใช้กับนิพจน์นี้อย่างเข้าใจง่ายและเน้นสมการ"""
+    """Explain differentiation rule applied to expression in clear mathematical notation."""
     v_str = str(var.name)
     elementary = (sp.sin, sp.cos, sp.tan, sp.exp, sp.log)
     if expr.func in elementary and expr.args[0] != var:
@@ -173,7 +170,7 @@ def _format_tangent_algebra(v_lat: str, a_sym: sp.Expr, fa_sym: sp.Expr, slope_s
 
 
 def _format_substitution(expr: sp.Expr, var_sym: sp.Symbol, a_sym: sp.Expr) -> str:
-    """จัดรูปแบบการแทนค่าลงในนิพจน์ แสดงการแทนค่าก่อนผลลัพธ์ เช่น f(0) = 0 + 2 = 2"""
+    """Format evaluation step showing explicit substitution before computed value, e.g. f(0) = 0 + 2 = 2."""
     try:
         val = _to_real_roots(expr.subs(var_sym, a_sym))
         val_lat = _to_latex(val)
@@ -276,7 +273,7 @@ def _build_finite_tangent_steps(
 
 
 def compute_tangent(expr_str: str, a: float) -> dict:
-    """คำนวณความชันเส้นสัมผัส f'(a) และสมการเส้นสัมผัส y = f'(a)(x-a) + f(a)"""
+    """Compute tangent line slope f'(a) and equation y = f'(a)(x - a) + f(a)."""
     try:
         clean_str, diff_var = _clean_calculus_input(expr_str)
         expr = _parse_input(clean_str)

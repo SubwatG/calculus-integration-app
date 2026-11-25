@@ -1,8 +1,8 @@
-"""utils/improper_solver.py : อินทิกรัลไม่ตรงแบบ (Improper Integrals)
+"""utils/improper_solver.py: Improper Integrals solver.
 
-คำนวณอินทิกรัลไม่ตรงแบบผ่านลิมิต ตรวจสอบการลู่เข้า/ลู่ออก (Convergence/Divergence)
-รองรับช่วงอนันต์ [a, oo), (-oo, b], (-oo, oo) และจุดเอกฐานที่ขอบเขต (Endpoints) และภายใน (Interior)
-ตามเกณฑ์ Universal Step Contract
+Computes improper integrals via limits, checking convergence/divergence.
+Supports infinite intervals [a, oo), (-oo, b], (-oo, oo) and singularities at endpoints and interior points
+following the Universal Step Contract.
 """
 import math
 import re
@@ -45,7 +45,7 @@ def _to_latex(sym_obj) -> str:
 
 
 def _to_real_roots(e: sp.Expr) -> sp.Expr:
-    """แปลงรากที่ติดค่าลบที่มีดัชนีเป็นเลขคี่ ให้เป็นค่าจริงตามหลักแคลคูลัส (เช่น (-1)**(1/3) -> -1)"""
+    """Convert odd-degree roots of negative numbers to real values (e.g. (-1)**(1/3) -> -1)."""
     if e is None or not isinstance(e, sp.Basic):
         return e
 
@@ -107,7 +107,7 @@ def _safe_float(value: sp.Expr):
 
 
 def _get_antiderivative(expr: sp.Expr, var: sp.Symbol) -> sp.Expr | None:
-    """หาปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐานที่สะอาด ไม่มี Piecewise หรือ Meijer G โดยใช้ manualintegrate ก่อน"""
+    """Find elementary antiderivative without Piecewise or Meijer G using manualintegrate first."""
     try:
         from sympy.integrals.manualintegrate import manualintegrate
         anti = manualintegrate(expr, var)
@@ -159,7 +159,7 @@ def _parse_bound(val: float | int | str | sp.Expr | None, is_upper: bool = False
 
 
 def _format_bound_latex(val: float | int | str | sp.Expr | None) -> str:
-    """จัดรูปแบบขอบเขตบน/ล่างเป็น LaTeX"""
+    """Format upper/lower integration bound as LaTeX."""
     if val is None or val == sp.oo:
         return "\\infty"
     if val == -sp.oo:
@@ -183,7 +183,7 @@ def _format_bound_latex(val: float | int | str | sp.Expr | None) -> str:
 
 
 def _find_interior_singularities(expr: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = X) -> list[float]:
-    """ค้นหาจุดเอกฐานภายในช่วงเปิด (a, b) จากรากของตัวส่วน"""
+    """Find interior singularities in the open interval (a, b) from denominator roots."""
     sings = []
     denom = sp.denom(expr.rewrite(sp.cos))
     if denom != 1:
@@ -200,7 +200,7 @@ def _find_interior_singularities(expr: sp.Expr, a_val: float, b_val: float, var:
 
 
 def _is_singular_at_point(expr: sp.Expr, pt: sp.Expr, direction: str, var: sp.Symbol = X) -> bool:
-    """ตรวจสอบว่าจุด pt เป็นจุดเอกฐานของ expr หรือไม่ จากการหาลิมิตด้านเดียว"""
+    """Check if point pt is a singularity of expr via one-sided limits."""
     try:
         denom = sp.denom(expr)
         if denom != 1 and denom.subs(var, pt) == 0:
@@ -249,7 +249,7 @@ def _divergence_reason(antideriv: sp.Expr, var: sp.Symbol) -> str:
 
 
 def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: float | int | str | sp.Expr | None = None) -> dict:
-    """คำนวณอินทิกรัลไม่ตรงแบบผ่านลิมิต ตรวจสอบการลู่เข้า/ลู่ออกตาม Universal Step Contract"""
+    """Compute improper integral via limits, verifying convergence/divergence under Universal Step Contract."""
     try:
         clean_str, diff_var = _clean_calculus_input(expr_str)
         expr = _parse_input(clean_str)

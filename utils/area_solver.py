@@ -1,8 +1,8 @@
-"""utils/area_solver.py : พื้นที่ระหว่างเส้นโค้ง
+"""utils/area_solver.py: Area between curves solver.
 
-คำนวณพื้นที่เรขาคณิต A = ∫_a^b |f(x) - g(x)| dx บนช่วงจริงจำกัด [a, b]
-พร้อมแสดงขั้นตอนการหาจุดตัด การแบ่งช่วงย่อย และการปลดเครื่องหมายค่าสัมบูรณ์
-ตามเกณฑ์ Universal Step Contract
+Computes geometric area A = ∫_a^b |f(x) - g(x)| dx on bounded real interval [a, b],
+providing step-by-step intersection finding, subinterval splitting, and sign analysis
+under the Universal Step Contract.
 """
 import math
 import re
@@ -46,7 +46,7 @@ def _to_latex(sym_obj, order: str = "none") -> str:
 
 
 def _format_evaluated_value(val_sym, val_float: float) -> str:
-    """จัดรูปแบบผลลัพธ์การคำนวณ: คืนค่าเป็นเศษส่วนแท้หากมีตัวส่วนเรียบร้อย หรือทศนิยมกระชับ ไม่แสดงเศษส่วนยาวเหยียด"""
+    """Format evaluated value concisely as exact fraction or short decimal."""
     try:
         if isinstance(val_sym, sp.Integer) or (isinstance(val_sym, sp.Rational) and val_sym.q < 5000):
             return _to_latex(val_sym)
@@ -74,7 +74,7 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def _convert_real_roots(expr: sp.Expr) -> sp.Expr:
-    """แปลงเลขชี้กำลังเศษส่วนที่เป็นส่วนคี่ เช่น x**(1/3) ให้เป็น real_root เพื่อรักษาสมบัติจำนวนจริงบนย่านลบ"""
+    """Convert odd-denominator fractional powers (e.g. x**(1/3)) to real_root for real branch."""
     def _replace(node):
         if isinstance(node, sp.Pow) and isinstance(node.exp, sp.Rational):
             p, q = node.exp.p, node.exp.q
@@ -89,7 +89,7 @@ def _convert_real_roots(expr: sp.Expr) -> sp.Expr:
 
 
 def _simplify_piecewise_on_interval(expr: sp.Expr, var: sp.Symbol, left: float, right: float) -> sp.Expr:
-    """หากผลลัพธ์การอินทิเกรตมี Piecewise ให้เลือกกิ่งเงื่อนไขที่ครอบคลุมช่วง [left, right]"""
+    """Select the Piecewise branch that covers the subinterval [left, right]."""
     if expr is None or not isinstance(expr, sp.Basic):
         return expr
     if not expr.has(sp.Piecewise):
@@ -131,7 +131,7 @@ def _to_rational_bound(val: float | int | str) -> sp.Rational:
 
 
 def _format_bound_latex(val: float | int | sp.Rational) -> str:
-    """จัดรูปแบบขอบเขตบน/ล่างเป็น LaTeX ที่กระชับและคมชัด"""
+    """Format upper/lower integration bound as concise LaTeX."""
     try:
         f = float(val)
         if f.is_integer():
@@ -142,7 +142,7 @@ def _format_bound_latex(val: float | int | sp.Rational) -> str:
 
 
 def _check_domain_validity(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: float, n_samples: int = 401) -> bool:
-    """ตรวจสอบว่าฟังก์ชันมีค่าจริงและจำกัดตลอดช่วงปิด [a, b]"""
+    """Check that function values are real and finite across the closed interval [a, b]."""
     # 1. Check poles and denominator roots
     denom = sp.denom(expr.rewrite(sp.cos))
     if denom != 1:
@@ -187,7 +187,7 @@ def _check_domain_validity(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: f
 
 
 def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = X) -> list[float]:
-    """ค้นหาจุดตัด f(x) - g(x) = 0 บนช่วงเปิด (a, b)"""
+    """Find intersection points f(x) - g(x) = 0 on open interval (a, b)."""
     roots = []
     # 1. Check polynomial real roots
     try:
@@ -347,9 +347,9 @@ def _classify_interior_roots(
 
 
 def find_curve_intersections(f_str: str, g_str: str, span: tuple[float, float] = (-15.0, 15.0)) -> dict:
-    """ค้นหาจุดตัด f(x) = g(x) ทั้งหมด เพื่อแสดงให้ผู้ใช้เห็นก่อนเลือกช่วงอินทิเกรต
+    """Find all curve intersection points f(x) = g(x) to assist user in selecting bounds.
 
-    วิเคราะห์ว่าเส้นโค้งทั้งสองปิดล้อมพื้นที่จำกัดโดยธรรมชาติหรือไม่
+    Analyzes whether the two curves enclose a naturally bounded region.
     """
     try:
         f_raw = _parse_input(f_str)
@@ -444,7 +444,7 @@ def find_curve_intersections(f_str: str, g_str: str, span: tuple[float, float] =
 
 
 def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
-    """คำนวณพื้นที่เรขาคณิตระหว่างเส้นโค้ง A = ∫_a^b |f(x) - g(x)| dx พร้อมแจกแจงขั้นตอนละเอียด"""
+    """Compute geometric area between curves A = ∫_a^b |f(x) - g(x)| dx with detailed steps."""
     try:
         a_sp = _to_rational_bound(a)
         b_sp = _to_rational_bound(b)

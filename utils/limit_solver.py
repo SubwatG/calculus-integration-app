@@ -1,16 +1,13 @@
-"""utils/limit_solver.py : ลิมิตเข้าใกล้จุด
+"""utils/limit_solver.py: Limit evaluation and approach solver.
 
-skeleton สำหรับนักศึกษา project
-TODO: ใส่ logic จริงให้ test ใน tests/ ผ่าน
-อ้างอิง blueprint: utils/riemann_solver.py และ docs/interactive-lessons-plan.md
-
-โครงสร้างผลลัพธ์ (เหมือน utils/riemann_solver.py):
+Computes limits of single-variable calculus functions at finite points or infinity,
+returning pedagogical steps under the Universal Step Contract:
   {
       "ok": bool,
       "result": float | None,
-      "latex": str,          # สูตรผลลัพธ์ LaTeX
-      "steps": list[str],    # ขั้นตอน LaTeX
-      "expr": sympy.Expr,    # นิพจน์ที่ parse แล้ว
+      "latex": str,
+      "steps": list[str],
+      "expr": sympy.Expr,
       "error": str | None,
   }
 """
@@ -73,7 +70,7 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def _parse_target_a(a_val: float | int | str | sp.Expr) -> sp.Expr:
-    """แปลงค่าจุด a ที่รับเข้ามาเป็น SymPy Expression (รองรับตัวเลข, สัญลักษณ์ pi, e, และ inf, -inf)"""
+    """Parse input point a into SymPy Expression (supports numbers, pi, e, and inf, -inf)."""
     if isinstance(a_val, (int, float)):
         return sp.Rational(str(a_val))
     if isinstance(a_val, sp.Expr):
@@ -90,7 +87,7 @@ def _parse_target_a(a_val: float | int | str | sp.Expr) -> sp.Expr:
 
 
 def _check_real_domain(expr: sp.Expr, a: float, delta: float = 0.01, var: sp.Symbol = X) -> tuple[bool, bool]:
-    """ตรวจสอบว่าฟังก์ชันนิยามบนระบบจำนวนจริงทางซ้าย a - delta และทางขวา a + delta หรือไม่"""
+    """Check if function is defined on real numbers at left a - delta and right a + delta."""
     left_sample = a - delta
     right_sample = a + delta
 
@@ -114,7 +111,7 @@ def _check_real_domain(expr: sp.Expr, a: float, delta: float = 0.01, var: sp.Sym
 
 
 def _format_point_str(a_sp: sp.Expr) -> str:
-    r"""แปลงจุด a_sp เป็นสตริงหรือ LaTeX ที่อ่านง่าย เช่น 2, \pi/2, \infty"""
+    r"""Format target point a_sp as concise string or LaTeX, e.g. 2, \pi/2, \infty."""
     if a_sp == sp.oo:
         return "\\infty"
     if a_sp == -sp.oo:
@@ -129,7 +126,7 @@ def _format_point_str(a_sp: sp.Expr) -> str:
 
 
 def _format_samples(a_sp: sp.Expr) -> tuple[str, str]:
-    """สร้างตัวอย่างค่า x ที่เข้าใกล้ a ทางซ้าย (x < a) และทางขวา (x > a) เพื่อให้เห็นภาพชัดเจน"""
+    """Generate example values of x approaching a from left (x < a) and right (x > a)."""
     if a_sp == sp.oo:
         return "10, 50, 100", "N/A"
     if a_sp == -sp.oo:
@@ -162,7 +159,7 @@ def _format_samples(a_sp: sp.Expr) -> tuple[str, str]:
 
 
 def _safe_simplify(e: sp.Expr) -> sp.Expr:
-    """simplify แบบไม่โยน exception (คืนค่าเดิมถ้าล้มเหลว)"""
+    """Simplify expression without raising exception, returning original if failed."""
     try:
         return sp.simplify(e)
     except Exception:
@@ -170,7 +167,7 @@ def _safe_simplify(e: sp.Expr) -> sp.Expr:
 
 
 def _is_zero_expr(e) -> bool:
-    """ตรวจว่านิพจน์มีค่าเป็นศูนย์หรือไม่"""
+    """Check if expression evaluates to zero."""
     if e is None:
         return False
     try:
@@ -180,7 +177,7 @@ def _is_zero_expr(e) -> bool:
 
 
 def _as_finite_float(e) -> float | None:
-    r"""คืนค่า float หาก e เป็นจำนวนจริงจำกัด มิฉะนั้นคืนค่า None"""
+    r"""Return float if e is a finite real number, otherwise None."""
     if e is None:
         return None
     try:
@@ -198,10 +195,9 @@ def _as_finite_float(e) -> float | None:
 
 
 def _detect_special_trig_limit(expr: sp.Expr, var_sym: sp.Symbol, a_sp: sp.Expr):
-    r"""ตรวจหารูปแบบลิมิตตรีโกณมิติพื้นฐาน lim sin(g)/g = 1
+    r"""Detect fundamental trigonometric limit form lim sin(g)/g = 1.
 
-    คืนค่า (g, L) เมื่อ expr = L · sin(g)/g โดยที่ g -> 0 ขณะ var -> a
-    มิฉะนั้นคืนค่า None
+    Returns (g, L) when expr = L · sin(g)/g with g -> 0 as var -> a, else None.
     """
     try:
         sin_atoms = expr.atoms(sp.sin)
@@ -231,7 +227,7 @@ def _detect_special_trig_limit(expr: sp.Expr, var_sym: sp.Symbol, a_sp: sp.Expr)
 
 
 def _steps_direct_substitution(expr: sp.Expr, a_str: str, v_lat: str, f_a: sp.Expr):
-    r"""Level 1: การแทนค่าโดยตรง (Direct Substitution Property)"""
+    r"""Level 1: Direct Substitution Property."""
     expr_tex = _to_latex(expr)
     f_a_tex = _to_latex(f_a)
     steps = [
@@ -245,7 +241,7 @@ def _steps_direct_substitution(expr: sp.Expr, a_str: str, v_lat: str, f_a: sp.Ex
 
 def _steps_indeterminate_factoring(expr: sp.Expr, var_sym: sp.Symbol, a_sp: sp.Expr,
                                    a_str: str, v_lat: str, lim_val: sp.Expr):
-    r"""Level 2: รูปแบบยังไม่กำหนด 0/0 : แยกตัวประกอบ/จัดรูป แล้วตัดทอนตัวร่วม"""
+    r"""Level 2: Indeterminate form 0/0 (factorization and cancellation)."""
     expr_tex = _to_latex(expr)
     try:
         num_e, den_e = sp.fraction(sp.together(expr))
@@ -316,7 +312,7 @@ def _steps_indeterminate_factoring(expr: sp.Expr, var_sym: sp.Symbol, a_sp: sp.E
 
 
 def _steps_special_trig(expr: sp.Expr, a_str: str, v_lat: str, g: sp.Expr, L: sp.Expr):
-    r"""Level 3: ลิมิตตรีโกณมิติพื้นฐาน (Fundamental Trigonometric Limit)"""
+    r"""Level 3: Fundamental Trigonometric Limit."""
     expr_tex = _to_latex(expr)
     g_tex = _to_latex(g)
     l_tex = _to_latex(L)
@@ -334,9 +330,9 @@ def _steps_infinite_asymptote(expr: sp.Expr, a_str: str, v_lat: str,
                               lim_left: sp.Expr, lim_right: sp.Expr,
                               a_dir_left: str, a_dir_right: str,
                               s_left_ex: str, s_right_ex: str):
-    r"""Level 4: ลิมิตอนันต์ (c/0 เมื่อ c ≠ 0) และเส้นกำกับแนวดิ่ง
+    r"""Level 4: Infinite limits (c/0 with c != 0) and vertical asymptotes.
 
-    วิเคราะห์เครื่องหมายของตัวส่วนจากฝั่งซ้ายและฝั่งขวาอย่างชัดเจน
+    Analyzes denominator sign behavior from left and right explicitly.
     """
     expr_tex = _to_latex(expr)
     left_tex = _to_latex(lim_left)
@@ -375,7 +371,7 @@ def _steps_abs_piecewise(expr: sp.Expr, a_str: str, v_lat: str,
                          lim_left: sp.Expr, lim_right: sp.Expr,
                          a_dir_left: str, a_dir_right: str,
                          s_left_ex: str, s_right_ex: str, has_abs: bool):
-    r"""Level 5: ฟังก์ชันค่าสัมบูรณ์ / ฟังก์ชันแบ่งช่วง : แยกพิจารณาสองฝั่งอย่างชัดเจน"""
+    r"""Level 5: Absolute value and piecewise limits evaluated from both sides."""
     expr_tex = _to_latex(expr)
     left_tex = _to_latex(lim_left)
     right_tex = _to_latex(lim_right)
@@ -411,7 +407,7 @@ def _steps_abs_piecewise(expr: sp.Expr, a_str: str, v_lat: str,
 
 
 def _steps_generic_finite(expr: sp.Expr, a_str: str, v_lat: str, lim_val: sp.Expr):
-    r"""กรณีค่าลิมิตเป็นจำนวนจริง แต่อยู่นอกเหนือหมวดหลัก (เช่น ต้องใช้ทฤษฎีบทบีบ)"""
+    r"""Fallback for finite real limits requiring algebraic transformation."""
     expr_tex = _to_latex(expr)
     val_tex = _to_latex(_safe_simplify(lim_val))
     steps = [
@@ -424,12 +420,16 @@ def _steps_generic_finite(expr: sp.Expr, a_str: str, v_lat: str, lim_val: sp.Exp
 
 
 def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> dict:
-    r"""คำนวณลิมิต x -> a หรือ var -> a (รองรับจำนวนจริง, สัญลักษณ์ pi, e และอนันต์ inf, -inf)
+    r"""Compute limit as var -> a (supports real numbers, pi, e, and inf, -inf).
 
-    ลำดับการเฉลยตามหลักการสอน (Pedagogical Hierarchy):
-      Level 1 แทนค่าโดยตรง | Level 2 รูปแบบ 0/0 (แยกตัวประกอบ/ตัดทอน)
-      Level 3 ลิมิตตรีโกณมิติพื้นฐาน | Level 4 ลิมิตอนันต์ (เส้นกำกับแนวดิ่ง)
-      Level 5 ค่าสัมบูรณ์/ฟังก์ชันแบ่งช่วง | Level 6 แกว่งกวัด | Level 7 พฤติกรรมที่อนันต์
+    Pedagogical Decision Hierarchy:
+      Level 1: Direct substitution
+      Level 2: Indeterminate 0/0 (factorization and cancellation)
+      Level 3: Fundamental trigonometric limit
+      Level 4: Infinite limit & vertical asymptote
+      Level 5: Absolute value & piecewise evaluation
+      Level 6: Oscillating behavior
+      Level 7: End behavior at infinity
     """
     try:
         clean_str, diff_var = _clean_calculus_input(expr_str)

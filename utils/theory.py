@@ -1,13 +1,8 @@
 """
-modules/theory.py: เนื้อหาทฤษฎีบทเรียน interactive แคลคูลัส
+utils/theory.py: Theory content for interactive calculus lessons.
 
-ภาษาไทยทั้งหมด ใช้ LaTeX ($...$) สำหรับสัญลักษณ์ทางคณิตศาสตร์
-
-โครงสร้างข้อมูลเหมือน stat-distribution-solver/modules/theory.py:
-แต่ละบทเรียนมี dict ที่ประกอบด้วย conditions, formulas, properties,
-cautions, applications และ decision_guide
-
-บทเรียนแรก: 3.1 พื้นที่ภายใต้เส้นโค้ง (Riemann Sum)
+User-facing lesson content is in Thai with LaTeX ($...$) for mathematical symbols.
+Data structure contains conditions, formulas, properties, cautions, applications, and decision guides.
 """
 
 # ---------------------------------------------------------------------------

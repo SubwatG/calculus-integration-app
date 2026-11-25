@@ -1,7 +1,7 @@
-"""utils/by_parts_solver.py - การอินทิเกรตทีละส่วน (Integration by Parts)
+"""utils/by_parts_solver.py: Integration by Parts solver.
 
-โมดูลเฉพาะสำหรับการแก้และแจกแจงโจทย์ Integration by Parts ตามกฎ LIATE
-แยกการทำงานเฉพาะทาง ไม่ปนกับ u-Substitution
+Dedicated module for solving and explaining Integration by Parts problems using the LIATE rule,
+separated cleanly from u-substitution.
 """
 
 import re
@@ -62,9 +62,9 @@ def _clean_trig(e: sp.Expr) -> sp.Expr:
 
 
 def detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, sp.Expr, str, bool] | None:
-    """พิจารณาแยก expr = u * v' เพื่อทำการอินทิเกรตทีละส่วนตามกฎ LIATE
+    """Identify decomposition expr = u * v' for integration by parts using LIATE rule.
 
-    คืนค่า (u, dv_factor, reason, is_cyclic) หรือ None
+    Returns (u, dv_factor, reason, is_cyclic) or None.
     """
     # 1. Single function: ln(x), arctan(x), arcsin(x)
     if isinstance(expr, sp.log) or expr.func in (sp.atan, sp.asin, sp.acos):
@@ -106,7 +106,7 @@ def detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, 
 
 
 def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
-    """คำนวณและแจกแจงวิธีทำการอินทิเกรตทีละส่วน (Integration by Parts) เฉพาะทาง"""
+    """Solve and step-by-step explain Integration by Parts problem."""
     clean = (expr_str or "").strip()
     if not clean:
         return {

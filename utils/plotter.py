@@ -104,15 +104,16 @@ def plot_riemann(
     method: str = "left",
     exact: float | None = None,
 ) -> tuple:
-    """วาดกราฟ f(x) หรือ f(var) พร้อมสี่เหลี่ยมผลรวมรีมันน์
+    """Plot f(x) or f(var) with Riemann sum rectangles.
 
-    expr: sympy expression (ผ่านการ parse แล้ว)
-    a, b: ขอบเขตช่วง
-    n: จำนวนสี่เหลี่ยม
-    method: left | right | midpoint
-    exact: ค่าอินทิกรัลจริง (ถ้ามี) แสดงใน title
+    expr: SymPy expression (already parsed).
+    a, b: Interval bounds.
+    n: Number of subintervals.
+    method: 'left' | 'right' | 'midpoint'.
+    exact: Exact integral value (if available) for the title.
 
-    Returns (fig, ax)
+    Returns:
+        tuple: (fig, ax)
     """
     var = _get_plot_var(expr)
     var_name = var.name
@@ -192,7 +193,7 @@ def plot_riemann(
 # ---------------------------------------------------------------------------
 
 def _stub_figure(title: str) -> tuple:
-    """สร้าง fig เปล่าที่มี title ระบุ TODO (กันหน้าเว็บพังก่อน implement)"""
+    """Create a placeholder figure with a TODO note to prevent UI errors."""
     fig, ax = _create_figure()
     ax.text(
         0.5, 0.5,
@@ -212,13 +213,13 @@ def plot_tangent(
     slope: float | None = None,
     status: str = "finite",
 ) -> tuple:
-    """วาดกราฟ f(x) หรือ f(var) และเส้นสัมผัสที่จุด a
+    """Plot f(x) or f(var) and its tangent line at point a.
 
-    expr: sympy expression
-    a: จุดที่ต้องการสัมผัส
-    span: ความกว้างช่วงรอบจุด a
-    slope: ความชันของเส้นสัมผัส (ถ้ามี)
-    status: สถานะเส้นสัมผัส (finite, vertical, non_differentiable, undefined_point)
+    expr: SymPy expression.
+    a: Tangent evaluation point.
+    span: Range width around point a.
+    slope: Tangent line slope (if finite).
+    status: Tangent line status ('finite', 'vertical', 'non_differentiable', 'undefined_point').
     """
     var = _get_plot_var(expr)
     var_name = var.name
@@ -324,12 +325,12 @@ def plot_limit_near(
     delta: float = 0.5,
     span: float = 3.0,
 ) -> tuple:
-    """วาดเส้นโค้ง + จุดวิ่งเข้าใกล้ a ทั้งสองด้าน (หรือลิมิตที่อนันต์เมื่อ var -> +-oo)
+    """Plot curve and approaching points toward a from both sides (or limits at infinity).
 
-    expr: sympy expression
-    a: จุดที่ต้องการหาลิมิต (รองรับตัวเลข, สัญลักษณ์ pi/2, e และอนันต์ inf, -inf)
-    delta: ระยะห่างการเข้าใกล้จากซ้ายและขวา
-    span: ความกว้างช่วงรอบจุด a
+    expr: SymPy expression.
+    a: Target limit point (supports numbers, symbols like pi/2, e, and inf/-inf).
+    delta: Neighborhood step distance from left and right.
+    span: Range width around point a.
     """
     var = _get_plot_var(expr)
     var_name = var.name
@@ -536,7 +537,7 @@ def plot_limit_near(
 
 
 def plot_substitution(expr) -> tuple:
-    """วาด f และ F (ถ้าจำเป็น) สำหรับ substitution (TODO)"""
+    """Plot f and F (if needed) for substitution (placeholder)."""
     return _stub_figure("Integration by Substitution")
 
 
@@ -547,7 +548,7 @@ def plot_volume(
     method: str = "disk",
     inner_expr=None,
 ) -> tuple:
-    """วาดภาพตัดขวางและการหมุนรอบแกนแบบ Disk/Washer Method"""
+    """Plot cross-section and revolution volume using Disk/Washer method."""
     from matplotlib.patches import Ellipse
 
     is_washer = (method or "disk").lower() == "washer" and inner_expr is not None
@@ -649,7 +650,7 @@ def plot_volume(
 
 
 def plot_area_between(f_expr, g_expr, a: float, b: float) -> tuple:
-    """วาดเส้นโค้ง 2 เส้น f(x) หรือ f(var) และ g(x) หรือ g(var) พร้อมแรเงาพื้นที่ระหว่างเส้นโค้งบนช่วง [a, b]"""
+    """Plot two curves f(x) and g(x) and shade the enclosed area between them on [a, b]."""
     MODULE_MAP = [{"real_root": lambda b, n: np.sign(b) * (np.abs(b) ** (1.0 / n))}, "numpy"]
     var = _get_plot_var(f_expr, g_expr)
     var_name = var.name
@@ -729,7 +730,7 @@ def plot_area_between_plotly(
     b: float,
     crossings: list[float] | None = None,
 ):
-    """สร้างกราฟแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ สเกลโฟกัสช่วง [a, b] เส้นทึบ และหมุดจุดตัด"""
+    """Create an interactive Plotly graph for area between curves on [a, b] with intersection markers."""
     _require_plotly()
 
     MODULE_MAP = [{"real_root": lambda base, n: np.sign(base) * (np.abs(base) ** (1.0 / n))}, "numpy"]
@@ -866,7 +867,7 @@ def plot_area_between_plotly(
 
 
 def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | str | sp.Expr | None = None) -> tuple:
-    """วาดเส้นโค้งและพื้นที่ใต้กราฟของอินทิกรัลไม่ตรงแบบ (รองรับช่วงจำกัด, กึ่งอนันต์, และสองทาง (-oo, oo))"""
+    """Plot curve and area under the curve for improper integrals (finite, semi-infinite, doubly-infinite)."""
     var = _get_plot_var(expr)
     var_name = var.name
     f = sp.lambdify(var, expr, modules=["numpy"])
@@ -967,7 +968,7 @@ def plot_riemann_plotly(
     method: str = "left",
     exact: float | None = None,
 ):
-    """สร้างกราฟผลบวกรีมันน์แบบ interactive ด้วย Plotly: ซูม/แพนอิสระ สเกลแท่งสี่เหลี่ยม และเส้นโค้ง"""
+    """Create an interactive Plotly graph for Riemann sums with zoom/pan and rectangle bars."""
     _require_plotly()
 
     var = _get_plot_var(expr)
@@ -1064,7 +1065,7 @@ def plot_tangent_plotly(
     slope: float | None = None,
     status: str = "finite",
 ):
-    """สร้างกราฟเส้นสัมผัสแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ จุดสัมผัส และเส้นสัมผัส"""
+    """Create an interactive Plotly graph for tangent lines with point of tangency and tangent line."""
     _require_plotly()
 
     var = _get_plot_var(expr)
@@ -1167,7 +1168,7 @@ def plot_limit_plotly(
     delta: float = 0.5,
     span: float = 2.0,
 ):
-    """สร้างกราฟการเข้าใกล้ลิมิตแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ จุดเข้าใกล้ทางซ้าย/ขวา และค่าเป้าหมาย L"""
+    """Create an interactive Plotly graph for limits with approaching points and target value L."""
     _require_plotly()
 
     var = _get_plot_var(expr)
@@ -1332,7 +1333,7 @@ def plot_volume_plotly(
     method: str = "disk",
     inner_expr=None,
 ):
-    """สร้างกราฟภาพตัดขวางและการหมุนรอบแกนแบบ interactive ด้วย Plotly: ซูม/แพนอิสระ และจำลองการหมุน 360 องศา"""
+    """Create an interactive Plotly graph for solids of revolution with cross-sections and 360-degree rotation."""
     _require_plotly()
 
     is_washer = (method or "disk").lower() == "washer" and inner_expr is not None
@@ -1503,7 +1504,7 @@ def plot_improper_plotly(
     a: float | int | str | sp.Expr = 0.0,
     b: float | int | str | sp.Expr | None = None,
 ):
-    """สร้างกราฟแบบ interactive ด้วย Plotly สำหรับอินทิกรัลไม่ตรงแบบ: ซูม/แพนอิสระ และแรเงาพื้นที่"""
+    """Create an interactive Plotly graph for improper integrals with shaded regions."""
     _require_plotly()
 
     var = _get_plot_var(expr)

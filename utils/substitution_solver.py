@@ -1,8 +1,7 @@
-"""utils/substitution_solver.py - การอินทิเกรตโดยการแทนตัวแปรและเทคนิคการอินทิเกรต
+"""utils/substitution_solver.py: Integration by substitution and integration techniques.
 
-รองรับการตรวจหาตัวแปร u เชิงสัญลักษณ์, เทคนิคการอินทิเกรตทีละส่วน (Integration by Parts),
-และการจำแนกฟังก์ชันที่ไม่เป็นฟังก์ชันมูลฐาน (Non-elementary integrals)
-ตามเกณฑ์ Universal Step Contract
+Supports symbolic u-substitution, integration by parts detection,
+and non-elementary integral classification under the Universal Step Contract.
 """
 import re
 import sympy as sp
@@ -48,7 +47,7 @@ SPECIAL_FUNCS = (
 
 
 def _to_latex(sym_obj) -> str:
-    """แปลง SymPy object เป็น LaTeX string พร้อมแทนที่ \\log เป็น \\ln และปรับฟังก์ชันตรีโกณผกผันตามมาตรฐานการสอนแคลคูลัส"""
+    """Convert SymPy object to LaTeX string, standardizing log as ln and inverse trig notation."""
     lat = sp.latex(sym_obj, inv_trig_style="full")
     lat = lat.replace(r"\log", r"\ln")
     lat = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", lat)
@@ -59,7 +58,7 @@ def _to_latex(sym_obj) -> str:
 
 
 def _wrap_new_logs(antideriv: sp.Expr, orig_expr: sp.Expr) -> sp.Expr:
-    r"""ใส่วงเล็บค่าสัมบูรณ์ในฟังก์ชัน log ที่เกิดจากการคำนวณปริพันธ์ใหม่ (เช่น \int 1/u du = \ln|u|)"""
+    r"""Wrap arguments of new logarithm terms in absolute values (e.g. \int 1/u du = \ln|u|)."""
     if antideriv is None:
         return None
     orig_logs = orig_expr.atoms(sp.log) if orig_expr is not None else set()
@@ -85,7 +84,7 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def _detect_u_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr | None, sp.Expr | None]:
-    """สกัดตัวแปร u = g(var) และ du = g'(var)d(var) ที่กำจัดตัวแปรเดิมได้จริง"""
+    """Extract candidate u = g(var) and du = g'(var)d(var) that successfully eliminates the variable."""
     candidates = []
     # 1. Base of power expression
     for node in expr.atoms(sp.Pow):
@@ -154,9 +153,9 @@ def _format_dx_from_du(du_expr: sp.Expr, var_sym: sp.Symbol) -> str:
 
 
 def _detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, sp.Expr, str] | None:
-    """พิจารณาแยก expr = u * v' เพื่อทำการอินทิเกรตทีละส่วน (Integration by Parts) ตามแนวทาง LIATE
+    """Identify decomposition expr = u * v' for integration by parts using LIATE rule.
 
-    คืนค่า (u, dv_factor, reason) หรือ None
+    Returns (u, dv_factor, reason) or None.
     """
     # 1. Single function: ln(x), arctan(x), arcsin(x)
     if isinstance(expr, sp.log) or expr.func in (sp.atan, sp.asin, sp.acos):
@@ -198,7 +197,7 @@ def _detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr,
 
 
 def _get_domain_note(expr: sp.Expr, var: sp.Symbol = X) -> str:
-    """สร้างคำอธิบายเงื่อนไขโดเมนตาม Universal Step Contract"""
+    """Generate domain condition note under the Universal Step Contract."""
     notes = []
     has_pos_x = False
     if expr.has(sp.log):
@@ -228,7 +227,7 @@ def _get_domain_note(expr: sp.Expr, var: sp.Symbol = X) -> str:
 
 
 def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
-    """คำนวณปริพันธ์ แจกแจงการแทนค่าตัวแปร u-Substitution หรือ By Parts ตาม Universal Step Contract"""
+    """Solve integral using u-substitution or integration by parts under Universal Step Contract."""
     clean = (expr_str or "").strip()
     if not clean:
         return {
@@ -499,7 +498,7 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
 
 
 def check_standard_form(h: sp.Expr, var: sp.Symbol) -> bool:
-    """ตรวจสอบว่านิพจน์ h(var) อยู่ในรูปผลรวมของฟังก์ชันพื้นฐานที่หาอินทิกรัลได้โดยตรงหรือไม่"""
+    """Check if expression h(var) is in standard form of elementary functions integrable directly."""
     try:
         expanded = sp.expand(h)
         terms = sp.Add.make_args(expanded)
@@ -522,7 +521,7 @@ def check_standard_form(h: sp.Expr, var: sp.Symbol) -> bool:
 
 
 def get_suggested_u_candidates(expr_str: str, var: str | sp.Symbol | None = None) -> list[str]:
-    """สร้างรายการตัวเลือกฟังก์ชัน u ที่น่าสนใจสำหรับโจทย์ที่กำหนด เพื่อให้ผู้เรียนได้ทดลองเลือก"""
+    """Generate list of suggested candidate u functions for student practice."""
     try:
         clean_expr, diff_var = _clean_calculus_input(expr_str)
         expr = _parse_input(clean_expr)
@@ -601,7 +600,7 @@ def verify_user_u_substitution(
     u_str: str,
     var: str | sp.Symbol | None = None,
 ) -> dict:
-    """ตรวจสอบการเลือกตัวแปร u ของผู้ใช้ ว่าทำได้โดยตรง, ต้องจัดรูปก่อน, หรือทำไม่ได้"""
+    """Verify student choice of u: whether it succeeds directly, requires algebra, or fails."""
     clean_expr_str = (expr_str or "").strip()
     clean_u_str = (u_str or "").strip()
 

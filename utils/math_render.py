@@ -1,13 +1,13 @@
 """
 Math rendering helpers for Streamlit (native KaTeX).
 
-กฎของ Streamlit:
-- st.latex(expr)  → display math; expr ต้องเป็น pure LaTeX (ไม่มี $...$, ไม่มีภาษาไทย)
-- st.markdown(text with $...$ or $$...$$) → KaTeX ผ่าน built-in engine
-- unsafe_allow_html=True → KaTeX ไม่ทำงานใน raw HTML
-- widget labels / selectbox options → ไม่รองรับ KaTeX ใช้ Unicode แทน
+Streamlit rules:
+- st.latex(expr): display math; expr must be pure LaTeX (no $...$, no Thai)
+- st.markdown(text with $...$ or $$...$$): KaTeX via built-in engine
+- unsafe_allow_html=True: KaTeX does not execute in raw HTML
+- widget labels / selectbox options: do not support KaTeX; use Unicode instead
 
-อ้างอิง pattern จาก stat-distribution-solver/modules/math_render.py
+Pattern referenced from stat-distribution-solver/modules/math_render.py
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ _WRAPPED_INLINE = re.compile(r"^\s*\$(.*)\$\s*$", re.DOTALL)
 
 
 def format_inverse_trig(text: str) -> str:
-    """แปลงสัญลักษณ์ฟังก์ชันตรีโกณมิติผกผันและลอการิทึมธรรมชาติ (\\log เป็น \\ln) ตามแบบหนังสือเรียน"""
+    """Format inverse trigonometric functions and natural logarithm (\\log -> \\ln) to standard textbook notation."""
     if not text:
         return text
     # 0. Convert \log to \ln for natural logarithm
@@ -51,7 +51,7 @@ _BARE_LATEX_RE = re.compile(
 
 
 def auto_wrap_bare_latex(text: str) -> str:
-    """ห่อหุ้มคำสั่งหรือสัญลักษณ์ LaTeX ลอย ๆ ที่ไม่ได้อยู่ใน $...$ เพื่อให้ KaTeX แสดงผลได้ถูกต้องสมบูรณ์"""
+    """Wrap bare LaTeX commands or symbols not enclosed in $...$ so KaTeX can render them."""
     if not text or "\\" not in text:
         return text
 
@@ -91,7 +91,7 @@ def is_pure_latex(expr: str) -> bool:
 
 
 def format_math_spacing(text: str) -> str:
-    """เว้นวรรคหน้าและหลังสมการ ($...$ หรือ $$...$$) เมื่ออยู่ติดกับข้อความภาษาไทย และห่อสัญลักษณ์ LaTeX ลอย ๆ"""
+    """Format spacing before and after math equations ($...$ or $$...$$) when adjacent to Thai text and wrap bare symbols."""
     if not text:
         return text
     # 0. Convert inverse trig functions and wrap bare LaTeX symbols
@@ -128,7 +128,7 @@ def render_latex(expr: str, *, label: Optional[str] = None) -> None:
 
 
 def render_steps(steps, title: Optional[str] = "### วิธีทำทีละขั้นตอน") -> None:
-    """แสดงวิธีทำทีละขั้นตอนอย่างเป็นระเบียบ สวยงาม ด้วย st.latex และ KaTeX"""
+    """Render step-by-step worked solutions cleanly using st.latex and KaTeX."""
     if not steps:
         return
 
@@ -206,7 +206,7 @@ def render_steps(steps, title: Optional[str] = "### วิธีทำทีล�
 
 
 def preview_math_expr(expr_str: str, label: str = "สมการที่ระบบเข้าใจ", var_name: Optional[str] = None) -> bool:
-    """พรีวิวสมการ LaTeX แบบสด และแจ้งเตือนไวยากรณ์ที่เป็นมิตร"""
+    """Live preview of parsed LaTeX equation with syntax validation feedback."""
     clean = (expr_str or "").strip()
     if not clean:
         return False
@@ -247,7 +247,7 @@ def preview_math_expr(expr_str: str, label: str = "สมการที่ร�
 
 
 def render_syntax_guide() -> None:
-    """แสดงการ์ดคำแนะนำไวยากรณ์การป้อนสมการสำหรับผู้เริ่มต้น"""
+    """Render beginner-friendly mathematical input syntax guidance expander."""
     with st.expander("คำแนะนำการป้อนสมการ (สำหรับผู้เริ่มต้น)", expanded=False):
         st.markdown(
             """

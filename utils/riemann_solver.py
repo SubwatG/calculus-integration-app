@@ -1,10 +1,10 @@
 """
-utils/riemann_solver.py — คำนวณผลรวมรีมันน์ (Riemann sum) ทีละขั้น
+utils/riemann_solver.py: Step-by-step Riemann sum solver.
 
-สำหรับบทเรียน interactive 3.1 พื้นที่ภายใต้เส้นโค้ง
-ใช้ SymPy แปลงนิพจน์จากผู้ใช้ เหมือน utils/sympy_solver.py
+For interactive lesson 3.1: Area under curve.
+Uses SymPy to parse user mathematical expressions.
 
-รองรับ 3 วิธี:
+Supports 3 methods:
   - left     : L_n = sum_{i=0}^{n-1} f(x_i) Δx , x_i = a + iΔx
   - right    : R_n = sum_{i=1}^{n}   f(x_i) Δx , x_i = a + iΔx
   - midpoint : M_n = sum_{i=0}^{n-1} f(x̄_i) Δx , x̄_i = a + (i+0.5)Δx
@@ -63,14 +63,14 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def _fmt_num(x: float) -> str:
-    """จัดรูปแบบตัวเลขให้สั้น ไม่มีเลขศูนย์เกินจำเป็น"""
+    """Format number concisely without redundant trailing zeros."""
     if abs(x - round(x)) < 1e-9:
         return str(int(round(x)))
     return f"{x:.4f}".rstrip("0").rstrip(".")
 
 
 def _point_latex(expr: sp.Expr, x_val: float, var: sp.Symbol = X) -> str:
-    """LaTeX ของ f(x_i) เมื่อแทนค่าแล้ว"""
+    """Format evaluated f(x_i) as LaTeX string."""
     val = float(expr.subs(var, x_val))
     return _fmt_num(val)
 
@@ -82,7 +82,7 @@ def compute_riemann(
     n: int | float,
     method: str = "left",
 ) -> dict[str, Any]:
-    """คำนวณผลรวมรีมันน์และคืน steps เป็น LaTeX
+    """Compute Riemann sum and return steps in LaTeX.
 
     Returns dict {ok, result, latex, steps, error}
     """

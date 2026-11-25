@@ -1,8 +1,8 @@
-"""utils/volume_solver.py — ปริมาตรของรูปทรงตันจากการหมุนรอบแกน
+"""utils/volume_solver.py: Solids of revolution volume solver.
 
-คำนวณปริมาตรของรูปทรงตันที่เกิดจากการหมุนรอบแกน x แบบ Disk หรือ Washer Method
-พร้อมแจกแจงแกนหมุน รัศมีนอก/ใน ทิศทางการกวาด และคำตอบแม่นตรงในรูป k*pi
-ตามเกณฑ์ Universal Step Contract
+Computes the volume of solids of revolution about the x-axis using Disk or Washer Method,
+identifying axis of rotation, inner/outer radii, sweep direction, and exact answers in k*pi form
+under the Universal Step Contract.
 """
 import math
 import re
@@ -53,7 +53,7 @@ def compute_volume(
     method: str = "disk",
     inner_expr_str: str | None = None,
 ) -> dict:
-    """คำนวณปริมาตรของรูปทรงตันที่เกิดจากการหมุนรอบแกน x แบบ Disk หรือ Washer Method ตาม Universal Step Contract"""
+    """Compute volume of solid of revolution about x-axis using Disk or Washer Method under Universal Step Contract."""
     clean_outer = (expr_str or "").strip()
     if not clean_outer:
         return {

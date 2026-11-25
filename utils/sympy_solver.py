@@ -71,7 +71,7 @@ def _clean_calculus_input(expr_str: str) -> tuple[str, str | None]:
 
 
 def sanitize_math_input(expr_str: str, max_length: int = 500) -> str:
-    """ตรวจสอบความปลอดภัยของข้อความสูตรคณิตศาสตร์ ป้องกัน RCE และ Denial-of-Service"""
+    """Validate mathematical input string to protect against RCE and Denial-of-Service."""
     clean = (expr_str or "").strip()
     if not clean:
         raise ValueError("Empty input string")
@@ -106,12 +106,12 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def _get_variable(expr: sp.Expr, default: str = "x") -> sp.Symbol:
-    """ตรวจจับตัวแปรอิสระในนิพจน์ (Auto-detect variable)
-    - ถ้าไม่มีตัวแปร (เช่น ค่าคงที่ 5) คืนค่า default (Symbol('x'))
-    - ถ้ามีสัญลักษณ์เดียว คืนค่าตัวแปรนั้น (เช่น Symbol('t'))
-    - ถ้ามีหลายตัวแปร และมี default ('x') อยู่ ให้เลือก 'x' ก่อนเพื่อความเข้ากันได้
-    - ให้ความสำคัญกับตัวแปรอิสระมาตรฐาน (x, t, y, u, z, theta, s, r, v, w) ก่อนค่าคงที่/พารามิเตอร์ (a, b, c, k, m, n)
-    - ถ้าไม่มีตัวแปรที่ตรงกับลำดับข้างต้น ให้คัดกรองค่าคงที่แล้วคืนค่าตัวแปรแรก
+    """Auto-detect independent variable in expression:
+    - If constant (e.g. 5), returns default (Symbol('x'))
+    - If single symbol, returns that variable (e.g. Symbol('t'))
+    - If multiple symbols, prefers default ('x') for backward compatibility
+    - Prioritizes standard variables (x, t, y, u, z, theta, s, r, v, w) over parameters
+    - Otherwise returns the first non-parameter variable alphabetically
     """
     free = expr.free_symbols
     if not free:
@@ -136,7 +136,7 @@ def _get_variable(expr: sp.Expr, default: str = "x") -> sp.Symbol:
 
 
 def detect_variable(expr_str: str, default: str = "x") -> str:
-    """ตรวจจับชื่อตัวแปรอิสระในข้อความสูตร เช่น '3t^2 + 2t' -> 't', '3t^2 dt' -> 't'"""
+    """Detect independent variable name in expression string, e.g. '3t^2 + 2t' -> 't'."""
     try:
         clean_str, diff_var = _clean_calculus_input(expr_str)
         if diff_var:
@@ -148,7 +148,7 @@ def detect_variable(expr_str: str, default: str = "x") -> str:
 
 
 def _simplify_trig_for_integration(expr: sp.Expr) -> sp.Expr:
-    """จัดรูปฟังก์ชันตรีโกณมิติ เช่น tan, cot, sec, csc เพื่อช่วยให้คำนวณปริพันธ์ได้สำเร็จ"""
+    """Simplify trigonometric functions (tan, cot, sec, csc) to aid integration."""
     try:
         trig_rep = expr.replace(sp.tan, lambda a: sp.sin(a) / sp.cos(a))
         trig_rep = trig_rep.replace(sp.cot, lambda a: sp.cos(a) / sp.sin(a))
