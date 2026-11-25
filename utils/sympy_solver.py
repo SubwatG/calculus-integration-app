@@ -36,7 +36,7 @@ def _to_latex(sym_obj) -> str:
 
 
 def _clean_calculus_input(expr_str: str) -> tuple[str, str | None]:
-    """ทำความสะอาดข้อความสูตรและสกัดตัวแปรดิฟเฟอเรนเชียล (เช่น '3t^2 dt' -> '3t^2', 't')"""
+    """Sanitize expression string and extract differential variable (e.g. '3t^2 dt' -> '3t^2', 't')."""
     clean = (expr_str or "").strip()
     if not clean:
         return "", None

@@ -24,11 +24,8 @@ from utils.math_render import (
 from utils.plotter import plot_tangent, plot_tangent_plotly
 from utils.tangent_solver import compute_tangent
 from utils.theme import render_hero
-from utils.theory import THEORY_CONTENT
 
 render_hero("เส้นสัมผัสและอนุพันธ์", "สำรวจความชันเส้นสัมผัสและอนุพันธ์แบบโต้ตอบ")
-
-theory = THEORY_CONTENT["tangent"]
 
 
 def _set_tangent_preset(expr_val: str, a_val: float) -> None:

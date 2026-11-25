@@ -91,3 +91,107 @@ def test_substitution_arctan_not_forced_into_fake_usub():
     assert "atan" in str(res["result"])
 
 
+def test_math_06_no_duplicate_piecewise_simplifier():
+    import inspect
+    import utils.area_solver as area_module
+
+    source = inspect.getsource(area_module)
+    assert source.count("def _simplify_piecewise_on_interval") == 1
+
+
+def test_math_04_area_between_no_absolute_values_in_crossing_formula():
+    from utils.area_solver import compute_area_between
+
+    res = compute_area_between("x", "x**2", 0, 2)
+    assert res["ok"] is True
+    assert len(res["crossings"]) >= 1
+    # Check that formula step (index 1) does not use |f - g|
+    formula_step = res["steps"][1]
+    assert "|" not in formula_step
+    assert "\\text{บน}" in formula_step or "\\text{ล่าง}" in formula_step
+    assert "|" not in res["latex"]
+
+
+def test_math_12_improper_no_volume_symbol_in_summary():
+    from utils.improper_solver import compute_improper
+
+    res = compute_improper("1/sqrt(1-x**2)", -1, 1)
+    assert res["ok"] is True
+    assert res["status"] == "finite"
+    # Ensure no V = volume symbol appears in steps
+    steps_text = " ".join(res["steps"])
+    assert "$V =" not in steps_text
+    assert "V =" not in steps_text
+
+
+def test_expl_01_tangent_sqrt_zero_not_corner_point():
+    from utils.tangent_solver import compute_tangent
+
+    res = compute_tangent("sqrt(x)", 0)
+    assert res["ok"] is True
+    assert res["status"] == "non_differentiable"
+    steps_text = " ".join(res["steps"])
+    assert "Corner Point" not in steps_text
+    assert "จุดมุมหัก" not in steps_text
+    assert "\\infty i" not in steps_text
+    assert "ไม่อยู่ในโดเมน" in steps_text or "ไม่นิยาม" in steps_text
+
+
+def test_expl_03_substitution_ln_x_no_compound_fraction():
+    from utils.substitution_solver import solve_substitution
+
+    res = solve_substitution("1/(x*log(x))")
+    assert res["ok"] is True
+    steps_text = " ".join(res["steps"])
+    assert "\\frac{du}{1/x}" not in steps_text
+    assert "\\frac{du}{\\frac{1}{x}}" not in steps_text
+    assert "dx = x \\, du" in steps_text or "dx = x du" in steps_text or "x du" in steps_text
+
+
+def test_math_05_improper_plot_scales_beyond_15():
+    from utils.plotter import plot_improper, plot_improper_plotly
+
+    expr = sp.sympify("1/(x-1)**2")
+    fig, ax = plot_improper(expr, 0.0, 2.0)
+    assert fig is not None
+    ymin, ymax = ax.get_ylim()
+    assert ymax > 15.0
+
+    fig_p = plot_improper_plotly(expr, 0.0, 2.0)
+    assert fig_p is not None
+    assert fig_p.layout.yaxis.range[1] > 15.0
+
+
+def test_ped_04_no_informal_diff_word_in_pages_and_utils():
+    import glob
+    files = glob.glob("pages/*.py") + glob.glob("utils/*.py")
+    for f in files:
+        with open(f, "r", encoding="utf-8") as fp:
+            content = fp.read()
+            assert "ดิฟ" not in content, f"Informal word 'ดิฟ' found in {f}"
+
+
+def test_ped_03_substitution_case_4_option_c_feedback():
+    from pathlib import Path
+    from streamlit.testing.v1 import AppTest
+    sub_page = str(Path(__file__).resolve().parent.parent / "pages" / "substitution.py")
+    at = AppTest.from_file(sub_page)
+    at.run(timeout=5)
+    assert not at.exception
+    # Select Case 4
+    if at.selectbox:
+        sb = at.selectbox[0]
+        opt_case4 = [o for o in sb.options if "กรณีที่ 4" in o][0]
+        sb.select(opt_case4).run(timeout=5)
+        r = at.radio(key="radio_u_case4")
+        if r:
+            # Select Option C (index 2: "แนวทาง C: ถือว่าทำไม่ได้...")
+            r.set_value(r.options[2]).run(timeout=5)
+            assert not at.exception
+            assert len(at.warning) >= 1
+            assert "ยังไม่ถูกต้อง" in at.warning[0].value
+            assert "x = u - 1" in at.warning[0].value
+
+
+
+

@@ -7,6 +7,7 @@
 import streamlit as st
 import sympy as sp
 
+from utils.decision_cases import SUBSTITUTION_CASES, render_decision_case
 from utils.keypad import render_math_keypad
 from utils.math_render import format_inverse_trig, preview_math_expr, render_latex, render_steps, render_syntax_guide
 from utils.special_functions import describe_special_functions, special_functions_in
@@ -136,8 +137,8 @@ with st.container(border=True):
         r"""
 | รูปแบบฟังก์ชันในโจทย์ | รูปแบบทั่วไป | การกำหนดตัวแปร $u$ |
 | :--- | :--- | :--- |
-| **ในวงเล็บยกกำลัง / ใต้กรณฑ์** | $\int [g(x)]^n g'(x)\,dx$ | กำหนด $u = g(x)$ (ดิฟแล้วตัดกับ $g'(x)$ พอดี) |
-| **ตัวส่วนของเศษส่วน** | $\int \frac{g'(x)}{g(x)}\,dx$ | กำหนด $u = g(x)$ (ดิฟแล้วตัดเศษ ได้รูป $\ln|u|$) |
+| **ในวงเล็บยกกำลัง / ใต้กรณฑ์** | $\int [g(x)]^n g'(x)\,dx$ | กำหนด $u = g(x)$ (หาอนุพันธ์แล้วตัดกับ $g'(x)$ พอดี) |
+| **ตัวส่วนของเศษส่วน** | $\int \frac{g'(x)}{g(x)}\,dx$ | กำหนด $u = g(x)$ (หาอนุพันธ์แล้วตัดเศษ ได้รูป $\ln|u|$) |
 | **เลขชี้กำลังหรือตรีโกณมิติ** | $\int f(g(x)) g'(x)\,dx$ | กำหนด $u = g(x)$ เป็นไส้ในของฟังก์ชัน |
 | **การจัดรูปพีชคณิตเสริม** | $\int x \sqrt{x+1}\,dx$ | กำหนด $u = x+1$ แล้วจัดรูป $x = u-1$ แทนกลับ |
         """
@@ -147,7 +148,7 @@ with st.expander("อ่านเป้าหมายและหลักก�
     st.markdown(
         r"""
 - **เป้าหมายหลัก:** แปลงอินทิกรัลให้อยู่ในรูปพื้นฐาน $\int f(u)\,du$ โดยมีหลักสำคัญคือ **ตัวแปร $x$ จะต้องถูกตัดทอนได้หมด**
-- **วิธีตรวจสอบ:** เมื่อดิฟ $u$ ได้ $du = g'(x)\,dx$ แล้วแทน $dx = \frac{du}{g'(x)}$ ตัวแปร $x$ ทั้งหมดต้องตัดทอนกันหายไป เหลือเฉพาะตัวแปร $u$
+- **วิธีตรวจสอบ:** เมื่อหาอนุพันธ์ของ $u$ ได้ $du = g'(x)\,dx$ แล้วแทน $dx = \frac{du}{g'(x)}$ ตัวแปร $x$ ทั้งหมดต้องตัดทอนกันหายไป เหลือเฉพาะตัวแปร $u$
 - **หากตัวแปร $x$ ไม่หมด:** ให้พิจารณาว่าสามารถจัดรูป $x$ ในเทอมของ $u$ มาแทนค่าเพิ่มได้หรือไม่ หากไม่ได้ อาจต้องใช้วิธีอื่น เช่น อินทิเกรตทีละส่วน (By Parts)
         """
     )
@@ -159,327 +160,14 @@ st.divider()
 # =============================================================================
 st.markdown("### กรณีศึกษาฝึกตัดสินใจเลือกตัวแปร $u$ (Decision Challenge)")
 
+case_options = [c["selector_title"] for c in SUBSTITUTION_CASES]
 case_sub = st.selectbox(
     "เลือกกรณีศึกษาที่ต้องการเรียนรู้:",
-    options=[
-        "กรณีที่ 1: ฟังก์ชันใต้กรณฑ์ยกกำลัง (2x √(x² + 1))",
-        "กรณีที่ 2: ฟังก์ชันตัวส่วนและลอการิทึม ((ln x) / x)",
-        "กรณีที่ 3: ฟังก์ชันตรีโกณมิติและเลขชี้กำลัง (cos(x) e^(sin x))",
-        "กรณีที่ 4: การจัดรูปพีชคณิตเสริมเมื่อ x ไม่หมด (x √(x + 1))",
-        "กรณีที่ 5: ฟังก์ชันเศษส่วนและอนุพันธ์ของตัวส่วน (2x / (x² + 1))",
-        "กรณีที่ 6: พหุนามยกกำลังและอนุพันธ์ภายใน (3x² (x³ + 5)⁴)",
-    ],
+    options=case_options,
     index=0,
 )
-
-if "กรณีที่ 1" in case_sub:
-    with st.container(border=True):
-        st.markdown(
-            r"""
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 1 / 6</span>
-                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">ฟังก์ชันใต้กรณฑ์ยกกำลัง</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.latex(r"\int 2x\sqrt{x^2+1} \, dx")
-        st.markdown("**ท่านจะเลือกกำหนดตัวแปร $u$ เป็นฟังก์ชันใด?**")
-
-        u_choice = st.radio(
-            "ท่านจะเลือกกำหนด u เป็นฟังก์ชันใด?",
-            options=[
-                "แนวทาง A: ให้ u = x² + 1 (ฟังก์ชันใต้กรณฑ์)",
-                "แนวทาง B: ให้ u = 2x (ฟังก์ชันสัมประสิทธิ์ด้านนอก)",
-                "แนวทาง C: ให้ u = x (ตัวแปรเดิม)",
-            ],
-            index=None,
-            key="radio_u_case1",
-            label_visibility="collapsed",
-        )
-
-        parts_choice = u_choice or ""
-        if not parts_choice:
-            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
-        elif "แนวทาง A" in parts_choice:
-            st.success(r"**ถูกต้องตามหลักการ:** เมื่อเลือก $u = x^2 + 1$ จะได้ $du = 2x\,dx$ ซึ่งพจน์ $2x$ จะตัดทอนกับตัวคูณด้านหน้าหมดพอดี")
-            st.markdown("##### ผลลัพธ์สุดท้าย")
-            st.latex(r"\int 2x\sqrt{x^2+1} \, dx = \frac{2}{3}(x^2+1)^{3/2} + C")
-            with st.container(border=True):
-                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
-                st.markdown(
-                    r"""
-                    1. **กำหนดตัวแปรและหาอนุพันธ์:**
-                       $$u = x^2 + 1 \implies \frac{du}{dx} = 2x \implies dx = \frac{du}{2x}$$
-                    2. **แทนค่าในโจทย์:**
-                       $$\int 2x\sqrt{x^2+1} \, dx = \int 2x \cdot \sqrt{u} \cdot \frac{du}{2x}$$
-                    3. **ตัดทอนตัวแปรเดิม:**
-                       $$\int \sqrt{u} \, du = \int u^{1/2} \, du = \frac{2}{3}u^{3/2} + C$$
-                    4. **แทนค่า $u$ กลับคืน:**
-                       $$= \frac{2}{3}(x^2+1)^{3/2} + C$$
-                    """
-                )
-        elif "แนวทาง B" in parts_choice:
-            st.error(r"**ยังไม่เหมาะสม:** หากเลือก $u = 2x$ จะได้ $du = 2dx$ ใต้กรณฑ์จะกลายเป็น $\sqrt{(u/2)^2+1}$ ซึ่งยังคงติดตัวแปร $u$ ซับซ้อนและตัดทอนไม่ได้")
-        else:
-            st.warning("**ไม่มีการเปลี่ยนแปลง:** การให้ $u = x$ เป็นเพียงการเปลี่ยนชื่อตัวแปร ไม่ได้ช่วยลดความซับซ้อนของโจทย์")
-
-elif "กรณีที่ 2" in case_sub:
-    with st.container(border=True):
-        st.markdown(
-            r"""
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 2 / 6</span>
-                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">ฟังก์ชันตัวส่วนและลอการิทึม</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.latex(r"\int \frac{\ln x}{x} \, dx")
-        st.markdown("**ท่านจะเลือกกำหนดตัวแปร $u$ เป็นฟังก์ชันใด?**")
-
-        u_choice = st.radio(
-            "ท่านจะเลือกกำหนด u เป็นฟังก์ชันใด?",
-            options=[
-                "แนวทาง A: ให้ u = x (ตัวส่วน)",
-                "แนวทาง B: ให้ u = ln(x) (ตัวเศษ)",
-                "แนวทาง C: ให้ u = 1/x",
-            ],
-            index=None,
-            key="radio_u_case2",
-            label_visibility="collapsed",
-        )
-
-        parts_choice = u_choice or ""
-        if not parts_choice:
-            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
-        elif "แนวทาง B" in parts_choice:
-            st.success(r"**ถูกต้องตามหลักการ:** อนุพันธ์ของ $\ln(x)$ คือ $\frac{1}{x}$ ซึ่งจะตัดกับตัวส่วน $x$ หายไปหมดพอดี")
-            st.markdown("##### ผลลัพธ์สุดท้าย")
-            st.latex(r"\int \frac{\ln x}{x} \, dx = \frac{(\ln x)^2}{2} + C")
-            with st.container(border=True):
-                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
-                st.markdown(
-                    r"""
-                    1. **กำหนดตัวแปรและหาอนุพันธ์:**
-                       $$u = \ln x \implies \frac{du}{dx} = \frac{1}{x} \implies dx = x\,du$$
-                    2. **แทนค่าในโจทย์:**
-                       $$\int \frac{\ln x}{x} \, dx = \int \frac{u}{x} \cdot (x\,du)$$
-                    3. **ตัดทอนตัวแปรเดิม:**
-                       $$\int u \, du = \frac{u^2}{2} + C$$
-                    4. **แทนค่า $u$ กลับคืน:**
-                       $$= \frac{(\ln x)^2}{2} + C \quad (x > 0)$$
-                    """
-                )
-        elif "แนวทาง A" in parts_choice:
-            st.warning(r"**ไม่มีการเปลี่ยนแปลง:** ได้เพียง $\int \frac{\ln u}{u}\,du$ ซึ่งเหมือนโจทย์เดิม")
-        else:
-            st.error(r"**รูปจะซับซ้อนขึ้น:** หากเลือก $u = 1/x$ จะได้ $du = -\frac{1}{x^2}\,dx$ ซึ่งทำให้ดีกรีตัวส่วนเพิ่มขึ้นเป็น $x^2$")
-
-elif "กรณีที่ 3" in case_sub:
-    with st.container(border=True):
-        st.markdown(
-            r"""
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 3 / 6</span>
-                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">ฟังก์ชันตรีโกณมิติและเลขชี้กำลัง</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.latex(r"\int \cos(x) e^{\sin(x)} \, dx")
-        st.markdown("**ท่านจะเลือกกำหนดตัวแปร $u$ เป็นฟังก์ชันใด?**")
-
-        u_choice = st.radio(
-            "ท่านจะเลือกกำหนด u เป็นฟังก์ชันใด?",
-            options=[
-                "แนวทาง A: ให้ u = sin(x) (ไส้ในของเลขชี้กำลัง)",
-                "แนวทาง B: ให้ u = cos(x) (สัมประสิทธิ์ด้านหน้า)",
-                "แนวทาง C: ให้ u = e^(sin x)",
-            ],
-            index=None,
-            key="radio_u_case3",
-            label_visibility="collapsed",
-        )
-
-        parts_choice = u_choice or ""
-        if not parts_choice:
-            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
-        elif "แนวทาง A" in parts_choice:
-            st.success(r"**ถูกต้องตามหลักการ:** ดิฟ $u = \sin(x)$ ได้ $du = \cos(x)\,dx$ ซึ่งตัดกับ $\cos(x)$ ด้านหน้าหมดพอดี")
-            st.markdown("##### ผลลัพธ์สุดท้าย")
-            st.latex(r"\int \cos(x) e^{\sin(x)} \, dx = e^{\sin(x)} + C")
-            with st.container(border=True):
-                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
-                st.markdown(
-                    r"""
-                    1. **กำหนดตัวแปรและหาอนุพันธ์:**
-                       $$u = \sin(x) \implies du = \cos(x)\,dx \implies dx = \frac{du}{\cos(x)}$$
-                    2. **แทนค่าและตัดทอน:**
-                       $$\int \cos(x) e^u \cdot \frac{du}{\cos(x)} = \int e^u \, du = e^u + C$$
-                    3. **แทนค่า $u$ กลับคืน:**
-                       $$= e^{\sin(x)} + C$$
-                    """
-                )
-        elif "แนวทาง C" in parts_choice:
-            st.info(r"**ทำได้เช่นกัน:** หากให้ $u = e^{\sin x} \implies du = e^{\sin x}\cos(x)dx$ จะได้ $\int 1\,du = u + C = e^{\sin x} + C$")
-        else:
-            st.error(r"**ยังไม่เหมาะสม:** ดิฟ $\cos(x)$ ได้ $-\sin(x)$ ซึ่งไม่สามารถตัดกับ $\sin(x)$ ที่ติดอยู่บนเลขชี้กำลังได้")
-
-elif "กรณีที่ 4" in case_sub:
-    with st.container(border=True):
-        st.markdown(
-            r"""
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 4 / 6</span>
-                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">การจัดรูปพีชคณิตเสริมเมื่อ x ไม่หมด</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.latex(r"\int x\sqrt{x+1} \, dx")
-        st.markdown("**ท่านจะแก้ปัญหาตัวแปร $x$ ด้านหน้าที่เหลืออยู่อย่างไร?**")
-
-        u_choice = st.radio(
-            "ท่านจะแก้ปัญหาตัวแปร x ด้านหน้าที่เหลืออยู่อย่างไร?",
-            options=[
-                "แนวทาง A: แทน x = u - 1 แล้วคูณกระจายเข้าไปในวงเล็บ",
-                "แนวทาง B: ดึง x ออกนอกอินทิกรัลเลยเพราะเป็นตัวคูณ",
-                "แนวทาง C: ถือว่าทำไม่ได้ด้วย u-Substitution ต้องเปลี่ยนไปใช้วิธีอื่นทันที",
-                "แนวทาง D: ให้ u = √(x+1)",
-            ],
-            index=None,
-            key="radio_u_case4",
-            label_visibility="collapsed",
-        )
-
-        parts_choice = u_choice or ""
-        if not parts_choice:
-            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
-        elif "แนวทาง B" in parts_choice:
-            st.error(r"**ข้อควรระวัง:** ห้ามดึงตัวแปรที่กำลังอินทิเกรต ($x$) ออกนอกเครื่องหมาย $\int$ ดึงได้เฉพาะค่าคงที่เท่านั้น")
-        elif "แนวทาง A" in parts_choice:
-            st.success("**ถูกต้องตามหลักการ:** จัดรูป $x = u - 1$ แล้วคูณกระจาย $(u - 1)u^{1/2} = u^{3/2} - u^{1/2}$ ทำให้หาอินทิกรัลทีละพจน์ได้")
-            st.markdown("##### ผลลัพธ์สุดท้าย")
-            st.latex(r"\int x\sqrt{x+1} \, dx = \frac{2}{5}(x+1)^{5/2} - \frac{2}{3}(x+1)^{3/2} + C")
-            with st.container(border=True):
-                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
-                st.markdown(
-                    r"""
-                    1. **สลับรูปตัวแปร:**
-                       $$u = x + 1 \implies x = u - 1 \quad \text{และ} \quad dx = du$$
-                    2. **แทนค่าลงในอินทิกรัล:**
-                       $$\int x\sqrt{x+1}\,dx = \int (u - 1)\sqrt{u}\,du = \int (u - 1)u^{1/2}\,du$$
-                    3. **คูณกระจายและอินทิเกรตทีละพจน์:**
-                       $$= \int (u^{3/2} - u^{1/2})\,du = \frac{2}{5}u^{5/2} - \frac{2}{3}u^{3/2} + C$$
-                    4. **แทนค่า $u$ กลับคืน:**
-                       $$= \frac{2}{5}(x+1)^{5/2} - \frac{2}{3}(x+1)^{3/2} + C$$
-                    """
-                )
-        elif "แนวทาง D" in parts_choice:
-            st.info(r"**ทำได้เช่นกัน:** หากให้ $u = \sqrt{x+1} \implies u^2 = x+1$ จัดรูปเป็น $\int 2(u^4 - u^2)\,du$ ซึ่งได้ผลลัพธ์เดียวกัน")
-        else:
-            st.warning("**สามารถแก้ได้:** การแทนค่านี้สามารถแก้ได้สำเร็จโดยใช้เทคนิคการจัดรูปพีชคณิตเสริม")
-
-elif "กรณีที่ 5" in case_sub:
-    with st.container(border=True):
-        st.markdown(
-            r"""
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 5 / 6</span>
-                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">ฟังก์ชันเศษส่วนและอนุพันธ์ของตัวส่วน</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.latex(r"\int \frac{2x}{x^2+1} \, dx")
-        st.markdown("**ท่านจะเลือกกำหนดตัวแปร $u$ เป็นฟังก์ชันใด?**")
-
-        u_choice = st.radio(
-            "ท่านจะเลือกกำหนด u เป็นฟังก์ชันใด?",
-            options=[
-                "แนวทาง A: ให้ u = x² + 1 (ตัวส่วนทั้งก้อน)",
-                "แนวทาง B: ให้ u = 2x (ตัวเศษ)",
-                "แนวทาง C: ให้ u = x",
-            ],
-            index=None,
-            key="radio_u_case5",
-            label_visibility="collapsed",
-        )
-
-        parts_choice = u_choice or ""
-        if not parts_choice:
-            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
-        elif "แนวทาง A" in parts_choice:
-            st.success(r"**ถูกต้องตามหลักการ:** ตัวเศษ $2x$ คืออนุพันธ์ของตัวส่วนพอดี ได้รูปพื้นฐาน $\int \frac{1}{u}\,du = \ln|u| + C$")
-            st.markdown("##### ผลลัพธ์สุดท้าย")
-            st.latex(r"\int \frac{2x}{x^2+1} \, dx = \ln(x^2+1) + C")
-            with st.container(border=True):
-                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
-                st.markdown(
-                    r"""
-                    1. **กำหนดตัวแปรและหาอนุพันธ์:**
-                       $$u = x^2 + 1 \implies du = 2x\,dx \implies dx = \frac{du}{2x}$$
-                    2. **แทนค่าลงในอินทิกรัลและตัดทอน:**
-                       $$\int \frac{2x}{x^2+1}\,dx = \int \frac{2x}{u} \cdot \frac{du}{2x} = \int \frac{1}{u}\,du$$
-                    3. **คำนวณปริพันธ์พื้นฐาน:**
-                       $$= \ln|u| + C = \ln(x^2+1) + C \quad (\text{เนื่องจาก } x^2+1 > 0 \text{ เสมอ})$$
-                    """
-                )
-        elif "แนวทาง B" in parts_choice:
-            st.error("**ยังไม่เหมาะสม:** หากให้ $u = 2x$ จะได้ตัวส่วนเป็น $(u/2)^2+1$ ซึ่งยังคงเป็นเศษส่วนพีชคณิตและไม่ช่วยให้ง่ายขึ้น")
-        else:
-            st.warning("**ไม่มีการเปลี่ยนแปลง:** การให้ $u = x$ ไม่ได้ช่วยลดความซับซ้อนของฟังก์ชัน")
-
-else:
-    with st.container(border=True):
-        st.markdown(
-            r"""
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                <span style="background-color: #FEF08A; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; box-shadow: 1.5px 1.5px 0px #18181B;">กรณีศึกษาที่ 6 / 6</span>
-                <span style="font-size: 13px; font-weight: 700; color: #4B5563;">พหุนามยกกำลังและอนุพันธ์ภายใน</span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        st.latex(r"\int 3x^2 (x^3+5)^4 \, dx")
-        st.markdown("**ท่านจะเลือกกำหนดตัวแปร $u$ เป็นฟังก์ชันใด?**")
-
-        u_choice = st.radio(
-            "ท่านจะเลือกกำหนด u เป็นฟังก์ชันใด?",
-            options=[
-                "แนวทาง A: ให้ u = x³ + 5 (ฟังก์ชันฐานในวงเล็บยกกำลัง)",
-                "แนวทาง B: ให้ u = 3x² (สัมประสิทธิ์ด้านหน้า)",
-                "แนวทาง C: ให้ u = (x³ + 5)⁴",
-            ],
-            index=None,
-            key="radio_u_case6",
-            label_visibility="collapsed",
-        )
-
-        parts_choice = u_choice or ""
-        if not parts_choice:
-            st.info("โปรดเลือกแนวทางด้านบนเพื่อตรวจสอบความเข้าใจและรับผลป้อนกลับ")
-        elif "แนวทาง A" in parts_choice:
-            st.success(r"**ถูกต้องตามหลักการ:** ดิฟฐาน $u = x^3 + 5$ ได้ $du = 3x^2\,dx$ ตัดกับ $3x^2$ ด้านหน้าหมด เหลือเพียง $\int u^4\,du$")
-            st.markdown("##### ผลลัพธ์สุดท้าย")
-            st.latex(r"\int 3x^2 (x^3+5)^4 \, dx = \frac{(x^3+5)^5}{5} + C")
-            with st.container(border=True):
-                st.markdown("**วิธีทำทีละขั้นตอนอย่างละเอียด:**")
-                st.markdown(
-                    r"""
-                    1. **กำหนดตัวแปรและหาอนุพันธ์:**
-                       $$u = x^3 + 5 \implies du = 3x^2\,dx \implies dx = \frac{du}{3x^2}$$
-                    2. **แทนค่าและตัดทอน:**
-                       $$\int 3x^2(x^3+5)^4\,dx = \int 3x^2 \cdot u^4 \cdot \frac{du}{3x^2} = \int u^4\,du$$
-                    3. **คำนวณปริพันธ์และแทนค่ากลับ:**
-                       $$= \frac{u^5}{5} + C = \frac{(x^3+5)^5}{5} + C$$
-                    """
-                )
-        elif "แนวทาง C" in parts_choice:
-            st.error("**รูปจะซับซ้อนขึ้น:** การเลือกยกกำลัง 4 จะทำให้เกิดพจน์อนุพันธ์ลูกโซ่ซับซ้อนย้อนกลับไปหาร")
-        else:
-            st.error("**ยังไม่เหมาะสม:** ดิฟ $3x^2$ ได้ $6x$ ซึ่งไม่สามารถตัดทอนพจน์ $(x^3+5)^4$ ได้")
+selected_case = next(c for c in SUBSTITUTION_CASES if c["selector_title"] == case_sub)
+render_decision_case(selected_case)
 
 
 st.divider()

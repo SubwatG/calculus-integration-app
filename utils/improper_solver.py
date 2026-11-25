@@ -802,7 +802,7 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                     result = _safe_float(res_val)
                     value_latex = _to_latex(res_val)
                     steps.append(
-                        f"สรุปผลลัพธ์: สองลิมิตลู่เข้าสู่ค่าจำกัด รวมได้ $V = {value_latex} \\approx {result:.6g}$"
+                        f"สรุปผลลัพธ์: สองลิมิตลู่เข้าสู่ค่าจำกัด รวมได้ $\\int_{{{lower_latex}}}^{{{bound_latex}}} {_to_latex(expr)} \\, d{v_lat} = {value_latex} \\approx {result:.6g}$"
                     )
                 elif status == "divergent":
                     result = None

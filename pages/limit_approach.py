@@ -14,7 +14,6 @@ import sympy as sp
 from utils.keypad import render_math_keypad
 from utils.limit_solver import compute_limit_near
 from utils.math_render import (
-    format_math_spacing,
     preview_math_expr,
     render_latex,
     render_steps,

@@ -896,9 +896,17 @@ def plot_improper(expr, a: float | int | str | sp.Expr = 0.0, b: float | int | s
     finite_ys = ys_shade[np.isfinite(ys_shade)]
     if len(finite_ys) > 0:
         ymin = max(-1.0, float(np.percentile(finite_ys, 1)) - 0.5)
-        ymax = min(15.0, float(np.percentile(finite_ys, 98)) + 1.0)
+        raw_ymax = float(np.percentile(finite_ys, 98)) + 1.0
+        ymax = max(5.0, min(100.0, raw_ymax))
         if ymin < ymax:
             ax.set_ylim(ymin, ymax)
+        if raw_ymax > 100.0:
+            ax.text(
+                0.02, 0.95,
+                "Note: y-axis range adjusted for visualization",
+                transform=ax.transAxes, fontsize=8, color="#64748B",
+                bbox=dict(boxstyle="round,pad=0.2", facecolor="#F8FAFC", edgecolor="#CBD5E1", alpha=0.8),
+            )
 
     ax.legend(loc="upper right", fontsize=8.5, framealpha=0.9)
     fig.tight_layout()
@@ -1550,9 +1558,22 @@ def plot_improper_plotly(
     finite_ys = ys_shade[np.isfinite(ys_shade)]
     if len(finite_ys) > 0:
         ymin = max(-1.0, float(np.percentile(finite_ys, 1)) - 0.5)
-        ymax = min(15.0, float(np.percentile(finite_ys, 98)) + 1.0)
+        raw_ymax = float(np.percentile(finite_ys, 98)) + 1.0
+        ymax = max(5.0, min(100.0, raw_ymax))
         if ymin < ymax:
             fig.update_yaxes(range=[ymin, ymax])
+        if raw_ymax > 100.0:
+            fig.add_annotation(
+                xref="paper",
+                yref="paper",
+                x=0.02,
+                y=0.98,
+                text="หมายเหตุ: กราฟปรับสเกลแกน y เพื่อความชัดเจนในการมองเห็น",
+                showarrow=False,
+                font=dict(size=10, color="#64748B"),
+                bgcolor="rgba(248, 250, 252, 0.85)",
+                bordercolor="#CBD5E1",
+            )
 
     fig.update_layout(
         title=f"กราฟอินทิกรัลไม่ตรงแบบ ({shade_label}) (Interactive)",

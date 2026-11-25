@@ -139,6 +139,20 @@ def _detect_u_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr | No
     return None, None
 
 
+def _format_dx_from_du(du_expr: sp.Expr, var_sym: sp.Symbol) -> str:
+    """Format dx in terms of du, avoiding compound fractions like du/(1/x)."""
+    try:
+        numer, denom = du_expr.as_numer_denom()
+        if denom != 1 and denom != sp.Integer(1):
+            inv_du = sp.cancel(1 / du_expr)
+            if inv_du == 1 or inv_du == sp.Integer(1):
+                return "du"
+            return f"{_to_latex(inv_du)} \\, du"
+        return f"\\frac{{du}}{{{_to_latex(du_expr)}}}"
+    except Exception:
+        return f"\\frac{{du}}{{{_to_latex(du_expr)}}}"
+
+
 def _detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, sp.Expr, str] | None:
     """พิจารณาแยก expr = u * v' เพื่อทำการอินทิเกรตทีละส่วน (Integration by Parts) ตามแนวทาง LIATE
 
@@ -399,8 +413,9 @@ def solve_substitution(expr_str: str, var: str | sp.Symbol | None = None) -> dic
             steps.append(
                 f"เลือกวิธี: การเปลี่ยนตัวแปร (Integration by Substitution) โดยเลือกฟังก์ชันก้อนในที่มีอนุพันธ์คูณร่วมอยู่"
             )
+            dx_lat = _format_dx_from_du(du_cand, var_sym)
             steps.append(
-                f"กำหนดตัวแปร: กำหนดตัวแปร $u = {_to_latex(u_cand)}$ จะได้ $du = {_to_latex(du_cand)} \\, d{v_lat}$ หรือ $d{v_lat} = \\frac{{du}}{{{_to_latex(du_cand)}}}$"
+                f"กำหนดตัวแปร: กำหนดตัวแปร $u = {_to_latex(u_cand)}$ จะได้ $du = {_to_latex(du_cand)} \\, d{v_lat}$ หรือ $d{v_lat} = {dx_lat}$"
             )
             steps.append(
                 f"เปลี่ยนรูปปริพันธ์: แทนค่า $u$ และ $d{v_lat}$ ในโจทย์ ทำให้เหลือเฉพาะตัวแปร $u$:\n$\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(integrand_u)} \\, du$"
@@ -660,9 +675,10 @@ def verify_user_u_substitution(
                 antideriv_x = sp.expand_log(antideriv_x, force=True)
                 antideriv_x = sp.simplify(antideriv_x)
                 antideriv_x = _wrap_new_logs(antideriv_x, expr)
+                dx_lat = _format_dx_from_du(du, var_sym)
                 steps = [
                     f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
-                    f"กำหนดตัวแปรและคำนวณอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = \\frac{{du}}{{{_to_latex(du)}}}$",
+                    f"กำหนดตัวแปรและคำนวณอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = {dx_lat}$",
                     f"แทนค่าลงในอินทิกรัลและสังเกตการตัดทอน: $\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int {_to_latex(ratio_u)} \\, du$\nตัวแปร ${v_lat}$ ถูกตัดทอนหมด เหลือเพียงฟังก์ชันของตัวแปร $u$",
                     f"คำนวณปริพันธ์เทียบกับตัวแปร u: $\\int {_to_latex(ratio_u)} \\, du = {_to_latex(antideriv_u_disp)} + C$",
                     f"แทนค่าตัวแปรกลับในผลลัพธ์: แทนค่า $u = {_to_latex(u_expr)}$ ได้เป็น ${_to_latex(antideriv_x)} + C$",
@@ -699,9 +715,10 @@ def verify_user_u_substitution(
                                 antideriv_x = sp.expand_log(antideriv_x, force=True)
                                 antideriv_x = sp.simplify(antideriv_x)
                                 antideriv_x = _wrap_new_logs(antideriv_x, expr)
+                                dx_lat = _format_dx_from_du(du, var_sym)
                                 steps = [
                                     f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
-                                    f"กำหนดตัวแปรและหาอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = \\frac{{du}}{{{_to_latex(du)}}}$",
+                                    f"กำหนดตัวแปรและหาอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = {dx_lat}$",
                                     f"แทนค่าลงในอินทิกรัล (พบตัวแปรตกค้าง): $\\int {_to_latex(expr)} \\, d{v_lat} = \\int \\left({_to_latex(ratio)}\\right) du$\nสังเกตว่าตัวแปร ${v_lat}$ ด้านหน้ายังตัดทอนไม่หมด",
                                     f"จัดรูปพีชคณิตเสริมโดยแก้สมการย้อนกลับ: จาก $u = {_to_latex(u_expr)}$ แก้สมการหาค่า ${v_lat}$ ในรูปของ $u$ ได้เป็น $${v_lat} = {_to_latex(x_sol)}$$\nนำค่า ${v_lat}$ ไปแทนที่ในอินทิกรัล แล้วคูณกระจาย จะได้ฟังก์ชันของ $u$ ล้วน:\n$$\\int {_to_latex(subbed)} \\, du$$",
                                     f"คำนวณปริพันธ์เทียบกับตัวแปร u: $\\int {_to_latex(subbed)} \\, du = {_to_latex(int_u_disp)} + C$",

@@ -377,18 +377,54 @@ def compute_tangent(expr_str: str, a: float) -> dict:
                 status = "non_differentiable"
                 slope = None
                 latex_str = r"\text{(does not exist)}"
-                steps = [
-                    f"กำหนดโจทย์และจุดที่พิจารณา: $f({v_lat}) = {_to_latex(expr)}, \\quad a = {a_lat}$",
-                    f"คำนวณพิกัดจุดบนกราฟ: $f({a_lat}) = {_to_latex(fa_sym)}$ ได้จุด $(a, f(a)) = ({a_lat}, {_to_latex(fa_sym)})$",
-                    f"เงื่อนไขอนุพันธ์: ฟังก์ชันหาอนุพันธ์ได้ ก็ต่อเมื่อ อนุพันธ์ทางซ้ายเท่ากับอนุพันธ์ทางขวา ($f'_-({a_lat}) = f'_+({a_lat})$)",
-                    f"คำนวณอนุพันธ์ทางซ้าย (Left-Hand Derivative as h -> 0^-): "
-                    f"f'_-({a_lat}) = \\lim_{{h \\to 0^-}} \\frac{{f({a_lat}+h) - f({a_lat})}}{{h}} = {_to_latex(left_m)}",
-                    f"คำนวณอนุพันธ์ทางขวา (Right-Hand Derivative as h -> 0^+): "
-                    f"f'_+({a_lat}) = \\lim_{{h \\to 0^+}} \\frac{{f({a_lat}+h) - f({a_lat})}}{{h}} = {_to_latex(right_m)}",
-                    f"สรุปผลการวิเคราะห์: "
-                    f"เนื่องจาก $f'_-({a_lat}) = {_to_latex(left_m)} \\neq {_to_latex(right_m)} = f'_+({a_lat})$\n"
-                    f"กราฟมีลักษณะเป็นจุดมุมหัก (Corner Point) ฟังก์ชันจึงหาอนุพันธ์ไม่ได้และไม่มีเส้นสัมผัส",
-                ]
+                left_real = getattr(left_m, "is_real", False) and not getattr(left_m, "has", lambda _: False)(sp.I)
+                right_real = getattr(right_m, "is_real", False) and not getattr(right_m, "has", lambda _: False)(sp.I)
+                left_inf = left_m in (sp.oo, -sp.oo)
+                right_inf = right_m in (sp.oo, -sp.oo)
+
+                if not left_real and (right_inf or right_real):
+                    right_desc = f"ความชันทางขวาลู่สู่อนันต์ (${_to_latex(right_m)}$) เส้นสัมผัสแนวดิ่งทางขวา" if right_inf else f"อนุพันธ์ทางขวาเป็นจำนวนจริงจำกัด (${_to_latex(right_m)}$)"
+                    steps = [
+                        f"กำหนดโจทย์และจุดที่พิจารณา: $f({v_lat}) = {_to_latex(expr)}, \\quad a = {a_lat}$",
+                        f"คำนวณพิกัดจุดบนกราฟ: $f({a_lat}) = {_to_latex(fa_sym)}$ ได้จุด $(a, f(a)) = ({a_lat}, {_to_latex(fa_sym)})$",
+                        f"พิจารณาความต่อเนื่องและโดเมน: ฟังก์ชันไม่นิยามในระบบจำนวนจริงทางซ้ายของจุด $a = {a_lat}$ (ไม่อยู่ในโดเมนจำนวนจริงเมื่อ $h < 0$) จึงไม่มีอนุพันธ์ทางซ้าย",
+                        f"คำนวณอนุพันธ์ทางขวา (Right-Hand Derivative as h -> 0^+): "
+                        f"f'_+({a_lat}) = \\lim_{{h \\to 0^+}} \\frac{{f({a_lat}+h) - f({a_lat})}}{{h}} = {_to_latex(right_m)}",
+                        f"สรุปผลการวิเคราะห์: {right_desc} แต่ฟังก์ชันหาอนุพันธ์แบบสองข้างทั่วไปไม่ได้ที่จุดขอบเขตนี้",
+                    ]
+                elif not right_real and (left_inf or left_real):
+                    left_desc = f"ความชันทางซ้ายลู่สู่อนันต์ (${_to_latex(left_m)}$) เส้นสัมผัสแนวดิ่งทางซ้าย" if left_inf else f"อนุพันธ์ทางซ้ายเป็นจำนวนจริงจำกัด (${_to_latex(left_m)}$)"
+                    steps = [
+                        f"กำหนดโจทย์และจุดที่พิจารณา: $f({v_lat}) = {_to_latex(expr)}, \\quad a = {a_lat}$",
+                        f"คำนวณพิกัดจุดบนกราฟ: $f({a_lat}) = {_to_latex(fa_sym)}$ ได้จุด $(a, f(a)) = ({a_lat}, {_to_latex(fa_sym)})$",
+                        f"คำนวณอนุพันธ์ทางซ้าย (Left-Hand Derivative as h -> 0^-): "
+                        f"f'_-({a_lat}) = \\lim_{{h \\to 0^-}} \\frac{{f({a_lat}+h) - f({a_lat})}}{{h}} = {_to_latex(left_m)}",
+                        f"พิจารณาความต่อเนื่องและโดเมน: ฟังก์ชันไม่นิยามในระบบจำนวนจริงทางขวาของจุด $a = {a_lat}$ (ไม่อยู่ในโดเมนจำนวนจริงเมื่อ $h > 0$) จึงไม่มีอนุพันธ์ทางขวา",
+                        f"สรุปผลการวิเคราะห์: {left_desc} แต่ฟังก์ชันหาอนุพันธ์แบบสองข้างทั่วไปไม่ได้ที่จุดขอบเขตนี้",
+                    ]
+                elif left_real and right_real and getattr(left_m, "is_finite", False) and getattr(right_m, "is_finite", False):
+                    steps = [
+                        f"กำหนดโจทย์และจุดที่พิจารณา: $f({v_lat}) = {_to_latex(expr)}, \\quad a = {a_lat}$",
+                        f"คำนวณพิกัดจุดบนกราฟ: $f({a_lat}) = {_to_latex(fa_sym)}$ ได้จุด $(a, f(a)) = ({a_lat}, {_to_latex(fa_sym)})$",
+                        f"เงื่อนไขอนุพันธ์: ฟังก์ชันหาอนุพันธ์ได้ ก็ต่อเมื่อ อนุพันธ์ทางซ้ายเท่ากับอนุพันธ์ทางขวา ($f'_-({a_lat}) = f'_+({a_lat})$)",
+                        f"คำนวณอนุพันธ์ทางซ้าย (Left-Hand Derivative as h -> 0^-): "
+                        f"f'_-({a_lat}) = \\lim_{{h \\to 0^-}} \\frac{{f({a_lat}+h) - f({a_lat})}}{{h}} = {_to_latex(left_m)}",
+                        f"คำนวณอนุพันธ์ทางขวา (Right-Hand Derivative as h -> 0^+): "
+                        f"f'_+({a_lat}) = \\lim_{{h \\to 0^+}} \\frac{{f({a_lat}+h) - f({a_lat})}}{{h}} = {_to_latex(right_m)}",
+                        f"สรุปผลการวิเคราะห์: "
+                        f"เนื่องจาก $f'_-({a_lat}) = {_to_latex(left_m)} \\neq {_to_latex(right_m)} = f'_+({a_lat})$\n"
+                        f"กราฟมีลักษณะเป็นจุดมุมหัก (Corner Point) ฟังก์ชันจึงหาอนุพันธ์ไม่ได้และไม่มีเส้นสัมผัส",
+                    ]
+                else:
+                    left_txt = f"{_to_latex(left_m)}" if left_real else "ไม่อยู่ในโดเมนจำนวนจริง"
+                    right_txt = f"{_to_latex(right_m)}" if right_real else "ไม่อยู่ในโดเมนจำนวนจริง"
+                    steps = [
+                        f"กำหนดโจทย์และจุดที่พิจารณา: $f({v_lat}) = {_to_latex(expr)}, \\quad a = {a_lat}$",
+                        f"คำนวณพิกัดจุดบนกราฟ: $f({a_lat}) = {_to_latex(fa_sym)}$ ได้จุด $(a, f(a)) = ({a_lat}, {_to_latex(fa_sym)})$",
+                        f"คำนวณอนุพันธ์ทางซ้าย: $f'_-({a_lat}) = {left_txt}$",
+                        f"คำนวณอนุพันธ์ทางขวา: $f'_+({a_lat}) = {right_txt}$",
+                        f"สรุปผลการวิเคราะห์: อนุพันธ์ทางซ้ายและทางขวาไม่สอดคล้องกัน ฟังก์ชันจึงหาอนุพันธ์ไม่ได้ที่จุดนี้",
+                    ]
             else:
                 status = "unsupported"
                 slope = None

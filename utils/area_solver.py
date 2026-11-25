@@ -45,26 +45,6 @@ def _to_latex(sym_obj, order: str = "none") -> str:
     return lat
 
 
-def _simplify_piecewise_on_interval(expr: sp.Expr, var: sp.Symbol, left: float, right: float) -> sp.Expr:
-    """คลี่คลาย Piecewise ที่เกิดจากการอินทิเกรต real_root ให้เหลือเฉพาะฟังก์ชันที่สอดคล้องกับช่วงจริง"""
-    if not expr.has(sp.Piecewise):
-        return expr
-    mid = (left + right) / 2.0
-    def _resolve(node):
-        if isinstance(node, sp.Piecewise):
-            for e, c in node.args:
-                if c is True:
-                    return e
-                try:
-                    if bool(c.subs(var, mid)):
-                        return e
-                except Exception:
-                    pass
-            return node.args[0][0]
-        return node
-    return expr.replace(lambda n: isinstance(n, sp.Piecewise), _resolve)
-
-
 def _format_evaluated_value(val_sym, val_float: float) -> str:
     """จัดรูปแบบผลลัพธ์การคำนวณ: คืนค่าเป็นเศษส่วนแท้หากมีตัวส่วนเรียบร้อย หรือทศนิยมกระชับ ไม่แสดงเศษส่วนยาวเหยียด"""
     try:
@@ -576,12 +556,21 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         # สร้าง Steps ตาม Universal Step Contract
         # -------------------------------------------------------------
         if crossings_float:
+            num_sub = len(cuts) - 1
+            if num_sub <= 3:
+                sub_sum_sym = " + ".join(
+                    f"\\int_{{{_format_bound_latex(cuts[i])}}}^{{{_format_bound_latex(cuts[i+1])}}} (f_{{\\text{{บน}}}} - f_{{\\text{{ล่าง}}}}) \\, d{v_lat}"
+                    for i in range(num_sub)
+                )
+            else:
+                sub_sum_sym = f"\\sum_{{i=1}}^{{{num_sub}}} \\int_{{x_{{i}}}}^{{x_{{i+1}}}} (f_{{\\text{{บน}}}} - f_{{\\text{{ล่าง}}}}) \\, d{v_lat}"
+
             formula_step = (
                 f"ตั้งสูตรหาพื้นที่:\n"
-                f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |f({v_lat}) - g({v_lat})| \\, d{v_lat}\n"
-                f"(เนื่องจากเส้นโค้งตัดกันภายในช่วง จึงต้องหาจุดตัดเพื่อแบ่งช่วงย่อย และนำฟังก์ชันบนลบฟังก์ชันล่างในแต่ละช่วงย่อย)"
+                f"A = {sub_sum_sym}\n"
+                f"(เนื่องจากเส้นโค้งตัดกันภายในช่วง จึงแบ่งเป็น {num_sub} ช่วงย่อยและนำฟังก์ชันบนลบฟังก์ชันล่างในแต่ละช่วงย่อย)"
             )
-            latex_ans = f"A = \\int_{{{a_disp}}}^{{{b_disp}}} |{_to_latex(diff_expr, order='none')}| \\, d{v_lat} = {total_disp}"
+            latex_ans = f"A = {sub_sum_sym} = {total_disp}"
         else:
             mid_full = (a_sp + b_sp) / 2
             mid_val = diff_expr.subs(var_sym, mid_full)
