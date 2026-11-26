@@ -130,11 +130,15 @@ def _get_antiderivative(expr: sp.Expr, var: sp.Symbol) -> sp.Expr | None:
         return None
 
 
-def _format_approx_eq(val_tex: str, num_val: float | None) -> str:
+def _format_approx_eq(val_tex: str, num_val: float | None, val_expr: sp.Expr | None = None) -> str:
     """Format exact value and optional approx float string without redundant approximations like 1 approx 1."""
     if num_val is None:
         return val_tex
     num_str = f"{num_val:.6g}"
+    if val_expr is not None:
+        from utils.special_functions import special_functions_in
+        if special_functions_in(val_expr):
+            return f"\\approx {num_str}"
     if val_tex == num_str or (val_tex.isdigit() and str(int(num_val)) == val_tex):
         return val_tex
     try:
@@ -179,6 +183,9 @@ def _format_bound_latex(val: float | int | str | sp.Expr | None) -> str:
         return "\\infty"
     if val == -sp.oo:
         return "-\\infty"
+    if isinstance(val, sp.Basic):
+        if val.has(sp.pi, sp.E) or val.free_symbols:
+            return _to_latex(val)
     try:
         f = float(val)
         if f.is_integer():
@@ -197,7 +204,39 @@ def _format_bound_latex(val: float | int | str | sp.Expr | None) -> str:
         return str(val)
 
 
-def _find_interior_singularities(expr: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = X) -> list[float]:
+def _is_outside_real_domain(expr: sp.Expr, var: sp.Symbol, lower: sp.Expr, upper: sp.Expr, n_samples: int = 50) -> bool:
+    """Check if the integrand expr takes non-real (complex) values on the integration interval."""
+    try:
+        a_f = float(lower.evalf()) if lower != -sp.oo else -100.0
+        b_f = float(upper.evalf()) if upper != sp.oo else 100.0
+    except Exception:
+        return False
+
+    if lower == -sp.oo and upper != sp.oo:
+        a_f = b_f - 100.0
+    elif lower != -sp.oo and upper == sp.oo:
+        b_f = a_f + 100.0
+    elif lower == -sp.oo and upper == sp.oo:
+        a_f, b_f = -100.0, 100.0
+
+    if a_f >= b_f:
+        return False
+
+    step = (b_f - a_f) / (n_samples + 1)
+    for i in range(1, n_samples + 1):
+        xv = a_f + i * step
+        try:
+            xv_rat = sp.Rational(str(round(xv, 7)))
+            val = _to_real_roots(expr.subs(var, xv_rat)).evalf()
+            c = complex(val)
+            if abs(c.imag) > 1e-9:
+                return True
+        except Exception:
+            pass
+    return False
+
+
+def _find_interior_singularities(expr: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = X) -> list:
     """Find interior singularities in the open interval (a, b) from denominator roots."""
     sings = []
     denom = sp.denom(expr.rewrite(sp.cos))
@@ -205,13 +244,16 @@ def _find_interior_singularities(expr: sp.Expr, a_val: float, b_val: float, var:
         try:
             sol = sp.solve(denom, var)
             for s in sol:
-                if getattr(s, "is_real", False) and a_val < float(s) < b_val:
-                    s_f = float(s)
-                    if not any(abs(s_f - ex) < 1e-4 for ex in sings):
-                        sings.append(s_f)
+                try:
+                    s_f = float(s.evalf()) if hasattr(s, "evalf") else float(s)
+                except Exception:
+                    continue
+                if a_val < s_f < b_val:
+                    if not any(abs(s_f - (float(ex.evalf()) if hasattr(ex, "evalf") else float(ex))) < 1e-4 for ex in sings):
+                        sings.append(s)
         except Exception:
             pass
-    return sorted(sings)
+    return sorted(sings, key=lambda item: float(item.evalf()) if hasattr(item, "evalf") else float(item))
 
 
 def _is_singular_at_point(expr: sp.Expr, pt: sp.Expr, direction: str, var: sp.Symbol = X) -> bool:
@@ -283,6 +325,27 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         steps = [
             f"กำหนดโจทย์อินทิกรัล: $\\int_{{{lower_latex}}}^{{{bound_latex}}} \\left({_to_latex(expr)}\\right) \\, d{v_lat}$",
         ]
+
+        if _is_outside_real_domain(expr, var_sym, lower, upper):
+            steps.append(
+                f"เงื่อนไขโดเมน: ฟังก์ชันไม่เป็นจำนวนจริงตลอดช่วง $[{lower_latex}, {bound_latex}]$ "
+                f"(พบค่าเชิงซ้อนเนื่องจากฟังก์ชันไม่อยู่ในโดเมนของจำนวนจริงบนบางส่วนของช่วง) "
+                f"จึงไม่อยู่ในขอบเขตการคำนวณของปริพันธ์ในระบบจำนวนจริง"
+            )
+            steps.append("ผลลัพธ์: ฟังก์ชันอยู่นอกโดเมนจำนวนจริง ไม่สามารถคำนวณในระบบจำนวนจริงได้")
+            latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {_to_latex(expr)} \\, d{v_lat} = \\text{{outside domain}}"
+            return {
+                "ok": True,
+                "result": None,
+                "latex": latex_str,
+                "steps": steps,
+                "expr": expr,
+                "value_expr": None,
+                "error": None,
+                "status": "outside_domain",
+                "interior_singularities": [],
+                "variable": str(var_sym.name),
+            }
 
         interior_sings: list[float] = []
 
@@ -537,52 +600,89 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
         # 4.1 Singularity exists inside open interval (a, b)
         if interior_sings:
             c_val = interior_sings[0]
-            c_sp = sp.nsimplify(c_val)
+            if isinstance(c_val, (int, float)):
+                c_sp = sp.nsimplify(c_val, [sp.pi, sp.E])
+            else:
+                c_sp = c_val
             c_latex = _format_bound_latex(c_sp)
-            steps.append(
-                f"อินทิกรัลไม่ตรงแบบชนิดที่ 2: พบจุดที่ฟังก์ชันไม่ต่อเนื่องภายในช่วง (Interior Singularity) ที่ ${v_lat} = {c_latex}$ "
-                f"ซึ่งทำให้ฟังก์ชันไม่ต่อเนื่อง จึงแยกช่วงคำนวณตามนิยาม:\n"
-                f"$$\\int_{{{lower_latex}}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} = "
-                f"\\lim_{{t \\to {c_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat} + "
-                f"\\lim_{{s \\to {c_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat}$$"
+
+            is_sinc_case = (
+                expr == sp.sin(var_sym) / var_sym
+                or str(expr).replace(" ", "") in ("sin(x)/x", "sin(t)/t")
             )
 
-            left_part = _to_real_roots(sp.integrate(expr, (var_sym, lower, c_sp)))
-            right_part = _to_real_roots(sp.integrate(expr, (var_sym, c_sp, upper)))
-            left_status = _classify_improper(left_part)
-            right_status = _classify_improper(right_part)
-            if left_status == "unsupported" or right_status == "unsupported":
-                antideriv = _get_antiderivative(expr, var_sym)
-                if antideriv is None:
-                    antideriv = _abs_logs(sp.integrate(expr, var_sym))
-                if antideriv is not None:
-                    if left_status == "unsupported":
-                        t_sym = sp.Symbol("t", real=True)
-                        f_t = antideriv.subs(var_sym, t_sym)
-                        f_low = antideriv.subs(var_sym, lower)
-                        lp = _to_real_roots(sp.limit(f_t - f_low, t_sym, c_sp, "-"))
-                        ls = _classify_improper(lp)
-                        if ls != "unsupported":
-                            left_part = lp
-                            left_status = ls
-                    if right_status == "unsupported":
-                        s_sym = sp.Symbol("s", real=True)
-                        f_up = antideriv.subs(var_sym, upper)
-                        f_s = antideriv.subs(var_sym, s_sym)
-                        rp = _to_real_roots(sp.limit(f_up - f_s, s_sym, c_sp, "+"))
-                        rs = _classify_improper(rp)
-                        if rs != "unsupported":
-                            right_part = rp
-                            right_status = rs
+            if is_sinc_case:
+                steps.append(
+                    f"ฟังก์ชันไม่นิยามที่ ${v_lat} = 0$ แต่มีลิมิตเข้าใกล้ $1$ "
+                    f"จึงแยกช่วงคำนวณตามนิยามปริพันธ์ไม่ตรงแบบ (Interior Singularity ที่ ${v_lat} = 0$):\n"
+                    f"$$\\int_{{{lower_latex}}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} = "
+                    f"\\lim_{{t \\to 0^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat} + "
+                    f"\\lim_{{s \\to 0^+}} \\int_{{s}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat}$$"
+                )
+            else:
+                steps.append(
+                    f"แยกช่วงคำนวณตามนิยามปริพันธ์ไม่ตรงแบบชนิดที่ 2 ที่จุดไม่ต่อเนื่องภายในช่วง (Interior Singularity) ${v_lat} = {c_latex}$:\n"
+                    f"$$\\int_{{{lower_latex}}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} = "
+                    f"\\lim_{{t \\to {c_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat} + "
+                    f"\\lim_{{s \\to {c_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat}$$"
+                )
+
+            antideriv = _get_antiderivative(expr, var_sym)
+            if antideriv is None:
+                antideriv = _abs_logs(sp.integrate(expr, var_sym))
+
+            left_part = None
+            right_part = None
+            left_status = "unsupported"
+            right_status = "unsupported"
+
+            if antideriv is not None and not antideriv.has(sp.Integral):
+                t_sym = sp.Symbol("t", real=True)
+                s_sym = sp.Symbol("s", real=True)
+                f_t = antideriv.subs(var_sym, t_sym)
+                f_s = antideriv.subs(var_sym, s_sym)
+                f_low = antideriv.subs(var_sym, lower)
+                f_up = antideriv.subs(var_sym, upper)
+
+                lp = _to_real_roots(sp.limit(f_t - f_low, t_sym, c_sp, "-"))
+                ls = _classify_improper(lp)
+                if ls != "unsupported":
+                    left_part = lp
+                    left_status = ls
+
+                rp = _to_real_roots(sp.limit(f_up - f_s, s_sym, c_sp, "+"))
+                rs = _classify_improper(rp)
+                if rs != "unsupported":
+                    right_part = rp
+                    right_status = rs
+
+            if left_status == "unsupported":
+                left_part = _to_real_roots(sp.integrate(expr, (var_sym, lower, c_sp)))
+                left_status = _classify_improper(left_part)
+
+            if right_status == "unsupported":
+                right_part = _to_real_roots(sp.integrate(expr, (var_sym, c_sp, upper)))
+                right_status = _classify_improper(right_part)
             res_val = None
 
-            left_desc = _format_part_outcome(left_status, left_part)
-            right_desc = _format_part_outcome(right_status, right_part)
-            steps.append(
-                f"คำนวณลิมิตแต่ละฝั่งแยกกัน:\n"
-                f"- ฝั่งซ้าย: $\\lim_{{t \\to {c_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat}$ {left_desc}\n"
-                f"- ฝั่งขวา: $\\lim_{{s \\to {c_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat}$ {right_desc}"
-            )
+            if is_sinc_case and left_status == "finite" and right_status == "finite":
+                lp_num = _safe_float(left_part)
+                rp_num = _safe_float(right_part)
+                lp_str = f"{lp_num:.6g}" if lp_num is not None else ""
+                rp_str = f"{rp_num:.6g}" if rp_num is not None else ""
+                steps.append(
+                    f"คำนวณลิมิตสองฝั่ง:\n"
+                    f"- ฝั่งซ้าย $[{lower_latex}, 0]$: ลู่เข้าสู่ค่าจริงจำกัด ประมาณ **${lp_str}$**\n"
+                    f"- ฝั่งขวา $[0, {bound_latex}]$: ลู่เข้าสู่ค่าจริงจำกัด ประมาณ **${rp_str}$**"
+                )
+            else:
+                left_desc = _format_part_outcome(left_status, left_part)
+                right_desc = _format_part_outcome(right_status, right_part)
+                steps.append(
+                    f"คำนวณลิมิตแต่ละฝั่งแยกกัน:\n"
+                    f"- ฝั่งซ้าย: $\\lim_{{t \\to {c_latex}^-}} \\int_{{{lower_latex}}}^{{t}} f({v_lat})\\,d{v_lat}$ {left_desc}\n"
+                    f"- ฝั่งขวา: $\\lim_{{s \\to {c_latex}^+}} \\int_{{s}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat}$ {right_desc}"
+                )
 
             if left_status == "divergent" or right_status == "divergent":
                 status = "divergent"
@@ -598,17 +698,35 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 status = "finite"
                 result = _safe_float(res_val)
                 value_latex = _to_latex(res_val)
-                steps.append(
-                    f"สรุปผลลัพธ์: ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด รวมกันได้: "
-                    f"$\\int_{{{lower_latex}}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} = {value_latex}$"
-                )
+                from utils.special_functions import special_functions_in
+                if is_sinc_case and result is not None:
+                    lp_num = _safe_float(left_part) or 0.0
+                    rp_num = _safe_float(right_part) or 0.0
+                    steps.append(
+                        f"สรุปผลรวม: ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด รวมกันได้\n"
+                        f"$$\\int_{{{lower_latex}}}^{{{bound_latex}}} \\frac{{\\sin {v_lat}}}{{{v_lat}}}\\,d{v_lat} \\approx "
+                        f"{lp_num:.6g} + {rp_num:.6g} \\approx {result:.6g}$$"
+                    )
+                elif special_functions_in(res_val) and result is not None:
+                    steps.append(
+                        f"สรุปผลลัพธ์: ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด รวมกันได้ประมาณ: "
+                        f"$\\int_{{{lower_latex}}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} \\approx {result:.6g}$"
+                    )
+                else:
+                    approx_display = _format_approx_eq(value_latex, result, res_val)
+                    steps.append(
+                        f"สรุปผลลัพธ์: ทั้งสองฝั่งลู่เข้าสู่ค่าจริงจำกัด รวมกันได้: "
+                        f"$\\int_{{{lower_latex}}}^{{{bound_latex}}} f({v_lat})\\,d{v_lat} = {approx_display}$"
+                    )
             else:
                 status = "unsupported"
                 result = None
                 value_latex = "\\text{unsupported}"
                 steps.append("ระบบไม่สามารถคำนวณลิมิตในรูปแบบปิดได้")
 
-            latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {_to_latex(expr)} \\, d{v_lat} = {value_latex}"
+            display_val = _format_approx_eq(value_latex, result, res_val) if status == "finite" and result is not None else value_latex
+            eq_sign = "" if display_val.startswith(r"\approx") else "= "
+            latex_str = f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {_to_latex(expr)} \\, d{v_lat} {eq_sign}{display_val}"
             return {
                 "ok": True,
                 "result": result,
@@ -851,7 +969,23 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
             f"หาปฏิยานุพันธ์ $F({v_lat}) = {_to_latex(antideriv)}$ "
             f"และแทนค่าขอบเขต: $[F({v_lat})]_{{{lower_latex}}}^{{{bound_latex}}} = {_to_latex(antideriv.subs(var_sym, upper))} - {_to_latex(antideriv.subs(var_sym, lower))}$"
         )
-        res_val = sp.integrate(expr, (var_sym, lower, upper))
+        res_val = _to_real_roots(sp.integrate(expr, (var_sym, lower, upper)))
+        if res_val.has(sp.I):
+            steps.append("เงื่อนไขโดเมน: ผลการคำนวณให้ค่าเป็นจำนวนเชิงซ้อน จึงไม่อยู่ในโดเมนของปริพันธ์ในระบบจำนวนจริง")
+            steps.append("ผลลัพธ์: ฟังก์ชันอยู่นอกโดเมนจำนวนจริง ไม่สามารถคำนวณในระบบจำนวนจริงได้")
+            return {
+                "ok": True,
+                "result": None,
+                "latex": f"\\int_{{{lower_latex}}}^{{{bound_latex}}} {_to_latex(expr)} \\, d{v_lat} = \\text{{outside domain}}",
+                "steps": steps,
+                "expr": expr,
+                "value_expr": None,
+                "error": None,
+                "status": "outside_domain",
+                "interior_singularities": [],
+                "variable": str(var_sym.name),
+            }
+
         status = _classify_improper(res_val)
         result = _safe_float(res_val)
         value_latex = _to_latex(res_val)

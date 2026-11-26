@@ -157,14 +157,13 @@ else:
         render_latex(res["latex"])
         special_names = special_functions_in(res.get("value_expr"))
         if special_names:
-            st.info(describe_special_functions(special_names))
-            approximation = numeric_approximation(res.get("value_expr"))
-            if approximation is not None:
-                st.caption(f"ค่าประมาณ: {approximation}")
+            st.info("**หมายเหตุ:** ไม่มีสูตรอินทิเกรตพื้นฐาน จึงแสดงผลลัพธ์เป็นค่าประมาณ")
 
         status = res.get("status")
         if status == "divergent":
             st.warning("ปริพันธ์นี้ลู่ออก ไม่ลู่เข้าสู่ค่าจำกัด")
+        elif status == "outside_domain":
+            st.warning("ฟังก์ชันไม่อยู่ในโดเมนของจำนวนจริงบนช่วงที่กำหนด")
         elif status == "unsupported":
             st.info("ยังไม่สามารถหาค่าปริพันธ์นี้ในรูปแบบปิดได้")
 
