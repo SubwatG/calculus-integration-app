@@ -221,6 +221,19 @@ def _get_domain_note(expr: sp.Expr, var: sp.Symbol = X) -> str:
                 pass
             notes.append(f"${_to_latex(node.base)} \\geq 0$")
 
+    if expr.has(sp.sec, sp.tan):
+        for node in expr.atoms(sp.sec, sp.tan):
+            arg = node.args[0]
+            cond = f"$\\cos({_to_latex(arg)}) \\neq 0$"
+            if cond not in notes:
+                notes.append(cond)
+    if expr.has(sp.csc, sp.cot):
+        for node in expr.atoms(sp.csc, sp.cot):
+            arg = node.args[0]
+            cond = f"$\\sin({_to_latex(arg)}) \\neq 0$"
+            if cond not in notes:
+                notes.append(cond)
+
     if notes:
         return f"เงื่อนไขโดเมน: ขั้นตอนนี้ถูกต้องบนช่วงที่ " + " และ ".join(notes)
     return "เงื่อนไขโดเมน: ฟังก์ชันหาปริพันธ์ได้บนทุกช่วงที่ฟังก์ชันมีความต่อเนื่อง ($x \\in \\mathbb{R}$)"
@@ -687,10 +700,24 @@ def verify_user_u_substitution(
                 antideriv_x = sp.simplify(antideriv_x)
                 antideriv_x = _wrap_new_logs(antideriv_x, expr)
                 dx_lat = _format_dx_from_du(du, var_sym)
+                is_exact_factor = not sp.denom(expr / du).has(var_sym)
+                if is_exact_factor:
+                    diff_step = f"กำหนดตัวแปรและคำนวณอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat}$"
+                    sub_step = (
+                        f"แทนค่าลงในอินทิกรัลโดยจับกลุ่มตัวประกอบร่วม: $\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(ratio_u)} \\, du$\n"
+                        f"(จับกลุ่มพจน์ ${_to_latex(du)} \\, d{v_lat} = du$ โดยตรง)"
+                    )
+                else:
+                    diff_step = f"กำหนดตัวแปรและคำนวณอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = {dx_lat}$"
+                    sub_step = (
+                        f"แทนค่าลงในอินทิกรัลและสังเกตการตัดทอน: $\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int {_to_latex(ratio_u)} \\, du$\n"
+                        f"ตัวแปร ${v_lat}$ ถูกตัดทอนหมด เหลือเพียงฟังก์ชันของตัวแปร $u$"
+                    )
+
                 steps = [
                     f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
-                    f"กำหนดตัวแปรและคำนวณอนุพันธ์: $u = {_to_latex(u_expr)} \\implies du = {_to_latex(du)} \\, d{v_lat} \\implies d{v_lat} = {dx_lat}$",
-                    f"แทนค่าลงในอินทิกรัลและสังเกตการตัดทอน: $\\int {_to_latex(expr)} \\, d{v_lat} = \\int {_to_latex(expr)} \\cdot \\frac{{du}}{{{_to_latex(du)}}} = \\int {_to_latex(ratio_u)} \\, du$\nตัวแปร ${v_lat}$ ถูกตัดทอนหมด เหลือเพียงฟังก์ชันของตัวแปร $u$",
+                    diff_step,
+                    sub_step,
                     f"คำนวณปริพันธ์เทียบกับตัวแปร u: $\\int {_to_latex(ratio_u)} \\, du = {_to_latex(antideriv_u_disp)} + C$",
                     f"แทนค่าตัวแปรกลับในผลลัพธ์: แทนค่า $u = {_to_latex(u_expr)}$ ได้เป็น ${_to_latex(antideriv_x)} + C$",
                     domain_note,
@@ -712,7 +739,7 @@ def verify_user_u_substitution(
         # -------------------------------------------------------------
         # 2. Algebraic Adjustment case
         # -------------------------------------------------------------
-        if u_expr != 1 / var_sym and not check_standard_form(expr, var_sym):
+        if u_expr != 1 / var_sym and (not check_standard_form(expr, var_sym) or expr == 1 / var_sym):
             sols = sp.solve(sp.Eq(u_sym, u_expr), var_sym)
             if sols:
                 for x_sol in sols:

@@ -113,3 +113,32 @@ class TestByPartsSolver:
         assert res_csc2["result"] is not None
         assert not res_csc2["result"].has(sp.Integral)
         assert "|" in res_csc2["latex"]
+
+    def test_solve_by_parts_sec2_csc2_with_linear_offset(self):
+        """P0-05: x*sec(2*x+1)**2 และ x*csc(2*x+1)**2 คำนวณ By Parts ได้พร้อมโดเมน"""
+        x_real = sp.Symbol("x", real=True)
+        res_sec = solve_by_parts("x*sec(2*x+1)**2")
+        assert res_sec["ok"] is True
+        assert res_sec["result"] is not None
+        assert not res_sec["result"].has(sp.Integral)
+        assert r"\tan" in res_sec["latex"]
+        assert r"\cos" in res_sec["latex"]
+        assert "|" in res_sec["latex"]
+        # Verify numerical derivative matches integrand at x = 0.5
+        x_sym = list(res_sec["result"].free_symbols)[0]
+        d_sec = sp.diff(res_sec["result"].subs(x_sym, x_real), x_real)
+        assert abs(float((d_sec - x_real * sp.sec(2*x_real + 1)**2).subs(x_real, 0.5))) < 1e-9
+        assert "cos(2 x + 1)" in res_sec["steps"][-1]
+
+        res_csc = solve_by_parts("x*csc(2*x+1)**2")
+        assert res_csc["ok"] is True
+        assert res_csc["result"] is not None
+        assert not res_csc["result"].has(sp.Integral)
+        assert r"\cot" in res_csc["latex"]
+        assert r"\sin" in res_csc["latex"]
+        assert "|" in res_csc["latex"]
+        # Verify numerical derivative matches integrand at x = 0.5
+        x_sym = list(res_csc["result"].free_symbols)[0]
+        d_csc = sp.diff(res_csc["result"].subs(x_sym, x_real), x_real)
+        assert abs(float((d_csc - x_real * sp.csc(2*x_real + 1)**2).subs(x_real, 0.5))) < 1e-9
+        assert "sin(2 x + 1)" in res_csc["steps"][-1]

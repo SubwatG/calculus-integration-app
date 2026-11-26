@@ -66,7 +66,10 @@ def _one_sided_limit_str(value) -> str | None:
         return "-∞"
     try:
         if getattr(value, "is_finite", None) is True and getattr(value, "is_real", None) is True:
-            return f"{float(value):.4f}"
+            f = float(value)
+            if f.is_integer():
+                return str(int(f))
+            return f"{f:.4f}"
     except Exception:
         return None
     return None

@@ -161,7 +161,7 @@ else:
 
         status = res.get("status")
         if status == "divergent":
-            st.warning("ปริพันธ์นี้ลู่ออก ไม่ลู่เข้าสู่ค่าจำกัด")
+            st.warning("ปริพันธ์นี้ลู่ออก")
         elif status == "outside_domain":
             st.warning("ฟังก์ชันไม่อยู่ในโดเมนของจำนวนจริงบนช่วงที่กำหนด")
         elif status == "unsupported":

@@ -184,7 +184,113 @@ def _check_domain_validity(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: f
         except Exception:
             pass
 
-    # 2. Vectorized check using numpy lambdify
+    # 2. Check all Pow nodes with even roots or negative powers symbolically
+    for p in expr.atoms(sp.Pow):
+        exp = p.exp
+        base = p.base
+        # Negative powers: base cannot be zero on [a, b]
+        try:
+            exp_val = float(exp)
+            if exp_val < 0:
+                for r in sp.solve(base, var):
+                    if getattr(r, "is_real", False) and a_val <= float(r) <= b_val:
+                        return False
+        except Exception:
+            pass
+
+        # Even root check: base must be >= 0 everywhere on [a, b]
+        is_even_root = False
+        if isinstance(exp, sp.Rational) and exp.q % 2 == 0:
+            is_even_root = True
+        elif isinstance(exp, (sp.Float, float)):
+            try:
+                rat = sp.nsimplify(exp)
+                if isinstance(rat, sp.Rational) and rat.q % 2 == 0:
+                    is_even_root = True
+            except Exception:
+                pass
+
+        if is_even_root:
+            test_pts = [a_val, b_val]
+            try:
+                for r in sp.solve(base, var):
+                    if getattr(r, "is_real", False):
+                        rf = float(r)
+                        if a_val <= rf <= b_val:
+                            test_pts.append(rf)
+            except Exception:
+                pass
+
+            try:
+                db = sp.diff(base, var)
+                for r in sp.solve(db, var):
+                    if getattr(r, "is_real", False):
+                        rf = float(r)
+                        if a_val <= rf <= b_val:
+                            test_pts.append(rf)
+            except Exception:
+                pass
+
+            test_pts = sorted(set(test_pts))
+            for i in range(len(test_pts)):
+                pt = test_pts[i]
+                try:
+                    bv = float(base.subs(var, pt).evalf())
+                    if bv < -1e-12:
+                        return False
+                except Exception:
+                    return False
+                if i < len(test_pts) - 1:
+                    mid = (test_pts[i] + test_pts[i + 1]) / 2.0
+                    try:
+                        bv_mid = float(base.subs(var, mid).evalf())
+                        if bv_mid < -1e-12:
+                            return False
+                    except Exception:
+                        return False
+
+    # 3. Check logarithms: argument must be strictly positive on [a, b]
+    for lg in expr.atoms(sp.log):
+        arg = lg.args[0]
+        test_pts = [a_val, b_val]
+        try:
+            for r in sp.solve(arg, var):
+                if getattr(r, "is_real", False):
+                    rf = float(r)
+                    if a_val <= rf <= b_val:
+                        return False
+        except Exception:
+            pass
+
+        try:
+            da = sp.diff(arg, var)
+            for r in sp.solve(da, var):
+                if getattr(r, "is_real", False):
+                    rf = float(r)
+                    if a_val <= rf <= b_val:
+                        test_pts.append(rf)
+        except Exception:
+            pass
+
+        test_pts = sorted(set(test_pts))
+        for i in range(len(test_pts)):
+            pt = test_pts[i]
+            try:
+                av = float(arg.subs(var, pt).evalf())
+                if av <= 1e-15:
+                    return False
+            except Exception:
+                return False
+            if i < len(test_pts) - 1:
+                mid = (test_pts[i] + test_pts[i + 1]) / 2.0
+                try:
+                    av_mid = float(arg.subs(var, mid).evalf())
+                    if av_mid <= 1e-15:
+                        return False
+                except Exception:
+                    return False
+
+    # 4. Vectorized check using numpy lambdify
     try:
         import numpy as np
         import warnings
@@ -202,7 +308,7 @@ def _check_domain_validity(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: f
     except Exception:
         pass
 
-    # 3. Pointwise fallback check
+    # 5. Pointwise fallback check
     for i in range(n_samples + 1):
         xv = a_val + (b_val - a_val) * i / n_samples
         try:
@@ -215,6 +321,24 @@ def _check_domain_validity(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: f
         except Exception:
             return False
     return True
+
+
+def _check_extreme_frequency(expr: sp.Expr, var: sp.Symbol, a_val: float, b_val: float) -> bool:
+    """Detect if expression oscillates faster than numerical sampling resolution on [a, b]."""
+    trig_funcs = (sp.sin, sp.cos, sp.tan, sp.cot, sp.sec, sp.csc)
+    atoms = [node for node in expr.atoms(*trig_funcs)]
+    for node in atoms:
+        arg = node.args[0]
+        try:
+            d_arg = sp.diff(arg, var)
+            test_pts = [a_val, b_val, (a_val + b_val) / 2.0]
+            max_d = max(abs(float(d_arg.subs(var, pt).evalf())) for pt in test_pts)
+            cycles = max_d / (2.0 * math.pi) * abs(b_val - a_val)
+            if cycles > 500.0:
+                return True
+        except Exception:
+            pass
+    return False
 
 
 def _find_crossings(diff: sp.Expr, a_val: float, b_val: float, var: sp.Symbol = X) -> list[float]:
@@ -408,6 +532,22 @@ def find_curve_intersections(f_str: str, g_str: str, span: tuple[float, float] =
                 "error": None,
             }
 
+        if _check_extreme_frequency(diff_expr, var_sym, span[0], span[1]):
+            return {
+                "ok": False,
+                "count": 0,
+                "roots": [],
+                "roots_latex": [],
+                "can_enclose_area": False,
+                "natural_bounds": None,
+                "sub_intervals": [],
+                "message": "ความถี่ของการแกว่งกวัดสูงเกินขีดจำกัดความละเอียดเชิงตัวเลขของระบบ ไม่สามารถวิเคราะห์จุดตัดได้อย่างแม่นยำ",
+                "variable": v_name,
+                "f_expr": f_expr,
+                "g_expr": g_expr,
+                "error": "ความถี่ของการแกว่งกวัดสูงเกินขีดจำกัดความละเอียดเชิงตัวเลขของระบบ ไม่สามารถวิเคราะห์จุดตัดได้อย่างแม่นยำ",
+            }
+
         roots = []
         is_poly = False
         try:
@@ -532,6 +672,10 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
            not _check_domain_validity(g_expr, var_sym, float(a_sp), float(b_sp)):
             raise ValueError("ไม่สามารถคำนวณพื้นที่ได้เนื่องจากฟังก์ชันไม่อยู่ในโดเมนของจำนวนจริง หรือมีจุดไม่ต่อเนื่องแบบอนันต์บนช่วงที่กำหนด")
 
+        # Check extreme high-frequency oscillation (aliasing beyond numerical resolution)
+        if _check_extreme_frequency(diff_expr, var_sym, float(a_sp), float(b_sp)):
+            raise ValueError("ความถี่ของการแกว่งกวัดสูงเกินขีดจำกัดความละเอียดเชิงตัวเลขของระบบ ไม่สามารถคำนวณพื้นที่ได้อย่างแม่นยำ")
+
         # -------------------------------------------------------------
         # Find all intersection points f(x) - g(x) = 0 on open interval (a, b)
         # -------------------------------------------------------------
@@ -556,6 +700,9 @@ def compute_area_between(f_str: str, g_str: str, a: float, b: float) -> dict:
         true_crossings_sym, tangent_points_sym = _classify_interior_roots(
             diff_expr, var_sym, a_sp, b_sp, interior_roots_sym
         )
+
+        if len(true_crossings_sym) > 500:
+            raise ValueError("ความถี่ของการแกว่งกวัดสูงเกินขีดจำกัดความละเอียดเชิงตัวเลขของระบบ ไม่สามารถคำนวณพื้นที่ได้อย่างแม่นยำ")
 
         # Definite integral subintervals are split strictly at true crossings
         cuts = [a_sp] + sorted(set(true_crossings_sym)) + [b_sp]

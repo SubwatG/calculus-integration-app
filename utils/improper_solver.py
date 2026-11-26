@@ -690,9 +690,9 @@ def compute_improper(expr_str: str, a: float | int | str | sp.Expr = 0.0, b: flo
                 value_latex = "\\text{diverges}"
                 steps.append(
                     "เงื่อนไขโดเมนและการลู่เข้า: ตามนิยามทางคณิตศาสตร์ หากมีส่วนย่อยอย่างน้อย 1 ฝั่งลู่ออก "
-                    "อินทิกรัลไม่ตรงแบบทั้งหมดจะถือว่า **ลู่ออก (Diverges)** (ไม่สามารถนำ $\\pm\\infty$ มาหักล้างกันได้)"
+                    "ปริพันธ์ไม่ตรงแบบทั้งหมดจะถือว่า **ลู่ออก** (ไม่สามารถนำ $\\pm\\infty$ มาหักล้างกันได้)"
                 )
-                steps.append("ผลลัพธ์: อินทิกรัลลู่ออก (Diverges)")
+                steps.append("ผลลัพธ์: ปริพันธ์นี้ลู่ออก")
             elif left_status == "finite" and right_status == "finite":
                 res_val = _to_real_roots(left_part) + _to_real_roots(right_part)
                 status = "finite"

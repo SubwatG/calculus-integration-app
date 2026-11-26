@@ -61,6 +61,56 @@ def _clean_trig(e: sp.Expr) -> sp.Expr:
     return res
 
 
+def _integrate_factor(dv: sp.Expr, var: sp.Symbol) -> sp.Expr:
+    """Integrate dv factor, handling sec^2(ax+b), csc^2(ax+b), and rewriting when SymPy returns unevaluated Integral."""
+    if dv.is_Pow and dv.exp == 2:
+        base = dv.base
+        if isinstance(base, sp.sec):
+            arg = base.args[0]
+            if arg.is_polynomial(var) and sp.degree(arg, var) == 1:
+                a = sp.diff(arg, var)
+                return sp.tan(arg) / a
+        elif isinstance(base, sp.csc):
+            arg = base.args[0]
+            if arg.is_polynomial(var) and sp.degree(arg, var) == 1:
+                a = sp.diff(arg, var)
+                return -sp.cot(arg) / a
+
+    v = sp.integrate(dv, var)
+    if v.has(sp.Integral):
+        for rw in (sp.cos, sp.sin):
+            try:
+                v_rw = sp.integrate(dv.rewrite(rw), var)
+                if not v_rw.has(sp.Integral):
+                    return _clean_trig(v_rw)
+            except Exception:
+                pass
+    return _clean_trig(v)
+
+
+def _simplify_tan_logs(expr: sp.Expr) -> sp.Expr:
+    """Simplify logs of tan(ax+b)**2 + 1 to -2*log(Abs(cos(ax+b))) and cot logs to log(Abs(sin(ax+b)))."""
+    def _rep(node):
+        if isinstance(node, sp.log):
+            arg = node.args[0]
+            if arg.is_Add:
+                for term in arg.args:
+                    if term.is_Pow and term.exp == 2 and isinstance(term.base, sp.tan):
+                        inner = term.base.args[0]
+                        if sp.simplify(arg - (term + 1)) == 0:
+                            return -2 * sp.log(sp.Abs(sp.cos(inner)))
+            if isinstance(arg, sp.tan):
+                inner = arg.args[0]
+                return sp.log(sp.Abs(sp.sin(inner))) - sp.log(sp.Abs(sp.cos(inner)))
+        return node
+
+    try:
+        res = expr.replace(lambda n: isinstance(n, sp.log), _rep)
+        return sp.simplify(res)
+    except Exception:
+        return expr
+
+
 def detect_parts_candidate(expr: sp.Expr, var: sp.Symbol = X) -> tuple[sp.Expr, sp.Expr, str, bool] | None:
     """Identify decomposition expr = u * v' for integration by parts using LIATE rule.
 
@@ -200,7 +250,7 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
 
         u_p, dv_p, parts_reason, is_cyclic = parts_cand
         du_p = sp.diff(u_p, var_sym)
-        v_p = _clean_trig(sp.integrate(dv_p, var_sym))
+        v_p = _integrate_factor(dv_p, var_sym)
         v_du = _clean_trig(sp.simplify(v_p * du_p))
 
         if is_cyclic:
@@ -249,6 +299,17 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
             ]
         else:
             rem_integral = sp.integrate(v_du, var_sym)
+            if rem_integral.has(sp.Integral):
+                for rw in (sp.sin, sp.cos):
+                    try:
+                        rem_rw = sp.integrate(v_du.rewrite(rw), var_sym)
+                        if not rem_rw.has(sp.Integral):
+                            rem_integral = rem_rw
+                            break
+                    except Exception:
+                        pass
+            rem_integral = _simplify_tan_logs(rem_integral)
+
             if rem_integral.has(sp.Integral) or antideriv.has(sp.Integral):
                 if not rem_integral.has(sp.Integral):
                     antideriv = _clean_trig(u_p * v_p - rem_integral)
@@ -260,11 +321,11 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
                         "steps": [
                             f"กำหนดโจทย์อินทิกรัล: $\\int {_to_latex(expr)} \\, d{v_lat}$",
                             f"วิเคราะห์ตามกฎ LIATE: {parts_reason}",
-                            f"เมื่อแทนค่าลงในสูตร By Parts ปริพันธ์ที่เหลือ $\\int {_to_latex(v_du)} \\, d{v_lat}$ ไม่สามารถหาปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐานได้",
+                            f"เมื่อแทนค่าลงในสูตร By Parts ปริพันธ์ที่เหลือ $\\int {_to_latex(v_du)} \\, d{v_lat}$ ไม่สามารถหาปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐานได้ หรือระบบยังหาคำตอบกรณีนี้ไม่ได้",
                         ],
                         "status": "unsupported",
-                        "warning": "ไม่สามารถหาปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐานได้",
-                        "error": "ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน",
+                        "warning": "ไม่สามารถหาปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐานได้ หรือระบบยังหาคำตอบกรณีนี้ไม่ได้",
+                        "error": "ฟังก์ชันนี้ไม่มีปฏิยานุพันธ์ในรูปฟังก์ชันมูลฐาน หรือระบบยังหาคำตอบกรณีนี้ไม่ได้",
                         "variable": str(var_sym.name),
                         "parts_info": {
                             "u": u_p,
@@ -276,6 +337,7 @@ def solve_by_parts(expr_str: str, var: str | sp.Symbol | None = None) -> dict:
                     }
             else:
                 antideriv = _clean_trig(antideriv)
+            antideriv = _clean_trig(antideriv)
             antideriv = _wrap_new_logs(antideriv, expr)
             rem_integral_disp = _wrap_new_logs(_clean_trig(rem_integral), v_du)
             steps = [

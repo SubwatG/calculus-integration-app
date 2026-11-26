@@ -267,6 +267,27 @@ class TestSolveSubstitution:
             assert not s.startswith("ขั้นที่ 1:")
             assert not s.startswith("ขั้นที่ 2:")
 
+    def test_verify_user_u_1_over_x_with_u_x_squared(self):
+        """P0-05 / R5: 1/x กับ u = x**2 ต้องยอมรับเป็น algebraic_adjustment และได้ ln|x|"""
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("1/x", "x**2")
+        assert res["ok"] is True
+        assert res["status"] == "algebraic_adjustment"
+        assert r"\ln" in res["latex"]
+        assert "|" in res["latex"]
+        assert res["result"] == sp.log(sp.Abs(sp.Symbol("x")))
+
+    def test_verify_user_u_2x_cos_groups_differential(self):
+        """P0-05: 2*x*cos(x**2) กับ u = x**2 ต้องจับกลุ่ม 2x dx = du ไม่สอนให้หารด้วยศูนย์"""
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("2*x*cos(x**2)", "x**2")
+        assert res["ok"] is True
+        assert res["status"] == "direct"
+        steps_text = " ".join(res["steps"])
+        assert "2 x" in steps_text
+        assert "dx = \\frac{du}{2 x}" not in steps_text
+        assert "dx = \\frac{du}{2*x}" not in steps_text
+
 
 def test_substitution_page_apptest_render():
     from pathlib import Path

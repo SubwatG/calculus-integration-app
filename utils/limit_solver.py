@@ -367,6 +367,77 @@ def _steps_infinite_asymptote(expr: sp.Expr, a_str: str, v_lat: str,
     return steps, None, latex_str
 
 
+def _detect_exponential_limit(expr: sp.Expr, var: sp.Symbol, a_sp: sp.Expr):
+    """Detect if expression contains exponential b**(u(x)) where u(x) has a pole at a."""
+    for p in expr.atoms(sp.Pow):
+        b, exp = p.as_base_exp()
+        if b.is_number and b.is_real and b > 0 and b != 1 and exp.has(var):
+            try:
+                pos_h = sp.Symbol("h_exp_chk", positive=True)
+                exp_lim = sp.limit(exp.subs(var, a_sp + pos_h), pos_h, 0)
+                if exp_lim in (sp.oo, -sp.oo):
+                    return True, b, exp
+            except Exception:
+                pass
+    return False, None, None
+
+
+def _steps_exponential_pole(expr: sp.Expr, a_str: str, v_lat: str,
+                            base_val: sp.Expr, exp_expr: sp.Expr,
+                            lim_left: sp.Expr, lim_right: sp.Expr,
+                            a_dir_left: str, a_dir_right: str):
+    r"""Level 4b: Exponential limit with pole in exponent, e.g. b**(1/x) as x -> 0."""
+    expr_tex = _to_latex(expr)
+    left_tex = _to_latex(lim_left)
+    right_tex = _to_latex(lim_right)
+    b_lat = _to_latex(base_val)
+    exp_lat = _to_latex(exp_expr)
+
+    pos_h = sp.Symbol("h_exp_step", positive=True)
+    var_sym = _get_variable(expr)
+    try:
+        a_sp = sp.sympify(a_str)
+        u_left = sp.limit(exp_expr.subs(var_sym, a_sp - pos_h), pos_h, 0)
+        u_right = sp.limit(exp_expr.subs(var_sym, a_sp + pos_h), pos_h, 0)
+    except Exception:
+        u_left, u_right = None, None
+
+    u_left_lat = _to_latex(u_left) if u_left is not None else "-\\infty"
+    u_right_lat = _to_latex(u_right) if u_right is not None else "\\infty"
+
+    left_explanation = (
+        f"เลขชี้กำลัง ${exp_lat} \\to {u_left_lat}$ ส่งผลให้ ${b_lat}^{{{u_left_lat}}} \\to {left_tex}$"
+        if u_left in (sp.oo, -sp.oo)
+        else f"เลขชี้กำลัง ${exp_lat} \\to {u_left_lat}$ ส่งผลให้ค่าฟังก์ชันลู่เข้าสู่ {left_tex}"
+    )
+    right_explanation = (
+        f"เลขชี้กำลัง ${exp_lat} \\to {u_right_lat}$ ส่งผลให้ ${b_lat}^{{{u_right_lat}}} \\to {right_tex}$"
+        if u_right in (sp.oo, -sp.oo)
+        else f"เลขชี้กำลัง ${exp_lat} \\to {u_right_lat}$ ส่งผลให้ค่าฟังก์ชันลู่เข้าสู่ {right_tex}"
+    )
+
+    steps = [
+        f"ตรวจสอบพฤติกรรมเลขชี้กำลัง: เมื่อ ${v_lat} \\to {a_str}$ พจน์เลขชี้กำลัง ${exp_lat}$ มีค่าพุ่งสู่อนันต์ จึงต้องวิเคราะห์พฤติกรรมแยกฝั่งซ้ายและขวาอย่างชัดเจน",
+        f"พิจารณาลิมิตทางซ้าย (Left-hand limit, ${v_lat} \\to {a_dir_left}$): {left_explanation}\n\\lim_{{{v_lat} \\to {a_dir_left}}} \\left({expr_tex}\\right) = {left_tex}",
+        f"พิจารณาลิมิตทางขวา (Right-hand limit, ${v_lat} \\to {a_dir_right}$): {right_explanation}\n\\lim_{{{v_lat} \\to {a_dir_right}}} \\left({expr_tex}\\right) = {right_tex}",
+    ]
+
+    if lim_left == lim_right:
+        steps.append(
+            f"สรุปผล: ลิมิตทั้งสองฝั่งเท่ากัน ($\\lim_{{{v_lat} \\to {a_dir_left}}} f({v_lat}) = \\lim_{{{v_lat} \\to {a_dir_right}}} f({v_lat}) = {left_tex}$)\n"
+            f"\\lim_{{{v_lat} \\to {a_str}}} \\left({expr_tex}\\right) = {left_tex}"
+        )
+        latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {expr_tex} = {left_tex}"
+    else:
+        steps.append(
+            f"สรุปผล: ลิมิตทางซ้ายและขวาไม่เท่ากัน ($\\lim_{{{v_lat} \\to {a_dir_left}}} f({v_lat}) = {left_tex} \\neq {right_tex} = \\lim_{{{v_lat} \\to {a_dir_right}}} f({v_lat})$) จึงสรุปว่าไม่มีลิมิตสองด้าน\n"
+            f"\\lim_{{{v_lat} \\to {a_str}}} \\left({expr_tex}\\right) \\quad \\text{{(does not exist)}}"
+        )
+        latex_str = f"\\lim_{{{v_lat} \\to {a_str}}} {expr_tex} \\quad \\text{{(does not exist)}}"
+
+    return steps, None, latex_str
+
+
 def _steps_abs_piecewise(expr: sp.Expr, a_str: str, v_lat: str,
                          lim_left: sp.Expr, lim_right: sp.Expr,
                          a_dir_left: str, a_dir_right: str,
@@ -518,9 +589,24 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
         a_num = float(a_sp.evalf())
         left_real, right_real = _check_real_domain(expr, a_num, var=var_sym)
 
+        pos_h = sp.Symbol("h_lim_pos", positive=True)
         try:
-            lim_left = sp.limit(expr, var_sym, a_sp, dir="-")
-            lim_right = sp.limit(expr, var_sym, a_sp, dir="+")
+            try:
+                sub_left = expr.subs(var_sym, a_sp - pos_h)
+                lim_left = sp.limit(sub_left, pos_h, 0)
+                if isinstance(lim_left, sp.Limit) or lim_left is None:
+                    lim_left = sp.limit(expr, var_sym, a_sp, dir="-")
+            except Exception:
+                lim_left = sp.limit(expr, var_sym, a_sp, dir="-")
+
+            try:
+                sub_right = expr.subs(var_sym, a_sp + pos_h)
+                lim_right = sp.limit(sub_right, pos_h, 0)
+                if isinstance(lim_right, sp.Limit) or lim_right is None:
+                    lim_right = sp.limit(expr, var_sym, a_sp, dir="+")
+            except Exception:
+                lim_right = sp.limit(expr, var_sym, a_sp, dir="+")
+
             status = _classify_limit(lim_left, lim_right)
         except Exception:
             lim_left, lim_right = None, None
@@ -613,7 +699,14 @@ def compute_limit_near(expr_str: str, a: float | int | str | sp.Expr = 0.0) -> d
             is_jump = has_abs or has_piecewise
             sides_infinite = (lim_left in (sp.oo, -sp.oo)) or (lim_right in (sp.oo, -sp.oo))
 
-            if is_jump:
+            is_exp, b_val, exp_expr = _detect_exponential_limit(expr, var_sym, a_sp)
+            if is_exp:
+                body_steps, result, latex_str = _steps_exponential_pole(
+                    expr, a_str, v_lat, b_val, exp_expr, lim_left, lim_right,
+                    a_dir_left, a_dir_right,
+                )
+                steps += body_steps
+            elif is_jump:
                 # Level 5: Absolute Value / Piecewise
                 body_steps, result, latex_str = _steps_abs_piecewise(
                     expr, a_str, v_lat, lim_left, lim_right,

@@ -254,5 +254,25 @@ class TestComputeAreaBetween:
         assert "ช่วงย่อยที่ 2" in steps_text
         assert "ช่วงย่อยที่ 3" not in steps_text
 
+    def test_math_extreme_frequency_sine_rejected(self):
+        # sin(5000*pi*x) oscillates far beyond sampling resolution (aliasing)
+        res = compute_area_between("sin(5000*pi*x)", "0", 0, 1)
+        assert res["ok"] is False
+        assert res["result"] is None
+        assert "ความถี่" in res["error"] or "ขีดจำกัด" in res["error"]
+
+    def test_math_narrow_complex_domain_rejected(self):
+        # Narrow complex interval between 0.5009 and 0.5011
+        res = compute_area_between("sqrt((x-0.501)^2 - 1e-8)", "0", 0, 1)
+        assert res["ok"] is False
+        assert res["result"] is None
+        assert "โดเมน" in res["error"] or "ไม่สามารถคำนวณได้" in res["error"]
+
+    def test_find_curve_intersections_extreme_frequency_rejected(self):
+        from utils.area_solver import find_curve_intersections
+        res = find_curve_intersections("sin(5000*pi*x)", "0")
+        assert res["ok"] is False
+        assert "ความถี่" in res["error"] or "ขีดจำกัด" in res["error"]
+
 
 

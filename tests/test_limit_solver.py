@@ -298,3 +298,13 @@ class TestPedagogicalHierarchy:
         for expr, a in [("(x**2-4)/(x-2)", 2), ("1/x", 0), ("sin(1/x)", 0), ("sqrt(x)", 0)]:
             res = compute_limit_near(expr, a)
             assert "กำหนดโจทย์ลิมิต" in res["steps"][0]
+
+    def test_p0_03_two_to_the_one_over_x_at_zero(self):
+        """P0-03: 2**(1/x) at 0 has left limit 0, right limit oo, overall limit dne."""
+        res = compute_limit_near("2**(1/x)", 0)
+        assert res["ok"] is True
+        assert res["status"] == "dne"
+        assert res["left_limit"] == 0
+        assert res["right_limit"] == sp.oo
+        assert res["result"] is None
+        assert "does not exist" in res["latex"]

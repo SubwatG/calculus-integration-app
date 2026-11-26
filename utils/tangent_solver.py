@@ -330,9 +330,55 @@ def compute_tangent(expr_str: str, a: float) -> dict:
                 "variable": str(var_sym.name),
             }
 
+        pos_h = sp.Symbol("h_tan_pos", positive=True)
+
+        # Check continuity at x = a for piecewise and step/sign functions
+        if expr.has(sp.Piecewise, sp.sign, sp.floor, sp.ceiling, sp.Heaviside):
+            try:
+                f_left = _to_real_roots(sp.limit(expr.subs(var_sym, a_sym - pos_h), pos_h, 0))
+                f_right = _to_real_roots(sp.limit(expr.subs(var_sym, a_sym + pos_h), pos_h, 0))
+            except Exception:
+                f_left, f_right = fa_sym, fa_sym
+
+            # Discontinuity check: if either side doesn't equal fa_sym
+            if (f_left is not None and f_right is not None) and (f_left != fa_sym or f_right != fa_sym):
+                f_left_lat = _to_latex(f_left)
+                f_right_lat = _to_latex(f_right)
+                fa_lat = _to_latex(fa_sym)
+                if f_left != f_right:
+                    disc_desc = (
+                        f"ลิมิตทางซ้ายและทางขวาไม่เท่ากัน "
+                        f"(\\lim_{{{v_lat} \\to {a_lat}^-}} f({v_lat}) = {f_left_lat} \\neq {f_right_lat} = \\lim_{{{v_lat} \\to {a_lat}^+}} f({v_lat}))"
+                    )
+                else:
+                    disc_desc = (
+                        f"ลิมิตของฟังก์ชันไม่เท่ากับค่าของฟังก์ชันที่จุดนั้น "
+                        f"(\\lim_{{{v_lat} \\to {a_lat}}} f({v_lat}) = {f_left_lat} \\neq {fa_lat} = f({a_lat}))"
+                    )
+                return {
+                    "ok": True,
+                    "result": None,
+                    "latex": r"\text{(does not exist)}",
+                    "steps": [
+                        f"กำหนดโจทย์และจุดที่พิจารณา: $f({v_lat}) = {_to_latex(expr)}, \\quad a = {a_lat}$",
+                        f"คำนวณพิกัดจุดบนกราฟ: $f({a_lat}) = {fa_lat}$ ได้จุด $(a, f(a)) = ({a_lat}, {fa_lat})$",
+                        f"ตรวจสอบความต่อเนื่องของฟังก์ชัน: {disc_desc} กราฟจึงมีรอยขาด (ไม่ต่อเนื่อง) ที่จุด ${v_lat} = {a_lat}$",
+                        f"สรุปผลการวิเคราะห์: ตามนิยามทางคณิตศาสตร์ ฟังก์ชันที่ไม่ต่อเนื่องจะไม่สามารถหาอนุพันธ์ได้ จึงไม่มีเส้นสัมผัสที่จุดนี้",
+                    ],
+                    "expr": expr,
+                    "error": None,
+                    "status": "non_differentiable",
+                    "is_vertical": False,
+                    "variable": str(var_sym.name),
+                }
+
         df = sp.diff(expr, var_sym)
+        is_piecewise_or_symbolic_diff = (
+            expr.has(sp.Piecewise, sp.sign, sp.Abs, sp.floor, sp.ceiling, sp.Heaviside)
+            or df.has(sp.Derivative)
+        )
         try:
-            slope_sym = _to_real_roots(df.subs(var_sym, a_sym))
+            slope_sym = _to_real_roots(df.subs(var_sym, a_sym)) if not is_piecewise_or_symbolic_diff else sp.nan
         except Exception:
             slope_sym = sp.nan
 
@@ -343,10 +389,11 @@ def compute_tangent(expr_str: str, a: float) -> dict:
             latex_str = f"y = {_to_latex(sp.simplify(tangent_eq))}"
             steps = _build_finite_tangent_steps(expr, var_sym, a_sym, fa_sym, df, slope_sym, tangent_eq)
         else:
-            diff_quot = (expr.subs(var_sym, a_sym + H) - fa_sym) / H
+            diff_quot_left = (expr.subs(var_sym, a_sym - pos_h) - fa_sym) / (-pos_h)
+            diff_quot_right = (expr.subs(var_sym, a_sym + pos_h) - fa_sym) / pos_h
             try:
-                left_m = _to_real_roots(sp.limit(diff_quot, H, 0, dir="-"))
-                right_m = _to_real_roots(sp.limit(diff_quot, H, 0, dir="+"))
+                left_m = _to_real_roots(sp.limit(diff_quot_left, pos_h, 0))
+                right_m = _to_real_roots(sp.limit(diff_quot_right, pos_h, 0))
             except Exception:
                 left_m, right_m = sp.nan, sp.nan
 
@@ -387,7 +434,12 @@ def compute_tangent(expr_str: str, a: float) -> dict:
                 right_inf = right_m in (sp.oo, -sp.oo)
 
                 if not left_real and (right_inf or right_real):
-                    right_desc = f"ความชันทางขวาลู่สู่อนันต์ (${_to_latex(right_m)}$) เส้นสัมผัสแนวดิ่งทางขวา" if right_inf else f"อนุพันธ์ทางขวาเป็นจำนวนจริงจำกัด (${_to_latex(right_m)}$)"
+                    if right_inf:
+                        is_vertical = True
+                        latex_str = f"{v_lat} = {a_lat}"
+                        right_desc = f"ความชันทางขวาลู่สู่อนันต์ (${_to_latex(right_m)}$) เส้นสัมผัสแนวดิ่งทางขวา"
+                    else:
+                        right_desc = f"อนุพันธ์ทางขวาเป็นจำนวนจริงจำกัด (${_to_latex(right_m)}$)"
                     steps = [
                         f"กำหนดโจทย์และจุดที่พิจารณา: $f({v_lat}) = {_to_latex(expr)}, \\quad a = {a_lat}$",
                         f"คำนวณพิกัดจุดบนกราฟ: $f({a_lat}) = {_to_latex(fa_sym)}$ ได้จุด $(a, f(a)) = ({a_lat}, {_to_latex(fa_sym)})$",
@@ -397,7 +449,12 @@ def compute_tangent(expr_str: str, a: float) -> dict:
                         f"สรุปผลการวิเคราะห์: {right_desc} แต่ฟังก์ชันหาอนุพันธ์แบบสองข้างทั่วไปไม่ได้ที่จุดขอบเขตนี้",
                     ]
                 elif not right_real and (left_inf or left_real):
-                    left_desc = f"ความชันทางซ้ายลู่สู่อนันต์ (${_to_latex(left_m)}$) เส้นสัมผัสแนวดิ่งทางซ้าย" if left_inf else f"อนุพันธ์ทางซ้ายเป็นจำนวนจริงจำกัด (${_to_latex(left_m)}$)"
+                    if left_inf:
+                        is_vertical = True
+                        latex_str = f"{v_lat} = {a_lat}"
+                        left_desc = f"ความชันทางซ้ายลู่สู่อนันต์ (${_to_latex(left_m)}$) เส้นสัมผัสแนวดิ่งทางซ้าย"
+                    else:
+                        left_desc = f"อนุพันธ์ทางซ้ายเป็นจำนวนจริงจำกัด (${_to_latex(left_m)}$)"
                     steps = [
                         f"กำหนดโจทย์และจุดที่พิจารณา: $f({v_lat}) = {_to_latex(expr)}, \\quad a = {a_lat}$",
                         f"คำนวณพิกัดจุดบนกราฟ: $f({a_lat}) = {_to_latex(fa_sym)}$ ได้จุด $(a, f(a)) = ({a_lat}, {_to_latex(fa_sym)})$",
