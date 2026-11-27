@@ -7,9 +7,9 @@ def inject_css() -> None:
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Mali:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@400;500;600;700;800;900&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
-    /* Global Typography & Pink Bauhaus Pop Canvas */
+    /* Global Typography & Pink Bauhaus Pop Canvas: Unified Fredoka & Mali Stack */
     html, body, [data-testid="stAppViewContainer"], .stApp {
-        font-family: "Mali", "Outfit", -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-family: "Fredoka", "Mali", -apple-system, BlinkMacSystemFont, sans-serif !important;
         background-color: #FFF0F5 !important;
         background-image: radial-gradient(#FBCFE8 1.5px, transparent 1.5px) !important;
         background-size: 22px 22px !important;
@@ -18,16 +18,67 @@ def inject_css() -> None:
 
     /* Cheerful Rounded Headlines */
     h1, h2, h3, h4, h5, h6 {
-        font-family: "Fredoka", "Mali", "Outfit", sans-serif !important;
+        font-family: "Fredoka", "Mali", sans-serif !important;
         color: #18181B !important;
         font-weight: 700 !important;
         letter-spacing: -0.01em !important;
     }
 
-    p, label, li, span:not([class*="material"]):not([data-testid*="Icon"]):not(.katex):not(.katex *) {
-        font-family: "Mali", "Outfit", sans-serif !important;
+    /* Unified Content Typography: Paragraphs, labels, lists, tables, summaries, details */
+    p, label, li, summary, details,
+    table, thead, tbody, tr, th, td,
+    div[data-testid="stMarkdownContainer"] p,
+    div[data-testid="stMarkdownContainer"] li,
+    div[data-testid="stMarkdownContainer"] span:not([class*="material"]):not([data-testid*="Icon"]):not(.katex):not(.katex *),
+    span:not([class*="material"]):not([data-testid*="Icon"]):not(.katex):not(.katex *) {
+        font-family: "Fredoka", "Mali", sans-serif !important;
         color: #18181B !important;
-        font-weight: 500 !important;
+        font-weight: 400;
+    }
+
+    strong, b {
+        font-weight: 700 !important;
+    }
+
+    /* Bauhaus Clean Markdown Tables */
+    table {
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        border: 1.5px solid #18181B !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        background-color: #FFFFFF !important;
+        margin: 0.75rem 0 !important;
+        font-family: "Fredoka", "Mali", sans-serif !important;
+        font-size: 0.92rem !important;
+    }
+
+    thead th {
+        background-color: #FEF08A !important;
+        color: #18181B !important;
+        font-weight: 600 !important;
+        border-bottom: 1.5px solid #18181B !important;
+        padding: 8px 12px !important;
+        text-align: left !important;
+        font-family: "Fredoka", "Mali", sans-serif !important;
+    }
+
+    tbody td {
+        padding: 8px 12px !important;
+        border-bottom: 1px solid #F4F4F5 !important;
+        color: #18181B !important;
+        vertical-align: middle !important;
+        font-family: "Fredoka", "Mali", sans-serif !important;
+        font-weight: 400 !important;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+
+    tbody tr:hover {
+        background-color: #FFFBEB !important;
     }
 
     /* Material Symbols / Icon Font Protection */
@@ -278,19 +329,46 @@ def inject_css() -> None:
         margin-bottom: 1.25rem !important;
     }
 
-    /* Expanders with Bauhaus Shadow */
+    /* Expanders with Bauhaus Shadow & Unified Typography */
     [data-testid="stExpander"] {
         background-color: #FFFFFF !important;
-        border: 2.5px solid #18181B !important;
+        border: 2px solid #18181B !important;
         border-radius: 12px !important;
-        box-shadow: 3px 3px 0px #18181B !important;
+        box-shadow: 2.5px 2.5px 0px #18181B !important;
         margin-bottom: 0.75rem !important;
     }
 
     [data-testid="stExpander"] summary {
         font-family: "Fredoka", "Mali", sans-serif !important;
+        font-size: 0.95rem !important;
         font-weight: 600 !important;
         color: #18181B !important;
+    }
+
+    [data-testid="stExpander"] summary p,
+    [data-testid="stExpander"] summary div[data-testid="stMarkdownContainer"] p,
+    [data-testid="stExpander"] summary div[data-testid="stMarkdownContainer"] span {
+        font-family: "Fredoka", "Mali", sans-serif !important;
+        color: #18181B !important;
+    }
+
+    /* Absolute protection for expander toggle icons and all Material symbols */
+    [data-testid="stExpander"] summary [data-testid="stIconMaterial"],
+    [data-testid="stExpander"] summary [data-testid*="Icon"],
+    [data-testid="stExpander"] summary .material-symbols-rounded,
+    [data-testid="stExpander"] summary .material-icons {
+        font-family: "Material Symbols Rounded", "Material Icons" !important;
+        font-weight: normal !important;
+        font-style: normal !important;
+        font-size: 20px !important;
+        line-height: 1 !important;
+        letter-spacing: normal !important;
+        text-transform: none !important;
+        display: inline-block !important;
+        white-space: nowrap !important;
+        word-wrap: normal !important;
+        direction: ltr !important;
+        -webkit-font-smoothing: antialiased !important;
     }
 
     /* Celebration Card Bounce Animation */

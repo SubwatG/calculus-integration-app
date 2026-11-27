@@ -1,7 +1,6 @@
-"""utils/keypad.py — แผงปุ่มลัดสัญลักษณ์คณิตศาสตร์ (Math Keypad)
+"""utils/keypad.py: Math keypad shortcut component for Streamlit math inputs.
 
-คอมโพเนนต์ปุ่มลัดสำหรับพิมพ์สูตรคณิตศาสตร์ใน Streamlit
-ใช้ร่วมกันระหว่าง pages/solver.py, pages/limit_approach.py และโมดูลอื่นๆ
+Shared across pages/solver.py, pages/limit_approach.py, and other modules.
 """
 
 import streamlit as st
@@ -14,7 +13,7 @@ def render_math_keypad(
     include_infinity: bool = True,
     title: str = "แผงปุ่มลัดสัญลักษณ์คณิตศาสตร์ (Math Keypad)",
 ) -> None:
-    """แสดงแผงปุ่มลัดสำหรับพิมพ์นิพจน์คณิตศาสตร์ลงใน st.session_state[target_key]"""
+    """Render math shortcut keypad to append tokens into st.session_state[target_key]."""
 
     def _append(tok: str) -> None:
         curr = st.session_state.get(target_key, "")

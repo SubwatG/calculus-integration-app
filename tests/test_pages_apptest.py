@@ -25,7 +25,7 @@ def test_quiz_reshuffle_button():
     at.run(timeout=5)
     assert not at.exception
 
-    # Test clicking the 'สุ่มรอบใหม่' reshuffle button
+    # Test clicking reshuffle button
     btn_reshuffle = at.button(key="btn_reshuffle_now")
     assert btn_reshuffle is not None
     btn_reshuffle.click().run(timeout=5)

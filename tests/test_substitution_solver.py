@@ -120,6 +120,174 @@ class TestSolveSubstitution:
         steps_text = " ".join(res["steps"])
         assert "Non-Elementary" in steps_text
 
+    def test_verify_user_u_direct_success(self):
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("2*x*sqrt(x**2 + 1)", "x**2 + 1")
+        assert res["ok"] is True
+        assert res["status"] == "direct"
+        assert res["result"] is not None
+        assert len(res["steps"]) >= 4
+        steps_text = " ".join(res["steps"])
+        assert "u = x^{2} + 1" in steps_text or "x^{2} + 1" in steps_text
+
+    def test_verify_user_u_algebraic_adjustment(self):
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("x*sqrt(x + 1)", "x + 1")
+        assert res["ok"] is True
+        assert res["status"] == "algebraic_adjustment"
+        assert res["result"] is not None
+        steps_text = " ".join(res["steps"])
+        assert "จัดรูปพีชคณิตเสริม" in steps_text
+        assert "แก้สมการ" in steps_text
+
+    def test_verify_user_u_incompatible(self):
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("2*x*sqrt(x**2 + 1)", "2*x")
+        assert res["ok"] is False
+        assert res["status"] == "incompatible"
+        assert "ทางตัน" in res["message"] or "ตัดทอนไม่หมด" in res["message"]
+
+    def test_verify_user_u_trivial(self):
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("2*x*sqrt(x**2 + 1)", "x")
+        assert res["ok"] is True
+        assert res["status"] == "trivial"
+        assert "เปลี่ยนชื่อตัวอักษร" in res["message"]
+
+    def test_verify_user_u_unsuitable_warns_by_parts(self):
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("x*exp(x)", "exp(x)")
+        assert res["ok"] is False
+        assert res["status"] in ("unsuitable_for_substitution", "incompatible")
+        if res["status"] == "unsuitable_for_substitution":
+            assert "By Parts" in res["message"] or "การอินทิเกรตทีละส่วน" in res["message"]
+
+    def test_get_suggested_u_candidates(self):
+        from utils.substitution_solver import get_suggested_u_candidates
+        cands = get_suggested_u_candidates("2*x*sqrt(x**2 + 1)")
+        assert "x**2 + 1" in cands or any("x**2" in c for c in cands)
+
+    def test_solve_substitution_log_absolute_values(self):
+        """MATH-08: ปฏิยานุพันธ์ของ 1/u, tan(x), 1/(ax+b) ต้องมีค่าสัมบูรณ์ในพจน์ log"""
+        x = sp.Symbol("x")
+        # 1/x -> ln|x| + C
+        res = solve_substitution("1/x")
+        assert res["ok"] is True
+        assert res["result"] == sp.log(sp.Abs(x))
+        assert r"\ln" in res["latex"]
+        assert "|" in res["latex"]
+
+        # tan(x) -> -ln|cos(x)| + C
+        res_tan = solve_substitution("tan(x)")
+        assert res_tan["ok"] is True
+        assert res_tan["result"] == -sp.log(sp.Abs(sp.cos(x)))
+        assert "|" in res_tan["latex"]
+
+        # 1/(2x+1) -> 1/2 ln|2x+1| + C
+        res_lin = solve_substitution("1/(2*x+1)")
+        assert res_lin["ok"] is True
+        assert res_lin["result"] == sp.log(sp.Abs(2 * x + 1)) / 2
+
+        # 1/(x*log(x)) -> ln|ln(x)| + C
+        res_loglog = solve_substitution("1/(x*log(x))")
+        assert res_loglog["ok"] is True
+        assert res_loglog["result"] == sp.log(sp.Abs(sp.log(x)))
+
+    def test_solve_substitution_sec2_over_tan(self):
+        """MATH-09: sec(x)**2/tan(x) ต้องรวมเป็น ln|tan(x)| + C"""
+        x = sp.Symbol("x")
+        res = solve_substitution("sec(x)**2/tan(x)")
+        assert res["ok"] is True
+        assert res["result"] == sp.log(sp.Abs(sp.tan(x)))
+        assert "tan" in str(res["result"])
+
+    def test_verify_user_u_log_absolute_values(self):
+        """MATH-08 (UI): verify_user_u_substitution ต้องมีค่าสัมบูรณ์ในพจน์ log"""
+        from utils.substitution_solver import verify_user_u_substitution
+        # sec^2(x)/tan(x) with u = tan(x)
+        res_sec = verify_user_u_substitution("sec(x)**2/tan(x)", "tan(x)")
+        assert res_sec["ok"] is True
+        assert "|" in res_sec["latex"]
+        assert "tan" in str(res_sec["result"])
+
+        # 1/(x*ln(x)) with u = ln(x)
+        res_loglog = verify_user_u_substitution("1/(x*log(x))", "log(x)")
+        assert res_loglog["ok"] is True
+        assert "|" in res_loglog["latex"]
+
+        # tan(x) with u = cos(x)
+        res_tan = verify_user_u_substitution("tan(x)", "cos(x)")
+        assert res_tan["ok"] is True
+        assert "|" in res_tan["latex"]
+
+        # 1/(2*x+1) with u = 2*x+1
+        res_lin = verify_user_u_substitution("1/(2*x+1)", "2*x+1")
+        assert res_lin["ok"] is True
+        assert "|" in res_lin["latex"]
+
+    def test_get_suggested_u_candidates_sanitized(self):
+        """ตัวเลือก u ไม่ควรมีพจน์ส่วนกลับที่ผิดวิสัย เช่น 1/x, 1/(2x+1), 1/tan(x)"""
+        from utils.substitution_solver import get_suggested_u_candidates
+        cands_1_x = get_suggested_u_candidates("1/x")
+        assert "1/x" not in cands_1_x
+
+        cands_lin = get_suggested_u_candidates("1/(2*x+1)")
+        assert "1/(2*x + 1)" not in cands_lin
+        assert "1/x" not in cands_lin
+        assert "2*x + 1" in cands_lin
+
+        cands_loglog = get_suggested_u_candidates("1/(x*log(x))")
+        assert "1/x" not in cands_loglog
+        assert "1/log(x)" not in cands_loglog
+        assert "log(x)" in cands_loglog
+
+        cands_tan = get_suggested_u_candidates("tan(x)")
+        assert "cos(x)" in cands_tan
+        assert cands_tan[0] == "cos(x)"
+
+    def test_verify_user_u_rejects_spurious_reciprocal(self):
+        """การใส่ u = 1/x กับโจทย์ที่ไม่เข้าพวกต้องถูกปฏิเสธเป็น incompatible"""
+        from utils.substitution_solver import verify_user_u_substitution
+        res_lin = verify_user_u_substitution("1/(2*x+1)", "1/x")
+        assert res_lin["ok"] is False
+        assert res_lin["status"] == "incompatible"
+
+        res_loglog = verify_user_u_substitution("1/(x*log(x))", "1/x")
+        assert res_loglog["ok"] is False
+        assert res_loglog["status"] == "incompatible"
+
+        res_basic = verify_user_u_substitution("1/x", "1/x")
+        assert res_basic["ok"] is False
+
+    def test_step_titles_do_not_duplicate_prefix(self):
+        """ข้อความขั้นตอนต้องไม่มี 'ขั้นที่ 1:' นำหน้าซ้ำซ้อน"""
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("2*x*sqrt(x**2 + 1)", "x**2 + 1")
+        for s in res["steps"]:
+            assert not s.startswith("ขั้นที่ 1:")
+            assert not s.startswith("ขั้นที่ 2:")
+
+    def test_verify_user_u_1_over_x_with_u_x_squared(self):
+        """P0-05 / R5: 1/x กับ u = x**2 ต้องยอมรับเป็น algebraic_adjustment และได้ ln|x|"""
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("1/x", "x**2")
+        assert res["ok"] is True
+        assert res["status"] == "algebraic_adjustment"
+        assert r"\ln" in res["latex"]
+        assert "|" in res["latex"]
+        assert res["result"] == sp.log(sp.Abs(sp.Symbol("x")))
+
+    def test_verify_user_u_2x_cos_groups_differential(self):
+        """P0-05: 2*x*cos(x**2) กับ u = x**2 ต้องจับกลุ่ม 2x dx = du ไม่สอนให้หารด้วยศูนย์"""
+        from utils.substitution_solver import verify_user_u_substitution
+        res = verify_user_u_substitution("2*x*cos(x**2)", "x**2")
+        assert res["ok"] is True
+        assert res["status"] == "direct"
+        steps_text = " ".join(res["steps"])
+        assert "2 x" in steps_text
+        assert "dx = \\frac{du}{2 x}" not in steps_text
+        assert "dx = \\frac{du}{2*x}" not in steps_text
+
 
 def test_substitution_page_apptest_render():
     from pathlib import Path

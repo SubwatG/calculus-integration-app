@@ -17,13 +17,13 @@ if not quiz_scores:
                 ยังไม่มีบันทึกคะแนนในเซสชันนี้
             </h4>
             <p style="font-family: 'Mali', sans-serif; font-size: 0.95rem; color: #4B5563; margin: 0 0 16px 0;">
-                ไปลองฝึกทำแบบทดสอบมโนทัศน์ 80 ข้อ ครอบคลุม 8 บทเรียน พร้อมระบบคำใบ้และสุ่มตัวเลือกกันเลย!
+                ไปลองฝึกทำแบบทดสอบความเข้าใจ 80 ข้อ ครอบคลุม 8 บทเรียน พร้อมระบบคำใบ้และสุ่มตัวเลือกกันเลย!
             </p>
         </div>
         """,
         unsafe_allow_html=True,
     )
-    if st.button("เริ่มทำแบบทดสอบมโนทัศน์", icon=":material/quiz:", type="primary", use_container_width=True):
+    if st.button("เริ่มทำแบบทดสอบความเข้าใจ", icon=":material/quiz:", type="primary", use_container_width=True):
         st.switch_page("pages/quiz.py")
 else:
     table_data = []

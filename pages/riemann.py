@@ -13,7 +13,7 @@ import sympy as sp
 import streamlit as st
 
 from utils.math_render import preview_math_expr, render_latex, render_steps, render_syntax_guide
-from utils.plotter import plot_riemann
+from utils.plotter import plot_riemann, plot_riemann_plotly
 from utils.riemann_solver import METHODS, X, compute_riemann
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
@@ -23,7 +23,7 @@ render_hero("พื้นที่ภายใต้เส้นโค้ง", "
 theory = THEORY_CONTENT["riemann_sum"]
 
 # ---------------------------------------------------------------------------
-# Concept Anchor & What to Observe (มโนทัศน์หลักและจุดสังเกต)
+# Concept Anchor & What to Observe
 # ---------------------------------------------------------------------------
 with st.container(border=True):
     col_badge, col_concept = st.columns([1, 4])
@@ -39,22 +39,21 @@ with st.container(border=True):
                 font-weight: 700;
                 color: #18181B;
                 display: inline-block;
-            ">มโนทัศน์หลัก</span>""",
+            ">หลักการสำคัญ</span>""",
             unsafe_allow_html=True,
         )
     with col_concept:
-        st.markdown("**การประมาณพื้นที่ใต้กราฟสู่ค่าอินทิกรัลจริง (Riemann Sum to Definite Integral)**")
-
-    st.markdown(
-        "พื้นที่ใต้กราฟคำนวณจากผลรวมของพื้นที่แท่งสี่เหลี่ยมผืนผ้า $n$ แท่ง เมื่อซอยย่อยให้ละเอียดไม่สิ้นสุด ($n \\to \\infty$):"
-    )
+        st.markdown("**การประมาณพื้นที่ใต้กราฟสู่ค่าปริพันธ์จำกัดเขต**")
 
     st.latex(r"A = \lim_{n \to \infty} \sum_{i=1}^{n} f(x_i^*) \Delta x = \int_a^b f(x)\,dx \quad \left(\text{โดยที่ } \Delta x = \frac{b-a}{n}\right)")
 
-    st.info(
-        """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
-- **การลู่เข้า (Convergence):** ลองเลื่อนสไลเดอร์เพิ่ม $n$ สังเกตช่องว่างส่วนเกิน/ส่วนขาดจะเล็กลงจนผลรวมเข้าใกล้ค่าจริง
-- **ทิศทางการประมาณ:** สำหรับฟังก์ชันเพิ่ม ($f' > 0$) ค่า $L_n$ จะประเมินต่ำกว่าจริง (Underestimate) ส่วน $R_n$ จะประเมินสูงกว่าจริง (Overestimate)"""
+    st.markdown(
+        """
+| หัวข้อสังเกต | พฤติกรรมทางคณิตศาสตร์ | ผลลัพธ์บนกราฟ |
+| :---: | :--- | :--- |
+| การลู่เข้า ($n \\to \\infty$) | เพิ่มจำนวนแท่งสี่เหลี่ยม $n$ | ช่องว่างส่วนเกิน/ส่วนขาดเล็กลงจนเข้าใกล้ค่าจริง |
+| ทิศทางการประมาณ | ฟังก์ชันเพิ่ม ($f' > 0$) | ผลรวมซ้าย ($L_n$) ต่ำกว่าจริง, ผลรวมขวา ($R_n$) สูงกว่าจริง |
+        """
     )
 
 with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
@@ -126,7 +125,7 @@ with col_n:
     n_val = st.slider("จำนวนช่วง n", min_value=1, max_value=50, value=8, key="riemann_n")
 
 # ---------------------------------------------------------------------------
-# คำนวณและแสดงผลแบบโต้ตอบสด (Real-time Interactive Update)
+# Real-time interactive calculation and display
 # ---------------------------------------------------------------------------
 if not expr_input.strip():
     st.info("กรุณาระบุฟังก์ชัน f(x) หรือคลิกเลือกตัวอย่างด้านบน")
@@ -139,7 +138,7 @@ else:
             st.info(f"ตรวจพบตัวแปร **${v_name}$**: ระบบคำนวณและวาดกราฟเทียบกับตัวแปร ${v_name}$ อัตโนมัติ")
 
         if res.get("has_negative_region") and res.get("negative_warning"):
-            st.warning(f"พื้นที่คิดเครื่องหมาย (Net Signed Area): {res['negative_warning']}")
+            st.warning(f"พื้นที่คิดเครื่องหมาย: {res['negative_warning']}")
 
         comp = res.get("methods_comparison")
         if comp:
@@ -147,28 +146,34 @@ else:
             c1, c2, c3 = st.columns(3)
             with c1:
                 left_d = comp.get("left", {})
-                st.metric("ปลายขอบซ้าย (Left)", f"{left_d.get('val', 0):.4f}", f"{left_d.get('error_pct', 0):+.2f}%")
+                st.metric("จุดปลายขอบซ้าย", f"{left_d.get('val', 0):.4f}", f"{left_d.get('error_pct', 0):+.2f}%")
             with c2:
                 mid_d = comp.get("midpoint", {})
-                st.metric("จุดกึ่งกลาง (Midpoint)", f"{mid_d.get('val', 0):.4f}", f"{mid_d.get('error_pct', 0):+.2f}%")
+                st.metric("จุดกึ่งกลาง", f"{mid_d.get('val', 0):.4f}", f"{mid_d.get('error_pct', 0):+.2f}%")
             with c3:
                 right_d = comp.get("right", {})
-                st.metric("ปลายขอบขวา (Right)", f"{right_d.get('val', 0):.4f}", f"{right_d.get('error_pct', 0):+.2f}%")
+                st.metric("จุดปลายขอบขวา", f"{right_d.get('val', 0):.4f}", f"{right_d.get('error_pct', 0):+.2f}%")
 
         st.markdown("### ผลลัพธ์การประมาณค่า")
         render_latex(res["latex"])
         st.divider()
 
-        # กราฟ (ใช้ expr ที่ solver parse แล้ว กันปัญหา symbol undefined)
+        # Plot (use parsed expr from solver to prevent undefined symbols)
+        st.markdown("### กราฟผลบวกรีมันน์")
         try:
             expr = res["expr"]
             var_sym = sp.Symbol(v_name)
             exact = sp.integrate(expr, (var_sym, a_val, b_val))
             exact_val = float(exact) if getattr(exact, "is_number", False) and getattr(exact, "is_real", False) else None
-            fig, _ = plot_riemann(expr, a_val, b_val, n_val, method_label, exact_val)
-            st.pyplot(fig)
+            fig_plotly = plot_riemann_plotly(expr, a_val, b_val, n_val, method_label, exact_val)
+            st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+            st.warning("แสดงผลกราฟ interactive ขัดข้อง กำลังสลับไปใช้กราฟสำรอง")
+            try:
+                fig, _ = plot_riemann(expr, a_val, b_val, n_val, method_label, exact_val)
+                st.pyplot(fig)
+            except Exception as e2:
+                st.warning(f"ไม่สามารถวาดกราฟได้: {e2}")
 
         st.divider()
         render_steps(res["steps"])

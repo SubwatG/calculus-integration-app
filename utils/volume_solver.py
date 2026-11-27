@@ -1,10 +1,11 @@
-"""utils/volume_solver.py — ปริมาตรของรูปทรงตันจากการหมุนรอบแกน
+"""utils/volume_solver.py: Solids of revolution volume solver.
 
-คำนวณปริมาตรของรูปทรงตันที่เกิดจากการหมุนรอบแกน x แบบ Disk หรือ Washer Method
-พร้อมแจกแจงแกนหมุน รัศมีนอก/ใน ทิศทางการกวาด และคำตอบแม่นตรงในรูป k*pi
-ตามเกณฑ์ Universal Step Contract
+Computes the volume of solids of revolution about the x-axis using Disk or Washer Method,
+identifying axis of rotation, inner/outer radii, sweep direction, and exact answers in k*pi form
+under the Universal Step Contract.
 """
 import math
+import re
 import sympy as sp
 from sympy.parsing.sympy_parser import (
     convert_xor,
@@ -30,8 +31,12 @@ from utils.sympy_solver import _clean_calculus_input, _get_variable
 
 
 def _to_latex(sym_obj) -> str:
-    lat = sp.latex(sym_obj)
-    return lat.replace(r"\log", r"\ln")
+    lat = sp.latex(sym_obj, inv_trig_style="full")
+    lat = lat.replace(r"\log", r"\ln")
+    lat = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", lat)
+    lat = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", lat)
+    lat = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", lat)
+    return lat
 
 
 def _parse_input(expr_str: str) -> sp.Expr:
@@ -48,7 +53,7 @@ def compute_volume(
     method: str = "disk",
     inner_expr_str: str | None = None,
 ) -> dict:
-    """คำนวณปริมาตรของรูปทรงตันที่เกิดจากการหมุนรอบแกน x แบบ Disk หรือ Washer Method ตาม Universal Step Contract"""
+    """Compute volume of solid of revolution about x-axis using Disk or Washer Method under Universal Step Contract."""
     clean_outer = (expr_str or "").strip()
     if not clean_outer:
         return {
@@ -115,23 +120,23 @@ def compute_volume(
             if vol_val.has(sp.Integral) or not (
                 getattr(vol_val, "is_real", False) and getattr(vol_val, "is_finite", False)
             ):
-                raise ValueError("ไม่สามารถคำนวณปริมาตรจำกัดได้บนช่วงที่กำหนด (อาจมีจุดเอกฐาน)")
+                raise ValueError("ไม่สามารถคำนวณปริมาตรจำกัดได้บนช่วงที่กำหนด (อาจมีจุดไม่ต่อเนื่องแบบอนันต์)")
 
             res_float = float(vol_val.evalf())
 
             steps = [
                 f"กำหนดฟังก์ชันและช่วง: รัศมี $R({v_lat}) = {_to_latex(R_expr)}$ บนช่วง $[{a_disp}, {b_disp}]$",
-                f"เป้าหมาย / กฎที่ใช้ (Goal / Rule): คำนวณปริมาตรของรูปทรงตันที่เกิดจากการหมุนรอบแกน {v_lat} โดยวิธีจาน (Disk Method) "
-                f"ตามสูตร $V = \\pi \\int_{{{a_disp}}}^{{{b_disp}}} [R({v_lat})]^2 \\, d{v_lat}$ "
-                f"(เลือกใช้วิธี Disk เนื่องจากพื้นที่ระนาบแนบสนิทกับแกนหมุน ไม่มีช่องว่างตรงกลาง)",
-                f"นิพจน์หลังแทนค่า (Substituted expression): ระบุแกนหมุนคือแกน ${v_lat}$ (สมการแนวนอน) "
-                f"โดยมีรัศมี $R({v_lat}) = {_to_latex(R_expr)}$ เป็นระยะทางตั้งฉากจากแกนหมุนถึงเส้นโค้ง "
-                f"และกวาดจานตามแนวตัวแปรการอินทิเกรต $d{v_lat}$ จาก ${v_lat} = {a_disp}$ ถึง ${v_lat} = {b_disp}$",
-                f"พีชคณิตระหว่างทาง (Intermediate algebra): พื้นที่หน้าตัดรูปจาน $A({v_lat}) = \\pi [R({v_lat})]^2 = \\pi [{_to_latex(R_expr)}]^2 = \\pi \\left({_to_latex(integrand)}\\right)$ "
+                f"ตั้งสูตรคำนวณปริมาตรโดยวิธีจาน: "
+                f"$V = \\pi \\int_{{{a_disp}}}^{{{b_disp}}} [R({v_lat})]^2 \\, d{v_lat}$ "
+                f"(เนื่องจากพื้นที่ระนาบแนบชิดกับแกนหมุน ไม่มีช่องว่างตรงกลาง)",
+                f"ระบุแกนหมุนและรัศมี: แกนหมุนคือแกน ${v_lat}$ "
+                f"โดยมีรัศมี $R({v_lat}) = {_to_latex(R_expr)}$ เป็นระยะตั้งฉากจากแกนหมุนถึงเส้นโค้ง "
+                f"บนช่วง ${v_lat} = {a_disp}$ ถึง ${v_lat} = {b_disp}$",
+                f"คำนวณพื้นที่หน้าตัดและหาปฏิยานุพันธ์: พื้นที่หน้าตัด $A({v_lat}) = \\pi [R({v_lat})]^2 = \\pi [{_to_latex(R_expr)}]^2 = \\pi \\left({_to_latex(integrand)}\\right)$ "
                 f"และหาปฏิยานุพันธ์ $\\int [{_to_latex(R_expr)}]^2 \\, d{v_lat} = {_to_latex(primitive)}$",
                 f"แทนค่าขอบเขต: $V = \\pi \\left[ {_to_latex(primitive)} \\right]_{{{a_disp}}}^{{{b_disp}}} = \\pi \\left( {_to_latex(int_val)} \\right) = {_to_latex(vol_val)}$",
-                f"เงื่อนไขโดเมน (Domain restriction): รัศมี $R({v_lat})$ ต้องเป็นฟังก์ชันต่อเนื่องบนช่วงปิด $[{a_disp}, {b_disp}]$",
-                f"ผลลัพธ์แม่นตรง (Exact result): คำนวณปริมาตรทรงตัน: $V = {_to_latex(vol_val)} \\approx {res_float:.6g}$ ลูกบาศก์หน่วย",
+                f"เงื่อนไขความต่อเนื่อง: รัศมี $R({v_lat})$ เป็นฟังก์ชันต่อเนื่องบนช่วงปิด $[{a_disp}, {b_disp}]$",
+                f"สรุปผลลัพธ์: ปริมาตรทรงตัน $V = {_to_latex(vol_val)} \\approx {res_float:.6g}$ ลูกบาศก์หน่วย",
             ]
 
             return {
@@ -155,24 +160,24 @@ def compute_volume(
             if vol_val.has(sp.Integral) or not (
                 getattr(vol_val, "is_real", False) and getattr(vol_val, "is_finite", False)
             ):
-                raise ValueError("ไม่สามารถคำนวณปริมาตรจำกัดได้บนช่วงที่กำหนด (อาจมีจุดเอกฐาน หรือไม่อยู่ในโดเมนจำนวนจริง)")
+                raise ValueError("ไม่สามารถคำนวณปริมาตรจำกัดได้บนช่วงที่กำหนด (อาจมีจุดไม่ต่อเนื่องแบบอนันต์ หรือไม่อยู่ในโดเมนจำนวนจริง)")
 
             res_float = float(vol_val.evalf())
 
             steps = [
                 f"กำหนดฟังก์ชันและช่วง: รัศมีนอก $R({v_lat}) = {_to_latex(R_expr)}$, รัศมีใน $r({v_lat}) = {_to_latex(r_expr)}$ บนช่วง $[{a_disp}, {b_disp}]$",
-                f"เป้าหมาย / กฎที่ใช้ (Goal / Rule): คำนวณปริมาตรของรูปทรงตันที่เกิดจากการหมุนรอบแกน {v_lat} โดยวิธีวงแหวน (Washer Method) "
-                f"ตามสูตร $V = \\pi \\int_{{{a_disp}}}^{{{b_disp}}} \\left( [R({v_lat})]^2 - [r({v_lat})]^2 \\right) \\, d{v_lat}$ "
-                f"(เลือกใช้วิธี Washer เนื่องจากมีช่องว่างหรือรูกลวงระหว่างเส้นโค้งกับแกนหมุน)",
-                f"นิพจน์หลังแทนค่า (Substituted expression): ระบุแกนหมุนคือแกน ${v_lat}$ โดยแจกแจงรัศมีทั้งสองแยกกัน:\n"
-                f"- รัศมีนอก (Outer radius): $R({v_lat}) = {_to_latex(R_expr)}$ (ระยะจากแกนหมุนถึงขอบนอก)\n"
-                f"- รัศมีใน (Inner radius): $r({v_lat}) = {_to_latex(r_expr)}$ (ระยะจากแกนหมุนถึงขอบใน)\n"
-                f"และกวาดวงแหวนตามแนวตัวแปรการอินทิเกรต $d{v_lat}$ จาก ${v_lat} = {a_disp}$ ถึง ${v_lat} = {b_disp}$",
-                f"พีชคณิตระหว่างทาง (Intermediate algebra): พื้นที่หน้าตัดรูปวงแหวน $A({v_lat}) = \\pi \\left( [R({v_lat})]^2 - [r({v_lat})]^2 \\right) = \\pi \\left( {_to_latex(diff_sq)} \\right)$ "
+                f"ตั้งสูตรคำนวณปริมาตรโดยวิธีวงแหวน: "
+                f"$V = \\pi \\int_{{{a_disp}}}^{{{b_disp}}} \\left( [R({v_lat})]^2 - [r({v_lat})]^2 \\right) \\, d{v_lat}$ "
+                f"(เนื่องจากมีช่องว่างตรงกลางระหว่างเส้นโค้งกับแกนหมุน)",
+                f"ระบุแกนหมุนและรัศมี: แกนหมุนคือแกน ${v_lat}$ โดยมีรัศมีสองส่วน:\n"
+                f"- รัศมีนอก: $R({v_lat}) = {_to_latex(R_expr)}$ (ระยะจากแกนหมุนถึงขอบนอก)\n"
+                f"- รัศมีใน: $r({v_lat}) = {_to_latex(r_expr)}$ (ระยะจากแกนหมุนถึงขอบใน)\n"
+                f"บนช่วง ${v_lat} = {a_disp}$ ถึง ${v_lat} = {b_disp}$",
+                f"คำนวณพื้นที่หน้าตัดและหาปฏิยานุพันธ์: พื้นที่หน้าตัดรูปวงแหวน $A({v_lat}) = \\pi \\left( [R({v_lat})]^2 - [r({v_lat})]^2 \\right) = \\pi \\left( {_to_latex(diff_sq)} \\right)$ "
                 f"และหาปฏิยานุพันธ์ $\\int \\left( [R({v_lat})]^2 - [r({v_lat})]^2 \\right) \\, d{v_lat} = {_to_latex(primitive)}$",
                 f"แทนค่าขอบเขต: $V = \\pi \\left| \\left[ {_to_latex(primitive)} \\right]_{{{a_disp}}}^{{{b_disp}}} \\right| = {_to_latex(vol_val)}$",
-                f"เงื่อนไขโดเมน (Domain restriction): ฟังก์ชันรัศมีมีความต่อเนื่องบนช่วงปิด $[{a_disp}, {b_disp}]$ โดยมีเงื่อนไข $R({v_lat}) \\geq r({v_lat}) \\geq 0$",
-                f"ผลลัพธ์แม่นตรง (Exact result): คำนวณปริมาตรทรงตัน: $V = {_to_latex(vol_val)} \\approx {res_float:.6g}$ ลูกบาศก์หน่วย",
+                f"เงื่อนไขความต่อเนื่อง: ฟังก์ชันรัศมีมีความต่อเนื่องบนช่วงปิด $[{a_disp}, {b_disp}]$ โดยมีเงื่อนไข $R({v_lat}) \\geq r({v_lat}) \\geq 0$",
+                f"สรุปผลลัพธ์: ปริมาตรทรงตัน $V = {_to_latex(vol_val)} \\approx {res_float:.6g}$ ลูกบาศก์หน่วย",
             ]
 
             return {

@@ -38,8 +38,15 @@ class TestIntegrate:
     def test_reciprocal_is_log(self):
         res = integrate("1/x")
         assert res["ok"] is True
-        # SymPy ให้ log(x) (ขอบเขตจำนวนจริงบวก)
+        # SymPy gives log(x) (positive real domain)
         assert "log" in sp.sstr(res["result"])
+
+    def test_trig_simplification_before_integration(self):
+        # tan(x+1)*cos(x+1) = sin(x+1) -> -cos(x+1)
+        res = integrate("tan(x+1)*cos(x+1)")
+        assert res["ok"] is True
+        assert not res["result"].has(sp.Integral)
+        assert expr_eq(res["result"], "-cos(x+1)")
 
     def test_invalid_input_returns_error(self):
         res = integrate("")

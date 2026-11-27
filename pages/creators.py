@@ -221,8 +221,8 @@ st.markdown(
         <div class="stat-chip">
             <span class="material-symbols-rounded" style="font-size: 26px; color: #E11D48;">square_foot</span>
             <div>
-                <div style="font-family: 'Outfit', 'Fredoka', sans-serif; font-size: 15.5px; font-weight: 800; color: #18181B;">7 โมดูลจำลอง</div>
-                <div style="font-family: 'Mali', sans-serif; font-size: 12px; color: #4B5563;">Interactive Geometry</div>
+                <div style="font-family: 'Outfit', 'Fredoka', sans-serif; font-size: 15.5px; font-weight: 800; color: #18181B;">6 หัวข้อจำลอง</div>
+                <div style="font-family: 'Mali', sans-serif; font-size: 12px; color: #4B5563;">Interactive Calculus</div>
             </div>
         </div>
         <div class="stat-chip">
@@ -347,7 +347,7 @@ st.markdown(
     ">
         <span class="material-symbols-rounded" style="font-size: 28px; color: #D97706;">lightbulb</span>
         <div style="font-family: 'Mali', sans-serif; font-size: 13.5px; color: #18181B; line-height: 1.55;">
-            <b>วิสัยทัศน์โครงงาน:</b> เปลี่ยนนิยามและทฤษฎีแคลคูลัสที่ซับซ้อนให้กลายเป็นภาพจำลองที่สัมผัสได้จริง เพื่อส่งเสริมความเข้าใจในระดับมโนทัศน์ (Conceptual Understanding) อย่างยั่งยืน
+            <b>วิสัยทัศน์โครงงาน:</b> เปลี่ยนนิยามและทฤษฎีแคลคูลัสที่ซับซ้อนให้กลายเป็นภาพจำลองที่สัมผัสได้จริง เพื่อส่งเสริมความเข้าใจในระดับแนวคิด (Conceptual Understanding) อย่างยั่งยืน
         </div>
     </div>
     """,
@@ -370,7 +370,7 @@ with bcol1:
             </div>
             <ul style="font-family: 'Mali', sans-serif; font-size: 0.88rem; color: #374151; line-height: 1.65; padding-left: 18px; margin: 0;">
                 <li><b>1. สื่อการเรียนรู้แบบเปิด:</b> เพื่อเป็นเครื่องมือเรียนเสริมแคลคูลัสแบบเปิด (Open Access)</li>
-                <li><b>2. เสริมสร้างมโนทัศน์:</b> เข้าใจแนวคิดผ่านภาพและกราฟจำลองเชิงเรขาคณิต</li>
+                <li><b>2. เสริมสร้างแนวคิด:</b> เข้าใจแนวคิดผ่านภาพและกราฟจำลองเชิงเรขาคณิต</li>
                 <li><b>3. แจกแจงวิธีทำเป็นระบบ:</b> ฝึกแก้โจทย์อย่างเป็นขั้นตอนตามหลักคณิตศาสตร์</li>
             </ul>
         </div>
@@ -389,9 +389,9 @@ with bcol2:
                 </h4>
             </div>
             <ul style="font-family: 'Mali', sans-serif; font-size: 0.88rem; color: #374151; line-height: 1.65; padding-left: 18px; margin: 0;">
-                <li><b>7 โมดูลจำลองแคลคูลัส:</b> ลิมิต, เส้นสัมผัส, ผลรวมรีมันน์, u-Sub & By Parts, พื้นที่, ปริมาตรหมุน และปริพันธ์ไม่ตรงแบบ</li>
+                <li><b>6 หัวข้อจำลองแคลคูลัส:</b> ลิมิต, เส้นสัมผัส, u-Sub, By Parts, พื้นที่ระหว่างเส้นโค้ง และปริพันธ์ไม่ตรงแบบ</li>
                 <li><b>เครื่องคิดเลขสัญลักษณ์ SymPy:</b> ถอดขั้นตอนการอินทิเกรตและอนุพันธ์แบบสมบูรณ์</li>
-                <li><b>แบบทดสอบมโนทัศน์ 80 ข้อ:</b> ครอบคลุม 8 บทเรียน พร้อมคำใบ้และสุ่มตัวเลือก</li>
+                <li><b>แบบทดสอบแนวคิด 80 ข้อ:</b> ครอบคลุม 8 บทเรียน พร้อมคำใบ้และสุ่มตัวเลือก</li>
             </ul>
         </div>
         """,

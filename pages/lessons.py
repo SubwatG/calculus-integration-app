@@ -11,24 +11,24 @@ import streamlit as st
 
 from utils.math_render import format_math_spacing
 from utils.theme import render_hero
-from utils.theory import THEORY_CONTENT
+from utils.theory import THEORY_CONTENT, HIDDEN_LESSON_KEYS
 
-render_hero("ภาพรวมบทเรียนและทฤษฎี (Calculus Lessons)", "สำรวจสรุปทฤษฎีบท มโนทัศน์สำคัญ และเอกสารอ้างอิงฉบับเต็ม")
+render_hero("ภาพรวมบทเรียนและทฤษฎี (Calculus Lessons)", "สำรวจสรุปทฤษฎีบท หลักการสำคัญ และเอกสารอ้างอิงฉบับเต็ม")
 
 # ---------------------------------------------------------------------------
-# Mapping: key ใน THEORY_CONTENT -> หน้า interactive ที่เกี่ยวข้อง
+# Mapping: THEORY_CONTENT key -> corresponding interactive page
 # ---------------------------------------------------------------------------
 INTERACTIVE_PAGES = {
     "limit": "pages/limit_approach.py",
     "tangent": "pages/tangent.py",
-    "riemann_sum": "pages/riemann.py",
     "substitution": "pages/substitution.py",
+    "by_parts": "pages/by_parts.py",
     "area_between": "pages/area_between.py",
-    "volume": "pages/volume_revolution.py",
     "improper": "pages/improper_integrals.py",
 }
 
-# key ที่ยังไม่มีหน้า interactive (เผื่อเพิ่มในอนาคต)
+# Hidden topics per requirements imported from utils.theory
+
 ALL_THEORY_KEYS = list(THEORY_CONTENT.keys())
 
 tab_interactive, tab_reference = st.tabs(
@@ -36,10 +36,13 @@ tab_interactive, tab_reference = st.tabs(
 )
 
 # ---------------------------------------------------------------------------
-# Tab 1: บทเรียน interactive (จาก theory.py)
+# Tab 1: Interactive lessons (from theory.py)
 # ---------------------------------------------------------------------------
 with tab_interactive:
-    interactive_keys = [k for k in ALL_THEORY_KEYS if k in INTERACTIVE_PAGES]
+    interactive_keys = [
+        k for k in ALL_THEORY_KEYS
+        if k in INTERACTIVE_PAGES and k not in HIDDEN_LESSON_KEYS
+    ]
     if not interactive_keys:
         st.warning("ยังไม่มีบทเรียน interactive")
     else:
@@ -58,13 +61,13 @@ with tab_interactive:
 
         st.markdown(f"## {format_math_spacing(theory['title'])}")
 
-        # 1. สูตรคำนวณสำคัญ
+        # 1. Key Formulas
         with st.container(border=True):
             st.markdown("### สูตรคำนวณสำคัญ (Key Formulas)")
             for item in theory["formulas"]:
                 st.markdown(f"* {format_math_spacing(item)}")
 
-        # 2. เงื่อนไข และ สมบัติสำคัญ
+        # 2. Conditions and Properties
         col_cond, col_prop = st.columns(2)
         with col_cond:
             with st.container(border=True):
@@ -77,10 +80,10 @@ with tab_interactive:
                 for item in theory["properties"]:
                     st.markdown(f"* {format_math_spacing(item)}")
 
-        # 3. ข้อควรระวัง
+        # 3. Cautions
         st.warning("**ข้อควรระวังสำคัญ:** " + " • ".join(format_math_spacing(c) for c in theory["cautions"]), icon=":material/warning:")
 
-        # 4. การประยุกต์ใช้ และ คำแนะนำ
+        # 4. Applications and Decision Guide
         col_app, col_dec = st.columns(2)
         with col_app:
             with st.container(border=True):
@@ -98,7 +101,7 @@ with tab_interactive:
             st.switch_page(target)
 
 # ---------------------------------------------------------------------------
-# Tab 2: เอกสารอ้างอิงและตำราเรียน (ภาควิชาคณิตศาสตร์ มหาวิทยาลัยศิลปากร)
+# Tab 2: Reference documents and textbook materials
 # ---------------------------------------------------------------------------
 with tab_reference:
     st.markdown(

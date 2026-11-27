@@ -59,10 +59,10 @@ st.markdown(
         <div class="help-step-num" style="background-color: #FECDD3;">1</div>
         <div>
             <h4 style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 15px; margin: 0 0 4px 0; color: #18181B;">
-                เลือกโมดูลการเรียนรู้ที่สนใจ
+                เลือกหัวข้อการเรียนรู้ที่สนใจ
             </h4>
             <p style="font-family: 'Mali', sans-serif; font-size: 13.5px; color: #4B5563; margin: 0; line-height: 1.5;">
-                เข้าไปที่เมนูด้านซ้ายหรือหน้าหลัก เพื่อเลือกหัวข้อ เช่น ลิมิต, เส้นสัมผัส, รีมันน์ หรือ ปริมาตรทรงตัน
+                เข้าไปที่เมนูด้านซ้ายหรือหน้าหลัก เพื่อเลือกหัวข้อ เช่น ลิมิต, เส้นสัมผัส, เทคนิคการอินทิเกรต หรือ พื้นที่ระหว่างเส้นโค้ง
             </p>
         </div>
     </div>
@@ -70,7 +70,7 @@ st.markdown(
         <div class="help-step-num" style="background-color: #FEF08A;">2</div>
         <div>
             <h4 style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 15px; margin: 0 0 4px 0; color: #18181B;">
-                โต้ตอบกับกราฟและจำลองมโนทัศน์
+                โต้ตอบกับกราฟและจำลองแนวคิด
             </h4>
             <p style="font-family: 'Mali', sans-serif; font-size: 13.5px; color: #4B5563; margin: 0; line-height: 1.5;">
                 ปรับเปลี่ยนค่าตัวแปรในแถบเลื่อน (Slider) เพื่อสังเกตการเคลื่อนที่ของจุด เส้นสัมผัส หรือแท่งรีมันน์แบบเรียลไทม์
@@ -95,7 +95,7 @@ st.markdown(
                 ทดสอบความเข้าใจด้วยแบบทดสอบ 80 ข้อ
             </h4>
             <p style="font-family: 'Mali', sans-serif; font-size: 13.5px; color: #4B5563; margin: 0; line-height: 1.5;">
-                ฝึกตอบคำถามมโนทัศน์ หากติดขัดสามารถกดดูคำใบ้ทีละระดับเพื่อช่วยนำทางกระบวนการคิด
+                ฝึกตอบคำถามแนวคิด หากติดขัดสามารถกดดูคำใบ้ทีละระดับเพื่อช่วยนำทางกระบวนการคิด
             </p>
         </div>
     </div>

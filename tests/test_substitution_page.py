@@ -35,6 +35,8 @@ def test_substitution_decision_gate_radio():
     at = AppTest.from_file(SUB_PAGE)
     at.run(timeout=5)
     assert not at.exception
+    # Initially no choice selected -> no success alert before selection
+    assert len(at.success) == 0
 
     # Interact with radio for case 1 u-choice if present
     if at.radio(key="radio_u_case1"):
@@ -42,3 +44,17 @@ def test_substitution_decision_gate_radio():
         # Change selection to correct choice
         r.set_value(r.options[0]).run(timeout=5)
         assert not at.exception
+        assert len(at.success) >= 1
+        assert "ถูกต้องตามหลักการ" in at.success[0].value
+
+
+def test_substitution_flags_special_functions_outside_the_syllabus():
+    at = AppTest.from_file(SUB_PAGE, default_timeout=120)
+    at.run()
+    at.text_input(key="substitution_expr").set_value("exp(-x^2)")
+    at.run()
+    at.button(key="btn_substitution_calc").click()
+    at.run()
+    assert not at.exception
+    messages = [info.value for info in at.info]
+    assert any("ฟังก์ชันความคลาดเคลื่อน" in m and "นอกหลักสูตร" in m for m in messages)

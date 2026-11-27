@@ -9,35 +9,29 @@ ALL_TOPIC_KEYS = [
     "tangent",
     "limits",
     "basic_rules",
-    "riemann",
     "techniques",
     "area_between",
     "improper_integrals",
-    "volume_revolution",
 ]
 
 QUIZ_OPTIONS = {
-    "[ทั้งหมด] ทำโจทย์ทุกบท (80 ข้อ)": "all",
+    "[ทั้งหมด] ทำโจทย์ทุกบท (60 ข้อ)": "all",
     "[เส้นสัมผัส] 1. เส้นสัมผัสและอนุพันธ์ (10 ข้อ)": "tangent",
     "[ลิมิต] 2. ลิมิตและความต่อเนื่อง (10 ข้อ)": "limits",
     "[กฎพื้นฐาน] 3. กฎพื้นฐานและทฤษฎีบท (10 ข้อ)": "basic_rules",
-    "[รีมันน์] 4. ผลรวมรีมันน์และการประมาณค่า (10 ข้อ)": "riemann",
-    "[เทคนิค] 5. เทคนิคการเปลี่ยนตัวแปร & By Parts (10 ข้อ)": "techniques",
-    "[พื้นที่ระหว่างเส้น] 6. พื้นที่ระหว่างเส้นโค้ง (10 ข้อ)": "area_between",
-    "[ปริพันธ์ไม่ตรงแบบ] 7. ปริพันธ์ไม่ตรงแบบ (10 ข้อ)": "improper_integrals",
-    "[ปริมาตรรูปทรงตัน] 8. ปริมาตรของรูปทรงตันจากการหมุน (10 ข้อ)": "volume_revolution",
+    "[เทคนิค] 4. เทคนิคการเปลี่ยนตัวแปร & By Parts (10 ข้อ)": "techniques",
+    "[พื้นที่ระหว่างเส้น] 5. พื้นที่ระหว่างเส้นโค้ง (10 ข้อ)": "area_between",
+    "[ปริพันธ์ไม่ตรงแบบ] 6. ปริพันธ์ไม่ตรงแบบ (10 ข้อ)": "improper_integrals",
 }
 
 TOPIC_LABELS = {
-    "all": "รวมโจทย์มโนทัศน์ทุกบท",
+    "all": "รวมโจทย์ทุกบท",
     "tangent": "1. เส้นสัมผัสและอนุพันธ์",
     "limits": "2. ลิมิตและความต่อเนื่อง",
     "basic_rules": "3. กฎพื้นฐานและทฤษฎีบท",
-    "riemann": "4. ผลรวมรีมันน์และการประมาณค่า",
-    "techniques": "5. เทคนิคการเปลี่ยนตัวแปร & By Parts",
-    "area_between": "6. พื้นที่ระหว่างเส้นโค้ง",
-    "improper_integrals": "7. ปริพันธ์ไม่ตรงแบบ",
-    "volume_revolution": "8. ปริมาตรของรูปทรงตันจากการหมุน",
+    "techniques": "4. เทคนิคการเปลี่ยนตัวแปร & By Parts",
+    "area_between": "5. พื้นที่ระหว่างเส้นโค้ง",
+    "improper_integrals": "6. ปริพันธ์ไม่ตรงแบบ",
 }
 
 inject_css()
@@ -202,9 +196,9 @@ def init_quiz_session(topic: str) -> None:
     reset_quiz()
 
 
-render_hero("เกมทบทวนมโนทัศน์", "ตอบคำถามเพื่อสร้างความเข้าใจ พร้อมระบบคำแนะนำและสะสมคะแนน")
+render_hero("แบบทดสอบความเข้าใจ", "ตอบคำถามเพื่อทดสอบและทบทวนความเข้าใจ พร้อมระบบคำแนะนำและสะสมคะแนน")
 
-st.markdown("### เลือกชุดข้อสอบมโนทัศน์")
+st.markdown("### เลือกชุดข้อสอบ")
 selected_topic_name = st.radio(
     "คลิกเลือกชุดข้อสอบที่ต้องการทำ:",
     list(QUIZ_OPTIONS.keys()),
@@ -216,7 +210,7 @@ QUIZ_TOPIC = QUIZ_OPTIONS[selected_topic_name]
 
 col_topic_info, col_topic_btn = st.columns([3, 1])
 with col_topic_info:
-    st.caption("ระบบสุ่มลำดับตัวเลือก (A, B, C, D) และสุ่มลำดับโจทย์แบบไดนามิกทุกรอบ เพื่อฝึกมโนทัศน์แท้จริง")
+    st.caption("ระบบสุ่มลำดับตัวเลือก (A, B, C, D) และสุ่มลำดับโจทย์แบบไดนามิกทุกรอบ")
 with col_topic_btn:
     if st.button("สุ่มรอบใหม่", icon=":material/casino:", key="btn_reshuffle_now", use_container_width=True):
         init_quiz_session(QUIZ_TOPIC)
@@ -264,7 +258,7 @@ if st.session_state.quiz_done:
                     สุดยอดมาก! ผ่านการทดสอบระดับยอดเยี่ยม
                 </h3>
                 <p style="font-family: 'Mali', sans-serif; font-size: 1.05rem; font-weight: 600; color: #18181B; margin: 0;">
-                    มีความเข้าใจมโนทัศน์แคลคูลัสอย่างแม่นยำ พร้อมลุยบทเรียนต่อไปได้เลย!
+                    มีความเข้าใจแนวคิดแคลคูลัสอย่างแม่นยำ พร้อมลุยบทเรียนต่อไปได้เลย!
                 </p>
             </div>
             """,
@@ -273,7 +267,7 @@ if st.session_state.quiz_done:
     elif percentage >= 50:
         st.info("ผลการประเมิน: ระดับผ่านเกณฑ์ มีความเข้าใจพื้นฐานที่ดี สามารถทบทวนเพิ่มเติมในหัวข้อที่ตอบผิดได้จากหน้าบทเรียน")
     else:
-        st.warning("ผลการประเมิน: ควรทบทวนเพิ่มเติม แนะนำให้ใช้เครื่องมือจำลองในหน้ารีมันน์และการแทนค่าตัวแปรเพื่อสร้างมโนทัศน์")
+        st.warning("ผลการประเมิน: ควรทบทวนเพิ่มเติม แนะนำให้ใช้เครื่องมือจำลองในหน้ารีมันน์และการแทนค่าตัวแปรเพื่อสร้างแนวคิด")
 
     st.divider()
     st.markdown("### สรุปคำตอบและคำอธิบายรายข้อ")
@@ -316,7 +310,7 @@ else:
         revealed = st.session_state.quiz_revealed
         show_hint = st.session_state.quiz_show_hint
         current_choice = st.session_state.quiz_current_choice
-        topic_name = TOPIC_LABELS.get(QUIZ_TOPIC, "มโนทัศน์")
+        topic_name = TOPIC_LABELS.get(QUIZ_TOPIC, "แนวคิด")
 
         # Top Bauhaus Status Header
         st.markdown(
@@ -346,7 +340,7 @@ else:
                 f"""
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 2px dashed #E4E4E7; padding-bottom: 8px;">
                     <div style="display: inline-flex; align-items: center; gap: 8px;">
-                        <span style="background-color: #F43F5E; color: #FFFFFF; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 800; box-shadow: 1.5px 1.5px 0px #18181B;">โจทย์มโนทัศน์</span>
+                        <span style="background-color: #F43F5E; color: #FFFFFF; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 800; box-shadow: 1.5px 1.5px 0px #18181B;">คำถามทดสอบ</span>
                         <span style="font-size: 13px; font-weight: 700; color: #4B5563;">คำถามข้อที่ {q_idx + 1}</span>
                     </div>
                     <span style="font-size: 12px; font-weight: 700; color: #71717A; background-color: #F4F4F5; border: 1.5px solid #18181B; border-radius: 6px; padding: 2px 8px;">
@@ -436,7 +430,7 @@ else:
                                 ถูกต้องยอดเยี่ยม! +1 คะแนน
                             </div>
                             <div style="font-family: 'Mali', sans-serif; font-size: 0.9rem; color: #15803D; font-weight: 600;">
-                                มโนทัศน์แม่นยำมาก เก่งมากครับ!
+                                เข้าใจแนวคิดแม่นยำมาก เก่งมากครับ!
                             </div>
                         </div>
                     </div>

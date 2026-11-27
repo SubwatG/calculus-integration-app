@@ -30,6 +30,26 @@ class TestComputeTangent:
         assert res["ok"] is True
         assert res["latex"].startswith("y =")
 
+    def test_compute_tangent_vertical_slope(self):
+        """Case 10: x**(1/3) at 0 has vertical slope and non_differentiable status"""
+        res = compute_tangent("x**(1/3)", 0)
+        assert res["ok"] is True
+        assert res["status"] == "non_differentiable"
+        assert res.get("is_vertical") is True
+        assert res["result"] is None
+
+    def test_compute_tangent_odd_rational_powers_math_15(self):
+        """MATH-15: x**(1/3) at -1 and x**(2/3) at -1 evaluate in real numbers"""
+        res1 = compute_tangent("x**(1/3)", -1)
+        assert res1["ok"] is True
+        assert res1["status"] == "finite"
+        assert pytest.approx(res1["result"], rel=1e-5) == 1/3
+
+        res2 = compute_tangent("x**(2/3)", -1)
+        assert res2["ok"] is True
+        assert res2["status"] == "finite"
+        assert pytest.approx(res2["result"], rel=1e-5) == -2/3
+
     def test_compute_tangent_corner_non_differentiable(self):
         res = compute_tangent("abs(x)", 0)
         assert res["ok"] is True
@@ -66,3 +86,32 @@ class TestComputeTangent:
         fig, ax = plot_tangent(expr, 0.0, status="vertical", slope=None)
         assert fig is not None
         assert ax is not None
+
+    def test_p0_02_x_sign_x_at_zero_corner(self):
+        """P0-02: x*sign(x) is |x|, has left slope -1, right slope 1, not y = 0."""
+        res = compute_tangent("x*sign(x)", 0)
+        assert res["ok"] is True
+        assert res["status"] == "non_differentiable"
+        assert res["result"] is None
+        assert "does not exist" in res["latex"]
+
+    def test_p0_02_discontinuous_piecewise_and_sign(self):
+        """P0-02: Discontinuous piecewise and sign functions have no tangent line."""
+        res_pw = compute_tangent("Piecewise((0, x < 0), (1, True))", 0)
+        assert res_pw["ok"] is True
+        assert res_pw["status"] == "non_differentiable"
+        assert res_pw["result"] is None
+
+        res_sgn = compute_tangent("sign(x)", 0)
+        assert res_sgn["ok"] is True
+        assert res_sgn["status"] == "non_differentiable"
+        assert res_sgn["result"] is None
+
+    def test_p0_02_sqrt_at_zero_vertical_tangent(self):
+        """P0-02: sqrt(x) at 0 has right-sided vertical tangent x = 0."""
+        res = compute_tangent("sqrt(x)", 0)
+        assert res["ok"] is True
+        assert res["status"] == "non_differentiable"
+        assert res["is_vertical"] is True
+        assert res["latex"] == "x = 0"
+        assert any("แนวดิ่ง" in s for s in res["steps"])

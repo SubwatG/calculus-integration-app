@@ -86,3 +86,102 @@ def test_plotter_supports_arbitrary_variables():
     assert ax5.get_xlabel() == "y"
     plt.close(fig5)
 
+
+def test_interactive_plotly_functions():
+    from utils.plotter import (
+        plot_riemann_plotly,
+        plot_tangent_plotly,
+        plot_limit_plotly,
+        plot_volume_plotly,
+        plot_improper_plotly,
+        plot_area_between_plotly,
+    )
+    x = sp.Symbol("x")
+
+    fig_riemann = plot_riemann_plotly(x**2, 0.0, 2.0, n=5, method="midpoint", exact=8/3)
+    assert fig_riemann is not None
+    assert len(fig_riemann.data) >= 2
+
+    fig_tangent = plot_tangent_plotly(x**2, 1.0, slope=2.0)
+    assert fig_tangent is not None
+    assert len(fig_tangent.data) >= 2
+
+    fig_limit = plot_limit_plotly((x**2 - 1)/(x - 1), 1.0, delta=0.2)
+    assert fig_limit is not None
+    assert len(fig_limit.data) >= 2
+
+    fig_vol = plot_volume_plotly(sp.sqrt(x), 0.0, 1.0, method="washer", inner_expr=x**2)
+    assert fig_vol is not None
+    assert len(fig_vol.data) >= 4
+
+    fig_improper = plot_improper_plotly(1/x**2, 1.0, "oo")
+    assert fig_improper is not None
+    assert len(fig_improper.data) >= 2
+
+    fig_area = plot_area_between_plotly(x, x**2, 0.0, 1.0, crossings=[0.0, 1.0])
+    assert fig_area is not None
+    assert len(fig_area.data) >= 3
+
+
+def test_plot_tangent_invalid_inputs_raise_value_error():
+    from utils.plotter import plot_tangent, plot_tangent_plotly
+    x = sp.Symbol("x")
+
+    # Invalid non-numeric point a
+    with pytest.raises(ValueError, match="ไม่สามารถแปลงจุดสัมผัส"):
+        plot_tangent(x**2, "invalid_point")
+    with pytest.raises(ValueError, match="ไม่สามารถแปลงจุดสัมผัส"):
+        plot_tangent_plotly(x**2, "invalid_point")
+
+    # Point not in real domain of f(a)
+    with pytest.raises(ValueError, match="ไม่สามารถคำนวณพิกัด f"):
+        plot_tangent(1 / x, 0.0)
+    with pytest.raises(ValueError, match="ไม่สามารถคำนวณพิกัด f"):
+        plot_tangent_plotly(1 / x, 0.0)
+
+
+def test_plot_limit_invalid_inputs_raise_value_error():
+    from utils.plotter import plot_limit_near, plot_limit_plotly
+    x = sp.Symbol("x")
+
+    # Invalid unparseable point a
+    with pytest.raises(ValueError, match="ไม่สามารถแปลงจุดเข้าใกล้"):
+        plot_limit_near(x**2, "not_a_number")
+    with pytest.raises(ValueError, match="ไม่สามารถแปลงจุดเข้าใกล้"):
+        plot_limit_plotly(x**2, "not_a_number")
+
+
+def test_apply_default_layout_and_require_plotly():
+    import plotly.graph_objects as go
+    from utils.plotter import _apply_default_layout, _require_plotly
+    import utils.plotter as plotter_mod
+
+    # Verify default layout application
+    fig = go.Figure()
+    _apply_default_layout(fig, title="Test Plot", xaxis_title="u", yaxis_title="v", height=450)
+    assert fig.layout.title.text == "Test Plot"
+    assert fig.layout.xaxis.title.text == "u"
+    assert fig.layout.yaxis.title.text == "v"
+    assert fig.layout.template is not None
+    assert fig.layout.height == 450
+    assert fig.layout.margin.l == 40
+    assert fig.layout.legend.orientation == "h"
+
+    # Verify _require_plotly succeeds when available
+    _require_plotly()
+
+    # Verify _require_plotly raises ImportError when unavailable
+    orig_has = plotter_mod.HAS_PLOTLY
+    orig_go = plotter_mod.go
+    try:
+        plotter_mod.HAS_PLOTLY = False
+        plotter_mod.go = None
+        with pytest.raises(ImportError, match="Plotly is required"):
+            _require_plotly()
+    finally:
+        plotter_mod.HAS_PLOTLY = orig_has
+        plotter_mod.go = orig_go
+
+
+
+

@@ -139,8 +139,8 @@ class TestPedagogicalHierarchy:
         assert res["result"] == 7.0
         text = _steps_text(res)
         assert "การแทนค่าโดยตรง" in text
-        assert "f(2)" in text          # แสดงการคำนวณ f(a)
-        # ต้องไม่ใช้ข้อความสองด้านแบบแข็งทื่อ
+        assert "f(2)" in text          # Displays computation of f(a)
+        # Must not use rigid two-sided boilerplate text
         assert "พิจารณาลิมิตทางซ้าย" not in text
         assert "พิจารณาลิมิตทางขวา" not in text
 
@@ -159,17 +159,17 @@ class TestPedagogicalHierarchy:
         assert res["status"] == "finite"
         assert res["result"] == 6.0
         text = _steps_text(res)
-        assert "ยังไม่กำหนด" in text                     # ระบุ Indeterminate Form
-        assert "\\frac{0}{0}" in text                    # แสดงการแทนค่าเบื้องต้น = 0/0
+        assert "ยังไม่กำหนด" in text                     # Identifies Indeterminate Form
+        assert "\\frac{0}{0}" in text                    # Shows initial evaluation = 0/0
 
     def test_level2_indeterminate_factoring_and_cancelling(self):
         res = compute_limit_near("(x**2-9)/(x-3)", 3)
         text = _steps_text(res)
         assert "แยกตัวประกอบ" in text
         assert "ตัดทอน" in text
-        assert "x - 3" in text                           # เห็นตัวร่วมที่ถูกตัดทอน
-        assert "x - 3" in text and "x + 3" in text       # ตัวประกอบของเศษและตัวส่วน
-        # ไม่ใช้ข้อความสองด้านแบบแข็งทื่อกับโจทย์ 0/0 ที่แยกตัวประกอบได้
+        assert "x - 3" in text                           # Shows cancelled common factor
+        assert "x - 3" in text and "x + 3" in text       # Factors of numerator and denominator
+        # Do not use rigid two-sided boilerplate for factorable 0/0 problems
         assert "พิจารณาลิมิตทางซ้าย" not in text
         assert "พิจารณาลิมิตทางขวา" not in text
 
@@ -177,7 +177,7 @@ class TestPedagogicalHierarchy:
         res = compute_limit_near("(x**2-4)/(x-2)", 2)
         assert res["result"] == 4.0
         text = _steps_text(res)
-        assert "x \\neq 2" in text                       # เหตุผลว่าตัดทอนได้เพราะ x != 2
+        assert "x \\neq 2" in text                       # Justification that cancellation holds because x != 2
         assert "\\lim_{x \\to 2}" in text
         assert res["latex"].endswith("= 4")
 
@@ -197,7 +197,7 @@ class TestPedagogicalHierarchy:
         text = _steps_text(res)
         assert "ตรีโกณมิติ" in text
         assert "Squeeze" in text or "ทฤษฎีบทบีบ" in text
-        assert "แยกตัวประกอบ" not in text                # ไม่ใช่เส้นทาง 0/0 แบบแยกตัวประกอบ
+        assert "แยกตัวประกอบ" not in text                # Not a factorable 0/0 route
 
     def test_level3_special_trig_limit_with_coefficient(self):
         res = compute_limit_near("sin(3*x)/x", 0)
@@ -251,7 +251,7 @@ class TestPedagogicalHierarchy:
         assert res["result"] == 0.0
         assert "ค่าสัมบูรณ์" in _steps_text(res)
 
-    # ---------------- Level 6 & 7: ต้องคงเดิม ----------------
+    # ---------------- Level 6 & 7: Preserved ----------------
     def test_level6_oscillating_intact(self):
         res = compute_limit_near("sin(1/x)", 0)
         assert res["is_oscillating"] is True
@@ -272,7 +272,7 @@ class TestPedagogicalHierarchy:
         assert res["result"] == 0.0
         assert "End Behavior" in _steps_text(res)
 
-    # ---------------- ความสมบูรณ์ของ LaTeX ในขั้นตอน ----------------
+    # ---------------- LaTeX Step Integrity ----------------
     def test_steps_latex_delimiters_balanced(self):
         cases = [
             ("(x**2-4)/(x-2)", 2),
@@ -298,3 +298,13 @@ class TestPedagogicalHierarchy:
         for expr, a in [("(x**2-4)/(x-2)", 2), ("1/x", 0), ("sin(1/x)", 0), ("sqrt(x)", 0)]:
             res = compute_limit_near(expr, a)
             assert "กำหนดโจทย์ลิมิต" in res["steps"][0]
+
+    def test_p0_03_two_to_the_one_over_x_at_zero(self):
+        """P0-03: 2**(1/x) at 0 has left limit 0, right limit oo, overall limit dne."""
+        res = compute_limit_near("2**(1/x)", 0)
+        assert res["ok"] is True
+        assert res["status"] == "dne"
+        assert res["left_limit"] == 0
+        assert res["right_limit"] == sp.oo
+        assert res["result"] is None
+        assert "does not exist" in res["latex"]

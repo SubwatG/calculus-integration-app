@@ -3,7 +3,7 @@ from utils.theme import render_hero
 
 render_hero(
     "Calculus Learning Sandbox",
-    "เว็บแอปพลิเคชันสำหรับฝึกมโนทัศน์แคลคูลัสผ่านกราฟเชิงโต้ตอบและการคำนวณทีละขั้น",
+    "เว็บแอปพลิเคชันสำหรับฝึกฝนและเรียนรู้แคลคูลัสผ่านกราฟเชิงโต้ตอบและการคำนวณทีละขั้น",
 )
 
 st.markdown(
@@ -73,11 +73,11 @@ st.markdown(
         <div style="display: flex; align-items: center; gap: 8px;">
             <span class="material-symbols-rounded" style="font-size: 24px; color: #D97706;">lightbulb</span>
             <span style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 14px; font-weight: 700; color: #18181B;">
-                สำรวจมโนทัศน์แคลคูลัสผ่านกราฟแบบอินเทอร์แอ็กทิฟและการแก้โจทย์ทีละขั้น
+                สำรวจบทเรียนแคลคูลัสผ่านกราฟแบบอินเทอร์แอ็กทิฟและการแก้โจทย์ทีละขั้น
             </span>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span class="home-stat-pill">7 โมดูลจำลอง</span>
+            <span class="home-stat-pill">6 หัวข้อจำลอง</span>
             <span class="home-stat-pill">SymPy CAS</span>
             <span class="home-stat-pill">80 ข้อสอบ</span>
             <span class="home-stat-pill">KU KPS</span>
@@ -89,14 +89,14 @@ st.markdown(
 
 search_query = st.text_input(
     label="ค้นหาบทเรียนหรือเครื่องมือ...",
-    placeholder="พิมพ์เพื่อค้นหา เช่น ลิมิต, รีมันน์, ปริมาตร, u-sub...",
+    placeholder="พิมพ์เพื่อค้นหา เช่น ลิมิต, การแทนตัวแปร, อินทิเกรตทีละส่วน...",
     key="home_search",
 )
 
 cards_data = [
     {
-        "title": "1. ลิมิตเข้าใกล้จุด",
-        "subtitle": "สำรวจการลู่เข้า ลิมิตสองด้าน และรูปแบบไม่กำหนด (Indeterminate Forms)",
+        "title": "1. ลิมิต",
+        "subtitle": "สำรวจการลู่เข้า ลิมิตสองด้าน และรูปแบบยังไม่กำหนด",
         "badge": "บทเรียนที่ 1 • แคลคูลัส 1",
         "badge_color": "#FECDD3",
         "btn_label": "เข้าสู่บทเรียนที่ 1",
@@ -113,22 +113,22 @@ cards_data = [
         "key": "btn_card_tangent",
     },
     {
-        "title": "3. ผลรวมรีมันน์ (Riemann Sum)",
-        "subtitle": "จำลองพื้นที่ใต้กราฟด้วยแท่งสี่เหลี่ยมและการลู่เข้าสู่ค่าอินทิกรัลจริง",
-        "badge": "บทเรียนที่ 3 • ปริพันธ์",
-        "badge_color": "#BAE6FD",
-        "btn_label": "เข้าสู่บทเรียนที่ 3",
-        "target": "pages/riemann.py",
-        "key": "btn_card_riemann",
-    },
-    {
-        "title": "4. เทคนิคการอินทิเกรต",
-        "subtitle": "ฝึกตัดสินใจเลือกตัวแปร u-Substitution และ Integration by Parts",
-        "badge": "บทเรียนที่ 4 • เทคนิคอินทิเกรต",
+        "title": "3. อินทิเกรตโดยการแทนตัวแปร",
+        "subtitle": "ฝึกตัดสินใจเลือกตัวแปร u และ du เพื่อลดทอนรูปอินทิกรัลให้เป็นรูปพื้นฐาน",
+        "badge": "บทเรียนที่ 3 • u-Substitution",
         "badge_color": "#BBF7D0",
-        "btn_label": "เข้าสู่บทเรียนที่ 4",
+        "btn_label": "เข้าสู่บทเรียนที่ 3",
         "target": "pages/substitution.py",
         "key": "btn_card_sub",
+    },
+    {
+        "title": "4. การอินทิเกรตทีละส่วน",
+        "subtitle": "หลักการเลือก u และ dv ตามกฎ LIATE พร้อมเทคนิคการอินทิเกรตแบบวนลูป",
+        "badge": "บทเรียนที่ 4 • By Parts",
+        "badge_color": "#BAE6FD",
+        "btn_label": "เข้าสู่บทเรียนที่ 4",
+        "target": "pages/by_parts.py",
+        "key": "btn_card_by_parts",
     },
     {
         "title": "5. พื้นที่ระหว่างเส้นโค้ง",
@@ -140,20 +140,11 @@ cards_data = [
         "key": "btn_card_area",
     },
     {
-        "title": "6. ปริมาตรของรูปทรงตัน",
-        "subtitle": "คำนวณปริมาตรทรงตันที่เกิดจากการหมุนรอบแกนด้วยวิธีจาน (Disk Method)",
-        "badge": "บทเรียนที่ 6 • ปริมาตรหมุน",
-        "badge_color": "#E9D5FF",
-        "btn_label": "เข้าสู่บทเรียนที่ 6",
-        "target": "pages/volume_revolution.py",
-        "key": "btn_card_volume",
-    },
-    {
-        "title": "7. ปริพันธ์ไม่ตรงแบบ",
-        "subtitle": "สำรวจการลู่เข้าหรือลู่ออกบนช่วงอนันต์และจุดเอกฐาน (Singularities)",
-        "badge": "บทเรียนที่ 7 • ปริพันธ์ขั้นสูง",
+        "title": "6. ปริพันธ์ไม่ตรงแบบ",
+        "subtitle": "สำรวจการลู่เข้าหรือลู่ออกบนช่วงอนันต์และจุดที่ฟังก์ชันไม่ต่อเนื่อง",
+        "badge": "บทเรียนที่ 6 • ปริพันธ์ขั้นสูง",
         "badge_color": "#FBCFE8",
-        "btn_label": "เข้าสู่บทเรียนที่ 7",
+        "btn_label": "เข้าสู่บทเรียนที่ 6",
         "target": "pages/improper_integrals.py",
         "key": "btn_card_improper",
     },
@@ -167,7 +158,7 @@ cards_data = [
         "key": "btn_card_solver",
     },
     {
-        "title": "แบบทดสอบมโนทัศน์ (80 ข้อ)",
+        "title": "แบบทดสอบความเข้าใจ (80 ข้อ)",
         "subtitle": "ฝึกคิด 80 ข้อ ครอบคลุม 8 บทเรียน พร้อมระบบคำใบ้และสุ่มตัวเลือก",
         "badge": "วัดระดับทักษะ • มีคำใบ้",
         "badge_color": "#BAE6FD",
@@ -187,22 +178,23 @@ filtered_cards = [
 ]
 
 if filtered_cards:
-    col1, col2 = st.columns(2)
-    for idx, card in enumerate(filtered_cards):
-        col = col1 if idx % 2 == 0 else col2
-        with col:
-            with st.container(border=True):
-                st.markdown(
-                    f"<span class='card-category-badge' style='background-color: {card.get('badge_color', '#FEF08A')};'>{card.get('badge', 'บทเรียน')}</span>",
-                    unsafe_allow_html=True,
-                )
-                st.markdown(f"### {card['title']}")
-                st.markdown(
-                    f"<p style='color: #475569; font-size: 14px; margin-top: -6px; line-height: 1.5;'>{card['subtitle']}</p>",
-                    unsafe_allow_html=True,
-                )
-                if st.button(card["btn_label"], icon=":material/arrow_forward:", key=card["key"], use_container_width=True):
-                    st.switch_page(card["target"])
+    for i in range(0, len(filtered_cards), 2):
+        row_cards = filtered_cards[i : i + 2]
+        cols = st.columns(2)
+        for j, card in enumerate(row_cards):
+            with cols[j]:
+                with st.container(border=True):
+                    st.markdown(
+                        f"<div style='margin-bottom: 2px;'><span class='card-category-badge' style='background-color: {card.get('badge_color', '#FEF08A')};'>{card.get('badge', 'บทเรียน')}</span></div>",
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(f"#### {card['title']}")
+                    st.markdown(
+                        f"<p style='color: #475569; font-size: 13.5px; margin-top: -6px; margin-bottom: 8px; line-height: 1.4;'>{card['subtitle']}</p>",
+                        unsafe_allow_html=True,
+                    )
+                    if st.button(card["btn_label"], icon=":material/arrow_forward:", key=card["key"], use_container_width=True):
+                        st.switch_page(card["target"])
 else:
     st.info("ไม่พบเมนูหรือบทเรียนที่ตรงกับคำค้นหา ลองใช้คำอื่น", icon=":material/search:")
 
@@ -227,7 +219,7 @@ else:
             """
             <div style="background-color: #FFFFFF; border: 2px dashed #94A3B8; border-radius: 12px; padding: 12px 18px;">
                 <span style="font-family: 'Fredoka', 'Mali', sans-serif; font-size: 14px; font-weight: 600; color: #475569;">
-                    ยังไม่มีบันทึกคะแนนในเซสชันนี้ ทำแบบทดสอบมโนทัศน์เพื่อบันทึกผล
+                    ยังไม่มีบันทึกคะแนนในเซสชันนี้ ทำแบบทดสอบเพื่อบันทึกผล
                 </span>
             </div>
             """,

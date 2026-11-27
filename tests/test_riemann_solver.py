@@ -12,14 +12,14 @@ from utils.riemann_solver import METHODS, compute_riemann
 class TestRiemannLeft:
     def test_x_squared_0_to_2_n2(self):
         # f(x)=x^2, [0,2], n=2, left
-        # Δx=1, จุด 0,1 → f(0)=0, f(1)=1 → ผลรวม=1
+        # dx=1, points 0, 1 -> f(0)=0, f(1)=1 -> sum=1
         res = compute_riemann("x**2", 0, 2, 2, "left")
         assert res["ok"] is True
         assert abs(res["result"] - 1.0) < 1e-9
         assert len(res["steps"]) >= 4
 
     def test_constant_function(self):
-        # f(x)=5, [0,4], n=4, left → แต่ละช่อง 5*1 → รวม 20
+        # f(x)=5, [0,4], n=4, left -> each box 5*1 -> total 20
         res = compute_riemann("5", 0, 4, 4, "left")
         assert res["ok"] is True
         assert abs(res["result"] - 20.0) < 1e-9
@@ -27,7 +27,7 @@ class TestRiemannLeft:
 
 class TestRiemannRight:
     def test_x_squared_0_to_2_n2(self):
-        # Δx=1, จุด 1,2 → f(1)=1, f(2)=4 → ผลรวม=5
+        # dx=1, points 1, 2 -> f(1)=1, f(2)=4 -> sum=5
         res = compute_riemann("x**2", 0, 2, 2, "right")
         assert res["ok"] is True
         assert abs(res["result"] - 5.0) < 1e-9
@@ -35,13 +35,13 @@ class TestRiemannRight:
 
 class TestRiemannMidpoint:
     def test_x_squared_0_to_2_n2(self):
-        # Δx=1, จุด 0.5,1.5 → f=0.25, 2.25 → ผลรวม=2.5
+        # dx=1, points 0.5, 1.5 -> f=0.25, 2.25 -> sum=2.5
         res = compute_riemann("x**2", 0, 2, 2, "midpoint")
         assert res["ok"] is True
         assert abs(res["result"] - 2.5) < 1e-9
 
     def test_midpoint_more_accurate(self):
-        # n=50 midpoint ควรใกล้ค่าจริง 8/3 ≈ 2.6667
+        # n=50 midpoint should be close to exact value 8/3 ~ 2.6667
         res = compute_riemann("x**2", 0, 2, 50, "midpoint")
         assert res["ok"] is True
         assert abs(res["result"] - 8 / 3) < 0.01
@@ -92,7 +92,7 @@ class TestMethodsCatalog:
     def test_has_three_methods(self):
         assert set(METHODS.keys()) == {"left", "right", "midpoint"}
         for k, v in METHODS.items():
-            assert len(v) == 2  # (ชื่อไทย, latex subscript)
+            assert len(v) == 2  # (Thai display name, latex subscript)
 
     def test_riemann_supports_variable_t(self):
         res = compute_riemann("t**2", 0, 2, 2, "left")
@@ -106,18 +106,18 @@ class TestRiemannConceptualObservation:
     def test_left_step6_has_subscript_ln(self):
         res = compute_riemann("x**2", 0, 2, 2, "left")
         assert res["ok"] is True
-        obs_step = [s for s in res["steps"] if "ข้อสังเกตมโนทัศน์" in s][0]
+        obs_step = [s for s in res["steps"] if "ข้อสังเกตเชิงแนวคิด" in s][0]
         assert "$L_n$" in obs_step
 
     def test_right_step6_has_subscript_rn(self):
         res = compute_riemann("x**2", 0, 2, 2, "right")
         assert res["ok"] is True
-        obs_step = [s for s in res["steps"] if "ข้อสังเกตมโนทัศน์" in s][0]
+        obs_step = [s for s in res["steps"] if "ข้อสังเกตเชิงแนวคิด" in s][0]
         assert "$R_n$" in obs_step
 
     def test_midpoint_step6_has_subscript_mn(self):
         res = compute_riemann("x**2", 0, 2, 2, "midpoint")
         assert res["ok"] is True
-        obs_step = [s for s in res["steps"] if "ข้อสังเกตมโนทัศน์" in s][0]
+        obs_step = [s for s in res["steps"] if "ข้อสังเกตเชิงแนวคิด" in s][0]
         assert "$M_n$" in obs_step
 

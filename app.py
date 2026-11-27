@@ -20,31 +20,34 @@ def initialize_session_state() -> None:
 initialize_session_state()
 
 # -----------------------------------------------------------------------------
-# 1. ภาพรวมระบบ (Overview)
+# 1. System Overview
 # -----------------------------------------------------------------------------
 home_page = st.Page("pages/home.py", title="หน้าหลัก", icon=":material/home:")
 lessons_page = st.Page("pages/lessons.py", title="ภาพรวมบทเรียนและทฤษฎี", icon=":material/menu_book:")
 
 # -----------------------------------------------------------------------------
-# 2. โมดูลการเรียนรู้ (ลำดับตามหลักสูตรแคลคูลัส)
+# 2. Learning Topics (6 syllabus topics)
 # -----------------------------------------------------------------------------
-limit_page = st.Page("pages/limit_approach.py", title="1. ลิมิตเข้าใกล้จุด", icon=":material/adjust:")
+limit_page = st.Page("pages/limit_approach.py", title="1. ลิมิต", icon=":material/adjust:")
 tangent_page = st.Page("pages/tangent.py", title="2. เส้นสัมผัสและอนุพันธ์", icon=":material/trending_up:")
-riemann_page = st.Page("pages/riemann.py", title="3. ผลรวมรีมันน์ (พื้นที่ใต้กราฟ)", icon=":material/bar_chart:")
-substitution_page = st.Page("pages/substitution.py", title="4. เทคนิคการอินทิเกรต (u-Sub & By Parts)", icon=":material/sync:")
+substitution_page = st.Page("pages/substitution.py", title="3. อินทิเกรตโดยการแทนตัวแปร", icon=":material/sync:")
+by_parts_page = st.Page("pages/by_parts.py", title="4. การอินทิเกรตทีละส่วน", icon=":material/call_split:")
 area_between_page = st.Page("pages/area_between.py", title="5. พื้นที่ระหว่างเส้นโค้ง", icon=":material/area_chart:")
-volume_page = st.Page("pages/volume_revolution.py", title="6. ปริมาตรของรูปทรงตัน", icon=":material/rotate_right:")
-improper_page = st.Page("pages/improper_integrals.py", title="7. ปริพันธ์ไม่ตรงแบบ", icon=":material/all_inclusive:")
+improper_page = st.Page("pages/improper_integrals.py", title="6. ปริพันธ์ไม่ตรงแบบ", icon=":material/all_inclusive:")
+
+# Hidden pages retained in project but omitted from menu navigation
+riemann_page = st.Page("pages/riemann.py", title="ผลรวมรีมันน์", icon=":material/bar_chart:")
+volume_page = st.Page("pages/volume_revolution.py", title="ปริมาตรของรูปทรงตัน", icon=":material/rotate_right:")
 
 # -----------------------------------------------------------------------------
-# 3. เครื่องมือและการประเมิน (Tools & Assessment)
+# 3. Tools & Assessment
 # -----------------------------------------------------------------------------
 solver_page = st.Page("pages/solver.py", title="เครื่องคิดเลขสัญลักษณ์ SymPy", icon=":material/calculate:")
-quiz_page = st.Page("pages/quiz.py", title="แบบทดสอบมโนทัศน์ (มีคำใบ้)", icon=":material/lightbulb:")
+quiz_page = st.Page("pages/quiz.py", title="แบบทดสอบความเข้าใจ (มีคำใบ้)", icon=":material/lightbulb:")
 survey_page = st.Page("pages/survey.py", title="แบบประเมินความพึงพอใจ (SUS)", icon=":material/rate_review:")
 
 # -----------------------------------------------------------------------------
-# 4. ข้อมูลระบบ (System Info)
+# 4. System Info
 # -----------------------------------------------------------------------------
 history_page = st.Page("pages/history.py", title="ประวัติคะแนนในเซสชัน", icon=":material/history:")
 help_page = st.Page("pages/help.py", title="คู่มือการใช้งานและโครงงาน", icon=":material/help:")
@@ -53,13 +56,12 @@ creators_page = st.Page("pages/creators.py", title="ประวัติคณ�
 pg = st.navigation(
     {
         "ภาพรวมระบบ": [home_page, lessons_page],
-        "โมดูลการเรียนรู้": [
+        "หัวข้อการเรียนรู้": [
             limit_page,
             tangent_page,
-            riemann_page,
             substitution_page,
+            by_parts_page,
             area_between_page,
-            volume_page,
             improper_page,
         ],
         "เครื่องมือและการประเมิน": [solver_page, quiz_page, survey_page],

@@ -6,7 +6,7 @@
 import streamlit as st
 
 from utils.math_render import preview_math_expr, render_latex, render_syntax_guide, render_steps
-from utils.plotter import plot_volume
+from utils.plotter import plot_volume, plot_volume_plotly
 from utils.riemann_solver import X
 from utils.theme import render_hero
 from utils.theory import THEORY_CONTENT
@@ -28,7 +28,7 @@ if "volume_inner" not in st.session_state:
 theory = THEORY_CONTENT["volume"]
 
 # ---------------------------------------------------------------------------
-# Concept Anchor & What to Observe (มโนทัศน์หลักและจุดสังเกต)
+# Concept Anchor & What to Observe
 # ---------------------------------------------------------------------------
 with st.container(border=True):
     col_badge, col_concept = st.columns([1, 4])
@@ -44,22 +44,21 @@ with st.container(border=True):
                 font-weight: 700;
                 color: #18181B;
                 display: inline-block;
-            ">มโนทัศน์หลัก</span>""",
+            ">หลักการสำคัญ</span>""",
             unsafe_allow_html=True,
         )
     with col_concept:
         st.markdown("**ปริมาตรของรูปทรงตันจากการหมุน (Disk & Washer Methods)**")
 
-    st.markdown(
-        "ปริมาตรรูปทรงตันเกิดจากการสะสมพื้นที่หน้าตัดวงกลม $\\pi R^2$ (วิธีจาน) หรือวงแหวน $\\pi(R^2 - r^2)$ (วิธีวงแหวน) หมุนรอบแกน:"
-    )
-
     st.latex(r"V_{\text{Disk}} = \pi \int_a^b [R(x)]^2\,dx \qquad V_{\text{Washer}} = \pi \int_a^b \left([R(x)]^2 - [r(x)]^2\right)\,dx")
 
-    st.info(
-        """**จุดที่ควรสังเกตขณะทดลองด้านล่าง:**
-- **จานตัน vs วงแหวนกลวง:** หากพื้นที่แนบสนิทกับแกนหมุนจะไม่มีรูตรงกลาง (ใช้ Disk) หากมีช่องว่างระหว่างกราฟกับแกนหมุนจะเกิดรูกลวง (ใช้ Washer)
-- **กับดักเลขยกกำลังสอง:** สูตร Washer คือ $\\pi (R^2 - r^2)$ ไม่ใช่ $\\pi (R - r)^2$ (ต้องนำแต่ละรัศมียกกำลังสองแยกกันก่อนลบ)"""
+    st.markdown(
+        """
+| วิธีการคำนวณ | ลักษณะรูปทรงตัน | สูตรปริมาตรจากการหมุน |
+| :---: | :--- | :--- |
+| วิธีจาน (Disk) | พื้นที่แนบสนิทกับแกนหมุน (ไม่มีรูตรงกลาง) | $V = \\pi \\int_a^b [R(x)]^2\\,dx$ |
+| วิธีวงแหวน (Washer) | มีช่องว่างระหว่างกราฟกับแกนหมุน (มีรูกลวง) | $V = \\pi \\int_a^b \\left([R(x)]^2 - [r(x)]^2\\right)\\,dx$ |
+        """
     )
 
 with st.expander("รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม", expanded=False):
@@ -153,10 +152,15 @@ else:
 
         st.markdown("### ภาพตัดขวางทรงตันและการหมุนรอบแกน")
         try:
-            fig, ax = plot_volume(res["expr"], a_val, b_val, method_label, inner_expr=res.get("inner_expr"))
-            st.pyplot(fig)
+            fig_plotly = plot_volume_plotly(res["expr"], a_val, b_val, method_label, inner_expr=res.get("inner_expr"))
+            st.plotly_chart(fig_plotly, use_container_width=True, config={"scrollZoom": True, "displayModeBar": True})
         except Exception as e:
-            st.warning(f"ไม่สามารถวาดกราฟได้: {e}")
+            st.warning("แสดงผลกราฟ interactive ขัดข้อง กำลังสลับไปใช้กราฟสำรอง")
+            try:
+                fig, ax = plot_volume(res["expr"], a_val, b_val, method_label, inner_expr=res.get("inner_expr"))
+                st.pyplot(fig)
+            except Exception as e2:
+                st.warning(f"ไม่สามารถวาดกราฟได้: {e2}")
 
         render_steps(res["steps"])
     else:

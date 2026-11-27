@@ -1,10 +1,10 @@
 """
-utils/riemann_solver.py — คำนวณผลรวมรีมันน์ (Riemann sum) ทีละขั้น
+utils/riemann_solver.py: Step-by-step Riemann sum solver.
 
-สำหรับบทเรียน interactive 3.1 พื้นที่ภายใต้เส้นโค้ง
-ใช้ SymPy แปลงนิพจน์จากผู้ใช้ เหมือน utils/sympy_solver.py
+For interactive lesson 3.1: Area under curve.
+Uses SymPy to parse user mathematical expressions.
 
-รองรับ 3 วิธี:
+Supports 3 methods:
   - left     : L_n = sum_{i=0}^{n-1} f(x_i) Δx , x_i = a + iΔx
   - right    : R_n = sum_{i=1}^{n}   f(x_i) Δx , x_i = a + iΔx
   - midpoint : M_n = sum_{i=0}^{n-1} f(x̄_i) Δx , x̄_i = a + (i+0.5)Δx
@@ -12,6 +12,7 @@ utils/riemann_solver.py — คำนวณผลรวมรีมันน์ 
 
 from typing import Any
 import math
+import re
 
 import sympy as sp
 from sympy.parsing.sympy_parser import (
@@ -22,7 +23,7 @@ from sympy.parsing.sympy_parser import (
 )
 from utils.sympy_solver import sanitize_math_input
 
-# NOTE: ห้ามใส่ auto_symbol — พังใน sympy 1.14.0 (เหมือน sympy_solver.py)
+# NOTE: Do not use auto_symbol - broken in sympy 1.14.0 (same as sympy_solver.py)
 TRANSFORMATIONS = standard_transformations + (
     implicit_multiplication_application,
     convert_xor,
@@ -39,11 +40,20 @@ X = sp.Symbol("x")
 
 from utils.sympy_solver import _clean_calculus_input, _get_variable
 
-# วิธีที่รองรับ: key -> (ชื่อไทย, latex subscript ที่ใช้ในสูตร)
+
+def _to_latex(sym_obj) -> str:
+    lat = sp.latex(sym_obj, inv_trig_style="full")
+    lat = lat.replace(r"\log", r"\ln")
+    lat = re.sub(r"\\operatorname\{a(sin|cos|tan)\}", r"\\arc\1", lat)
+    lat = re.sub(r"\\operatorname\{arc(cot|sec|csc)\}", r"\\arc\1", lat)
+    lat = re.sub(r"(?<![a-zA-Z\\])a(sin|cos|tan)(?=\s*[\(\{\[_0-9]|\b)", r"\\arc\1", lat)
+    return lat
+
+# Supported methods: key -> (Thai display name, latex subscript used in formula)
 METHODS = {
-    "left": ("ซ้าย (left)", r"L_n"),
-    "right": ("ขวา (right)", r"R_n"),
-    "midpoint": ("จุดกึ่งกลาง (midpoint)", r"M_n"),
+    "left": ("จุดปลายซ้าย", r"L_n"),
+    "right": ("จุดปลายขวา", r"R_n"),
+    "midpoint": ("จุดกึ่งกลาง", r"M_n"),
 }
 
 
@@ -53,14 +63,14 @@ def _parse_input(expr_str: str) -> sp.Expr:
 
 
 def _fmt_num(x: float) -> str:
-    """จัดรูปแบบตัวเลขให้สั้น ไม่มีเลขศูนย์เกินจำเป็น"""
+    """Format number concisely without redundant trailing zeros."""
     if abs(x - round(x)) < 1e-9:
         return str(int(round(x)))
     return f"{x:.4f}".rstrip("0").rstrip(".")
 
 
 def _point_latex(expr: sp.Expr, x_val: float, var: sp.Symbol = X) -> str:
-    """LaTeX ของ f(x_i) เมื่อแทนค่าแล้ว"""
+    """Format evaluated f(x_i) as LaTeX string."""
     val = float(expr.subs(var, x_val))
     return _fmt_num(val)
 
@@ -72,7 +82,7 @@ def compute_riemann(
     n: int | float,
     method: str = "left",
 ) -> dict[str, Any]:
-    """คำนวณผลรวมรีมันน์และคืน steps เป็น LaTeX
+    """Compute Riemann sum and return steps in LaTeX.
 
     Returns dict {ok, result, latex, steps, error}
     """
@@ -83,7 +93,7 @@ def compute_riemann(
             var_sym = sp.Symbol(diff_var)
         else:
             var_sym = _get_variable(expr)
-        v_lat = sp.latex(var_sym)
+        v_lat = _to_latex(var_sym)
 
         a_f, b_f = float(a), float(b)
         try:
@@ -101,7 +111,7 @@ def compute_riemann(
         dx = (b_f - a_f) / n_i
         method_latex = METHODS[method][1]
 
-        # ตรวจสอบจุดเอกฐานเชิงวิเคราะห์ (Analytic Pole Detection) บนช่วง [a, b]
+        # Analytic pole detection on interval [a, b]
         try:
             denom = sp.denom(sp.together(expr))
             if denom != 1 and denom != 1.0 and var_sym in denom.free_symbols:
@@ -112,14 +122,14 @@ def compute_riemann(
                         if a_f <= r_f <= b_f:
                             raise ValueError(
                                 f"ฟังก์ชันไม่ต่อเนื่องบนช่วง [{_fmt_num(a_f)}, {_fmt_num(b_f)}] "
-                                f"เนื่องจากมีจุดเอกฐาน (ตัวส่วนเป็นศูนย์) ที่ {v_lat} = {_fmt_num(r_f)}"
+                                f"เนื่องจากมีจุดไม่ต่อเนื่องแบบอนันต์ (หารด้วยศูนย์) ที่ {v_lat} = {_fmt_num(r_f)}"
                             )
         except ValueError:
             raise
         except Exception:
             pass
 
-        # หา sample points
+        # Compute sample points
         if method == "left":
             xs = [a_f + i * dx for i in range(n_i)]
         elif method == "right":
@@ -131,7 +141,7 @@ def compute_riemann(
         for xv in xs:
             val_sub = expr.subs(var_sym, xv)
             if val_sub in (sp.zoo, sp.oo, -sp.oo) or getattr(val_sub, "is_infinite", False):
-                raise ValueError(f"ฟังก์ชันมีจุดเอกฐาน (หารด้วยศูนย์) ที่จุดสุ่มตัวอย่าง {v_lat} = {_fmt_num(xv)}")
+                raise ValueError(f"ฟังก์ชันมีจุดไม่ต่อเนื่องแบบอนันต์ (หารด้วยศูนย์) ที่จุดสุ่มตัวอย่าง {v_lat} = {_fmt_num(xv)}")
             try:
                 f_val = float(val_sub.evalf())
                 if not math.isfinite(f_val):
@@ -157,7 +167,7 @@ def compute_riemann(
             exact_sym = sp.integrate(expr, (var_sym, sp.nsimplify(a_f), sp.nsimplify(b_f)))
             if exact_sym.is_number and exact_sym.is_real:
                 exact_val = float(exact_sym.evalf())
-                exact_latex = rf"\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {sp.latex(expr)}\,d{v_lat} = {sp.latex(exact_sym)}"
+                exact_latex = rf"\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {_to_latex(expr)}\,d{v_lat} = {_to_latex(exact_sym)}"
                 if not exact_sym.is_Integer:
                     exact_latex += rf" \approx {exact_val:.6f}"
                 error_signed = total - exact_val
@@ -259,10 +269,10 @@ def compute_riemann(
                     sym_sum_simp = sp.factor(sp.together(sym_sum))
                     sym_lim = sp.limit(sym_sum, sym_n, sp.oo)
                     analytical_limit = {
-                        "sum_rn_latex": sp.latex(sym_sum_simp),
-                        "limit_latex": sp.latex(sym_lim),
-                        "dx_sym_latex": sp.latex(sym_dx),
-                        "xi_sym_latex": sp.latex(sym_xi),
+                        "sum_rn_latex": _to_latex(sym_sum_simp),
+                        "limit_latex": _to_latex(sym_lim),
+                        "dx_sym_latex": _to_latex(sym_dx),
+                        "xi_sym_latex": _to_latex(sym_xi),
                     }
         except Exception:
             analytical_limit = None
@@ -270,7 +280,7 @@ def compute_riemann(
         # -------------------------------------------------------------------
         # 6. Step-by-Step LaTeX Explanation
         # -------------------------------------------------------------------
-        f_latex = sp.latex(expr)
+        f_latex = _to_latex(expr)
         term_strs = [f"f({_fmt_num(xv)})" for xv in xs]
         terms_latex = " + ".join(term_strs)
         if n_i > 8:
@@ -288,7 +298,7 @@ def compute_riemann(
 
         sample_symbol = rf"\bar{{{v_lat}}}_i" if method == "midpoint" else f"{v_lat}_i"
 
-        # สูตรจุดสุ่มตัวอย่างและสูตรซิกม่า
+        # Sample point formula and sigma formula
         if method == "left":
             sample_rule = f"{sample_symbol} = a + i\\,\\Delta {v_lat} \\quad (i = 0, 1, \\dots, {n_i-1})"
             sample_name = "ขอบซ้าย"
@@ -313,7 +323,7 @@ def compute_riemann(
 
         expanded_formula = f"= \\Delta {v_lat} \\left[ {terms_latex} \\right]"
 
-        # การแสดงจุดสุ่มตัวอย่าง
+        # Display sample points
         if n_i <= 8:
             pts_disp = ", ".join(_fmt_num(xv) for xv in xs)
             pts_latex = f"{sample_symbol} \\in \\{{{pts_disp}\\}}"
@@ -321,7 +331,7 @@ def compute_riemann(
             first_few = ", ".join(_fmt_num(xv) for xv in xs[:3])
             pts_latex = f"{sample_symbol} \\in \\{{{first_few}, \\dots, {_fmt_num(xs[-1])}\\}} \\quad (n = {n_i})"
 
-        # การแสดงค่าฟังก์ชันแต่ละจุด
+        # Display function values at sample points
         if n_i <= 6:
             f_eval_list = [f"f({_fmt_num(xv)}) = {_fmt_num(tv)}" for xv, tv in zip(xs, terms)]
             f_eval_str = ", \\quad ".join(f_eval_list)
@@ -339,21 +349,21 @@ def compute_riemann(
         sub_line = f"= ({_fmt_num(dx)}) \\cdot ({sum_h_str})"
         res_line = f"= {total:.6f}"
 
-        # เปรียบเทียบกับค่าจริงปริพันธ์จำกัดเขต
+        # Compare with exact definite integral value
         try:
             exact_sym = sp.integrate(expr, (var_sym, a_f, b_f))
             if getattr(exact_sym, "is_real", False) and getattr(exact_sym, "is_finite", False):
                 exact_val = float(exact_sym)
                 err_val = abs(total - exact_val)
                 comp_lines = (
-                    f"\\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {sp.latex(expr)}\\,d{v_lat} = "
-                    f"{sp.latex(exact_sym)} \\approx {exact_val:.6f}\n"
+                    f"\\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {_to_latex(expr)}\\,d{v_lat} = "
+                    f"{_to_latex(exact_sym)} \\approx {exact_val:.6f}\n"
                     f"|\\text{{Error}}| = |{total:.6f} - {exact_val:.6f}| = {err_val:.6f}"
                 )
             else:
-                comp_lines = f"\\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {sp.latex(expr)}\\,d{v_lat}"
+                comp_lines = f"\\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {_to_latex(expr)}\\,d{v_lat}"
         except Exception:
-            comp_lines = f"\\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {sp.latex(expr)}\\,d{v_lat}"
+            comp_lines = f"\\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {_to_latex(expr)}\\,d{v_lat}"
 
         if n_i <= 8:
             heights_eval_str = " + ".join(_fmt_num(t) for t in terms)
@@ -368,7 +378,7 @@ def compute_riemann(
             )
 
         if exact_val is not None:
-            dir_text = "ประเมินต่ำกว่าจริง (Underestimate)" if direction == "underestimate" else ("ประเมินสูงกว่าจริง (Overestimate)" if direction == "overestimate" else "ตรงกับค่าจริง")
+            dir_text = "ประเมินต่ำกว่าจริง" if direction == "underestimate" else ("ประเมินสูงกว่าจริง" if direction == "overestimate" else "ตรงกับค่าจริง")
             pct_text = f" หรือ {error_pct:+.2f}%" if error_pct is not None else " (ไม่นิยามร้อยละ เนื่องจากค่าจริงเป็น 0)"
             step5_text = (
                 f"ค่าประมาณและเทียบกับค่าจริง: ${method_latex} \\approx {total:.6f}$ โดยค่าจริงคือ ${exact_latex}$ "
@@ -378,34 +388,34 @@ def compute_riemann(
             step5_text = f"ค่าประมาณ: ${method_latex} \\approx {total:.6f}$"
 
         steps = [
-            f"คำนวณความกว้างของแต่ละช่วงย่อย (Subinterval Width: \\Delta {v_lat}): "
+            f"คำนวณความกว้างของแต่ละช่วงย่อย (\\Delta {v_lat}): "
             f"แบ่งช่วง $[a, b] = [{_fmt_num(a_f)}, {_fmt_num(b_f)}]$ ออกเป็น $n = {n_i}$ ช่วงย่อยเท่ากัน:\n"
             f"\\Delta {v_lat} = \\frac{{b - a}}{{n}} = \\frac{{{_fmt_num(b_f)} - {_fmt_num(a_f)}}}{{{n_i}}} = {_fmt_num(dx)}",
 
-            f"กำหนดจุดสุ่มตัวอย่าง{sample_name} (Sample Points): "
+            f"กำหนดจุดสุ่มตัวอย่าง{sample_name}: "
             f"สูตรพิกัดจุดสุ่มตัวอย่างสำหรับ{sample_name}:\n"
             f"{sample_rule}\n"
             f"{pts_latex}",
 
-            f"ตั้งสูตรผลรวมรีมันน์ (Riemann Sum Formula): "
+            f"ตั้งสูตรผลรวมรีมันน์: "
             f"ผลรวมพื้นที่สี่เหลี่ยมผืนผ้า (ความกว้าง $\\times$ ผลรวมความสูง):\n"
             f"{sigma_formula}\n"
             f"{expanded_formula}",
 
-            f"คำนวณความสูงของแต่ละแท่ง (Evaluate Heights): "
-            f"แทนจุดสุ่มตัวอย่างลงใน $f({v_lat}) = {sp.latex(expr)}$:\n"
+            f"คำนวณความสูงของแต่ละแท่ง: "
+            f"แทนจุดสุ่มตัวอย่างลงใน $f({v_lat}) = {_to_latex(expr)}$:\n"
             f"{heights_lines}",
 
-            f"คำนวณผลรวมพื้นที่รีมันน์ (Total Area): "
+            f"คำนวณผลรวมพื้นที่รีมันน์: "
             f"นำความกว้าง $\\Delta {v_lat} = {_fmt_num(dx)}$ คูณผลรวมความสูง:\n"
             f"{calc_line}\n"
             f"{sub_line}\n"
             f"{res_line}",
 
-            f"เปรียบเทียบกับปริพันธ์จำกัดเขต (Definite Integral Comparison): "
+            f"เปรียบเทียบกับปริพันธ์จำกัดเขต: "
             f"เปรียบเทียบค่าประมาณ ${method_latex}$ กับค่าจริงจากปริพันธ์จำกัดเขต:\n"
             f"{comp_lines}\n"
-            f"ข้อสังเกตมโนทัศน์: เมื่อ $n \\to \\infty$ จะได้ $\\Delta {v_lat} \\to 0$ และค่าผลรวมรีมันน์ ${method_latex} \\to \\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {sp.latex(expr)}\\,d{v_lat}$",
+            f"ข้อสังเกตเชิงแนวคิด: เมื่อ $n \\to \\infty$ จะได้ $\\Delta {v_lat} \\to 0$ และค่าผลรวมรีมันน์ ${method_latex} \\to \\int_{{{_fmt_num(a_f)}}}^{{{_fmt_num(b_f)}}} {_to_latex(expr)}\\,d{v_lat}$",
         ]
 
         return {

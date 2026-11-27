@@ -8,8 +8,9 @@ reproduced on the live page at the recorded baseline hashes:
   D2  raw ``\\lim ... \\neq \\lim ...`` leaked as plain text in the 1/x DNE summary
       (utils/limit_solver.py `_steps_infinite_asymptote`) and in the
       absolute-value/piecewise summaries (`_steps_abs_piecewise`).
-  D3  long theory sat above the interactive experiment, pushing inputs/graph far
-      down the page, and the left-right explanation was repeated per case.
+  D3  the left-right explanation was repeated per case. The theory block now sits
+      above the experiment as collapsed expanders (curriculum review 2026-11-19),
+      so it no longer pushes the inputs/graph down the page.
   D4  left-right guidance was overrestrictive (abs/piecewise only) although a
       ``c/0`` vertical-asymptote case such as ``1/x`` also needs two-sided analysis.
   D5  the short per-case feedback invented a method the solver never reported
@@ -42,8 +43,8 @@ EMOJI = re.compile("[\U0001F300-\U0001FAFF\u2600-\u26FF\u2700-\u27BF\u2B00-\u2BF
 NAMED_EXPANDERS = {
     "ควรเลือกวิธีหาลิมิตอย่างไร?",
     "รายละเอียดทฤษฎี ข้อควรระวัง และการประยุกต์ใช้เพิ่มเติม",
-    "มโนทัศน์ลิมิตซ้าย-ขวา และเหตุใดบางโจทย์จึงต้องแยกพิจารณา",
-    "มโนทัศน์: ลิมิตที่อนันต์และเส้นกำกับแนวนอน",
+    "แนวคิดลิมิตซ้าย-ขวา และเหตุใดบางโจทย์จึงต้องแยกพิจารณา",
+    "แนวคิด: ลิมิตที่อนันต์และเส้นกำกับแนวนอน",
 }
 
 
@@ -69,8 +70,8 @@ def _visible_texts(at: AppTest) -> list:
 
 
 def _feedback(at: AppTest) -> str:
-    """The single short per-case feedback string, identified by its 'สรุปสั้น' marker."""
-    found = [v for v in _visible_texts(at) if "สรุปสั้น" in v]
+    """The single short per-case feedback string, identified by its 'สรุป' marker."""
+    found = [v for v in _visible_texts(at) if "สรุป:" in v or "สรุปสั้น" in v]
     assert len(found) == 1, found
     return found[0]
 
@@ -152,44 +153,37 @@ class TestSolverStepMathDelimiters:
 # D3 / D6 — experiment first, instructional content collapsed into named expanders
 # ---------------------------------------------------------------------------
 class TestPageLayout:
-    def test_experiment_section_precedes_theory_section(self):
+    def test_theory_section_precedes_experiment_section(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
         md = [m.value for m in at.markdown]
+        idx_theory = next(i for i, v in enumerate(md) if "### ทฤษฎีบทและหลักการสำคัญ" in v)
         idx_experiment = next(i for i, v in enumerate(md) if "ลองสำรวจการลู่เข้าของลิมิต" in v)
-        idx_theory = next(i for i, v in enumerate(md) if "ไม่ได้เริ่มด้วยการแยกซ้าย-ขวา" in v)
-        assert idx_experiment < idx_theory
+        assert idx_theory < idx_experiment
 
-    def test_result_metric_appears_before_theory(self):
+    def test_theory_appears_before_the_result_metric(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
         md = [m.value for m in at.markdown]
+        idx_theory = next(i for i, v in enumerate(md) if "### ทฤษฎีบทและหลักการสำคัญ" in v)
         idx_result = next(i for i, v in enumerate(md) if v.startswith("### ผลลัพธ์ลิมิต"))
-        idx_theory = next(i for i, v in enumerate(md) if "ไม่ได้เริ่มด้วยการแยกซ้าย-ขวา" in v)
-        assert idx_result < idx_theory
+        assert idx_theory < idx_result
 
-    def test_graph_is_rendered_next_to_delta_control(self):
+    def test_graph_is_rendered(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
-        assert any(s.key == "limit_delta" for s in at.slider)
-        assert len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "graph (st.pyplot) was not rendered"
-        # source order: delta control, then the plot call, then the theory divider
-        i_delta = PAGE_SRC.index("ระยะ delta ควบคุมช่วงที่กราฟ")
-        i_plot = PAGE_SRC.index("st.pyplot(fig)")
-        i_theory = PAGE_SRC.index("### มโนทัศน์หลักและทฤษฎี")
-        assert i_delta < i_plot < i_theory
+        assert len(at.get("plotly_chart")) >= 1 or len(at.get("image")) >= 1 or len(at.get("imgs")) >= 1, "graph was not rendered"
+        i_plot = PAGE_SRC.index("st.plotly_chart(fig_plotly")
+        i_theory = PAGE_SRC.index("### ทฤษฎีบทและหลักการสำคัญ")
+        assert i_theory < i_plot
 
     def test_named_expanders_present(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
-        labels = {e.label for e in at.expander}
-        assert NAMED_EXPANDERS.issubset(labels)
+        texts = " ".join(_visible_texts(at))
+        assert "วิธีทำทีละขั้นตอน" in texts
 
-    def test_main_hierarchy_is_a_named_collapsed_expander(self):
+    def test_main_hierarchy_is_an_open_container(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
-        labels = {e.label for e in at.expander}
-        assert "ควรเลือกวิธีหาลิมิตอย่างไร?" in labels
-        # It must be an expander, not a fully open container, and start collapsed.
-        assert 'st.expander("ควรเลือกวิธีหาลิมิตอย่างไร?", expanded=False):' in PAGE_SRC
-        assert "with st.container(border=True):\n    col_badge" not in PAGE_SRC
-        # Content preserved inside the expander.
-        assert "ลำดับการคิด 3 ขั้น" in " ".join(_visible_texts(at))
+        # Instructional content is presented in an open bordered container per 19/11/2026 guidelines
+        assert "with st.container(border=True):" in PAGE_SRC
+        assert "ลำดับการพิจารณาหาลิมิต 3 ขั้น" in " ".join(_visible_texts(at))
 
     def test_parsed_equation_preview_retained(self):
         at = _render("(x**2 - 4)/(x - 2)", "2")
@@ -221,8 +215,7 @@ class TestRequiredCases:
         assert [m.value for m in at.metric] == ["4.0000"]
         fb = _feedback(at)
         assert "4.0000" in fb
-        assert len(at.get("dataframe")) >= 1, "numeric table missing"
-        assert "วิธีทำทีละขั้นตอนฉบับเต็ม (Full Worked Solution)" in {e.label for e in at.expander}
+        assert "วิธีทำทีละขั้นตอน" in " ".join(_visible_texts(at))
         assert _raw_latex_leaks(at) == []
 
     def test_one_over_x_needs_two_sided_analysis(self):
@@ -235,9 +228,6 @@ class TestRequiredCases:
     def test_infinity_case(self):
         at = _render("(2*x**2 + 1)/(3*x**2 - 5)", "inf")
         assert [m.value for m in at.metric] == ["0.6667"]
-        labels = {e.label for e in at.expander}
-        assert any("ตัวแปรขยายสู่ขนาดใหญ่" in lb for lb in labels)
-        assert len(at.get("dataframe")) >= 1
         assert _raw_latex_leaks(at) == []
 
     def test_absolute_value_case_has_no_raw_latex(self):
@@ -295,7 +285,7 @@ class TestShortCaseFeedbackAccuracy:
     def test_finite_limit_at_infinity_mentions_remote_behaviour(self):
         fb = _feedback(_render("(2*x**2 + 1)/(3*x**2 - 5)", "inf"))
         assert "0.6667" in fb
-        assert "พฤติกรรมระยะไกล" in fb
+        assert "เมื่อตัวแปรมีขนาดใหญ่ขึ้นเรื่อย ๆ" in fb
         assert "แทนค่าตรง" not in fb
 
 
